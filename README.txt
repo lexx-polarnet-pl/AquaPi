@@ -1,4 +1,4 @@
-AquaPi
+ï»¿AquaPi
 ======
 
-Ten projekt ma na celu zbudowanie interfeacu (sprzêtowego i oprogramowania) tak, aby zamieniæ Raspberry Pi w komputer steruj¹cy akwarium.
+Ten projekt ma na celu zbudowanie interfeacu (sprzÄ™towego i oprogramowania) tak, aby zamieniÄ‡ Raspberry Pi w komputer sterujÄ…cy akwarium.
