@@ -1,0 +1,8 @@
+﻿Przemyślenia po wersji 0.1:
+
+- zapewnić lepszą separację od 230v
+- rozbić płytkę z elektroniką na 2 części i umieszczenie części wykonawczej (230v) w szynie elektroinstalacyjnej 50mm
+  (przykład tu: https://github.com/musashimm/aquamat/blob/master/hardware/relays_board_6_1_0.brd)
+- rozważyć łączenie Raspberry i AquaPi taśmą i umieszczenie ich w jedniej linii (zablokuje to jednak dostęp do HDMI)
+- dodać otwory montażowe
+- dodać złącza mały jack (lub din 5) bezpośrednio na płytce celem podpięcia czujnika temp. (złącz może być 2 lub więcej)
