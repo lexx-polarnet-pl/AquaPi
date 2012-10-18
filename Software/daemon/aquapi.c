@@ -26,58 +26,51 @@
 #include <wiringPi.h>
 #include <unistd.h>
 #include <time.h>
+#include <syslog.h>
 #include "database.c"
 #include "gpio.c"
 
+#define APPNAME "AquaPi"
 
 const int E_DEV = -1;
 const int E_INFO = 0;
 const int E_WARN = 1;
 const int E_CRIT = 2;
 
+void Log(char *msg, int lev);
+
 struct _events {
 	int line,start,stop,enabled;
 } events; 
 
+void termination_handler(int signum)	{
+	if( signum ) {
+		syslog(LOG_ERR, "Daemon exited abnormally.");
+		Log("Praca daemona została przerwana",E_CRIT);
+	} else {
+		syslog(LOG_INFO, "Daemon exited.");
+		Log("Daemon zakończył pracę",E_WARN);
+	}
+	exit(signum);
+}
+
 void Log(char *msg, int lev) {
 	time_t rawtime;
 	struct tm * timeinfo;
-	FILE *Logfile;
 	char timef[80];
-	char *level;
+	char query[120];
 	
 	time ( &rawtime );
 	timeinfo = localtime ( &rawtime );
 
-	switch (lev) {
-		case 0:
-			level = "[INFO]";
-        break;
-		case 1 :
-			level = "[WARN]";
-        break;
-		case 2:
-			level = "[CRIT]";
-        break;
-		case -1:
-			level = "[DEVL]";
-        break;
-		default :
-			level = "[UNK?]";
-        break;
-	}
-	
-	Logfile = fopen ("aquapi.log" , "a");
-
 	// log na ekran
 	strftime (timef,80,"%H:%M:%S",timeinfo);	
-	printf("[%s] %s %s\n",timef,level,msg);
-
-	// log do pliku
-	strftime (timef,80,"%d.%m.%y %H:%M:%S",timeinfo);	
-	fprintf(Logfile,"[%s] %s %s\n",timef,level,msg);
+	printf("[%s] %i %s\n",timef,lev,msg);
 	
-	fclose (Logfile);
+	if (lev >= 0) {
+		sprintf(query,"INSERT INTO log (time,level,message) VALUES (%ld,%i,'%s');",rawtime,lev,msg);
+		DB_Query(query);
+	}
 }
 
 int main() {
@@ -99,22 +92,29 @@ int main() {
 	int dzien = -1;
 	int seconds_since_midnight;
 	
-	
+	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
+    syslog(LOG_INFO, "Daemon started.");
+ 
 	DB_Open();
-
+	Log("Daemon uruchomiony",E_INFO);
+	
 	DB_GetSetting("temp_day",buff);
 	temp_dzien = atof(buff); 
 	DB_GetSetting("temp_night",buff);
 	temp_noc = atof(buff); 
 	DB_GetSetting("temp_sensor",main_temp_sensor);
-
+	
 	events.line = gpio_main_light;
-	events.start = 8 * 60 * 60 ; 	// start o 8:00
-	events.stop = 18 * 60 * 60 +30 * 60; 	// stop o 22:00
-
-	DB_Close();
+	DB_GetSetting("day_start",buff);
+	events.start = atof(buff); 	
+	DB_GetSetting("day_stop",buff);
+	events.stop = atof(buff); 	
 	
 	GPIO_setup();
+
+	// termination signals handling
+    signal(SIGINT, termination_handler);
+    signal(SIGTERM, termination_handler);
 	
 	for (;;) {	
 		// timery i ustalenie czy jest dzien czy noc
@@ -140,9 +140,11 @@ int main() {
 			dzien = events.enabled;
 			if (dzien == 1) {
 				Log("Przechodzę w tryb dzień",E_INFO);
+				DB_Query("UPDATE data SET value=1 WHERE `key`='day';");
 				temp_zad = temp_dzien; 
 			} else {
 				Log("Przechodzę w tryb noc",E_INFO);
+				DB_Query("UPDATE data SET value=0 WHERE `key`='day';");
 				temp_zad = temp_noc; 
 			}
 			digitalWrite (gpio_main_light, dzien);
@@ -153,19 +155,23 @@ int main() {
 			temp_zal = temp_zad - histereza / 2;
 			temp_wyl = temp_zad + histereza / 2;	
 			temp_act = read_temp(main_temp_sensor);
-
+			
 			if (temp_act < -100) {
 				Log("Błąd odczytu sensora temperatury",E_CRIT);
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
 					Log("Włączam grzanie",E_INFO);
+					DB_Query("UPDATE data SET value=1 WHERE `key`='heating';");
 				} 
 				if ((temp_act > temp_wyl) && (grzanie == 1)) {
 					grzanie = 0;
 					Log("Wyłączam grzanie",E_INFO);
+					DB_Query("UPDATE data SET value=0 WHERE `key`='heating';");
 				} 
 				digitalWrite (gpio_heater, grzanie);
+				sprintf(buff,"UPDATE data SET value= %.2f WHERE `key`='temp_act'", temp_act);
+				DB_Query(buff);
 			}
 		}
 
@@ -176,5 +182,7 @@ int main() {
 		
 		sleep(1);
 	} 
+	DB_Close();
 	return 0;
 }
+

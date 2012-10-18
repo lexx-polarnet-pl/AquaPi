@@ -20,44 +20,42 @@
  * $Id$
  */
  
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <string.h>
-//#include <unistd.h>
-#include <sqlite3.h>
+#include <my_global.h>
+#include <mysql.h>
 
-sqlite3 *db;
-int rc;
+MYSQL *conn;
 
 
-int DB_Open() {
-	//rc = sqlite3_open("/usr/share/aquapi/aquapi.db", &db);
-	rc = sqlite3_open_v2("/usr/share/aquapi/aquapi.db", &db,1,0);
-	if( rc ){
-		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-		sqlite3_close(db);
-		return 1;
-	} else {
-		//printf("Baza otwarta\n");
-		return 0;
+void DB_Open() {
+	conn = mysql_init(NULL);
+
+	if (conn == NULL) {
+		printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		exit(1);
+	}
+
+	if (mysql_real_connect(conn, "localhost", "aquapi", "aquapi", "aquapi", 0, NULL, 0) == NULL) {
+		printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		exit(1);
 	}
 }
 
 void DB_Close() {
-	sqlite3_close(db);
+	mysql_close(conn);
+}
+
+void DB_Query(char *query) {
+	mysql_query(conn, query);
 }
 
 void DB_GetSetting(char *key, char *value) {
-	//int s;
-	const unsigned char * text;
-	sqlite3_stmt * stmt;
-	char query[80]= "select value from settings where key='";
-	strcat(query, key);
-	strcat(query, "';");
-
-	sqlite3_prepare_v2 (db, query, strlen (query) + 1, & stmt, NULL);
-	sqlite3_step (stmt);
-	text  = sqlite3_column_text (stmt, 0);
-	//printf ("%s\n",  text);	
-	memcpy (value, text, 60);
+	char query[80];
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	
+	sprintf(query,"select value from settings where `key`='%s';",key);
+	mysql_query(conn, query);
+	result = mysql_store_result(conn);
+	row = mysql_fetch_row(result);
+	memcpy (value, row[0], 60);
 }

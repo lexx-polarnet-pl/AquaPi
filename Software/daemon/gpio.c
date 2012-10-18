@@ -28,13 +28,12 @@ const int gpio_main_light = 4;
 double read_temp(char *sensor_id) {
     FILE *fp;
 	
-    char sensor_path[200]; //= { "/sys/bus/w1/devices/28-000003dabe2c/w1_slave" };
+    char sensor_path[200]; 
     char line[80];
 	char *pos;
 	double temp;
 
 	sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);
-	//printf(sensor_path);
 	
     fp = fopen (sensor_path, "r");
     if( fp == NULL ) {
