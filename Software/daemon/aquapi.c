@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
  
 #include <stdio.h>
@@ -27,23 +27,13 @@
 #include <unistd.h>
 #include <time.h>
 #include <syslog.h>
+#include "aquapi.h"
 #include "database.c"
 #include "gpio.c"
 
-#define APPNAME "AquaPi"
-
-const int E_DEV = -1;
-const int E_INFO = 0;
-const int E_WARN = 1;
-const int E_CRIT = 2;
-
-void Log(char *msg, int lev);
-
-struct _events {
-	int line,start,stop,enabled;
-} events; 
-
 void termination_handler(int signum)	{
+	// przy wychodzeniu wyłącz grzałkę
+	digitalWrite (gpio_heater, 0);
 	if( signum ) {
 		syslog(LOG_ERR, "Daemon exited abnormally.");
 		Log("Praca daemona została przerwana",E_CRIT);
@@ -73,71 +63,170 @@ void Log(char *msg, int lev) {
 	}
 }
 
+int events_count;
+
+struct _events {
+	int line,start,stop,enabled,day_of_week;
+} events[500]; 
+
+int outputs_count = 1;
+
+struct _outputs {
+	int line,enabled,new_state;
+	char *name;
+} outputs[2];
+
+
+
+double temp_dzien,temp_noc,histereza;
+char main_temp_sensor[80];
+
+void ReadConf() {
+	char buff[200];
+	MYSQL_RES *result;
+	MYSQL_ROW row;	
+	
+	// wczytanie ustawień temperatury
+	DB_GetSetting("temp_day",buff);
+	temp_dzien = atof(buff); 
+	DB_GetSetting("temp_night",buff);
+	temp_noc = atof(buff); 
+	DB_GetSetting("hysteresis",buff);
+	histereza = atof(buff); 
+	DB_GetSetting("temp_sensor",main_temp_sensor);
+	
+	
+	// wczytanie ustawień timerów
+	events_count = 	0;
+	mysql_query(conn, "SELECT t_start,t_stop,line,day_of_week FROM timers;");
+	result = mysql_store_result(conn);
+	while ((row = mysql_fetch_row(result))) {
+		//for(i = 0; i < num_fields; i++) {
+		events_count++;
+		events[events_count].start = atof(row[0]);
+		events[events_count].stop = atof(row[1]);
+		events[events_count].line = atof(row[2]);
+		events[events_count].day_of_week = atof(row[3]);
+	}	
+	mysql_free_result(result);
+	
+	// ustawienia kiedy dzień a kiedy noc są brane z innego miejsca
+	events[0].line = gpio_main_light;
+	DB_GetSetting("day_start",buff);
+	events[0].start = atof(buff); 	
+	DB_GetSetting("day_stop",buff);
+	events[0].stop = atof(buff); 
+	events[0].day_of_week = 128;
+	
+	// wczytanie ? nazw wyjść
+	outputs[0].name = "uniwersalne 1";
+	outputs[0].line = 5;
+	outputs[1].name = "uniwersalne 2";
+	outputs[1].line = 6;
+	
+}
+
 int main() {
-	double temp_zal,temp_wyl,temp_dzien,temp_noc;
+	double temp_zal,temp_wyl;
 	double temp_zad = 0;
 	double temp_act = -200;
-
-	double histereza = 1.0; // przenieść do UI
-
-	char main_temp_sensor[80];
 	char buff[200];
 	time_t rawtime;
 	struct tm * timeinfo;
 
 	int temp_freq = 10; // co ile sekund kontrolować temp
 	int log_freq = 60; // co ile sekund wypluwać informacje devel
+	int stat_freq = 600; // co ile sekund zapisywac co się dzieje w bazie
+	int conf_freq = 600; // co ile sekund wczytać ustawienia z bazy
 
 	int grzanie = 0;
 	int dzien = -1;
-	int seconds_since_midnight;
+	int i,j,seconds_since_midnight;
+
+	//const char inifile[] = "/etc/aquapi.ini";
+	
+	char db_host[] = "localhost";
+	char db_user[] = "aquapi"; 
+	char db_password[] = "aquapi"; 
+	char db_database[] = "aquapi"; 
 	
 	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
     syslog(LOG_INFO, "Daemon started.");
  
-	DB_Open();
-	Log("Daemon uruchomiony",E_INFO);
+	DB_Open(db_host,db_user,db_password,db_database);
 	
-	DB_GetSetting("temp_day",buff);
-	temp_dzien = atof(buff); 
-	DB_GetSetting("temp_night",buff);
-	temp_noc = atof(buff); 
-	DB_GetSetting("temp_sensor",main_temp_sensor);
+	Log("Daemon uruchomiony",E_WARN);
 	
-	events.line = gpio_main_light;
-	DB_GetSetting("day_start",buff);
-	events.start = atof(buff); 	
-	DB_GetSetting("day_stop",buff);
-	events.stop = atof(buff); 	
+	ReadConf();
 	
 	GPIO_setup();
 
+	// domyślnie wyjścia na zero
+	for(j = 0; j <= outputs_count; j++) {
+		outputs[j].enabled = 0;
+		outputs[j].new_state = 0;
+	}
+	
 	// termination signals handling
     signal(SIGINT, termination_handler);
     signal(SIGTERM, termination_handler);
 	
 	for (;;) {	
-		// timery i ustalenie czy jest dzien czy noc
+		// ustalenie timerów i ustalenie czy jest dzien czy noc
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 		
-		if (events.start<events.stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
-		    if ((seconds_since_midnight >= events.start) && (seconds_since_midnight < events.stop)) {
-				events.enabled = 1;
-		    } else {
-				events.enabled = 0;
-		    }
-		} else { // przypadek kiedy zdarzenie przechodzi przez północ
-		    if ((seconds_since_midnight < events.start) && (seconds_since_midnight >= events.stop)) {
-				events.enabled = 0;
-		    } else {
-				events.enabled = 1;
-		    }
+		for(i = 0; i <= events_count; i++) {
+		
+			if (events[i].start<events[i].stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
+				if ((seconds_since_midnight >= events[i].start) && (seconds_since_midnight < events[i].stop)) {
+					events[i].enabled = 1;
+				} else {
+					events[i].enabled = 0;
+				}
+			} else { // przypadek kiedy zdarzenie przechodzi przez północ
+				if ((seconds_since_midnight < events[i].start) && (seconds_since_midnight >= events[i].stop)) {
+					events[i].enabled = 0;
+				} else {
+					events[i].enabled = 1;
+				}
+			}
 		}
 
-		if (events.enabled != dzien) {
-			dzien = events.enabled;
+		// domyślnie wyjścia wyłączone
+		for(j = 0; j <= outputs_count; j++) {
+			outputs[j].new_state = 0;
+		}
+
+		// ustalenie jaki powinien być stan wyjść uniwersalnych (timery przecież mogą się nakładać)
+		for(i = 0; i <= events_count; i++) {
+			if (events[i].enabled == 1) {
+					for(j = 0; j <= outputs_count; j++) {
+						if (outputs[j].line == events[i].line) {
+							outputs[j].new_state = 1;
+						}
+					}
+			}
+		}
+		
+		// ustalenie czy wymagana jest zmiana stanu logicznego wyjść
+		for(j = 0; j <= outputs_count; j++) {
+			if (outputs[j].enabled != outputs[j].new_state) {
+				if (outputs[j].new_state == 0 ) {
+					sprintf(buff,"Wyjście %s wyłączone",outputs[j].name);
+				} else {
+					sprintf(buff,"Wyjście %s włączone",outputs[j].name);
+				}
+				Log(buff,E_INFO);
+				outputs[j].enabled = outputs[j].new_state;
+				digitalWrite (outputs[j].line,outputs[j].enabled);
+			}
+		}
+
+		// zmiana trybu dzień - noc
+		if (events[0].enabled != dzien) {
+			dzien = events[0].enabled;
 			if (dzien == 1) {
 				Log("Przechodzę w tryb dzień",E_INFO);
 				DB_Query("UPDATE data SET value=1 WHERE `key`='day';");
@@ -158,6 +247,8 @@ int main() {
 			
 			if (temp_act < -100) {
 				Log("Błąd odczytu sensora temperatury",E_CRIT);
+				grzanie = 0;
+				digitalWrite (gpio_heater, grzanie);
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
@@ -176,8 +267,17 @@ int main() {
 		}
 
 		if (seconds_since_midnight % log_freq == 0) {
-			sprintf(buff,"Dzień: %i Grzanie: %i Temp zad: %.2f Temp akt: %.2f",dzien,grzanie,temp_zad,temp_act);
+			sprintf(buff,"Dzień: %i Grzanie: %i Temp zad: %.2f Temp akt: %.2f Hist: %.2f",dzien,grzanie,temp_zad,temp_act,histereza);
 			Log(buff,E_DEV);
+		}
+
+		if (seconds_since_midnight % stat_freq == 0) {
+			sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
+			DB_Query(buff);
+		}
+		// odświerzenie konfiguracji
+		if (seconds_since_midnight % conf_freq== 0) {
+			ReadConf();
 		}
 		
 		sleep(1);

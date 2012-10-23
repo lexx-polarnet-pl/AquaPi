@@ -29,6 +29,7 @@ double read_temp(char *sensor_id) {
     FILE *fp;
 	
     char sensor_path[200]; 
+	char buff[200];
     char line[80];
 	char *pos;
 	double temp;
@@ -38,12 +39,15 @@ double read_temp(char *sensor_id) {
     fp = fopen (sensor_path, "r");
     if( fp == NULL ) {
 		//perror(sensor_path);
+		sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
+		Log(buff,E_CRIT);
 		return -201;
     } else {
 		// otwarty plik z danymi sensora, trzeba odczytac
 		fgets(line, 80, fp);
 		// tutaj mamy dane na temat CRC, do zrobienia weryfikacja tego CRC
 		fgets(line, 80, fp);
+		fclose (fp);
 		// teraz mamy dane o temperaturze
 		pos = strstr(line,"t=");
 		if (pos != NULL) {
@@ -54,7 +58,6 @@ double read_temp(char *sensor_id) {
 		} else {
 			return -200;
 		}
-		fclose (fp);
 	}
 }
 

@@ -21,23 +21,41 @@
  * $Id$
  */
  
-// Wczytanie pliku z ustawieniami
-$ini_array = parse_ini_file("/etc/aquapi.ini");
- 
-// ustawienie odpowiedniej strefy czasowej
-date_default_timezone_set("Europe/Warsaw");
-
-// inicjalizacja smarty
-require('/var/www/smarty/libs/Smarty.class.php');
-$smarty = new Smarty();
-
-$smarty->setTemplateDir('/var/www/smarty/templates');
-$smarty->setCompileDir('/var/www/smarty/templates_c');
-$smarty->setCacheDir('/var/www/smarty/cache');
-$smarty->setConfigDir('/var/www/smarty/configs');
-
 // inicjalizacja bazy danych
-require('database.php');
-$db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
+
+class Database {
+
+	var $_dblink;
+	var $_result;
+	function Database($dbhost, $dbuser, $dbpasswd, $dbname) {
+
+		$this->_dblink = mysql_connect($dbhost, $dbuser, $dbpasswd);
+		if (!$this->_dblink) {
+			die('Brak polaczenia z baza: ' . mysql_error());
+		}		
+		$this->_dbselected = mysql_select_db($dbname);
+		if (!$this->_dbselected) {
+			die ('Nie mozna wybraz bazy: ' . mysql_error());
+		}		
+	}
+
+	function Execute($query) {
+		$this->_result = @mysql_query($query, $this->_dblink);
+	}
+
+	function GetAll($query) {
+		$this->Execute($query);
+		$result = NULL;
+		while($row = @mysql_fetch_array($this->_result, MYSQL_ASSOC))
+		$result[] = $row;
+		return $result;
+	}
+	function GetOne($query) {
+		$this->Execute($query);
+		$result = NULL;
+		list($result) = @mysql_fetch_array($this->_result, MYSQL_NUM);
+		return $result;
+	}
+}
 
 ?>

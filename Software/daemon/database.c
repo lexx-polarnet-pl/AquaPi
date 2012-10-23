@@ -26,7 +26,7 @@
 MYSQL *conn;
 
 
-void DB_Open() {
+void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database) {
 	conn = mysql_init(NULL);
 
 	if (conn == NULL) {
@@ -34,7 +34,7 @@ void DB_Open() {
 		exit(1);
 	}
 
-	if (mysql_real_connect(conn, "localhost", "aquapi", "aquapi", "aquapi", 0, NULL, 0) == NULL) {
+	if (mysql_real_connect(conn, db_host, db_user, db_password, db_database, 0, NULL, 0) == NULL) {
 		printf("Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
 		exit(1);
 	}
@@ -58,4 +58,16 @@ void DB_GetSetting(char *key, char *value) {
 	result = mysql_store_result(conn);
 	row = mysql_fetch_row(result);
 	memcpy (value, row[0], 60);
+	mysql_free_result(result);
+}
+
+void DB_GetOne(char *query, char *value) {
+	MYSQL_RES *result;
+	MYSQL_ROW row;
+	
+	mysql_query(conn, query);
+	result = mysql_store_result(conn);
+	row = mysql_fetch_row(result);
+	memcpy (value, row[0], sizeof(value));
+	mysql_free_result(result);
 }
