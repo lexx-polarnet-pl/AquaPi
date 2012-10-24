@@ -24,6 +24,8 @@
 
 const int gpio_heater = 1;
 const int gpio_main_light = 4;
+const int gpio_uni1 = 5;
+const int gpio_uni2 = 6;
 
 double read_temp(char *sensor_id) {
     FILE *fp;
@@ -65,10 +67,12 @@ int GPIO_setup() {
 	if (wiringPiSetup () == -1) {
 		return 1;
 	} else {
-		// grzanie domyślnie wyłączone
-		pinMode (gpio_heater, OUTPUT) ;
-		digitalWrite (gpio_heater, 0);
 		pinMode (gpio_main_light, OUTPUT) ;
+		pinMode (gpio_heater, OUTPUT) ;
+		pinMode (gpio_uni1, OUTPUT) ;
+		pinMode (gpio_uni2, OUTPUT) ;
+		// grzanie domyślnie wyłączone
+		digitalWrite (gpio_heater, 0);
 		return 0;
 	}
 }

@@ -41,16 +41,16 @@
 		<input class="time_select" type="text" name="ev_stop" id="ev_stop" value="00:00:00" />
 	Wyjście:
 	<select name="line" id="line" >
-		<option value="5">Wyj Uni 1</option>
-		<option value="6">Wyj Uni 2</option>
+		<option value="5">{$line_5}</option>
+		<option value="6">{$line_6}</option>
 	</select>	
-	<input type="checkbox" name="d1" value="1" checked="checked"/>Pn
-	<input type="checkbox" name="d2" value="2" checked="checked"/>Wt
-	<input type="checkbox" name="d3" value="4" checked="checked"/>Śr
-	<input type="checkbox" name="d4" value="8" checked="checked"/>Cz
-	<input type="checkbox" name="d5" value="16" checked="checked"/>Pt
-	<input type="checkbox" name="d6" value="32" checked="checked"/>So
-	<input type="checkbox" name="d7" value="64" checked="checked"/>Nd
+	<input type="checkbox" name="d1" value="2" checked="checked"/>Pn
+	<input type="checkbox" name="d2" value="4" checked="checked"/>Wt
+	<input type="checkbox" name="d3" value="8" checked="checked"/>Śr
+	<input type="checkbox" name="d4" value="16" checked="checked"/>Cz
+	<input type="checkbox" name="d5" value="32" checked="checked"/>Pt
+	<input type="checkbox" name="d6" value="64" checked="checked"/>So
+	<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
 <input type="submit" value="Dodaj nowego tajmera"></td>
 </form>
 </div>
@@ -75,16 +75,16 @@
     <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
 		<td>{$entry.t_start|date_format:"%H:%M:%S"}</td>
 		<td>{$entry.t_stop|date_format:"%H:%M:%S"}</td>
-		{$duration = $entry.t_stop - $entry.t_start}
+		{if $entry.t_start<$entry.t_stop}{$duration = $entry.t_stop - $entry.t_start}{else}{$duration = 86400 -($entry.t_start - $entry.t_stop)}{/if}
 		<td>{$duration|date_format:"%H:%M:%S"}</td>
-		<td>{$entry.line}</td>
-		<td>{if $entry.day_of_week & 1}x{/if}</td>
+		<td>{if $entry.line == 5}{$line_5}{/if}{if $entry.line == 6}{$line_6}{/if}</td>
 		<td>{if $entry.day_of_week & 2}x{/if}</td>
 		<td>{if $entry.day_of_week & 4}x{/if}</td>
 		<td>{if $entry.day_of_week & 8}x{/if}</td>
 		<td>{if $entry.day_of_week & 16}x{/if}</td>
 		<td>{if $entry.day_of_week & 32}x{/if}</td>
 		<td>{if $entry.day_of_week & 64}x{/if}</td>
+		<td>{if $entry.day_of_week & 1}x{/if}</td>
 		<td><a href="timers.php?op=del&id={$entry.id}">DEL</a></td>        
     </tr>
 {/foreach}

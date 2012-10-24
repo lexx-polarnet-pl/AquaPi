@@ -44,9 +44,14 @@ if ($_GET['op'] == 'del') {
 	//echo $query;
 }
 
+$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
+$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
 $timers = $db->GetAll('select * from timers;');
 //var_dump($timers);
 $smarty->assign('timers', $timers);
+$smarty->assign('line_5', $line_5);
+$smarty->assign('line_6', $line_6);
+
 date_default_timezone_set('UTC');
 $smarty->display('timers.tpl');
 ?>

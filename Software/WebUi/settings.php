@@ -52,6 +52,8 @@ $temp_night = $db->GetOne("select value from settings where `key`='temp_night';"
 $hysteresis = $db->GetOne("select value from settings where `key`='hysteresis';");
 $day_start = $db->GetOne("select value from settings where `key`='day_start';");
 $day_stop = $db->GetOne("select value from settings where `key`='day_stop';");
+$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
+$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
 
 $temp_sensor = $db->GetOne("select value from settings where `key`='temp_sensor';");
 
@@ -69,6 +71,8 @@ $smarty->assign('day_stop', date("H:i:s",$day_stop));
 date_default_timezone_set("Europe/Warsaw");
 $smarty->assign('temp_sensor', $temp_sensor);
 $smarty->assign('temp_sensors', $temp_sensors);
+$smarty->assign('line_5', $line_5);
+$smarty->assign('line_6', $line_6);
 
 $settings = $db->GetAll('select * from settings;');
 $smarty->assign('settings', $settings);

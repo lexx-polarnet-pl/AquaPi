@@ -46,16 +46,16 @@ void termination_handler(int signum)	{
 
 void Log(char *msg, int lev) {
 	time_t rawtime;
-	struct tm * timeinfo;
-	char timef[80];
+	//struct tm * timeinfo;
+	//char timef[80];
 	char query[120];
 	
 	time ( &rawtime );
-	timeinfo = localtime ( &rawtime );
+	//timeinfo = localtime ( &rawtime );
 
 	// log na ekran
-	strftime (timef,80,"%H:%M:%S",timeinfo);	
-	printf("[%s] %i %s\n",timef,lev,msg);
+	//strftime (timef,80,"%H:%M:%S",timeinfo);	
+	//printf("[%s] %i %s\n",timef,lev,msg);
 	
 	if (lev >= 0) {
 		sprintf(query,"INSERT INTO log (time,level,message) VALUES (%ld,%i,'%s');",rawtime,lev,msg);
@@ -73,7 +73,8 @@ int outputs_count = 1;
 
 struct _outputs {
 	int line,enabled,new_state;
-	char *name;
+	//char *name;
+	char name[40];
 } outputs[2];
 
 
@@ -116,13 +117,13 @@ void ReadConf() {
 	events[0].start = atof(buff); 	
 	DB_GetSetting("day_stop",buff);
 	events[0].stop = atof(buff); 
-	events[0].day_of_week = 128;
+	events[0].day_of_week = 127;
 	
-	// wczytanie ? nazw wyjść
-	outputs[0].name = "uniwersalne 1";
-	outputs[0].line = 5;
-	outputs[1].name = "uniwersalne 2";
-	outputs[1].line = 6;
+	// wczytanie nazw wyjść
+	DB_GetOne("select value from settings where `key`='gpio5_name';", outputs[0].name);
+	outputs[0].line = gpio_uni1;
+	DB_GetOne("select value from settings where `key`='gpio6_name';", outputs[1].name); 
+	outputs[1].line = gpio_uni2;
 	
 }
 
@@ -133,6 +134,8 @@ int main() {
 	char buff[200];
 	time_t rawtime;
 	struct tm * timeinfo;
+	char *pidfile = NULL;
+	FILE *pidf;
 
 	int temp_freq = 10; // co ile sekund kontrolować temp
 	int log_freq = 60; // co ile sekund wypluwać informacje devel
@@ -141,6 +144,7 @@ int main() {
 
 	int grzanie = 0;
 	int dzien = -1;
+	int fval = 0;
 	int i,j,seconds_since_midnight;
 
 	//const char inifile[] = "/etc/aquapi.ini";
@@ -166,6 +170,23 @@ int main() {
 		outputs[j].enabled = 0;
 		outputs[j].new_state = 0;
 	}
+
+	fval = fork();
+    switch(fval) {
+		case -1:
+			fprintf(stderr, "Fork error. Exiting.");
+            termination_handler(1);
+        case 0:
+			setsid();
+			break;
+		default:
+			syslog(LOG_INFO, "Daemonize. Forked child %d.", fval);
+			if (pidfile != NULL && (pidf = fopen(pidfile, "w")) != NULL) {
+				fprintf(pidf, "%d", fval);
+				fclose(pidf);
+			}
+            exit(0); // parent exits
+	}
 	
 	// termination signals handling
     signal(SIGINT, termination_handler);
@@ -178,18 +199,22 @@ int main() {
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 		
 		for(i = 0; i <= events_count; i++) {
-		
-			if (events[i].start<events[i].stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
-				if ((seconds_since_midnight >= events[i].start) && (seconds_since_midnight < events[i].stop)) {
-					events[i].enabled = 1;
-				} else {
-					events[i].enabled = 0;
-				}
-			} else { // przypadek kiedy zdarzenie przechodzi przez północ
-				if ((seconds_since_midnight < events[i].start) && (seconds_since_midnight >= events[i].stop)) {
-					events[i].enabled = 0;
-				} else {
-					events[i].enabled = 1;
+			// sprawdź czy jest odpowiedni dzień tygodnia
+			if (events[i].day_of_week & (int)round(pow(2,timeinfo->tm_wday))) {
+				// tm_wday -> days since Sunday	0-6
+				// takie todo
+				if (events[i].start<events[i].stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
+					if ((seconds_since_midnight >= events[i].start) && (seconds_since_midnight < events[i].stop)) {
+						events[i].enabled = 1;
+					} else {
+						events[i].enabled = 0;
+					}
+				} else { // przypadek kiedy zdarzenie przechodzi przez północ
+					if ((seconds_since_midnight < events[i].start) && (seconds_since_midnight >= events[i].stop)) {
+						events[i].enabled = 0;
+					} else {
+						events[i].enabled = 1;
+					}
 				}
 			}
 		}
@@ -252,12 +277,12 @@ int main() {
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
-					Log("Włączam grzanie",E_INFO);
+					//Log("Włączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='heating';");
 				} 
 				if ((temp_act > temp_wyl) && (grzanie == 1)) {
 					grzanie = 0;
-					Log("Wyłączam grzanie",E_INFO);
+					//Log("Wyłączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='heating';");
 				} 
 				digitalWrite (gpio_heater, grzanie);
