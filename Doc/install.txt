@@ -1,0 +1,131 @@
+﻿Instalacja "szybka"
+
+Możesz mnie poprosić o ostatni obraz AquaPi jaki posiadam. Ten obraz (o ile będzie stabilny) powinien zawierać już 
+skonfigurowaną i działającą wersję AquaPi. Taki obraz wystarczy zgrać na kartę, uruchomić system, skonfigurować pod
+swoje potrzeby (przez przeglądarkę) i cieszyć się działającym systemem.
+
+Instalacja od początku
+
+1. Ściągnąć najnowszą wersję rapsbiana, zainstalować i ustawić podstawowy system.
+
+2. Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać
+
+w1-gpio
+w1-therm
+
+3. Zainstalować następujące pakiety:
+
+mysql-server
+mysql-client
+libmysqlclient-dev
+lighttpd
+php5-cgi
+php5-mysql
+
+(uwaga przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql)
+
+4. Skonfigurować serwer www i php
+
+To enable PHP5 in Lighttpd, we must modify two files, /etc/php5/cgi/php.ini and 
+/etc/lighttpd/lighttpd.conf. First we open /etc/php5/cgi/php.ini and add the line cgi.fix_pathinfo = 1 
+right at the end of the file:
+
+Then we open /etc/lighttpd/lighttpd.conf and add "mod_fastcgi", to the server.modules stanza: 
+
+and then right at the end of the file, we add the following stanza:
+fastcgi.server = ( ".php" => ((
+                     "bin-path" => "/usr/bin/php5-cgi",
+                     "socket" => "/tmp/php.socket"
+                 )))
+
+Then we restart Lighttpd:
+
+/etc/init.d/lighttpd restart
+
+5. Skonfigurować mysqla
+
+wchodzimy w mysql monitor:
+
+mysql -u root -p
+
+(i podajemy hasło administratora które ustawiliśmy przy instalacji pakietu)
+
+tworzymy użytkownika, bazę i tabele:
+
+CREATE DATABASE IF NOT EXISTS `aquapi`;
+ALTER DATABASE `aquapi` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
+CREATE USER 'aquapi'@'localhost' IDENTIFIED BY 'aquapi';
+GRANT ALL PRIVILEGES ON `aquapi`.* TO 'aquapi';
+USE aquapi;
+
+CREATE TABLE log
+(
+id INT(5) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+time INT(5) NOT NULL,
+level INT(5) NOT NULL,
+message CHAR(200) NOT NULL
+);
+
+CREATE TABLE timers
+(
+id INT(5) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+t_start INT(5) NOT NULL,
+t_stop INT(5) NOT NULL,
+line INT(5) NOT NULL,
+day_of_week INT(5) NOT NULL
+);
+
+CREATE TABLE settings
+(
+id INT(5) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`key` CHAR(20) NOT NULL,
+`value` CHAR(60) NOT NULL
+);
+
+INSERT INTO settings(`key`, `value`) VALUES ('temp_day', '26.0');
+INSERT INTO settings(`key`, `value`) VALUES ('temp_night', '24.0');
+INSERT INTO settings(`key`, `value`) VALUES ('hysteresis', '0.4');
+INSERT INTO settings(`key`, `value`) VALUES ('day_start', '28800');
+INSERT INTO settings(`key`, `value`) VALUES ('day_stop', '72000');
+INSERT INTO settings(`key`, `value`) VALUES ('gpio5_name', 'uniwersalne 1');
+INSERT INTO settings(`key`, `value`) VALUES ('gpio6_name', 'uniwersalne 2');
+INSERT INTO settings(`key`, `value`) VALUES ('temp_sensor', '28-0000000dummy');
+
+CREATE TABLE data
+(
+id INT(5) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`key` CHAR(20) NOT NULL,
+`value` CHAR(60) NOT NULL
+);
+
+INSERT INTO data(`key`, `value`) VALUES ('heating', 0);
+INSERT INTO data(`key`, `value`) VALUES ('temp_act', 25.5);
+INSERT INTO data(`key`, `value`) VALUES ('day', 1);
+
+CREATE TABLE stat
+(
+id INT(5) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+time_st INT(5) NOT NULL,
+heat INT(5) NOT NULL,
+day INT(5) NOT NULL,
+temp_t FLOAT NOT NULL,
+temp_a FLOAT NOT NULL
+);
+
+
+6. Skompilować daemona
+
+6.1 Zainstalować WiringPi
+
+wchodzimy do katalogu daemon\wiringPi\wiringPi i odpalamy:
+
+make clean
+make all
+make install
+
+6.2 Skompilować daemona
+
+Wchodzimy do katalogu daemon i odpalamy make
+
+po kompilacji daemona można uruchomić przez ./aquapi
+
