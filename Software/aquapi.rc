@@ -1,0 +1,33 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          aquapi
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start or stop aquapi daemon.
+### END INIT INFO
+
+# Author: Marcin Król <lexx@polarnet.pl>
+
+AQUAPI=/usr/local/aquapi/aquapi
+
+case $1 in
+  start)
+	$AQUAPI
+	;;
+  stop)
+	killall aquapi
+	;;
+  restart)
+	killall aquapi
+	$AQUAPI
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}" 1>&2
+	exit 1
+	;;
+esac
+
+exit 0

@@ -115,6 +115,8 @@ temp_a FLOAT NOT NULL
 
 6. Skompilować daemona
 
+Skopiować pliki zawierające daemona do /usr/local/aquapi/
+
 6.1 Zainstalować WiringPi
 
 wchodzimy do katalogu daemon\wiringPi\wiringPi i odpalamy:
@@ -129,3 +131,10 @@ Wchodzimy do katalogu daemon i odpalamy make
 
 po kompilacji daemona można uruchomić przez ./aquapi
 
+7. Dodać skrypty do RC aby odpalać daemona przy starcie
+
+skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić
+
+update-rc.d aquapi.rc defaults
+
+8. Skopiować pliki zawierające WebUI do /var/www/
