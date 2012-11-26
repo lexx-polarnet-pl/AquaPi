@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.2">
+<eagle version="6.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -5689,22 +5689,22 @@ W = angled&lt;p&gt;
 <part name="T2" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
 <part name="X3" library="con-wago-500" deviceset="W237-103" device=""/>
 <part name="JP1" library="pinhead" deviceset="PINHD-2X13" device=""/>
-<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7"/>
-<part name="R2" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
+<part name="R2" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
 <part name="K3" library="relay" deviceset="ZF112" device=""/>
 <part name="K1" library="relay" deviceset="ZF112" device=""/>
 <part name="D3" library="diode" deviceset="1N4004" device=""/>
 <part name="T3" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
 <part name="X2" library="con-wago-500" deviceset="W237-103" device=""/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
 <part name="K2" library="relay" deviceset="ZF112" device=""/>
 <part name="D4" library="diode" deviceset="1N4004" device=""/>
 <part name="T4" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
 <part name="X4" library="con-wago-500" deviceset="W237-103" device=""/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="0204/7"/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
 <part name="K4" library="relay" deviceset="ZF112" device=""/>
 <part name="SV1" library="con-lstb" deviceset="MA03-1" device=""/>
-<part name="R6" library="rcl" deviceset="R-EU_" device="0207/7"/>
+<part name="R5" library="rcl" deviceset="R-EU_" device="0207/7" value="4,7k"/>
 </parts>
 <sheets>
 <sheet>
@@ -5745,7 +5745,7 @@ W = angled&lt;p&gt;
 <instance part="K4" gate="1" x="60.96" y="-58.42" rot="R270"/>
 <instance part="K4" gate="2" x="38.1" y="-66.04" rot="R180"/>
 <instance part="SV1" gate="G$1" x="99.06" y="86.36" rot="R270"/>
-<instance part="R6" gate="G$1" x="91.44" y="40.64" rot="R90"/>
+<instance part="R5" gate="G$1" x="91.44" y="40.64" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -6018,7 +6018,7 @@ W = angled&lt;p&gt;
 <wire x1="114.3" y1="43.18" x2="96.52" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="43.18" x2="96.52" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="96.52" y1="45.72" x2="96.52" y2="78.74" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="2"/>
+<pinref part="R5" gate="G$1" pin="2"/>
 <wire x1="91.44" y1="45.72" x2="96.52" y2="45.72" width="0.1524" layer="91"/>
 <junction x="91.44" y="45.72"/>
 </segment>
@@ -6029,7 +6029,7 @@ W = angled&lt;p&gt;
 <pinref part="SV1" gate="G$1" pin="2"/>
 <wire x1="114.3" y1="35.56" x2="99.06" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="35.56" x2="99.06" y2="78.74" width="0.1524" layer="91"/>
-<pinref part="R6" gate="G$1" pin="1"/>
+<pinref part="R5" gate="G$1" pin="1"/>
 <wire x1="91.44" y1="35.56" x2="99.06" y2="35.56" width="0.1524" layer="91"/>
 <junction x="91.44" y="35.56"/>
 </segment>

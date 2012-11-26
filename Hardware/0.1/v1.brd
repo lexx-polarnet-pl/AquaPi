@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="6.2">
+<eagle version="6.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -1727,8 +1727,8 @@ design rules under a new name.</description>
 <attribute name="OC_FARNELL" value="unknown" x="52.07" y="15.24" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
 <element name="JP1" library="pinhead" package="2X13" value="" x="20.32" y="57.15"/>
-<element name="R1" library="rcl" package="0204/7" value="" x="63.5" y="45.72" rot="R90"/>
-<element name="R2" library="rcl" package="0204/7" value="" x="48.26" y="45.72" rot="R90"/>
+<element name="R1" library="rcl" package="0204/7" value="4,7k" x="63.5" y="45.72" rot="R90"/>
+<element name="R2" library="rcl" package="0204/7" value="4,7k" x="48.26" y="45.72" rot="R90"/>
 <element name="K3" library="relay" package="ZF112" value="ZF112" x="60.96" y="21.59" rot="R270">
 <attribute name="OC_NEWARK" value="unknown" x="60.96" y="21.59" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="" x="60.96" y="21.59" size="1.778" layer="27" rot="R270" display="off"/>
@@ -1749,7 +1749,7 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="35.56" y="-6.35" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="35.56" y="-6.35" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="R3" library="rcl" package="0204/7" value="" x="33.02" y="45.72" rot="R90"/>
+<element name="R3" library="rcl" package="0204/7" value="4,7k" x="33.02" y="45.72" rot="R90"/>
 <element name="K2" library="relay" package="ZF112" value="ZF112" x="27.94" y="21.59" rot="R270">
 <attribute name="OC_NEWARK" value="unknown" x="3.81" y="30.48" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="" x="3.81" y="30.48" size="1.778" layer="27" rot="R270" display="off"/>
@@ -1764,7 +1764,7 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="19.05" y="-6.35" size="1.778" layer="27" rot="R180" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="19.05" y="-6.35" size="1.778" layer="27" rot="R180" display="off"/>
 </element>
-<element name="R4" library="rcl" package="0204/7" value="" x="17.78" y="45.72" rot="R90"/>
+<element name="R4" library="rcl" package="0204/7" value="4,7k" x="17.78" y="45.72" rot="R90"/>
 <element name="K4" library="relay" package="ZF112" value="ZF112" x="11.43" y="21.59" rot="R270">
 <attribute name="OC_NEWARK" value="unknown" x="-12.7" y="30.48" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="MPN" value="" x="-12.7" y="30.48" size="1.778" layer="27" rot="R270" display="off"/>
@@ -1777,7 +1777,7 @@ design rules under a new name.</description>
 <attribute name="MF" value="" x="7.62" y="49.53" size="1.778" layer="27" display="off"/>
 <attribute name="OC_FARNELL" value="unknown" x="7.62" y="49.53" size="1.778" layer="27" display="off"/>
 </element>
-<element name="R6" library="rcl" package="0207/7" value="" x="8.89" y="53.34" rot="R180"/>
+<element name="R5" library="rcl" package="0207/7" value="4,7k" x="8.89" y="53.34" rot="R180"/>
 </elements>
 <signals>
 <signal name="N$2">
@@ -2010,7 +2010,7 @@ design rules under a new name.</description>
 <contactref element="JP1" pad="1"/>
 <contactref element="SV1" pad="1"/>
 <wire x1="5.08" y1="49.53" x2="5.08" y2="55.88" width="1.27" layer="16"/>
-<contactref element="R6" pad="2"/>
+<contactref element="R5" pad="2"/>
 <wire x1="5.08" y1="55.88" x2="5.08" y2="53.34" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$18">
@@ -2019,7 +2019,7 @@ design rules under a new name.</description>
 <wire x1="12.7" y1="55.88" x2="12.7" y2="52.07" width="1.27" layer="16"/>
 <wire x1="12.7" y1="52.07" x2="7.62" y2="52.07" width="1.27" layer="16"/>
 <wire x1="7.62" y1="52.07" x2="7.62" y2="49.53" width="1.27" layer="16"/>
-<contactref element="R6" pad="1"/>
+<contactref element="R5" pad="1"/>
 <wire x1="12.7" y1="52.07" x2="12.7" y2="53.34" width="0" layer="19" extent="16-16"/>
 </signal>
 <signal name="N$22">
