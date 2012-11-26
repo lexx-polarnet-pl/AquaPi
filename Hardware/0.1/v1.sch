@@ -5682,27 +5682,27 @@ W = angled&lt;p&gt;
 </class>
 </classes>
 <parts>
-<part name="D1" library="diode" deviceset="1N4004" device=""/>
-<part name="T1" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
+<part name="D1" library="diode" deviceset="1N4004" device="" value="1N4148"/>
+<part name="T1" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639" value="BC639"/>
 <part name="X1" library="con-wago-500" deviceset="W237-103" device=""/>
-<part name="D2" library="diode" deviceset="1N4004" device=""/>
-<part name="T2" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
+<part name="D2" library="diode" deviceset="1N4004" device="" value="1N4148"/>
+<part name="T2" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639" value="BC639"/>
 <part name="X3" library="con-wago-500" deviceset="W237-103" device=""/>
 <part name="JP1" library="pinhead" deviceset="PINHD-2X13" device=""/>
-<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
-<part name="R2" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
-<part name="K3" library="relay" deviceset="ZF112" device=""/>
-<part name="K1" library="relay" deviceset="ZF112" device=""/>
-<part name="D3" library="diode" deviceset="1N4004" device=""/>
-<part name="T3" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
+<part name="R1" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
+<part name="R2" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
+<part name="K3" library="relay" deviceset="ZF112" device="" value="SRD-5VDC-SL-C"/>
+<part name="K1" library="relay" deviceset="ZF112" device="" value="SRD-5VDC-SL-C"/>
+<part name="D3" library="diode" deviceset="1N4004" device="" value="1N4148"/>
+<part name="T3" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639" value="BC639"/>
 <part name="X2" library="con-wago-500" deviceset="W237-103" device=""/>
-<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
-<part name="K2" library="relay" deviceset="ZF112" device=""/>
-<part name="D4" library="diode" deviceset="1N4004" device=""/>
-<part name="T4" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639"/>
+<part name="R3" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
+<part name="K2" library="relay" deviceset="ZF112" device="" value="SRD-5VDC-SL-C"/>
+<part name="D4" library="diode" deviceset="1N4004" device="" value="1N4148"/>
+<part name="T4" library="transistor" deviceset="*-NPN-" device="TO92-ECB" technology="BC639" value="BC639"/>
 <part name="X4" library="con-wago-500" deviceset="W237-103" device=""/>
-<part name="R4" library="rcl" deviceset="R-EU_" device="0204/7" value="4,7k"/>
-<part name="K4" library="relay" deviceset="ZF112" device=""/>
+<part name="R4" library="rcl" deviceset="R-EU_" device="0204/7" value="470"/>
+<part name="K4" library="relay" deviceset="ZF112" device="" value="SRD-5VDC-SL-C"/>
 <part name="SV1" library="con-lstb" deviceset="MA03-1" device=""/>
 <part name="R5" library="rcl" deviceset="R-EU_" device="0207/7" value="4,7k"/>
 </parts>
