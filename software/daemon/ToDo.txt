@@ -1,0 +1,6 @@
+﻿Rzeczy do zrobienia/poprawienia w daemonie
+
+- wykrywanie awarii grzałki
+- poprawa odczytu danych z sensora temp
+- wyciągnąć z warunku przejścia w tryb dzień/noc przypisanie temepratury zadanej (zmiana w UI obowiązuje dopiero od przełączenia dzień/noc)
+- nazwy wyjść w logach są ograniczone do 4 znaków
