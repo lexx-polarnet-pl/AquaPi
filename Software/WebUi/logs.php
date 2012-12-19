@@ -23,14 +23,20 @@
  
 include("init.php");
 
-$logs = $db->GetAll('select * from log order by time desc;');
+$count=20;
+$offset=0;
 
-//var_dump($result);
+if(isset($_GET['offset']))$offset = $count*$_GET['offset'];
+
+$r = $db->GetOne('select count(*) from log;'); 
+$pages = ceil($r/$count);
+$logs = $db->GetAll('select * from log order by time desc limit '.$count.' offset '.$offset.';');
 
 $smarty->assign('time', date("H:i"));
 $smarty->assign('temp', $temp);
 $smarty->assign('heating', false);
 $smarty->assign('day', false);
 $smarty->assign('logs', $logs);
+$smarty->assign('pages', $pages);
 $smarty->display('logs.tpl');
 ?>

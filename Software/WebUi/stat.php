@@ -23,7 +23,11 @@
  
 include("init.php");
 
-$stat = $db->GetAll('select * from stat;');
+$limit = time() - (24 * 60 * 60);
+
+if(isset($_GET['limit']))$limit = $_GET['limit'];
+
+$stat = $db->GetAll('select * from stat where time_st >= '.$limit.';');
 $smarty->assign('stat', $stat);
 $smarty->display('stat.tpl');
 ?>

@@ -99,7 +99,7 @@
 </div>	
 <input type="submit" value="Zapisz"></td>
 </form>
-
+{*
 <table>
 <tr><th>Klucz</th><th>Wartość</th></tr>
 {foreach from=$settings item="entry"}
@@ -109,5 +109,5 @@
     </tr>
 {/foreach}
 </table>
-
+*}
 {include "footer.tpl"}

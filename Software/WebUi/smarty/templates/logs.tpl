@@ -3,6 +3,11 @@
 <a href="/index.php"><img src="/img/back.png" style="float:left"></a>
 <h1>Zdarzenia systemowe:</h1>
 
+Strona: 
+{for $page=0 to $pages-1}
+		<a href="/logs.php?&offset={$page}">{$page+1}</a>
+{/for}
+
 
 <table style="width:100%">
 <tr><th>Czas</th><th></th><th>Opis</th></tr>
