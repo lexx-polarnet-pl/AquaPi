@@ -60,10 +60,10 @@
 	}
 </script>
 {/literal}
-<a href="/stat.php?limit={$smarty.now - (24*60*60)}">Dzień</a>
-<a href="/stat.php?limit={$smarty.now - (7*24*60*60)}">Tydzień</a>
-<a href="/stat.php?limit={$smarty.now - (30*24*60*60)}">Miesiąc</a>
-<a href="/stat.php?limit=0">Bez limitu</a>
+<a href="/stat.php">Dzień</a>
+<a href="/stat.php?limit=week">Tydzień</a>
+<a href="/stat.php?limit=month">Miesiąc</a>
+<a href="/stat.php?limit=no_limit">Bez limitu</a>
 
 <div id="chart_temp" style="width: 98%; height: 400px;"></div>
 

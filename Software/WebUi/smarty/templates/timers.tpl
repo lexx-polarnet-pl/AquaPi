@@ -51,7 +51,7 @@
 	<input type="checkbox" name="d5" value="32" checked="checked"/>Pt
 	<input type="checkbox" name="d6" value="64" checked="checked"/>So
 	<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
-<input type="submit" value="Dodaj nowego tajmera"></td>
+<input type="submit" value="Dodaj"></td>
 </form>
 </div>
 
@@ -68,7 +68,7 @@
 <th>Pt</th>
 <th>So</th>
 <th>Nd</th>
-<th>Id</th>
+<th>&nbsp;</th>
 
 </tr>
 {foreach from=$timers item="entry"}
@@ -85,7 +85,7 @@
 		<td>{if $entry.day_of_week & 32}x{/if}</td>
 		<td>{if $entry.day_of_week & 64}x{/if}</td>
 		<td>{if $entry.day_of_week & 1}x{/if}</td>
-		<td><a href="timers.php?op=del&id={$entry.id}">DEL</a></td>        
+		<td><a href="timers.php?op=del&id={$entry.id}"><img src="/img/delete_entry.png" title="Skasuj pozycję"></a></td>        
     </tr>
 {/foreach}
 </table>

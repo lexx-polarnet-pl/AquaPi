@@ -1,7 +1,7 @@
 ﻿{include "header.tpl"}
 
 <div class="current">
-<img src ="/img/babelfish.png" style="float:left;">
+<img src ="/img/welcome_logo.png" style="float:left;">
 Aktualne wartości:<br/>
 Czas <span id="time">{$time}</span><br/>
 Temperatura: <span id="temp">{$temp}&deg;C</span>
@@ -29,21 +29,21 @@ Oświetlenie
 *}
 <a href="timers.php">
 <div class="icon">
-<img src="/img/preferences-system-time.png">
+<img src="/img/timers.png">
 Timery
 </div>
 </a>
 
 <a href="settings.php">
 <div class="icon">
-<img src="/img/advancedsettings.png">
+<img src="/img/settings.png">
 Ustawienia sterownika
 </div>
 </a>
 
 <a href="logs.php">
 <div class="icon">
-<img src="/img/Gnome-Utilities-System-Monitor-64.png">
+<img src="/img/logs.png">
 Zdarzenia systemowe
 </div>
 </a>
