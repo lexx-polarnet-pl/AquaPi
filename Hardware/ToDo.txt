@@ -5,4 +5,4 @@
   (przykład tu: https://github.com/musashimm/aquamat/blob/master/hardware/relays_board_6_1_0.brd)
 - rozważyć łączenie Raspberry i AquaPi taśmą i umieszczenie ich w jedniej linii 
 - dodać otwory montażowe
-- dodać złącza mały jack (lub din 5) bezpośrednio na płytce celem podpięcia czujnika temp. (złącz może być 2 lub więcej)
+- dodać wzmacniacz audio LM386
