@@ -23,23 +23,5 @@
  
 include("init.php");
 
-switch ($_GET['limit']) {
-    case 'week':
-		$limit = time() - (7 * 24 * 60 * 60);
-        break;
-    case 'month':
-		$limit = time() - (31 * 7 * 24 * 60 * 60);
-        break;
-    case 'no_limit':
-		$limit = 0;
-        break;
-    default:
-		$limit = time() - (24 * 60 * 60);
-}
-
-//if(isset($_GET['limit']))$limit = $_GET['limit'];
-
-$stat = $db->GetAll('select * from stat where time_st >= '.$limit.';');
-$smarty->assign('stat', $stat);
-$smarty->display('stat.tpl');
+$smarty->display('about.tpl');
 ?>
