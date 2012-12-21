@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Kr�l (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -27,6 +27,8 @@ $temp = $db->GetOne('select value from data where `key` = "temp_act";');
 $heating = $db->GetOne('select value from data where `key` = "heating";') == "1";
 $day = $db->GetOne('select value from data where `key` = "day";') == "1";
 //var_dump($db->GetOne('select value from data where key = "heating";'));
+
+$smarty->assign('title', 'Strona główna');
 
 $smarty->assign('time', date("H:i"));
 $smarty->assign('temp', $temp);

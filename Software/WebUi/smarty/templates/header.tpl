@@ -1,14 +1,16 @@
-﻿<html>
+<html>
 <head>
 <link href='http://fonts.googleapis.com/css?family=Capriola&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-<title>AquaPi</title>
+<title>{$title}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 {literal}
-  body {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px}
+  body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   div.current {border-style: solid; margin: 5px; width:400px;}
-  div.icon {width:100px; text-align: center; margin: 5px; float: left;}
+  #menu { width: 100%; overflow:hidden; }
+  #icon { float: left; width: 100px; text-align: center; margin: 5px;}  
   img {border:0}
+  h1 {margin:0}
   #temp {font-size: 24px; color: #000090}
   #time {font-size: 24px; color: #000090}
   input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px}
@@ -35,3 +37,5 @@
 <script type="text/javascript" src="/js/jquery-ui-timepicker-addon.js"></script>
 </head>
 <body>
+{include "menu.tpl"}
+<h1>{$title}</h1>

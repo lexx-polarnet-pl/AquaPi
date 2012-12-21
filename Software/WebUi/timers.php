@@ -23,6 +23,8 @@
  
 include("init.php");
 
+$smarty->assign('title', 'Timery');
+
 if ($_GET['op'] == 'add_new') {
 	//var_dump($_POST);
 	$pieces = explode(":", $_POST['ev_start']);

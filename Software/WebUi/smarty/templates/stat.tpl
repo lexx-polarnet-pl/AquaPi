@@ -1,7 +1,5 @@
-﻿{include "header.tpl"}
+{include "header.tpl"}
 
-<a href="/index.php"><img src="/img/back.png" style="float:left"></a>
-<h1>Statystyki:</h1>
 {literal}
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">

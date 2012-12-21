@@ -1,7 +1,4 @@
-﻿{include "header.tpl"}
-
-<a href="/index.php"><img src="/img/back.png" style="float:left"></a>
-<h1>Zdarzenia systemowe:</h1>
+{include "header.tpl"}
 
 Strona: 
 {for $page=0 to $pages-1}

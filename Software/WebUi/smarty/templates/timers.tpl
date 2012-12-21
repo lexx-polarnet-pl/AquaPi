@@ -1,7 +1,5 @@
-﻿{include "header.tpl"}
+{include "header.tpl"}
 
-<a href="/index.php"><img src="/img/back.png" style="float:left"></a>
-<h1>Timery:</h1>
 <script>
 	$(function() {
 		

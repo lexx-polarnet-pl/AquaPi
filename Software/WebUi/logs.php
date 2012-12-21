@@ -23,6 +23,8 @@
  
 include("init.php");
 
+$smarty->assign('title', 'Zdarzenia systemowe');
+
 $count=20;
 $offset=0;
 

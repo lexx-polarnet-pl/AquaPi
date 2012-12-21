@@ -22,6 +22,9 @@
  */
  
 include("init.php");
+
+$smarty->assign('title', 'Ustawienia');
+
 if ($_POST['day_start'] > "") {
 	$pieces = explode(":", $_POST['day_start']);
 	$day_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
