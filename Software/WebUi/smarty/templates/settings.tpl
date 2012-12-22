@@ -60,47 +60,61 @@
 
 <form action="settings.php" method="post">
 
-<div style="float: right; width: 48%; border:solid;">
-	<div>
-		Rozpoczęcie dnia:
-		<input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}" />
-	</div>					
-	<div>
-		Zakończenie dnia:
-		<input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" />
-	</div>	
+<div id="dashboard">
+<h3>Ustawienia dnia:</h3>
+	<table>
+	<tr><td>Rozpoczęcie:</td><td><input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}" /></td></tr>
+	<tr><td>Zakończenie:</td><td><input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" /></td></tr>
+	</table>	
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
 </div>
-<div style="width:48%">
+
+<div id="dashboard">
+<h3>Ustawienia temperatury:</h3>
 	<div class="temp_select">
 		Temperatura w dzień:
 		<input class="temp_select" type="text" readonly id="temp_day" name="temp_day" value ="{$temp_day}">
-		<div id="slide_day" style="margin-top:10px;"></div>
+		<div id="slide_day" style="margin:10px;"></div>
 	</div>
 	<div class="temp_select">
 		Temperatura w nocy:
 		<input class="temp_select" type="text" readonly id="temp_night" name="temp_night" value ="{$temp_night}">
-		<div id="slide_night" style="margin-top:10px;"></div>
+		<div id="slide_night" style="margin:10px;"></div>
 	</div>					
 	<div class="temp_select">
 		Histereza:
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
-		<div id="slide_hysteresis" style="margin-top:10px;"></div>
+		<div id="slide_hysteresis" style="margin:10px;"></div>
 	</div>	
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	
 </div>
-<div>
-	Sensor temperatury:
+
+<div id="dashboard">
+<h3>Ustawienia sensorów temperatury:</h3>
+	Id sensora:
 	<select name="temp_sensor" id="temp_sensor" >
 		{foreach from=$temp_sensors item="sensor_id"}
 		<option{if $sensor_id == $temp_sensor} selected="selected"{/if}>{$sensor_id}</option>
 		{/foreach}
 	</select>	
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	
 </div>	
-<div>
-	Nazwa pierwszego wyjścia uniwersalnego: <input type="text" id="line_5" name="line_5" value="{$line_5}"><br/>
-	Nazwa drugiego wyjścia uniwersalnego: <input type="text" id="line_6" name="line_6" value="{$line_6}"><br/>
+
+<div id="dashboard">
+<h3>Nazwy wyjść:</h3>
+	<table>
+	<tr><td>Uniwersalne 1:</td><td><input class="rest" type="text" id="line_5" name="line_5" value="{$line_5}"></td></tr>
+	<tr><td>Uniwersalne 2:</td><td><input class="rest" type="text" id="line_6" name="line_6" value="{$line_6}"></td></tr>
+	</table>
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	
 </div>
-<input type="submit" value="Zapisz"></td>
+
+
 </form>
+
 {*
 <table>
 <tr><th>Klucz</th><th>Wartość</th></tr>

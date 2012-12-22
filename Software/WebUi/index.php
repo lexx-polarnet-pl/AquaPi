@@ -28,12 +28,17 @@ $heating = $db->GetOne('select value from data where `key` = "heating";') == "1"
 $day = $db->GetOne('select value from data where `key` = "day";') == "1";
 //var_dump($db->GetOne('select value from data where key = "heating";'));
 
+$last5infologs = $db->GetAll('select * from log where level = 0 order by time desc limit 5;');
+$last5warnlogs = $db->GetAll('select * from log where level <> 0 order by time desc limit 5;');
+
 $smarty->assign('title', 'Strona główna');
 
 $smarty->assign('time', date("H:i"));
 $smarty->assign('temp', $temp);
 $smarty->assign('heating', $heating);
 $smarty->assign('day', $day);
+$smarty->assign('last5infologs', $last5infologs);
+$smarty->assign('last5warnlogs', $last5warnlogs);
 $smarty->display('index.tpl');
 
 ?>

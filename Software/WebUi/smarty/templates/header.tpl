@@ -7,15 +7,17 @@
 {literal}
   body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   div.current {border-style: solid; margin: 5px; width:400px;}
+  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
   #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
   #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
   #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    
   img {border:0}
-  h1 {margin:0}
+  h1,h2,h3 {margin-top:2px; margin-bottom:2px;}
   #temp {font-size: 24px; color: #000090}
   #time {font-size: 24px; color: #000090}
-  input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px}
+  input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; margin-right: 10px}
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
+  select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
   div.temp_select {width:100%; margin:5px;}
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }

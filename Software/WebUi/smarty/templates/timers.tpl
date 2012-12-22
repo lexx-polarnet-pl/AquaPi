@@ -29,19 +29,18 @@
 	});
 </script>
 
-<div style="border:solid">
-
+<div id="dashboard">
+<h3>Dodanie nowego timera:</h3>
 <form action="timers.php?op=add_new" method="post">
-
-		Załączenie:
-		<input class="time_select" type="text" name="ev_start" id="ev_start" value="00:00:00" />
-		Wyłączenie:
-		<input class="time_select" type="text" name="ev_stop" id="ev_stop" value="00:00:00" />
-	Wyjście:
+	<table>
+	<tr><td>Załączenie:</td><td><input class="time_select" type="text" name="ev_start" id="ev_start" value="00:00:00" /></td></tr>
+	<tr><td>Wyłączenie:</td><td><input class="time_select" type="text" name="ev_stop" id="ev_stop" value="00:00:00" /></td></tr>
+	<tr><td>Wyjście:</td><td>
 	<select name="line" id="line" >
 		<option value="5">{$line_5}</option>
 		<option value="6">{$line_6}</option>
-	</select>	
+	</select></td></tr>	
+	<tr><td>Dni tygodnia:</td><td>
 	<input type="checkbox" name="d1" value="2" checked="checked"/>Pn
 	<input type="checkbox" name="d2" value="4" checked="checked"/>Wt
 	<input type="checkbox" name="d3" value="8" checked="checked"/>Śr
@@ -49,12 +48,16 @@
 	<input type="checkbox" name="d5" value="32" checked="checked"/>Pt
 	<input type="checkbox" name="d6" value="64" checked="checked"/>So
 	<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
-<input type="submit" value="Dodaj"></td>
+	</td></tr>
+	</table>
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
 </form>
 </div>
 
-<table>
-<tr>
+<div id="dashboard">
+<h3>Lista timerów</h3>
+<table style="width:100%">
+<tr bgcolor="#aaaaaa">
 <th>Start</th>
 <th>Stop</th>
 <th>Czas</th>
@@ -87,6 +90,6 @@
     </tr>
 {/foreach}
 </table>
-
+</div>
 
 {include "footer.tpl"}
