@@ -1,8 +1,5 @@
-﻿{include "header.tpl"}
-
-<a href="/index.php"><img src="/img/back.png" style="float:left"></a>
-<h1>O sterowniku:</h1>
-
+{include "header.tpl"}
+<h2>Sterownik akwariowy AquaPi</h2>
 Sterownik (sprzęt jak i oprogramowanie) dostępne jest na licencji GNU GPL w wersji 2.0.<br/>
 Pełen tekst licencji można znaleźć <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">tutaj</a>, a skrócone objaśnienie <a href="http://pl.wikipedia.org/wiki/GNU_General_Public_License">tutaj</a>.<br/>
 <br/>
