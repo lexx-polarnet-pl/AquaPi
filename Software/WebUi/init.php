@@ -40,4 +40,25 @@ $smarty->setConfigDir('/var/www/smarty/configs');
 require('database.php');
 $db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
 
+// definicja menu
+$my_menu = Array (
+    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "/index.php"),
+    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "/timers.php"),
+    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "/settings.php"),
+    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "/logs.php"),
+    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "/stat.php"),
+    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "/about.php")
+);
+
+foreach ($my_menu as &$pos) {
+    if ($pos['url'] == $_SERVER["PHP_SELF"]) {
+		$cur_name = $pos['name'];
+		$pos['selected'] = true;
+	}
+}
+
+$smarty->assign('my_menu', $my_menu);
+$smarty->assign('cur_name', $cur_name);
+
+//var_dump($my_menu);
 ?>

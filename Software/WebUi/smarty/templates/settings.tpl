@@ -95,6 +95,10 @@
 		{/foreach}
 	</select>	
 </div>	
+<div>
+	Nazwa pierwszego wyjścia uniwersalnego: <input type="text" id="line_5" name="line_5" value="{$line_5}"><br/>
+	Nazwa drugiego wyjścia uniwersalnego: <input type="text" id="line_6" name="line_6" value="{$line_6}"><br/>
+</div>
 <input type="submit" value="Zapisz"></td>
 </form>
 {*

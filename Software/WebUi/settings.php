@@ -48,6 +48,11 @@ if ($_POST['day_start'] > "") {
 	$query = 'update settings set value="' . $_POST['hysteresis'] . '" where `key`="hysteresis";';
 	$db->Execute($query);
 
+	$query = 'update settings set value="' . $_POST['line_5'] . '" where `key`="gpio5_name";';
+	$db->Execute($query);
+
+	$query = 'update settings set value="' . $_POST['line_6'] . '" where `key`="gpio6_name";';
+	$db->Execute($query);
 }
 
 $temp_day = $db->GetOne("select value from settings where `key`='temp_day';");

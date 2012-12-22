@@ -1,14 +1,15 @@
 <html>
 <head>
 <link href='http://fonts.googleapis.com/css?family=Capriola&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-<title>{$title}</title>
+<title>AquaPi - {$cur_name}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <style type="text/css">
 {literal}
   body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   div.current {border-style: solid; margin: 5px; width:400px;}
-  #menu { width: 100%; overflow:hidden; }
-  #icon { float: left; width: 100px; text-align: center; margin: 5px;}  
+  #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
+  #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
+  #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    
   img {border:0}
   h1 {margin:0}
   #temp {font-size: 24px; color: #000090}
@@ -38,4 +39,4 @@
 </head>
 <body>
 {include "menu.tpl"}
-<h1>{$title}</h1>
+<h1>{$cur_name}</h1>
