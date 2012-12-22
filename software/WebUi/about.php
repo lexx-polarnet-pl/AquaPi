@@ -23,5 +23,7 @@
  
 include("init.php");
 
+$smarty->assign('title', 'O sterowniku');
+
 $smarty->display('about.tpl');
 ?>
