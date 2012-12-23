@@ -28,7 +28,13 @@ noc <img src="/img/night_s.png">
 
 <div id="dashboard">
 <h3>Informacje o systemie:</h3>
-ToDo!
+<table>
+<tr><td>Uruchomiony:</td><td>{$enabled}</td></tr>
+<tr><td>Wersja jądra:</td><td>{$uname_r}</td></tr>
+<tr><td>Kompilacja:</td><td>{$uname_v}</td></tr>
+<tr><td>Obciążenie:</td><td>{$load.0} {$load.1} {$load.2}</td></tr>
+<tr><td>Wersja AquaPi:</td><td>{$aquapi_ver}</td></tr>
+</table>
 </div>
 
 <div id="dashboard">

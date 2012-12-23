@@ -26,20 +26,27 @@ include("init.php");
 $temp = $db->GetOne('select value from data where `key` = "temp_act";');
 $heating = $db->GetOne('select value from data where `key` = "heating";') == "1";
 $day = $db->GetOne('select value from data where `key` = "day";') == "1";
-//var_dump($db->GetOne('select value from data where key = "heating";'));
 
 $last5infologs = $db->GetAll('select * from log where level = 0 order by time desc limit 5;');
 $last5warnlogs = $db->GetAll('select * from log where level <> 0 order by time desc limit 5;');
 
-$smarty->assign('title', 'Strona główna');
+$uptime = exec("cat /proc/uptime | awk '{ print $1 }'");
+$enabled = date("d.m.Y H:i",time() - $uptime);
+$uname_r = php_uname("r");
+$uname_v = php_uname("v");
+$load = sys_getloadavg();
 
+$smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
 $smarty->assign('temp', $temp);
 $smarty->assign('heating', $heating);
 $smarty->assign('day', $day);
+$smarty->assign('uname_r', $uname_r);
+$smarty->assign('uname_v', $uname_v);
+$smarty->assign('load', $load);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 $smarty->display('index.tpl');
-
+//var_dump(sys_getloadavg());
 ?>
 

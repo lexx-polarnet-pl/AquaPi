@@ -20,7 +20,10 @@
  *
  * $Id$
  */
- 
+// wersja AquaPi
+
+$aquapi_ver = "0.1";
+
 // Wczytanie pliku z ustawieniami
 $ini_array = parse_ini_file("/etc/aquapi.ini");
  
@@ -35,6 +38,8 @@ $smarty->setTemplateDir('/var/www/smarty/templates');
 $smarty->setCompileDir('/var/www/smarty/templates_c');
 $smarty->setCacheDir('/var/www/smarty/cache');
 $smarty->setConfigDir('/var/www/smarty/configs');
+
+$smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
 require('database.php');
