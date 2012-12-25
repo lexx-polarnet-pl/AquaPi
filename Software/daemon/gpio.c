@@ -47,18 +47,25 @@ double read_temp(char *sensor_id) {
     } else {
 		// otwarty plik z danymi sensora, trzeba odczytac
 		fgets(line, 80, fp);
-		// tutaj mamy dane na temat CRC, do zrobienia weryfikacja tego CRC
-		fgets(line, 80, fp);
-		fclose (fp);
-		// teraz mamy dane o temperaturze
-		pos = strstr(line,"t=");
+		// poszukajmy YES w stringu (weryfikacja CRC ok)
+		pos = strstr(line,"YES");
 		if (pos != NULL) {
-			// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
-			pos += 2;
-			temp = (double)atoi(pos)/1000;
-			return temp;
+			fgets(line, 80, fp);
+			fclose (fp);
+			// teraz mamy dane o temperaturze
+			pos = strstr(line,"t=");
+			if (pos != NULL) {
+				// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
+				pos += 2;
+				temp = (double)atoi(pos)/1000;
+				return temp;
+			} else {
+				return -200;
+			}
 		} else {
-			return -200;
+			sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
+			Log(buff,E_WARN);
+			return -202;
 		}
 	}
 }

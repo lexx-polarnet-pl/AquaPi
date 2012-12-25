@@ -31,6 +31,8 @@
 #include "database.c"
 #include "gpio.c"
 
+int dontfork = 0;
+
 void termination_handler(int signum)	{
 	// przy wychodzeniu wyłącz grzałkę
 	digitalWrite (gpio_heater, 0);
@@ -46,16 +48,18 @@ void termination_handler(int signum)	{
 
 void Log(char *msg, int lev) {
 	time_t rawtime;
-	//struct tm * timeinfo;
-	//char timef[80];
+	struct tm * timeinfo;
+	char timef[80];
 	char query[120];
 	
 	time ( &rawtime );
-	//timeinfo = localtime ( &rawtime );
-
+	
 	// log na ekran
-	//strftime (timef,80,"%H:%M:%S",timeinfo);	
-	//printf("[%s] %i %s\n",timef,lev,msg);
+	if ( dontfork ) {
+		timeinfo = localtime ( &rawtime );
+		strftime (timef,80,"%H:%M:%S",timeinfo);	
+		printf("[%s] %i %s\n",timef,lev,msg);
+	}
 	
 	if (lev >= 0) {
 		sprintf(query,"INSERT INTO log (time,level,message) VALUES (%ld,%i,'%s');",rawtime,lev,msg);
@@ -120,11 +124,10 @@ void ReadConf() {
 	events[0].day_of_week = 127;
 	
 	// wczytanie nazw wyjść
-	DB_GetOne("select value from settings where `key`='gpio5_name';", outputs[0].name);
+	DB_GetOne("select value from settings where `key`='gpio5_name';", outputs[0].name, sizeof(outputs[0].name));
 	outputs[0].line = gpio_uni1;
-	DB_GetOne("select value from settings where `key`='gpio6_name';", outputs[1].name); 
+	DB_GetOne("select value from settings where `key`='gpio6_name';", outputs[1].name, sizeof(outputs[0].name)); 
 	outputs[1].line = gpio_uni2;
-	
 }
 
 int main() {
@@ -145,9 +148,11 @@ int main() {
 	int grzanie = 0;
 	int dzien = -1;
 	int fval = 0;
+	int fail_count;
 	int i,j,seconds_since_midnight;
 
 	//const char inifile[] = "/etc/aquapi.ini";
+	dontfork = 0;
 	
 	char db_host[] = "localhost";
 	char db_user[] = "aquapi"; 
@@ -171,21 +176,23 @@ int main() {
 		outputs[j].new_state = 0;
 	}
 
-	fval = fork();
-    switch(fval) {
-		case -1:
-			fprintf(stderr, "Fork error. Exiting.");
-            termination_handler(1);
-        case 0:
-			setsid();
-			break;
-		default:
-			syslog(LOG_INFO, "Daemonize. Forked child %d.", fval);
-			if (pidfile != NULL && (pidf = fopen(pidfile, "w")) != NULL) {
-				fprintf(pidf, "%d", fval);
-				fclose(pidf);
-			}
-            exit(0); // parent exits
+	if ( !dontfork ) {
+		fval = fork();
+		switch(fval) {
+			case -1:
+				fprintf(stderr, "Fork error. Exiting.");
+				termination_handler(1);
+			case 0:
+				setsid();
+				break;
+			default:
+				syslog(LOG_INFO, "Daemonize. Forked child %d.", fval);
+				if (pidfile != NULL && (pidf = fopen(pidfile, "w")) != NULL) {
+					fprintf(pidf, "%d", fval);
+					fclose(pidf);
+				}
+				exit(0); // parent exits
+		}
 	}
 	
 	// termination signals handling
@@ -197,6 +204,11 @@ int main() {
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
+
+		// odświerzenie konfiguracji
+		if (seconds_since_midnight % conf_freq== 0) {
+			ReadConf();
+		}
 		
 		for(i = 0; i <= events_count; i++) {
 			// sprawdź czy jest odpowiedni dzień tygodnia
@@ -255,20 +267,32 @@ int main() {
 			if (dzien == 1) {
 				Log("Przechodzę w tryb dzień",E_INFO);
 				DB_Query("UPDATE data SET value=1 WHERE `key`='day';");
-				temp_zad = temp_dzien; 
 			} else {
 				Log("Przechodzę w tryb noc",E_INFO);
 				DB_Query("UPDATE data SET value=0 WHERE `key`='day';");
-				temp_zad = temp_noc; 
 			}
 			digitalWrite (gpio_main_light, dzien);
 		}
 		
 		// obsługa temperatury
 		if (seconds_since_midnight % temp_freq == 0) {
+			if (dzien == 1) {
+				temp_zad = temp_dzien; 
+			} else {
+				temp_zad = temp_noc; 
+			}
+		
 			temp_zal = temp_zad - histereza / 2;
 			temp_wyl = temp_zad + histereza / 2;	
-			temp_act = read_temp(main_temp_sensor);
+
+			fail_count = 0;
+			
+			do {
+				temp_act = read_temp(main_temp_sensor);
+				if (temp_act < -100) {
+					fail_count++;
+				}
+			} while (temp_act<-100 && fail_count <3);
 			
 			if (temp_act < -100) {
 				Log("Błąd odczytu sensora temperatury",E_CRIT);
@@ -299,10 +323,6 @@ int main() {
 		if (seconds_since_midnight % stat_freq == 0) {
 			sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
 			DB_Query(buff);
-		}
-		// odświerzenie konfiguracji
-		if (seconds_since_midnight % conf_freq== 0) {
-			ReadConf();
 		}
 		
 		sleep(1);

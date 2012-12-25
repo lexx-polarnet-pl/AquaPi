@@ -61,13 +61,14 @@ void DB_GetSetting(char *key, char *value) {
 	mysql_free_result(result);
 }
 
-void DB_GetOne(char *query, char *value) {
+void DB_GetOne(char *query, char *value, int res_size) {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	
 	mysql_query(conn, query);
 	result = mysql_store_result(conn);
 	row = mysql_fetch_row(result);
-	memcpy (value, row[0], sizeof(value));
+	//memcpy (value, row[0], sizeof(**value));
+	memcpy (value, row[0], res_size);
 	mysql_free_result(result);
 }
