@@ -294,6 +294,11 @@ int main() {
 				}
 			} while (temp_act<-100 && fail_count <3);
 			
+			if (temp_act == -202) {
+				sprintf(buff,"Błędy CRC przy odczycie sensora %s", main_temp_sensor);
+				Log(buff,E_WARN);				
+			}
+			
 			if (temp_act < -100) {
 				Log("Błąd odczytu sensora temperatury",E_CRIT);
 				grzanie = 0;

@@ -63,8 +63,8 @@ double read_temp(char *sensor_id) {
 				return -200;
 			}
 		} else {
-			sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
-			Log(buff,E_WARN);
+			//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
+			//Log(buff,E_WARN);
 			return -202;
 		}
 	}
