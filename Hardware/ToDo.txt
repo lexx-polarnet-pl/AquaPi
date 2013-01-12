@@ -6,3 +6,5 @@
 - rozważyć łączenie Raspberry i AquaPi taśmą i umieszczenie ich w jedniej linii 
 - dodać otwory montażowe
 - dodać wzmacniacz audio LM386
+- kolejne wyjścia uniwersalne oprzeć o PCF8574P (expander i2c). Na "normalnych" liniach wyjściowych pozostawić tylko 
+  podstawowe funkcjonalności.

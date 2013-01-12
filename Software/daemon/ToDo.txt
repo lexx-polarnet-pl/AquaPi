@@ -1,4 +1,0 @@
-﻿Rzeczy do zrobienia/poprawienia w daemonie
-
-- wykrywanie awarii grzałki
-- komunikaty głosowe

@@ -1,0 +1,6 @@
+﻿Rzeczy do zrobienia/poprawienia w daemonie
+
+- wykrywanie awarii grzałki
+- komunikaty głosowe
+- wprowadzenie "naming convention" dla wyjść i przeniesienie konfiguracji wyjść (np. przypisanie do grzałki lub światła)
+  do bazy sql. Umożliwi to jednoczesne sterowanie kilkoma zbiornikami za pomocą jednego AquaPi.
