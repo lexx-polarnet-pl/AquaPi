@@ -119,7 +119,7 @@ Skopiować pliki zawierające daemona do /usr/local/aquapi/
 
 6.1 Zainstalować WiringPi
 
-wchodzimy do katalogu daemon\wiringPi\wiringPi i odpalamy:
+wchodzimy do katalogu daemon/wiringPi/wiringPi i odpalamy:
 
 make clean
 make all

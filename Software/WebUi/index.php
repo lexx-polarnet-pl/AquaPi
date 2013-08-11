@@ -25,6 +25,7 @@ include("init.php");
 
 $temp = $db->GetOne('select value from data where `key` = "temp_act";');
 $heating = $db->GetOne('select value from data where `key` = "heating";') == "1";
+$cooling = $db->GetOne('select value from data where `key` = "cooling";') == "1";
 $day = $db->GetOne('select value from data where `key` = "day";') == "1";
 
 $last5infologs = $db->GetAll('select * from log where level = 0 order by time desc limit 5;');
@@ -40,6 +41,7 @@ $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
 $smarty->assign('temp', $temp);
 $smarty->assign('heating', $heating);
+$smarty->assign('cooling', $cooling);
 $smarty->assign('day', $day);
 $smarty->assign('uname_r', $uname_r);
 $smarty->assign('uname_v', $uname_v);

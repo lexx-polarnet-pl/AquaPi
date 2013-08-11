@@ -21,7 +21,17 @@
 			max: 30,
 			value: {$temp_night|default:25}
 		});
-
+		
+		$("#slide_cool").slider({
+			slide: function(event, ui) { 
+					document.getElementById('temp_cool').value = ui.value.toFixed(1);
+			},
+			step: 0.1,
+			min: 20,
+			max: 30,
+			value: {$temp_cool|default:25}
+		});
+		
 		$("#slide_hysteresis").slider({
 			slide: function(event, ui) { 
 					document.getElementById('hysteresis').value = ui.value.toFixed(1);
@@ -86,6 +96,11 @@
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
 		<div id="slide_hysteresis" style="margin:10px;"></div>
 	</div>	
+	<div class="temp_select">
+		Temperatura włączenia chłodzenia:
+		<input class="temp_select" type="text" readonly id="temp_cool" name="temp_cool" value ="{$temp_cool}">
+		<div id="slide_cool" style="margin:10px;"></div>
+	</div>					
 	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
 	
 </div>

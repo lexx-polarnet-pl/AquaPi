@@ -83,7 +83,7 @@ struct _outputs {
 
 
 
-double temp_dzien,temp_noc,histereza;
+double temp_dzien,temp_noc,temp_cool,histereza;
 char main_temp_sensor[80];
 
 void ReadConf() {
@@ -98,6 +98,9 @@ void ReadConf() {
 	temp_noc = atof(buff); 
 	DB_GetSetting("hysteresis",buff);
 	histereza = atof(buff); 
+	DB_GetSetting("temp_cool",buff);
+	temp_cool = atof(buff); 
+	
 	DB_GetSetting("temp_sensor",main_temp_sensor);
 	
 	
@@ -146,13 +149,14 @@ int main() {
 	int conf_freq = 600; // co ile sekund wczytać ustawienia z bazy
 
 	int grzanie = 0;
+	int chlodzenie = 0;
 	int dzien = -1;
 	int fval = 0;
 	int fail_count;
 	int i,j,seconds_since_midnight;
 
 	//const char inifile[] = "/etc/aquapi.ini";
-	dontfork = 0;
+	dontfork = 1;
 	
 	char db_host[] = "localhost";
 	char db_user[] = "aquapi"; 
@@ -252,8 +256,12 @@ int main() {
 			if (outputs[j].enabled != outputs[j].new_state) {
 				if (outputs[j].new_state == 0 ) {
 					sprintf(buff,"Wyjście %s wyłączone",outputs[j].name);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'gpio%i',0);",rawtime,outputs[j].line);
+					DB_Query(buff);					
 				} else {
 					sprintf(buff,"Wyjście %s włączone",outputs[j].name);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'gpio%i',1);",rawtime,outputs[j].line);
+					DB_Query(buff);					
 				}
 				Log(buff,E_INFO);
 				outputs[j].enabled = outputs[j].new_state;
@@ -267,9 +275,14 @@ int main() {
 			if (dzien == 1) {
 				Log("Przechodzę w tryb dzień",E_INFO);
 				DB_Query("UPDATE data SET value=1 WHERE `key`='day';");
+				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',1);",rawtime);
+				DB_Query(buff);					
+				
 			} else {
 				Log("Przechodzę w tryb noc",E_INFO);
 				DB_Query("UPDATE data SET value=0 WHERE `key`='day';");
+				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',0);",rawtime);
+				DB_Query(buff);					
 			}
 			digitalWrite (gpio_main_light, dzien);
 		}
@@ -302,19 +315,40 @@ int main() {
 			if (temp_act < -100) {
 				Log("Błąd odczytu sensora temperatury",E_CRIT);
 				grzanie = 0;
+				chlodzenie = 0;
 				digitalWrite (gpio_heater, grzanie);
+				digitalWrite (gpio_cool, chlodzenie);
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
 					//Log("Włączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='heating';");
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heat',1);",rawtime);
+					DB_Query(buff);					
 				} 
 				if ((temp_act > temp_wyl) && (grzanie == 1)) {
 					grzanie = 0;
 					//Log("Wyłączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='heating';");
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heat',0);",rawtime);
+					DB_Query(buff);					
 				} 
+				if ((temp_act < temp_cool) && (chlodzenie == 1)) {
+					chlodzenie = 0;
+					Log("Wyłączam chłodzenie",E_INFO);
+					DB_Query("UPDATE data SET value=0 WHERE `key`='cooling';");
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',0);",rawtime);
+					DB_Query(buff);					
+				} 
+				if ((temp_act > temp_cool) && (chlodzenie == 0)) {
+					chlodzenie = 1;
+					Log("Włączam chłodzenie",E_INFO);
+					DB_Query("UPDATE data SET value=1 WHERE `key`='cooling';");
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',1);",rawtime);
+					DB_Query(buff);					
+				} 				
 				digitalWrite (gpio_heater, grzanie);
+				digitalWrite (gpio_cool, chlodzenie);
 				sprintf(buff,"UPDATE data SET value= %.2f WHERE `key`='temp_act'", temp_act);
 				DB_Query(buff);
 			}

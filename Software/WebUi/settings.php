@@ -45,6 +45,9 @@ if ($_POST['day_start'] > "") {
 	$query = 'update settings set value="' . $_POST['temp_night'] . '" where `key`="temp_night";';
 	$db->Execute($query);
 
+	$query = 'update settings set value="' . $_POST['temp_cool'] . '" where `key`="temp_cool";';
+	$db->Execute($query);
+
 	$query = 'update settings set value="' . $_POST['hysteresis'] . '" where `key`="hysteresis";';
 	$db->Execute($query);
 
@@ -57,6 +60,7 @@ if ($_POST['day_start'] > "") {
 
 $temp_day = $db->GetOne("select value from settings where `key`='temp_day';");
 $temp_night = $db->GetOne("select value from settings where `key`='temp_night';");
+$temp_cool = $db->GetOne("select value from settings where `key`='temp_cool';");
 $hysteresis = $db->GetOne("select value from settings where `key`='hysteresis';");
 $day_start = $db->GetOne("select value from settings where `key`='day_start';");
 $day_stop = $db->GetOne("select value from settings where `key`='day_stop';");
@@ -71,6 +75,7 @@ while($plik = $folder->read()) if (substr($plik,0,3) == '28-') $temp_sensors[] =
 $folder->close();
 
 $smarty->assign('temp_day', $temp_day);
+$smarty->assign('temp_cool', $temp_cool);
 $smarty->assign('temp_night', $temp_night);
 $smarty->assign('hysteresis', $hysteresis);
 date_default_timezone_set('UTC');

@@ -10,6 +10,11 @@ Temperatura: <span id="temp">{$temp}&deg;C</span>
 {else}
 <img src="/img/heater_off.png" title="Grzałka wyłączona">
 {/if}
+{if $cooling} 
+<img src="/img/cooling_on.png" title="Chłodzenie włączone">
+{else}
+<img src="/img/cooling_off.png" title="Chłodzenie wyłączone">
+{/if}
 <br/>
 Aktualny scenariusz: 
 {if $day}
