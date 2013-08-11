@@ -86,6 +86,43 @@ struct _outputs {
 double temp_dzien,temp_noc,temp_cool,histereza;
 char main_temp_sensor[80];
 
+void StoreTempStat() {
+	time_t rawtime;
+	double temp_act = -200;
+	char temp_sensor[80];
+	char buff[200];
+	char *pos;
+	time ( &rawtime );
+	
+	DB_GetSetting("temp_sensor",temp_sensor);
+	temp_act = read_temp(temp_sensor);
+	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,1,%.2f);",rawtime,temp_act);
+	DB_Query(buff);	
+
+	DB_GetSetting("temp_sensor2",temp_sensor);
+	pos = strstr(temp_sensor,"none");
+	if (pos == NULL) {	
+		temp_act = read_temp(temp_sensor);
+		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,2,%.2f);",rawtime,temp_act);
+		DB_Query(buff);	
+	}
+
+	DB_GetSetting("temp_sensor3",temp_sensor);
+	pos = strstr(temp_sensor,"none");
+	if (pos == NULL) {	
+		temp_act = read_temp(temp_sensor);
+		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,3,%.2f);",rawtime,temp_act);
+		DB_Query(buff);	
+	}
+	
+	DB_GetSetting("temp_sensor4",temp_sensor);
+	pos = strstr(temp_sensor,"none");
+	if (pos == NULL) {	
+		temp_act = read_temp(temp_sensor);
+		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,4,%.2f);",rawtime,temp_act);
+		DB_Query(buff);	
+	}	
+}
 void ReadConf() {
 	char buff[200];
 	MYSQL_RES *result;
@@ -360,6 +397,7 @@ int main() {
 		}
 
 		if (seconds_since_midnight % stat_freq == 0) {
+			 StoreTempStat();
 			sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
 			DB_Query(buff);
 		}

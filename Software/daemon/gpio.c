@@ -52,7 +52,6 @@ double read_temp(char *sensor_id) {
 		pos = strstr(line,"YES");
 		if (pos != NULL) {
 			fgets(line, 80, fp);
-			fclose (fp);
 			// teraz mamy dane o temperaturze
 			pos = strstr(line,"t=");
 			if (pos != NULL) {
@@ -63,6 +62,7 @@ double read_temp(char *sensor_id) {
 			} else {
 				return -200;
 			}
+		fclose (fp);
 		} else {
 			//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
 			//Log(buff,E_WARN);

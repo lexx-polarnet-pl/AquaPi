@@ -39,6 +39,15 @@ if ($_POST['day_start'] > "") {
 	$query = 'update settings set value="' . $_POST['temp_sensor'] . '" where `key`="temp_sensor";';
 	$db->Execute($query);
 
+	$query = 'update settings set value="' . $_POST['temp_sensor2'] . '" where `key`="temp_sensor2";';
+	$db->Execute($query);
+
+	$query = 'update settings set value="' . $_POST['temp_sensor3'] . '" where `key`="temp_sensor3";';
+	$db->Execute($query);
+
+	$query = 'update settings set value="' . $_POST['temp_sensor4'] . '" where `key`="temp_sensor4";';
+	$db->Execute($query);
+
 	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
 	$db->Execute($query);
 
@@ -68,6 +77,9 @@ $line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
 $line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
 
 $temp_sensor = $db->GetOne("select value from settings where `key`='temp_sensor';");
+$temp_sensor2 = $db->GetOne("select value from settings where `key`='temp_sensor2';");
+$temp_sensor3 = $db->GetOne("select value from settings where `key`='temp_sensor3';");
+$temp_sensor4 = $db->GetOne("select value from settings where `key`='temp_sensor4';");
 
 $temp_sensors = NULL;
 $folder = dir('/sys/bus/w1/devices');
@@ -83,6 +95,9 @@ $smarty->assign('day_start', date("H:i:s",$day_start));
 $smarty->assign('day_stop', date("H:i:s",$day_stop));
 date_default_timezone_set("Europe/Warsaw");
 $smarty->assign('temp_sensor', $temp_sensor);
+$smarty->assign('temp_sensor2', $temp_sensor2);
+$smarty->assign('temp_sensor3', $temp_sensor3);
+$smarty->assign('temp_sensor4', $temp_sensor4);
 $smarty->assign('temp_sensors', $temp_sensors);
 $smarty->assign('line_5', $line_5);
 $smarty->assign('line_6', $line_6);

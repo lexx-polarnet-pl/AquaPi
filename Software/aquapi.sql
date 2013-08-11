@@ -77,7 +77,7 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (1,'temp_day','25.0'),(2,'temp_night','24.0'),(3,'hysteresis','0.3'),(4,'day_start','28800'),(5,'day_stop','72000'),(6,'gpio5_name','uniwersalne 1'),(7,'gpio6_name','uniwersalne 2'),(8,'temp_sensor','28-000000dummy0');
+INSERT INTO `settings` VALUES (1,'temp_day','25.0'),(2,'temp_night','24.2'),(3,'hysteresis','0.2'),(4,'day_start','32400'),(5,'day_stop','75600'),(6,'gpio5_name','Uni1'),(7,'gpio6_name','Uni2'),(8,'temp_sensor','none'),(9,'temp_cool','26.0'),(10,'temp_sensor2','none'),(11,'temp_sensor3','none'),(12,'temp_sensor4','none');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,6 +115,38 @@ CREATE TABLE `timers` (
   `day_of_week` int(5) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-
+-- Table structure for table `output_stats`
+--
+
+DROP TABLE IF EXISTS `output_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `output_stats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `time_st` int(11) DEFAULT NULL,
+  `event` char(10) COLLATE utf8_polish_ci DEFAULT NULL,
+  `state` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `temp_stats`
+--
+
+DROP TABLE IF EXISTS `temp_stats`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `temp_stats` (
+  `id` int(5) NOT NULL AUTO_INCREMENT,
+  `time_st` int(5) NOT NULL,
+  `sensor_id` int(5) NOT NULL,
+  `temp` float NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
