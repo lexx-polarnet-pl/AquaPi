@@ -4,7 +4,7 @@
 <img src ="/img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 Czas <span id="time">{$time}</span><br/>
-Temperatura: <span id="temp">{$temp}&deg;C</span>
+Temperatura zbiornika: <span id="temp">{$temp1}&deg;C</span>
 {if $heating} 
 <img src="/img/heater_on.png" title="Grzałka włączona">
 {else}
@@ -16,6 +16,7 @@ Temperatura: <span id="temp">{$temp}&deg;C</span>
 <img src="/img/cooling_off.png" title="Chłodzenie wyłączone">
 {/if}
 <br/>
+Temperatury pomocnicze: <span id="temp">{if $temp2==''}--.--{else}{$temp2}{/if}</span>/<span id="temp">{if $temp3==''}--.--{else}{$temp3}{/if}</span>/<span id="temp">{if $temp4==''}--.--{else}{$temp4}{/if}&deg;C</span><br/>
 Aktualny scenariusz: 
 {if $day}
 dzień <img src="/img/day_s.png">

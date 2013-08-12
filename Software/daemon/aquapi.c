@@ -171,7 +171,7 @@ void ReadConf() {
 }
 
 int main() {
-	double temp_zal,temp_wyl;
+	double temp_zal,temp_wyl,temp_zal_cool,temp_wyl_cool;
 	double temp_zad = 0;
 	double temp_act = -200;
 	char buff[200];
@@ -334,6 +334,8 @@ int main() {
 		
 			temp_zal = temp_zad - histereza / 2;
 			temp_wyl = temp_zad + histereza / 2;	
+			temp_zal_cool = temp_cool + histereza / 2;
+			temp_wyl_cool = temp_cool - histereza / 2;				
 
 			fail_count = 0;
 			
@@ -370,14 +372,14 @@ int main() {
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heat',0);",rawtime);
 					DB_Query(buff);					
 				} 
-				if ((temp_act < temp_cool) && (chlodzenie == 1)) {
+				if ((temp_act < temp_wyl_cool) && (chlodzenie == 1)) {
 					chlodzenie = 0;
 					Log("Wyłączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='cooling';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',0);",rawtime);
 					DB_Query(buff);					
 				} 
-				if ((temp_act > temp_cool) && (chlodzenie == 0)) {
+				if ((temp_act > temp_zal_cool) && (chlodzenie == 0)) {
 					chlodzenie = 1;
 					Log("Włączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='cooling';");

@@ -80,6 +80,16 @@
 </div>
 
 <div id="dashboard">
+<h3>Nazwy wyjść:</h3>
+	<table>
+	<tr><td>Uniwersalne 1:</td><td><input class="rest" type="text" id="line_5" name="line_5" value="{$line_5}"></td></tr>
+	<tr><td>Uniwersalne 2:</td><td><input class="rest" type="text" id="line_6" name="line_6" value="{$line_6}"></td></tr>
+	</table>
+	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	
+</div>
+
+<div id="dashboard">
 <h3>Ustawienia temperatury:</h3>
 	<div class="temp_select">
 		Temperatura w dzień:
@@ -92,14 +102,14 @@
 		<div id="slide_night" style="margin:10px;"></div>
 	</div>					
 	<div class="temp_select">
-		Histereza:
-		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
-		<div id="slide_hysteresis" style="margin:10px;"></div>
-	</div>	
-	<div class="temp_select">
 		Temperatura włączenia chłodzenia:
 		<input class="temp_select" type="text" readonly id="temp_cool" name="temp_cool" value ="{$temp_cool}">
 		<div id="slide_cool" style="margin:10px;"></div>
+	</div>	
+	<div class="temp_select">
+		Histereza:
+		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
+		<div id="slide_hysteresis" style="margin:10px;"></div>
 	</div>					
 	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
 	
@@ -140,15 +150,6 @@
 	
 </div>	
 
-<div id="dashboard">
-<h3>Nazwy wyjść:</h3>
-	<table>
-	<tr><td>Uniwersalne 1:</td><td><input class="rest" type="text" id="line_5" name="line_5" value="{$line_5}"></td></tr>
-	<tr><td>Uniwersalne 2:</td><td><input class="rest" type="text" id="line_6" name="line_6" value="{$line_6}"></td></tr>
-	</table>
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
-	
-</div>
 
 
 </form>

@@ -23,7 +23,14 @@
  
 include("init.php");
 
-$temp = $db->GetOne('select value from data where `key` = "temp_act";');
+//$temp = $db->GetOne('select value from data where `key` = "temp_act";');
+// spróbuj wyłapać najświerzszy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
+$limit = time() - (15 * 60);
+$temp1 = $db->GetOne('select temp from temp_stats where sensor_id = 1 and time_st > '.$limit.' order by time_st desc limit 1;');
+$temp2 = $db->GetOne('select temp from temp_stats where sensor_id = 2 and time_st > '.$limit.' order by time_st desc limit 1;');
+$temp3 = $db->GetOne('select temp from temp_stats where sensor_id = 3 and time_st > '.$limit.' order by time_st desc limit 1;');
+$temp4 = $db->GetOne('select temp from temp_stats where sensor_id = 4 and time_st > '.$limit.' order by time_st desc limit 1;');
+
 $heating = $db->GetOne('select value from data where `key` = "heating";') == "1";
 $cooling = $db->GetOne('select value from data where `key` = "cooling";') == "1";
 $day = $db->GetOne('select value from data where `key` = "day";') == "1";
@@ -39,7 +46,10 @@ $load = sys_getloadavg();
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
-$smarty->assign('temp', $temp);
+$smarty->assign('temp1', $temp1);
+$smarty->assign('temp2', $temp2);
+$smarty->assign('temp3', $temp3);
+$smarty->assign('temp4', $temp4);
 $smarty->assign('heating', $heating);
 $smarty->assign('cooling', $cooling);
 $smarty->assign('day', $day);
@@ -49,6 +59,5 @@ $smarty->assign('load', $load);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 $smarty->display('index.tpl');
-//var_dump(sys_getloadavg());
 ?>
 
