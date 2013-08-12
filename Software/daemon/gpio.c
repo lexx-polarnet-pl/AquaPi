@@ -34,6 +34,7 @@ double read_temp(char *sensor_id) {
     char sensor_path[200]; 
 	char buff[200];
     char line[80];
+	char line2[80];
 	char *pos;
 	double temp;
 
@@ -41,19 +42,19 @@ double read_temp(char *sensor_id) {
 	
     fp = fopen (sensor_path, "r");
     if( fp == NULL ) {
-		//perror(sensor_path);
 		sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
 		Log(buff,E_CRIT);
 		return -201;
     } else {
 		// otwarty plik z danymi sensora, trzeba odczytac
 		fgets(line, 80, fp);
+		fgets(line2, 80, fp);
+		fclose (fp);		
 		// poszukajmy YES w stringu (weryfikacja CRC ok)
 		pos = strstr(line,"YES");
 		if (pos != NULL) {
-			fgets(line, 80, fp);
 			// teraz mamy dane o temperaturze
-			pos = strstr(line,"t=");
+			pos = strstr(line2,"t=");
 			if (pos != NULL) {
 				// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
 				pos += 2;
@@ -62,7 +63,6 @@ double read_temp(char *sensor_id) {
 			} else {
 				return -200;
 			}
-		fclose (fp);
 		} else {
 			//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
 			//Log(buff,E_WARN);
