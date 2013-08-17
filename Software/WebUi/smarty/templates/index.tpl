@@ -4,7 +4,7 @@
 <img src ="/img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 Czas <span id="time">{$time}</span><br/>
-Temperatura zbiornika: <span id="temp">{$temp1}&deg;C</span>
+Temperatura zbiornika: <span id="temp">{if $temp1==''}--.--{else}{$temp1}{/if}&deg;C</span>
 {if $heating} 
 <img src="/img/heater_on.png" title="Grzałka włączona">
 {else}

@@ -22,7 +22,7 @@
  */
 // wersja AquaPi
 
-$aquapi_ver = "0.1";
+$aquapi_ver = "1.9";
 
 // Wczytanie pliku z ustawieniami
 $ini_array = parse_ini_file("/etc/aquapi.ini");

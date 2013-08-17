@@ -4,30 +4,37 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 		google.load("visualization", "1", {packages:["corechart"], 'language': 'pl'});
-
+{/literal}
 		google.setOnLoadCallback(drawChart);
 
 		function drawChart() {
 			var TempTable = new google.visualization.DataTable();	  
 			TempTable.addColumn('datetime', 'Czas');
-			TempTable.addColumn('number', 'Temperatura zadana');	  
-			TempTable.addColumn('number', 'Temperatura wody');	  
+			TempTable.addColumn('number', 'TZ');	  
+			TempTable.addColumn('number', 'TG');	  
+			TempTable.addColumn('number', 'TP1');	  
+			TempTable.addColumn('number', 'TP2');	  
+			TempTable.addColumn('number', 'TP3');	  
 			TempTable.addRows([
-			{/literal}{foreach from=$stat item="entry" name="stats"}
-				[new Date({$entry.time_st|date_format:"%Y, "}{math equation="x-1" x=$entry.time_st|date_format:"%m"}{$entry.time_st|date_format:", %e, %H, %M"}),{$entry.temp_t},{$entry.temp_a}]{if !$smarty.foreach.stats.last},{/if}
-			{/foreach}{literal}
+			{foreach from=$stat key="key" item="entry" name="stats"}
+				[new Date({$key|date_format:"%Y, "}{math equation="x-1" x=$key|date_format:"%m"}{$key|date_format:", %e, %H, %M"}),{if $entry.0==null}null{else}{$entry.0}{/if},{if $entry.1==null}null{else}{$entry.1}{/if},{if $entry.2==null}null{else}{$entry.2}{/if},{if $entry.3==null}null{else}{$entry.3}{/if},{if $entry.4==null}null{else}{$entry.4}{/if}]{if !$smarty.foreach.stats.last},{/if}
+				
+			{/foreach}
 			]);
-
-			var LogicTable = new google.visualization.DataTable();	  
-			LogicTable.addColumn('datetime', 'Czas');
-			LogicTable.addColumn('number', 'Dzień');	  
-			LogicTable.addColumn('number', 'Grzanie');	  
-			LogicTable.addRows([
-			{/literal}{foreach from=$stat item="entry" name="stats"}
-				[new Date({$entry.time_st|date_format:"%Y, "}{math equation="x-1" x=$entry.time_st|date_format:"%m"}{$entry.time_st|date_format:", %e, %H, %M"}),{$entry.day},{$entry.heat}]{if !$smarty.foreach.stats.last},{/if}
-			{/foreach}{literal}
+		
+{foreach from=$outputs_names key="key" item="entry"}
+			var LogicTable{$entry.id} = new google.visualization.DataTable();	  
+			LogicTable{$entry.id}.addColumn('datetime', 'Czas');
+			LogicTable{$entry.id}.addColumn('number', '{$key}');	  
+			LogicTable{$entry.id}.addRows([
+			{foreach from=$outputs_arr key="key" item="item" name="stats"}
+			<!-- {$item.{$entry.id}} -->
+				{if isset($item.{$entry.id})}[new Date({$key|date_format:"%Y, "}{math equation="x-1" x=$key|date_format:"%m"}{$key|date_format:", %e, %H, %M"}),{$item.{$entry.id}}]{if !$smarty.foreach.stats.last},{/if}{/if}
+				
+			{/foreach}
 			]);
-			
+{/foreach}
+{literal}		
 		var options1 = {
 			//'pointSize': 5,
 			'title': 'Przebieg temperatury',
@@ -39,25 +46,27 @@
 
 		var options2 = {
 			//'pointSize': 5,
-			'title': 'Przebiegi stanów wyjściowych',
+			'title': 'Przebieg stanów',
             //'chartArea': {'width': '90%', 'height': '80%'},
             'chartArea': {'left': 60, 'top':30, 'height': '200', 'width': '99%'},
             'legend': {'position': 'bottom'},
-			'vAxis': {'title': 'Stan wyjścia'},
+			'vAxis': {'title': 'Stan'},
 			'hAxis': {'title': 'Czas'}
 		};
+{/literal}
 		
 		var dataView = new google.visualization.DataView(TempTable);
         var chart = new google.visualization.LineChart(document.getElementById('chart_temp'));
         chart.draw(dataView, options1);
 
-		var dataView = new google.visualization.DataView(LogicTable);
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_logic'));
-        chart.draw(dataView, options2);
-
+{foreach from=$outputs_names key="key" item="entry"}
+		var dataView = new google.visualization.DataView(LogicTable{$entry.id});
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_logic{$entry.id}'));
+        chart.draw(dataView, options2);		
+{/foreach}
 	}
 </script>
-{/literal}
+
 <a href="/stat.php">Dzień</a>
 <a href="/stat.php?limit=week">Tydzień</a>
 <a href="/stat.php?limit=month">Miesiąc</a>
@@ -65,19 +74,20 @@
 
 <div id="chart_temp" style="width: 98%; height: 400px;"></div>
 
-<div id="chart_logic" style="width: 98%; height: 300px;"></div>
-
+{foreach from=$outputs_names key="key" item="entry"}
+<div id="chart_logic{$entry.id}" style="width: 98%; height: 100px;"></div>
+{/foreach}
 {*
 <table style="float:right">
-<tr><th>Czas</th><th>Dz</th><th>Tz</th><th>G</th><th>Tact</th></tr>
+<tr><th>Czas</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
 
-{foreach from=$stat item="entry"}
+{foreach from=$outputs_arr key="key" item="entry"}
     <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{$entry.time_st|date_format:"%H:%M"}</td>        
-		<td>{if $entry.day}<img src="/img/day_s.png">{else}<img src="/img/night_s.png">{/if}</td>
-		<td>{$entry.temp_t}</td>
-		<td>{if $entry.heat}<img src="/img/heater_on.png" title="Grzałka włączona">{else}<img src="/img/heater_off.png" title="Grzałka wyłączona">{/if}</td>
-		<td>{$entry.temp_a}</td>
+		<td>{$key|date_format:"%d-%m %H:%M"}</td>        
+		<td>{$entry.0}</td>
+		<td>{$entry.1}</td>
+		<td>{$entry.2}</td>
+		<td>{$entry.3}</td>
     </tr>
 {/foreach}
 </table>
