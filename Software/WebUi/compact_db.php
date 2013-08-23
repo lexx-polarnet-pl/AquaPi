@@ -1,8 +1,8 @@
-<?php
+ï»¿<?php
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin KrÃ³l (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -25,8 +25,9 @@ $cur_name = "compact_db";
  
 include("init.php");
 
+$db->Execute('delete from temp_stats where temp < -100;');
 
-$data_win = 60 * 60; // domyœlnie kompaktujemy w godzinie
+$data_win = 60 * 60; // domyÅ›lnie kompaktujemy w godzinie
 $to		= time() - (1 * 24 * 60 * 60);	// dla ostatnich 24h zostaw kompletne dane
 
 for ($sensor_id = 0; $sensor_id<=4; $sensor_id++) {
@@ -43,7 +44,7 @@ for ($sensor_id = 0; $sensor_id<=4; $sensor_id++) {
 		foreach ($data_to_compact as $value) {
 			$time_fr = floor($value['time_st']/$data_win);
 			if ($prev_time_fr <> $time_fr) {
-				// przekroczyliœmy fragment godziny, trzeba zachowaæ dane zebrane i wyci¹gaæ œrednie od nowa
+				// przekroczyliÅ›my fragment godziny, trzeba zachowaÄ‡ dane zebrane i wyciÄ…gaÄ‡ Å›rednie od nowa
 				if ($avr_counter > 1) {
 					$db->Execute('START TRANSACTION;');
 					$db->Execute('delete from temp_stats where sensor_id = '.$sensor_id.' and time_st >= '.$prev_time_fr*$data_win.' and  time_st < '.($prev_time_fr+1)*$data_win.';');
@@ -60,6 +61,7 @@ for ($sensor_id = 0; $sensor_id<=4; $sensor_id++) {
 	}
 }
 
+$db->Execute('INSERT INTO log (time,level,message) VALUES ('.time().',0,"ZakoÅ„czono kompaktowanie bazy danych");');
 echo "done\n";
 
 ?>
