@@ -86,23 +86,53 @@ struct _outputs {
 double temp_dzien,temp_noc,temp_cool,histereza;
 char main_temp_sensor[80];
 
-void StoreTempStat() {
+double ReadTempFromSensor(char *temp_sensor) {
+	int fail_count;
+	double temp_act = -200;
+	char buff[200];
+	
+	fail_count = 0;
+			
+	do {
+		temp_act = read_temp(temp_sensor);
+		if (temp_act < -100) {
+			fail_count++;
+		}
+	} while (temp_act<-100 && fail_count <3);
+			
+	if (temp_act == -202) {
+		sprintf(buff,"Błędy CRC przy odczycie sensora %s", temp_sensor);
+		Log(buff,E_WARN);				
+	}
+	
+	if (temp_act < -100) {
+		Log("Błąd odczytu sensora temperatury",E_CRIT);
+	}
+	
+	return temp_act;
+}
+
+void StoreTempStat(double t_zad) {
 	time_t rawtime;
 	double temp_act = -200;
 	char temp_sensor[80];
 	char buff[200];
 	char *pos;
+	
 	time ( &rawtime );
+
+	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,0,%.2f);",rawtime,t_zad);
+	DB_Query(buff);	
 	
 	DB_GetSetting("temp_sensor",temp_sensor);
-	temp_act = read_temp(temp_sensor);
+	temp_act = ReadTempFromSensor(temp_sensor);
 	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,1,%.2f);",rawtime,temp_act);
 	DB_Query(buff);	
 
 	DB_GetSetting("temp_sensor2",temp_sensor);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = read_temp(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,2,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}
@@ -110,7 +140,7 @@ void StoreTempStat() {
 	DB_GetSetting("temp_sensor3",temp_sensor);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = read_temp(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,3,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}
@@ -118,7 +148,7 @@ void StoreTempStat() {
 	DB_GetSetting("temp_sensor4",temp_sensor);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = read_temp(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,4,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}	
@@ -189,11 +219,10 @@ int main() {
 	int chlodzenie = 0;
 	int dzien = -1;
 	int fval = 0;
-	int fail_count;
 	int i,j,seconds_since_midnight;
 
 	//const char inifile[] = "/etc/aquapi.ini";
-	dontfork = 1;
+	//dontfork = 1;
 	
 	char db_host[] = "localhost";
 	char db_user[] = "aquapi"; 
@@ -337,22 +366,9 @@ int main() {
 			temp_zal_cool = temp_cool + histereza / 2;
 			temp_wyl_cool = temp_cool - histereza / 2;				
 
-			fail_count = 0;
-			
-			do {
-				temp_act = read_temp(main_temp_sensor);
-				if (temp_act < -100) {
-					fail_count++;
-				}
-			} while (temp_act<-100 && fail_count <3);
-			
-			if (temp_act == -202) {
-				sprintf(buff,"Błędy CRC przy odczycie sensora %s", main_temp_sensor);
-				Log(buff,E_WARN);				
-			}
+			temp_act = ReadTempFromSensor(main_temp_sensor);
 			
 			if (temp_act < -100) {
-				Log("Błąd odczytu sensora temperatury",E_CRIT);
 				grzanie = 0;
 				chlodzenie = 0;
 				digitalWrite (gpio_heater, grzanie);
@@ -374,14 +390,14 @@ int main() {
 				} 
 				if ((temp_act < temp_wyl_cool) && (chlodzenie == 1)) {
 					chlodzenie = 0;
-					Log("Wyłączam chłodzenie",E_INFO);
+					//Log("Wyłączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='cooling';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',0);",rawtime);
 					DB_Query(buff);					
 				} 
 				if ((temp_act > temp_zal_cool) && (chlodzenie == 0)) {
 					chlodzenie = 1;
-					Log("Włączam chłodzenie",E_INFO);
+					//Log("Włączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='cooling';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',1);",rawtime);
 					DB_Query(buff);					
@@ -399,9 +415,9 @@ int main() {
 		}
 
 		if (seconds_since_midnight % stat_freq == 0) {
-			 StoreTempStat();
-			sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
-			DB_Query(buff);
+			StoreTempStat(temp_zad);
+			//sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
+			//DB_Query(buff);
 		}
 		
 		sleep(1);
