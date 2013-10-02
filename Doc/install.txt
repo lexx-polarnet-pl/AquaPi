@@ -86,3 +86,11 @@ skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić
 update-rc.d aquapi.rc defaults
 
 8. Skopiować pliki zawierające WebUI do /var/www/
+
+9. Stworzyć plik /etc/aquapi.ini o zawartości:
+
+[database]
+host = "localhost"
+user = "aquapi"
+password = "aquapi"
+database = "aquapi"
