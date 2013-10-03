@@ -8,89 +8,138 @@ Instalacja od początku
 
 1. Ściągnąć najnowszą wersję rapsbiana, zainstalować i ustawić podstawowy system.
 
-2. Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać
+(Uwaga - na karcie 2GB raczej się nie zmieścisz. Powinieneś mieć min 4GB kartę i powinieneś wykonać extend filesystem)
 
+2. Zaktualizować system, i zainstalować potrzebne pakiety:
+
+> apt-get update
+> apt-get upgrade
+> apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql mc
+
+(Uwaga - przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql)
+(Uwaga 2 - mc nie jest wymagany, ale ułatwia życie)
+
+3. Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać w1-gpio i w1-therm
+
+> mcedit /etc/modules
+
+---------------------------------------------------------------------------
 w1-gpio
 w1-therm
-
-3. Zainstalować następujące pakiety:
-
-mysql-server
-mysql-client
-libmysqlclient-dev
-lighttpd
-php5-cgi
-php5-mysql
-
-(uwaga przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql)
+---------------------------------------------------------------------------
 
 4. Skonfigurować serwer www i php
 
-To enable PHP5 in Lighttpd, we must modify two files, /etc/php5/cgi/php.ini and 
-/etc/lighttpd/lighttpd.conf. First we open /etc/php5/cgi/php.ini and add the line cgi.fix_pathinfo = 1 
-right at the end of the file:
+Aby włączyć obsługę php5 w lighttpd trzeba zmodyfikować dwa pliki, /etc/php5/cgi/php.ini i /etc/lighttpd/lighttpd.conf. 
 
-Then we open /etc/lighttpd/lighttpd.conf and add "mod_fastcgi", to the server.modules stanza: 
+Najpierw otwórz /etc/php5/cgi/php.ini i dodaj linię cgi.fix_pathinfo = 1 na samym końcu pliku:
 
-and then right at the end of the file, we add the following stanza:
+> mcedit /etc/php5/cgi/php.ini
+
+---------------------------------------------------------------------------
+cgi.fix_pathinfo = 1
+---------------------------------------------------------------------------
+
+Teraz otwórz /etc/lighttpd/lighttpd.conf i dodaj "mod_fastcgi", do sekcji server.modules : 
+
+> mcedit /etc/lighttpd/lighttpd.conf
+
+---------------------------------------------------------------------------
+server.modules = (
+	"mod_access",
+	"mod_alias",
+	"mod_compress",
+	"mod_redirect",
+	"mod_fastcgi",
+#       "mod_rewrite",
+)
+---------------------------------------------------------------------------
+
+A następnie na końcu pliku dodaj następującą sekcję:
+
+---------------------------------------------------------------------------
 fastcgi.server = ( ".php" => ((
                      "bin-path" => "/usr/bin/php5-cgi",
                      "socket" => "/tmp/php.socket"
                  )))
+---------------------------------------------------------------------------
 
-Then we restart Lighttpd:
+5. Zresetuj Pi.
 
-/etc/init.d/lighttpd restart
+6. Ściągnij pliki AquaPi
 
-5. Skonfigurować mysqla
+> cd /usr/local/src
+> wget https://github.com/lexx-polarnet-pl/AquaPi/archive/master.zip
+> unzip master.zip
+> rm master.zip
+
+7. konfiguracja mysqla
 
 wchodzimy w mysql monitor:
 
-mysql -u root -p
+> mysql -u root -p
 
 (i podajemy hasło administratora które ustawiliśmy przy instalacji pakietu)
 
 tworzymy użytkownika, bazę i tabele:
 
-CREATE DATABASE IF NOT EXISTS `aquapi`;
-ALTER DATABASE `aquapi` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
-CREATE USER 'aquapi'@'localhost' IDENTIFIED BY 'aquapi';
-GRANT ALL PRIVILEGES ON `aquapi`.* TO 'aquapi';
-USE aquapi;
+> CREATE DATABASE IF NOT EXISTS `aquapi`;
+> ALTER DATABASE `aquapi` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
+> CREATE USER 'aquapi'@'localhost' IDENTIFIED BY 'aquapi';
+> GRANT ALL PRIVILEGES ON `aquapi`.* TO 'aquapi';
+> USE aquapi;
 
-a potem tworzymy tabele najlepiej posiłkująć się plikiem Software/aquapi.sql
-(najlepiej go zaimportować do mysqla)
+a potem tworzymy tabele najlepiej posiłkująć się plikiem Software/aquapi.sql 
 
-6. Skompilować daemona
+> SOURCE /usr/local/src/AquaPi-master/Software/aquapi.sql
+> QUIT
 
-Skopiować pliki zawierające daemona do /usr/local/aquapi/
-
-6.1 Zainstalować WiringPi
+8. Zainstalować WiringPi
 
 wchodzimy do katalogu daemon/wiringPi/wiringPi i odpalamy:
 
-make clean
-make all
-make install
+> cd daemon/wiringPi/wiringPi
+> make clean
+> make all
+> make install
 
-6.2 Skompilować daemona
+9 Skompilować daemona
 
-Wchodzimy do katalogu daemon i odpalamy make
+Wchodzimy do katalogu daemon i odpalamy make. Po kompilacji daemona można uruchomić przez ./aquapi, jednak lepiej robić to z RC.
 
-po kompilacji daemona można uruchomić przez ./aquapi
+> cd ..
+> cd ..
+> make
+> mkdir /usr/local/aquapi/
+> cp aquapi /usr/local/aquapi/
 
-7. Dodać skrypty do RC aby odpalać daemona przy starcie
+10. Dodać skrypty do RC aby odpalać daemona przy starcie
 
-skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić
+skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić update-rc.d aquapi.rc defaults
 
-update-rc.d aquapi.rc defaults
+> cd..
+> cp aquapi.rc /etc/init.d/
+> chmod +x /etc/init.d/aquapi.rc
+> update-rc.d aquapi.rc defaults
 
-8. Skopiować pliki zawierające WebUI do /var/www/
+11. Skopiować pliki zawierające WebUI do /var/www/
 
-9. Stworzyć plik /etc/aquapi.ini o zawartości:
+> cp -r WebUI/* /var/www
 
+12. Stworzyć plik /etc/aquapi.ini i wpisać konfigurację bazy:
+
+> mcedit /etc/aquapi.ini
+
+---------------------------------------------------------------------------
 [database]
 host = "localhost"
 user = "aquapi"
 password = "aquapi"
 database = "aquapi"
+---------------------------------------------------------------------------
+
+13. Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom daemona:
+
+> /etc/init.d/aquapi.rc start
+
+Gratulacje! Twoje AquaPi powinno już działać :)
