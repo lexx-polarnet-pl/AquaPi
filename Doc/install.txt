@@ -124,7 +124,10 @@ skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić update-rc.d aquapi.rc
 
 11. Skopiować pliki zawierające WebUI do /var/www/
 
-> cp -r WebUI/* /var/www
+> cp -r WebUI/* /var/www/
+> chmod 775 -R /var/www/
+> mkdir /var/www/smarty/templates_c/
+> chmod 777 /var/www/smarty/templates_c/
 
 12. Stworzyć plik /etc/aquapi.ini i wpisać konfigurację bazy:
 
