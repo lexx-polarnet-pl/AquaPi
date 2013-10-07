@@ -115,7 +115,7 @@ Wchodzimy do katalogu daemon i odpalamy make. Po kompilacji daemona można uruch
 
 10. Dodać skrypty do RC aby odpalać daemona przy starcie
 
-skopiować aquapi.rc do /etc/rc.d/ a następnie uruchomić update-rc.d aquapi.rc defaults
+skopiować aquapi.rc do /etc/init.d/ a następnie uruchomić update-rc.d aquapi.rc defaults
 
 > cd..
 > cp aquapi.rc /etc/init.d/
