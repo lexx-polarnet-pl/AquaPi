@@ -60,11 +60,19 @@ if ($_POST['day_start'] > "") {
 	$query = 'update settings set value="' . $_POST['hysteresis'] . '" where `key`="hysteresis";';
 	$db->Execute($query);
 
-	$query = 'update settings set value="' . $_POST['line_5'] . '" where `key`="gpio5_name";';
-	$db->Execute($query);
+	foreach ($_POST as $key => $value) {
+		$act_key = explode("_",$key);
+		//var_dump($act_key);
+		if ($act_key[0] == 'device') {
+			$query = 'update devices set fname="' . $value . '" where `device`="' . $act_key[1] . '";';
+			$db->Execute($query);
+		}
+	}
+	//$query = 'update settings set value="' . $_POST['line_5'] . '" where `key`="gpio5_name";';
+	//$db->Execute($query);
 
-	$query = 'update settings set value="' . $_POST['line_6'] . '" where `key`="gpio6_name";';
-	$db->Execute($query);
+	//$query = 'update settings set value="' . $_POST['line_6'] . '" where `key`="gpio6_name";';
+	//$db->Execute($query);
 }
 
 $temp_day = $db->GetOne("select value from settings where `key`='temp_day';");
@@ -73,13 +81,13 @@ $temp_cool = $db->GetOne("select value from settings where `key`='temp_cool';");
 $hysteresis = $db->GetOne("select value from settings where `key`='hysteresis';");
 $day_start = $db->GetOne("select value from settings where `key`='day_start';");
 $day_stop = $db->GetOne("select value from settings where `key`='day_stop';");
-$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
-$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
 
 $temp_sensor = $db->GetOne("select value from settings where `key`='temp_sensor';");
 $temp_sensor2 = $db->GetOne("select value from settings where `key`='temp_sensor2';");
 $temp_sensor3 = $db->GetOne("select value from settings where `key`='temp_sensor3';");
 $temp_sensor4 = $db->GetOne("select value from settings where `key`='temp_sensor4';");
+
+$friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
 
 $temp_sensors = NULL;
 $folder = dir('/sys/bus/w1/devices');
@@ -99,10 +107,11 @@ $smarty->assign('temp_sensor2', $temp_sensor2);
 $smarty->assign('temp_sensor3', $temp_sensor3);
 $smarty->assign('temp_sensor4', $temp_sensor4);
 $smarty->assign('temp_sensors', $temp_sensors);
-$smarty->assign('line_5', $line_5);
-$smarty->assign('line_6', $line_6);
+$smarty->assign('friendly_names', $friendly_names);
 
 $settings = $db->GetAll('select * from settings;');
 $smarty->assign('settings', $settings);
+
+
 $smarty->display('settings.tpl');
 ?>

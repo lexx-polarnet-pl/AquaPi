@@ -15,6 +15,28 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP TABLE IF EXISTS `devices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `devices` (
+  `id` int(5) NOT NULL AUTO_INCREMENT,
+  `device` char(10) COLLATE utf8_polish_ci NOT NULL,
+  `output` char(10) COLLATE utf8_polish_ci NOT NULL,
+  `fname` char(40) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `devices`
+--
+
+LOCK TABLES `devices` WRITE;
+/*!40000 ALTER TABLE `devices` DISABLE KEYS */;
+INSERT INTO `devices` VALUES (1,'light','gpio4','OA›wietlenie'),(4,'heater','gpio1','GrzaA‚ka'),(5,'cooling','gpio5','Wentylator'),(6,'uni1','gpio6','OA›wietlenie 2'),(7,'uni2','dummy','Uniwersalne 2'),(8,'uni3','disabled','Uniwersalne 3'),(9,'uni4','disabled','Uniwersalne 4'),(10,'uni5','disabled','Uniwersalne 5'),(11,'uni6','disabled','Uniwersalne 6'),(12,'uni7','disabled','Uniwersalne 7'),(13,'uni8','disabled','Uniwersalne 8'),(14,'uni9','disabled','Uniwersalne 9'),(15,'uni10','disabled','Uniwersalne 10'),(16,'uni11','disabled','Uniwersalne 11'),(17,'uni12','disabled','Uniwersalne 12'),(18,'uni13','disabled','Uniwersalne 13'),(19,'uni14','disabled','Uniwersalne 14'),(20,'uni15','disabled','Uniwersalne 15'),(21,'uni16','disabled','Uniwersalne 16'),(22,'uni17','disabled','Uniwersalne 17'),(23,'uni18','disabled','Uniwersalne 18'),(24,'uni19','disabled','Uniwersalne 19'),(25,'uni20','disabled','Uniwersalne 20');
+/*!40000 ALTER TABLE `devices` ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `data`
 --
@@ -112,9 +134,10 @@ CREATE TABLE `timers` (
   `t_start` int(5) NOT NULL,
   `t_stop` int(5) NOT NULL,
   `line` int(5) NOT NULL,
+  `device` char(10) COLLATE utf8_polish_ci DEFAULT NULL,
   `day_of_week` int(5) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -

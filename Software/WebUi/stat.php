@@ -57,9 +57,11 @@ $stat = $db->GetAll('select time_st,state,event from output_stats where time_st 
 $i = 0;
 foreach ($out_names as $name) {
     //var_dump($value['time_st']);
-	//var_dump($name);
+	//echo $name['event'];
+	//echo "select fname from devices where device = '".$name['event']."';";
 	$outputs_names[$name['event']]['id'] = $i;
 	$outputs_names[$name['event']]['prev'] = null;
+	$outputs_names[$name['event']]['fname'] = $db->GetOne("select fname from devices where device = '".$name['event']."';");
 	$i++;
 }
 
@@ -93,5 +95,6 @@ foreach ($outputs_names as $key => $out_name) {
 $smarty->assign('stat', $temp_arr);
 $smarty->assign('outputs_arr', $outputs_arr);
 $smarty->assign('outputs_names', $outputs_names);
+//var_dump($outputs_names);
 $smarty->display('stat.tpl');
 ?>

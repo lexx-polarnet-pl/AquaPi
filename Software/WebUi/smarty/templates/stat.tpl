@@ -25,7 +25,7 @@
 {foreach from=$outputs_names key="key" item="entry"}
 			var LogicTable{$entry.id} = new google.visualization.DataTable();	  
 			LogicTable{$entry.id}.addColumn('datetime', 'Czas');
-			LogicTable{$entry.id}.addColumn('number', '{$key}');	  
+			LogicTable{$entry.id}.addColumn('number', '{$entry.fname}');	  
 			LogicTable{$entry.id}.addRows([
 			{foreach from=$outputs_arr key="key" item="item" name="stats"}
 			<!-- {$item.{$entry.id}} -->
@@ -75,22 +75,10 @@
 <div id="chart_temp" style="width: 98%; height: 400px;"></div>
 
 {foreach from=$outputs_names key="key" item="entry"}
+<br/>
+{$entry.fname}
 <div id="chart_logic{$entry.id}" style="width: 98%; height: 100px;"></div>
 {/foreach}
-{*
-<table style="float:right">
-<tr><th>Czas</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
 
-{foreach from=$outputs_arr key="key" item="entry"}
-    <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{$key|date_format:"%d-%m %H:%M"}</td>        
-		<td>{$entry.0}</td>
-		<td>{$entry.1}</td>
-		<td>{$entry.2}</td>
-		<td>{$entry.3}</td>
-    </tr>
-{/foreach}
-</table>
-*}
 
 {include "footer.tpl"}

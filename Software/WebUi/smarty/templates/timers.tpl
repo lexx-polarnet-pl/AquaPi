@@ -36,9 +36,10 @@
 	<tr><td>Załączenie:</td><td><input class="time_select" type="text" name="ev_start" id="ev_start" value="00:00:00" /></td></tr>
 	<tr><td>Wyłączenie:</td><td><input class="time_select" type="text" name="ev_stop" id="ev_stop" value="00:00:00" /></td></tr>
 	<tr><td>Wyjście:</td><td>
-	<select name="line" id="line" >
-		<option value="5">{$line_5}</option>
-		<option value="6">{$line_6}</option>
+	<select name="device" id="device" >
+		{foreach from=$friendly_names item="friendly_name"}
+		<option value="{$friendly_name.device}">{$friendly_name.fname}</option>
+		{/foreach}
 	</select></td></tr>	
 	<tr><td>Dni tygodnia:</td><td>
 	<input type="checkbox" name="d1" value="2" checked="checked"/>Pn
@@ -78,7 +79,7 @@
 		<td>{$entry.t_stop|date_format:"%H:%M:%S"}</td>
 		{if $entry.t_start<$entry.t_stop}{$duration = $entry.t_stop - $entry.t_start}{else}{$duration = 86400 -($entry.t_start - $entry.t_stop)}{/if}
 		<td>{$duration|date_format:"%H:%M:%S"}</td>
-		<td>{if $entry.line == 5}{$line_5}{/if}{if $entry.line == 6}{$line_6}{/if}</td>
+		<td>{$entry.fname}</td>
 		<td>{if $entry.day_of_week & 2}x{/if}</td>
 		<td>{if $entry.day_of_week & 4}x{/if}</td>
 		<td>{if $entry.day_of_week & 8}x{/if}</td>

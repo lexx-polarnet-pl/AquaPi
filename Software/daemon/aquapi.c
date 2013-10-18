@@ -416,28 +416,28 @@ int main() {
 					grzanie = 1;
 					//Log("Włączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='heating';");
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heat',1);",rawtime);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',1);",rawtime);
 					DB_Query(buff);					
 				} 
 				if ((temp_act > temp_wyl) && (grzanie == 1)) {
 					grzanie = 0;
 					//Log("Wyłączam grzanie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='heating';");
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heat',0);",rawtime);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',0);",rawtime);
 					DB_Query(buff);					
 				} 
 				if ((temp_act < temp_wyl_cool) && (chlodzenie == 1)) {
 					chlodzenie = 0;
 					//Log("Wyłączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=0 WHERE `key`='cooling';");
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',0);",rawtime);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',0);",rawtime);
 					DB_Query(buff);					
 				} 
 				if ((temp_act > temp_zal_cool) && (chlodzenie == 0)) {
 					chlodzenie = 1;
 					//Log("Włączam chłodzenie",E_INFO);
 					DB_Query("UPDATE data SET value=1 WHERE `key`='cooling';");
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',1);",rawtime);
+					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',1);",rawtime);
 					DB_Query(buff);					
 				} 				
 				ChangePortState(heater_port,grzanie);

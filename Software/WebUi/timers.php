@@ -32,8 +32,8 @@ if ($_GET['op'] == 'add_new') {
 	$pieces = explode(":", $_POST['ev_stop']);
 	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
 	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
-	$line = $_POST['line'];
-	$query = "INSERT INTO timers (t_start,t_stop,line,day_of_week) VALUES ($ev_start,$ev_stop,$line,$days_of_week);";
+	$device= $_POST['device'];
+	$query = "INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES ($ev_start,$ev_stop,'$device',$days_of_week);";
 	$db->Execute($query);
 	//echo $query;
 }
@@ -46,13 +46,14 @@ if ($_GET['op'] == 'del') {
 	//echo $query;
 }
 
-$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
-$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
-$timers = $db->GetAll('select * from timers;');
+//$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
+//$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
+$friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled" and device like "uni%";');
+$timers = $db->GetAll(' select timers.*,devices.fname from timers left join devices on timers.device = devices.device;');
 //var_dump($timers);
 $smarty->assign('timers', $timers);
-$smarty->assign('line_5', $line_5);
-$smarty->assign('line_6', $line_6);
+//$smarty->assign('line_5', $line_5);
+$smarty->assign('friendly_names', $friendly_names);
 
 date_default_timezone_set('UTC');
 $smarty->display('timers.tpl');
