@@ -25,6 +25,7 @@
 
 MYSQL *conn;
 
+void DB_Query(char *query);
 
 void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database) {
 	conn = mysql_init(NULL);
@@ -38,6 +39,7 @@ void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database)
 		fprintf(stderr,"Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
 		exit(1);
 	}
+	DB_Query("SET NAMES utf8;");
 }
 
 void DB_Close() {

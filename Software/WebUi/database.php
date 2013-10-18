@@ -37,6 +37,7 @@ class Database {
 		if (!$this->_dbselected) {
 			die ('Nie mozna wybraz bazy: ' . mysql_error());
 		}		
+		$this->Execute("SET NAMES utf8;");
 	}
 
 	function Execute($query) {

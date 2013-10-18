@@ -31,7 +31,7 @@
 #include "database.c"
 #include "gpio.c"
 
-int dontfork = 1;
+int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
 char main_temp_sensor[80];
 char light_port[10];
