@@ -31,11 +31,35 @@
 #include "database.c"
 #include "gpio.c"
 
-int dontfork = 0;
+int dontfork = 1;
+double temp_dzien,temp_noc,temp_cool,histereza;
+char main_temp_sensor[80];
+char light_port[10];
+char cooling_port[10];
+char heater_port[10];
+
+void ChangePortState (char *port,int state) {
+	//char PortNo[2];
+	char buff[200];
+	if (strcmp(port,"dummy")==0) {
+		// do nothing
+	} else if (strncmp(port,"gpio",4)==0) {
+		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
+		port += 4;
+		digitalWrite (atoi(port),state);
+		sprintf(buff,"Port GPIO%i Stan: %i",atoi(port),state);
+		Log(buff,E_DEV);		
+	} else {
+		sprintf(buff,"Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+		// nie obsługiwany port
+	}
+}
 
 void termination_handler(int signum)	{
 	// przy wychodzeniu wyłącz grzałkę
-	digitalWrite (gpio_heater, 0);
+	//digitalWrite (gpio_heater, 0);
+	ChangePortState(heater_port,0);
 	if( signum ) {
 		syslog(LOG_ERR, "Daemon exited abnormally.");
 		Log("Praca daemona została przerwana",E_CRIT);
@@ -67,24 +91,26 @@ void Log(char *msg, int lev) {
 	}
 }
 
-int events_count;
+int events_count,outputs_count;
 
 struct _events {
 	int line,start,stop,enabled,day_of_week;
+	char device[10];
 } events[500]; 
 
-int outputs_count = 1;
+//int outputs_count = 20;
 
 struct _outputs {
 	int line,enabled,new_state;
 	//char *name;
 	char name[40];
-} outputs[2];
+	char output_port[10];
+	char device[10];
+} outputs[40];
 
 
 
-double temp_dzien,temp_noc,temp_cool,histereza;
-char main_temp_sensor[80];
+
 
 double ReadTempFromSensor(char *temp_sensor) {
 	int fail_count;
@@ -173,7 +199,7 @@ void ReadConf() {
 	
 	// wczytanie ustawień timerów
 	events_count = 	0;
-	mysql_query(conn, "SELECT t_start,t_stop,line,day_of_week FROM timers;");
+	mysql_query(conn, "SELECT t_start,t_stop,line,device,day_of_week FROM timers;");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		//for(i = 0; i < num_fields; i++) {
@@ -181,12 +207,14 @@ void ReadConf() {
 		events[events_count].start = atof(row[0]);
 		events[events_count].stop = atof(row[1]);
 		events[events_count].line = atof(row[2]);
-		events[events_count].day_of_week = atof(row[3]);
+		memcpy(events[events_count].device,row[3],sizeof(events[events_count].device));
+		events[events_count].day_of_week = atof(row[4]);
 	}	
 	mysql_free_result(result);
 	
 	// ustawienia kiedy dzień a kiedy noc są brane z innego miejsca
 	events[0].line = gpio_main_light;
+	//events[0].device = "light";
 	DB_GetSetting("day_start",buff);
 	events[0].start = atof(buff); 	
 	DB_GetSetting("day_stop",buff);
@@ -194,12 +222,26 @@ void ReadConf() {
 	events[0].day_of_week = 127;
 	
 	// wczytanie nazw wyjść
-	DB_GetOne("select value from settings where `key`='gpio5_name';", outputs[0].name, sizeof(outputs[0].name));
-	outputs[0].line = gpio_uni1;
-	DB_GetOne("select value from settings where `key`='gpio6_name';", outputs[1].name, sizeof(outputs[0].name)); 
-	outputs[1].line = gpio_uni2;
+	outputs_count = 0;
+	mysql_query(conn, "SELECT device,output FROM devices;");
+	result = mysql_store_result(conn);
+	while ((row = mysql_fetch_row(result))) {
+		//for(i = 0; i < num_fields; i++) {
+		memcpy(outputs[outputs_count].device,row[0],sizeof(outputs[outputs_count].device));
+		memcpy(outputs[outputs_count].output_port,row[1],sizeof(outputs[outputs_count].output_port));
+		outputs_count++;
+	}	
+	mysql_free_result(result);	
+	outputs_count--;
+	
+	// wczytanie portów dla urządzeń specjalnych
+	DB_GetOne("select output from devices where `device`='light';", light_port, sizeof(light_port));
+	DB_GetOne("select output from devices where `device`='heater';", heater_port, sizeof(heater_port));
+	DB_GetOne("select output from devices where `device`='cooling';", cooling_port, sizeof(cooling_port));
 }
 
+
+				
 int main() {
 	double temp_zal,temp_wyl,temp_zal_cool,temp_wyl_cool;
 	double temp_zad = 0;
@@ -239,7 +281,7 @@ int main() {
 	ReadConf();
 	
 	GPIO_setup();
-
+	
 	// domyślnie wyjścia na zero
 	for(j = 0; j <= outputs_count; j++) {
 		outputs[j].enabled = 0;
@@ -310,7 +352,7 @@ int main() {
 		for(i = 0; i <= events_count; i++) {
 			if (events[i].enabled == 1) {
 					for(j = 0; j <= outputs_count; j++) {
-						if (outputs[j].line == events[i].line) {
+						if (strcmp(outputs[j].device,events[i].device)==0) {
 							outputs[j].new_state = 1;
 						}
 					}
@@ -320,18 +362,11 @@ int main() {
 		// ustalenie czy wymagana jest zmiana stanu logicznego wyjść
 		for(j = 0; j <= outputs_count; j++) {
 			if (outputs[j].enabled != outputs[j].new_state) {
-				if (outputs[j].new_state == 0 ) {
-					sprintf(buff,"Wyjście %s wyłączone",outputs[j].name);
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'gpio%i',0);",rawtime,outputs[j].line);
-					DB_Query(buff);					
-				} else {
-					sprintf(buff,"Wyjście %s włączone",outputs[j].name);
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'gpio%i',1);",rawtime,outputs[j].line);
-					DB_Query(buff);					
-				}
-				Log(buff,E_INFO);
 				outputs[j].enabled = outputs[j].new_state;
-				digitalWrite (outputs[j].line,outputs[j].enabled);
+				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'%s',%i);",rawtime,outputs[j].device,outputs[j].enabled);
+				DB_Query(buff);					
+				//digitalWrite (outputs[j].line,outputs[j].enabled);
+				ChangePortState (outputs[j].output_port,outputs[j].enabled);
 			}
 		}
 
@@ -350,7 +385,8 @@ int main() {
 				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',0);",rawtime);
 				DB_Query(buff);					
 			}
-			digitalWrite (gpio_main_light, dzien);
+			//digitalWrite (gpio_main_light, dzien);
+			ChangePortState(light_port,dzien);
 		}
 		
 		// obsługa temperatury
@@ -371,8 +407,10 @@ int main() {
 			if (temp_act < -100) {
 				grzanie = 0;
 				chlodzenie = 0;
-				digitalWrite (gpio_heater, grzanie);
-				digitalWrite (gpio_cool, chlodzenie);
+				//digitalWrite (gpio_heater, grzanie);
+				//digitalWrite (gpio_cool, chlodzenie);
+				ChangePortState(heater_port,grzanie);
+				ChangePortState(cooling_port,chlodzenie);
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
@@ -402,8 +440,8 @@ int main() {
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cool',1);",rawtime);
 					DB_Query(buff);					
 				} 				
-				digitalWrite (gpio_heater, grzanie);
-				digitalWrite (gpio_cool, chlodzenie);
+				ChangePortState(heater_port,grzanie);
+				ChangePortState(cooling_port,chlodzenie);
 				sprintf(buff,"UPDATE data SET value= %.2f WHERE `key`='temp_act'", temp_act);
 				DB_Query(buff);
 			}

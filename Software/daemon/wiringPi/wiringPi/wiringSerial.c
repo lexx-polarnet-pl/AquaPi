@@ -20,8 +20,6 @@
  ***********************************************************************
  */
 
-#undef	DEBUG
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -43,15 +41,11 @@
  *********************************************************************************
  */
 
-int serialOpen (char *device, int baud)
+int serialOpen (const char *device, const int baud)
 {
   struct termios options ;
   speed_t myBaud ;
   int     status, fd ;
-
-#ifdef	DEBUG
-  printf ("openSerialPort: <%s> baud: $d\n", device, baud) ;
-#endif
 
   switch (baud)
   {
@@ -66,6 +60,7 @@ int serialOpen (char *device, int baud)
     case   1200:	myBaud =   B1200 ; break ;
     case   1800:	myBaud =   B1800 ; break ;
     case   2400:	myBaud =   B2400 ; break ;
+    case   4800:	myBaud =   B4800 ; break ;
     case   9600:	myBaud =   B9600 ; break ;
     case  19200:	myBaud =  B19200 ; break ;
     case  38400:	myBaud =  B38400 ; break ;
@@ -86,22 +81,22 @@ int serialOpen (char *device, int baud)
 
   tcgetattr (fd, &options) ;
 
-  cfmakeraw   (&options) ;
-  cfsetispeed (&options, myBaud) ;
-  cfsetospeed (&options, myBaud) ;
+    cfmakeraw   (&options) ;
+    cfsetispeed (&options, myBaud) ;
+    cfsetospeed (&options, myBaud) ;
 
-  options.c_cflag |= (CLOCAL | CREAD) ;
-  options.c_cflag &= ~PARENB ;
-  options.c_cflag &= ~CSTOPB ;
-  options.c_cflag &= ~CSIZE ;
-  options.c_cflag |= CS8 ;
-  options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG) ;
-  options.c_oflag &= ~OPOST ;
+    options.c_cflag |= (CLOCAL | CREAD) ;
+    options.c_cflag &= ~PARENB ;
+    options.c_cflag &= ~CSTOPB ;
+    options.c_cflag &= ~CSIZE ;
+    options.c_cflag |= CS8 ;
+    options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG) ;
+    options.c_oflag &= ~OPOST ;
 
-  options.c_cc [VMIN]  =   0 ;
-  options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
+    options.c_cc [VMIN]  =   0 ;
+    options.c_cc [VTIME] = 100 ;	// Ten seconds (100 deciseconds)
 
-  tcsetattr (fd, TCSANOW, &options) ;
+  tcsetattr (fd, TCSANOW | TCSAFLUSH, &options) ;
 
   ioctl (fd, TIOCMGET, &status);
 
@@ -117,12 +112,24 @@ int serialOpen (char *device, int baud)
 
 
 /*
+ * serialFlush:
+ *	Flush the serial buffers (both tx & rx)
+ *********************************************************************************
+ */
+
+void serialFlush (const int fd)
+{
+  tcflush (fd, TCIOFLUSH) ;
+}
+
+
+/*
  * serialClose:
  *	Release the serial port
  *********************************************************************************
  */
 
-void serialClose (int fd)
+void serialClose (const int fd)
 {
   close (fd) ;
 }
@@ -134,7 +141,7 @@ void serialClose (int fd)
  *********************************************************************************
  */
 
-void serialPutchar (int fd, unsigned char c)
+void serialPutchar (const int fd, const unsigned char c)
 {
   write (fd, &c, 1) ;
 }
@@ -146,7 +153,7 @@ void serialPutchar (int fd, unsigned char c)
  *********************************************************************************
  */
 
-void serialPuts (int fd, char *s)
+void serialPuts (const int fd, const char *s)
 {
   write (fd, s, strlen (s)) ;
 }
@@ -157,7 +164,7 @@ void serialPuts (int fd, char *s)
  *********************************************************************************
  */
 
-void serialPrintf (int fd, char *message, ...)
+void serialPrintf (const int fd, const char *message, ...)
 {
   va_list argp ;
   char buffer [1024] ;
@@ -176,7 +183,7 @@ void serialPrintf (int fd, char *message, ...)
  *********************************************************************************
  */
 
-int serialDataAvail (int fd)
+int serialDataAvail (const int fd)
 {
   int result ;
 
@@ -195,7 +202,7 @@ int serialDataAvail (int fd)
  *********************************************************************************
  */
 
-int serialGetchar (int fd)
+int serialGetchar (const int fd)
 {
   uint8_t x ;
 

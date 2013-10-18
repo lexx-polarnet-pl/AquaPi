@@ -1,9 +1,10 @@
 #
 # Makefile:
-#	wiringPi - Wiring Compatable library for the Raspberry Pi
+#	The gpio command:
+#	  A swiss-army knige of GPIO shenanigans.
 #	https://projects.drogon.net/wiring-pi
 #
-#	Copyright (c) 2012 Gordon Henderson
+#	Copyright (c) 2012-2013 Gordon Henderson
 #################################################################################
 # This file is part of wiringPi:
 #	Wiring Compatable library for the Raspberry Pi
@@ -22,52 +23,65 @@
 #    along with wiringPi.  If not, see <http://www.gnu.org/licenses/>.
 #################################################################################
 
+DESTDIR=/usr
+PREFIX=/local
 
 #DEBUG	= -g -O0
-DEBUG	= -O3
+DEBUG	= -O2
 CC	= gcc
-INCLUDE	= -I/usr/local/include
+INCLUDE	= -I$(DESTDIR)$(PREFIX)/include
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 
-LDFLAGS	= -L/usr/local/lib
-LIBS    = -lwiringPi
+LDFLAGS	= -L$(DESTDIR)$(PREFIX)/lib
+LIBS    = -lwiringPi -lwiringPiDev -lpthread -lm
 
-# Should not alter anything below this line
+# May not need to  alter anything below this line
 ###############################################################################
 
-SRC	=	gpio.c
+SRC	=	gpio.c extensions.c readall.c
 
-OBJ	=	gpio.o
+OBJ	=	$(SRC:.c=.o)
 
 all:		gpio
 
-gpio:	gpio.o
-	@echo [LD]
-	@$(CC) -o $@ gpio.o $(LDFLAGS) $(LIBS)
+gpio:	$(OBJ)
+	@echo [Link]
+	@$(CC) -o $@ $(OBJ) $(LDFLAGS) $(LIBS)
 	
 .c.o:
-	@echo [CC] $<
+	@echo [Compile] $<
 	@$(CC) -c $(CFLAGS) $< -o $@
 
+.PHONEY:	clean
 clean:
-	rm -f $(OBJ) gpio *~ core tags
+	@echo "[Clean]"
+	@rm -f $(OBJ) gpio *~ core tags *.bak
 
+.PHONEY:	tags
 tags:	$(SRC)
 	@echo [ctags]
 	@ctags $(SRC)
 
+.PHONEY:	install
+install:
+	@echo "[Install]"
+	@cp gpio		$(DESTDIR)$(PREFIX)/bin
+	@chown root.root	$(DESTDIR)$(PREFIX)/bin/gpio
+	@chmod 4755		$(DESTDIR)$(PREFIX)/bin/gpio
+	@mkdir -p		$(DESTDIR)$(PREFIX)/man/man1
+	@cp gpio.1		$(DESTDIR)$(PREFIX)/man/man1
+
+.PHONEY:	uninstall
+uninstall:
+	@echo "[UnInstall]"
+	@rm -f $(DESTDIR)$(PREFIX)/bin/gpio
+	@rm -f $(DESTDIR)$(PREFIX)/man/man1/gpio.1
+
+.PHONEY:	depend
 depend:
 	makedepend -Y $(SRC)
 
-install:
-	cp gpio /usr/local/bin
-	chown root.root /usr/local/bin/gpio
-	chmod 4755 /usr/local/bin/gpio
-	mkdir -p /usr/local/man/man1
-	cp gpio.1 /usr/local/man/man1
-
-uninstall:
-	rm -f /usr/local/bin/gpio
-	rm -f /usr/local/man/man1/gpio.1
-
 # DO NOT DELETE
+
+gpio.o: extensions.h
+extensions.o: extensions.h
