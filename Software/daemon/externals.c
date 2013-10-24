@@ -20,13 +20,34 @@
  * $Id$
  */
  
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wiringPi.h>
+#include <unistd.h>
+#include <time.h>
+#include <syslog.h>
 #include <wiringPi.h>
 
-const int gpio_heater = 1;
-const int gpio_main_light = 4;
-const int gpio_uni1 = 0;
-const int gpio_uni2 = 6;
-const int gpio_cool = 5;
+#include "gpio.c"
+
+void ChangePortState (char *port,int state) {
+	//char PortNo[2];
+	char buff[200];
+	if (strcmp(port,"dummy")==0) {
+		// do nothing
+	} else if (strncmp(port,"gpio",4)==0) {
+		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
+		port += 4;
+		digitalWrite (atoi(port),state);
+		sprintf(buff,"Port GPIO%i Stan: %i",atoi(port),state);
+		Log(buff,E_DEV);		
+	} else {
+		sprintf(buff,"Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+		// nie obsługiwany port
+	}
+}
 
 double read_temp(char *sensor_id) {
     FILE *fp;
@@ -71,18 +92,55 @@ double read_temp(char *sensor_id) {
 	}
 }
 
-int GPIO_setup() {
+double ReadTempFromSensor(char *temp_sensor) {
+	int fail_count;
+	double temp_act = -200;
+	char buff[200];
+	
+	fail_count = 0;
+			
+	do {
+		temp_act = read_temp(temp_sensor);
+		if (temp_act < -100) {
+			fail_count++;
+		}
+	} while (temp_act<-100 && fail_count <3);
+			
+	if (temp_act == -202) {
+		sprintf(buff,"Błędy CRC przy odczycie sensora %s", temp_sensor);
+		Log(buff,E_WARN);				
+	}
+	
+	if (temp_act < -100) {
+		Log("Błąd odczytu sensora temperatury",E_CRIT);
+	}
+	
+	return temp_act;
+}
+
+void SetPortAsOutput (char *port) {
+	char buff[200];
+	if (strcmp(port,"dummy")==0||strcmp(port,"disabled")==0) {
+		// do nothing
+	} else if (strncmp(port,"gpio",4)==0) {
+		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
+		port += 4;
+		pinMode (atoi(port), OUTPUT);
+	} else {
+		sprintf(buff,"Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+		// nie obsługiwany port
+	}
+}
+
+int SetupPorts() {
+	int j;
 	if (wiringPiSetup () == -1) {
 		return 1;
 	} else {
-		pinMode (gpio_main_light, OUTPUT) ;
-		pinMode (gpio_heater, OUTPUT) ;
-		pinMode (gpio_cool, OUTPUT) ;
-		pinMode (gpio_uni1, OUTPUT) ;
-		pinMode (gpio_uni2, OUTPUT) ;
-		// grzanie i chłodzenie domyślnie wyłączone
-		digitalWrite (gpio_heater, 0);
-		digitalWrite (gpio_cool, 0);
+		for(j = 0; j <= outputs_count; j++) {
+			SetPortAsOutput(outputs[j].output_port);
+		}
 		return 0;
 	}
 }

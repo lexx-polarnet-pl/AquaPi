@@ -29,7 +29,7 @@
 #include <syslog.h>
 #include "aquapi.h"
 #include "database.c"
-#include "gpio.c"
+#include "externals.c"
 
 int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
@@ -38,27 +38,8 @@ char light_port[10];
 char cooling_port[10];
 char heater_port[10];
 
-void ChangePortState (char *port,int state) {
-	//char PortNo[2];
-	char buff[200];
-	if (strcmp(port,"dummy")==0) {
-		// do nothing
-	} else if (strncmp(port,"gpio",4)==0) {
-		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
-		port += 4;
-		digitalWrite (atoi(port),state);
-		sprintf(buff,"Port GPIO%i Stan: %i",atoi(port),state);
-		Log(buff,E_DEV);		
-	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
-		Log(buff,E_WARN);
-		// nie obsługiwany port
-	}
-}
-
 void termination_handler(int signum)	{
 	// przy wychodzeniu wyłącz grzałkę
-	//digitalWrite (gpio_heater, 0);
 	ChangePortState(heater_port,0);
 	if( signum ) {
 		syslog(LOG_ERR, "Daemon exited abnormally.");
@@ -91,52 +72,6 @@ void Log(char *msg, int lev) {
 	}
 }
 
-int events_count,outputs_count;
-
-struct _events {
-	int line,start,stop,enabled,day_of_week;
-	char device[10];
-} events[500]; 
-
-//int outputs_count = 20;
-
-struct _outputs {
-	int line,enabled,new_state;
-	//char *name;
-	char name[40];
-	char output_port[10];
-	char device[10];
-} outputs[40];
-
-
-
-
-
-double ReadTempFromSensor(char *temp_sensor) {
-	int fail_count;
-	double temp_act = -200;
-	char buff[200];
-	
-	fail_count = 0;
-			
-	do {
-		temp_act = read_temp(temp_sensor);
-		if (temp_act < -100) {
-			fail_count++;
-		}
-	} while (temp_act<-100 && fail_count <3);
-			
-	if (temp_act == -202) {
-		sprintf(buff,"Błędy CRC przy odczycie sensora %s", temp_sensor);
-		Log(buff,E_WARN);				
-	}
-	
-	if (temp_act < -100) {
-		Log("Błąd odczytu sensora temperatury",E_CRIT);
-	}
-	
-	return temp_act;
-}
 
 void StoreTempStat(double t_zad) {
 	time_t rawtime;
@@ -179,6 +114,7 @@ void StoreTempStat(double t_zad) {
 		DB_Query(buff);	
 	}	
 }
+
 void ReadConf() {
 	char buff[200];
 	MYSQL_RES *result;
@@ -199,22 +135,19 @@ void ReadConf() {
 	
 	// wczytanie ustawień timerów
 	events_count = 	0;
-	mysql_query(conn, "SELECT t_start,t_stop,line,device,day_of_week FROM timers;");
+	mysql_query(conn, "SELECT t_start,t_stop,device,day_of_week FROM timers;");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		//for(i = 0; i < num_fields; i++) {
 		events_count++;
 		events[events_count].start = atof(row[0]);
 		events[events_count].stop = atof(row[1]);
-		events[events_count].line = atof(row[2]);
-		memcpy(events[events_count].device,row[3],sizeof(events[events_count].device));
-		events[events_count].day_of_week = atof(row[4]);
+		memcpy(events[events_count].device,row[2],sizeof(events[events_count].device));
+		events[events_count].day_of_week = atof(row[3]);
 	}	
 	mysql_free_result(result);
 	
 	// ustawienia kiedy dzień a kiedy noc są brane z innego miejsca
-	events[0].line = gpio_main_light;
-	//events[0].device = "light";
 	DB_GetSetting("day_start",buff);
 	events[0].start = atof(buff); 	
 	DB_GetSetting("day_stop",buff);
@@ -241,7 +174,6 @@ void ReadConf() {
 }
 
 
-				
 int main() {
 	double temp_zal,temp_wyl,temp_zal_cool,temp_wyl_cool;
 	double temp_zad = 0;
@@ -280,7 +212,7 @@ int main() {
 	
 	ReadConf();
 	
-	GPIO_setup();
+	SetupPorts();
 	
 	// domyślnie wyjścia na zero
 	for(j = 0; j <= outputs_count; j++) {
@@ -365,7 +297,6 @@ int main() {
 				outputs[j].enabled = outputs[j].new_state;
 				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'%s',%i);",rawtime,outputs[j].device,outputs[j].enabled);
 				DB_Query(buff);					
-				//digitalWrite (outputs[j].line,outputs[j].enabled);
 				ChangePortState (outputs[j].output_port,outputs[j].enabled);
 			}
 		}
@@ -375,17 +306,11 @@ int main() {
 			dzien = events[0].enabled;
 			if (dzien == 1) {
 				Log("Przechodzę w tryb dzień",E_INFO);
-				DB_Query("UPDATE data SET value=1 WHERE `key`='day';");
-				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',1);",rawtime);
-				DB_Query(buff);					
-				
 			} else {
 				Log("Przechodzę w tryb noc",E_INFO);
-				DB_Query("UPDATE data SET value=0 WHERE `key`='day';");
-				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',0);",rawtime);
-				DB_Query(buff);					
 			}
-			//digitalWrite (gpio_main_light, dzien);
+			sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',%i);",rawtime,dzien);
+			DB_Query(buff);					
 			ChangePortState(light_port,dzien);
 		}
 		
@@ -407,43 +332,37 @@ int main() {
 			if (temp_act < -100) {
 				grzanie = 0;
 				chlodzenie = 0;
-				//digitalWrite (gpio_heater, grzanie);
-				//digitalWrite (gpio_cool, chlodzenie);
 				ChangePortState(heater_port,grzanie);
 				ChangePortState(cooling_port,chlodzenie);
 			} else {
 				if ((temp_act < temp_zal) && (grzanie == 0)) {
 					grzanie = 1;
 					//Log("Włączam grzanie",E_INFO);
-					DB_Query("UPDATE data SET value=1 WHERE `key`='heating';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',1);",rawtime);
-					DB_Query(buff);					
+					DB_Query(buff);		
+					ChangePortState(heater_port,grzanie);
 				} 
 				if ((temp_act > temp_wyl) && (grzanie == 1)) {
 					grzanie = 0;
 					//Log("Wyłączam grzanie",E_INFO);
-					DB_Query("UPDATE data SET value=0 WHERE `key`='heating';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',0);",rawtime);
 					DB_Query(buff);					
+					ChangePortState(heater_port,grzanie);
 				} 
 				if ((temp_act < temp_wyl_cool) && (chlodzenie == 1)) {
 					chlodzenie = 0;
 					//Log("Wyłączam chłodzenie",E_INFO);
-					DB_Query("UPDATE data SET value=0 WHERE `key`='cooling';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',0);",rawtime);
-					DB_Query(buff);					
+					DB_Query(buff);		
+					ChangePortState(cooling_port,chlodzenie);			
 				} 
 				if ((temp_act > temp_zal_cool) && (chlodzenie == 0)) {
 					chlodzenie = 1;
 					//Log("Włączam chłodzenie",E_INFO);
-					DB_Query("UPDATE data SET value=1 WHERE `key`='cooling';");
 					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',1);",rawtime);
 					DB_Query(buff);					
+					ChangePortState(cooling_port,chlodzenie);			
 				} 				
-				ChangePortState(heater_port,grzanie);
-				ChangePortState(cooling_port,chlodzenie);
-				sprintf(buff,"UPDATE data SET value= %.2f WHERE `key`='temp_act'", temp_act);
-				DB_Query(buff);
 			}
 		}
 
@@ -454,8 +373,6 @@ int main() {
 
 		if (seconds_since_midnight % stat_freq == 0) {
 			StoreTempStat(temp_zad);
-			//sprintf(buff,"INSERT INTO stat (time_st,heat,day,temp_t,temp_a) VALUES (%ld,%i,%i,%.2f,%.2f);",rawtime,grzanie,dzien,temp_zad,temp_act);
-			//DB_Query(buff);
 		}
 		
 		sleep(1);
