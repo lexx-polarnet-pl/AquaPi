@@ -2,5 +2,3 @@
 
 - wykrywanie awarii grzałki
 - komunikaty głosowe
-- wprowadzenie "naming convention" dla wyjść i przeniesienie konfiguracji wyjść (np. przypisanie do grzałki lub światła)
-  do bazy sql

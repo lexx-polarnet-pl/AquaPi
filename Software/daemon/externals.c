@@ -29,8 +29,6 @@
 #include <syslog.h>
 #include <wiringPi.h>
 
-#include "gpio.c"
-
 void ChangePortState (char *port,int state) {
 	//char PortNo[2];
 	char buff[200];

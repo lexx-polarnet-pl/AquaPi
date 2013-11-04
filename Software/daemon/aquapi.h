@@ -30,3 +30,20 @@ const int E_CRIT = 2;
 void Log(char *msg, int lev);
 
 void termination_handler(int signum);
+
+int events_count,outputs_count;
+
+struct _events {
+	int start,stop,enabled,day_of_week;
+	char device[10];
+} events[500]; 
+
+//int outputs_count = 20;
+
+struct _outputs {
+	int enabled,new_state;
+	//char *name;
+	char name[40];
+	char output_port[10];
+	char device[10];
+} outputs[40];
