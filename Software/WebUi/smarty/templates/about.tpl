@@ -17,6 +17,7 @@ Interfejs web zawiera elementy pochodzące od Google (licencjonowane inaczej ni�
 Pozostałe elementy wchodzące w skład sterownika to:
 <ul>
 <li>Biblioteka wiring Pi</li>
+<li>Biblioteka inih</li>
 <li>Smarty</li>
 <li>jquery</li>
 <li>ikonki Crystal project</li>
