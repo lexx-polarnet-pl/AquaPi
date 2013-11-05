@@ -30,6 +30,7 @@
 #include "aquapi.h"
 #include "database.c"
 #include "externals.c"
+#include "inifile.c"
 
 int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
@@ -197,19 +198,26 @@ int main() {
 
 	//const char inifile[] = "/etc/aquapi.ini";
 	//dontfork = 1;
+    configuration config;
+
+    if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
+        printf("Can't load '/etc/aquapi.ini'\n");
+        exit(1);
+    }
 	
-	char db_host[] = "localhost";
-	char db_user[] = "aquapi"; 
-	char db_password[] = "aquapi"; 
-	char db_database[] = "aquapi"; 
+	//char db_host[] = "localhost";
+	//char db_user[] = "aquapi"; 
+	//char db_password[] = "aquapi"; 
+	//char db_database[] = "aquapi"; 
 	
 	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
     syslog(LOG_INFO, "Daemon started.");
  
-	DB_Open(db_host,db_user,db_password,db_database);
+	//DB_Open(db_host,db_user,db_password,db_database);
+	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
 	
 	Log("Daemon uruchomiony",E_WARN);
-	
+
 	ReadConf();
 	
 	SetupPorts();

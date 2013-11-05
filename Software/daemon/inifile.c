@@ -19,37 +19,25 @@
  *
  * $Id:$
  */
+ 
+#include "inih/ini.h"
+#include "inih/ini.c"
 
-#define APPNAME "AquaPi"
-
-const int E_DEV = -1;
-const int E_INFO = 0;
-const int E_WARN = 1;
-const int E_CRIT = 2;
-
-void Log(char *msg, int lev);
-
-void termination_handler(int signum);
-
-int events_count,outputs_count;
-
-struct _events {
-	int start,stop,enabled,day_of_week;
-	char device[10];
-} events[500]; 
-
-struct _outputs {
-	int enabled,new_state;
-	//char *name;
-	char name[40];
-	char output_port[10];
-	char device[10];
-} outputs[40];
-
-typedef struct
+static int handler(void* user, const char* section, const char* name, const char* value)
 {
-    char* db_host;
-    char* db_user; 
-	char* db_password;
-	char* db_database;
-} configuration;
+    configuration* pconfig = (configuration*)user;
+
+    #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
+    if (MATCH("database", "host")) {
+        pconfig->db_host = strdup(value);
+    } else if (MATCH("database", "user")) {
+        pconfig->db_user = strdup(value);
+    } else if (MATCH("database", "password")) {
+        pconfig->db_password = strdup(value);
+    } else if (MATCH("database", "database")) {
+        pconfig->db_database = strdup(value);
+    } else {
+        return 0;  /* unknown section/name, error */
+    }
+    return 1;
+}
