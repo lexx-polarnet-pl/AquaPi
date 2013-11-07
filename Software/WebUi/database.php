@@ -35,7 +35,7 @@ class Database {
 		}		
 		$this->_dbselected = mysql_select_db($dbname);
 		if (!$this->_dbselected) {
-			die ('Nie mozna wybraz bazy: ' . mysql_error());
+			die ('Nie mozna wybrać bazy: ' . mysql_error());
 		}		
 		$this->Execute("SET NAMES utf8;");
 	}
@@ -51,6 +51,7 @@ class Database {
 		$result[] = $row;
 		return $result;
 	}
+
 	function GetOne($query) {
 		$this->Execute($query);
 		$result = NULL;

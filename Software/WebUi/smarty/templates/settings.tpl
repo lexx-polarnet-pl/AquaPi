@@ -80,6 +80,9 @@
 </div>
 
 
+{include "sensors_table.tpl"}
+
+
 <div id="dashboard">
 <h3>Ustawienia sensorów temperatury:</h3>
 	<table>

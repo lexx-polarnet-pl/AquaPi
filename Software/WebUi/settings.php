@@ -24,8 +24,12 @@
 include("init.php");
 
 $smarty->assign('title', 'Ustawienia');
+//new dbug($_POST);
 
-if ($_POST['day_start'] > "") {
+if ($_POST['day_start'] > "") 
+{
+	$sensors = $_POST['sensors'];
+	
 	$pieces = explode(":", $_POST['day_start']);
 	$day_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
 	$query = 'update settings set value="' . $day_start . '" where `key`= "day_start";';
@@ -35,8 +39,17 @@ if ($_POST['day_start'] > "") {
 	$day_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
 	$query = 'update settings set value="' . $day_stop . '" where `key`= "day_stop";';
 	$db->Execute($query);
+
+	foreach($sensors as $index => $sensor)
+	{
+//		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=? WHERE sensor_id=?', 
+//			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $index ));
+		$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
+	}
 	
-	$query = 'update settings set value="' . $_POST['temp_sensor'] . '" where `key`="temp_sensor";';
+	//zahaszowane aby sobie bazy produkcyjnej nie uwalic do moemntu az całosc bedzie gotowa
+	
+/*	$query = 'update settings set value="' . $_POST['temp_sensor'] . '" where `key`="temp_sensor";';
 	$db->Execute($query);
 
 	$query = 'update settings set value="' . $_POST['temp_sensor2'] . '" where `key`="temp_sensor2";';
@@ -59,7 +72,7 @@ if ($_POST['day_start'] > "") {
  
         $query = 'update settings set value="' . $_POST['temp_sensor4_corr'] . '" where `key`="temp_sensor4_corr";';
         $db->Execute($query);
-
+*/
 	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
 	$db->Execute($query);
 
@@ -106,6 +119,8 @@ $temp_sensor4_corr = $db->GetOne("select value from settings where `key`='temp_s
 
 $friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
 
+$sensors	= $db->GetAll('SELECT * FROM sensors');
+
 $temp_sensors = NULL;
 
 if(is_dir(ONEWIRE_DIR))
@@ -134,6 +149,7 @@ $smarty->assign('temp_sensor3_corr', $temp_sensor3_corr);
 $smarty->assign('temp_sensor4_corr', $temp_sensor4_corr);
 
 $smarty->assign('friendly_names', $friendly_names);
+$smarty->assign('sensors', $sensors);
 
 $settings = $db->GetAll('select * from settings;');
 $smarty->assign('settings', $settings);
