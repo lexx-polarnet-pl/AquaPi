@@ -1,8 +1,8 @@
-<?php
+﻿<?php
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Kr�l (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -99,10 +99,10 @@ $temp_sensor2 = $db->GetOne("select value from settings where `key`='temp_sensor
 $temp_sensor3 = $db->GetOne("select value from settings where `key`='temp_sensor3';");
 $temp_sensor4 = $db->GetOne("select value from settings where `key`='temp_sensor4';");
 
-$temp_sensor_corr = $db-GetOne("select value from settings where `key`='temp_sensor_corr';");
-$temp_sensor2_corr = $db-GetOne("select value from settings where `key`='temp_sensor2_corr';");
-$temp_sensor3_corr = $db-GetOne("select value from settings where `key`='temp_sensor3_corr';");
-$temp_sensor4_corr = $db-GetOne("select value from settings where `key`='temp_sensor4_corr';");
+$temp_sensor_corr = $db->GetOne("select value from settings where `key`='temp_sensor_corr';");
+$temp_sensor2_corr = $db->GetOne("select value from settings where `key`='temp_sensor2_corr';");
+$temp_sensor3_corr = $db->GetOne("select value from settings where `key`='temp_sensor3_corr';");
+$temp_sensor4_corr = $db->GetOne("select value from settings where `key`='temp_sensor4_corr';");
 
 $friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
 
@@ -124,10 +124,10 @@ $smarty->assign('temp_sensor2', $temp_sensor2);
 $smarty->assign('temp_sensor3', $temp_sensor3);
 $smarty->assign('temp_sensor4', $temp_sensor4);
 $smarty->assign('temp_sensors', $temp_sensors);
-$smarty-assign('temp_sensor_corr', $temp_sensor_corr);
-$smarty-assign('temp_sensor2_corr', $temp_sensor2_corr);
-$smarty-assign('temp_sensor3_corr', $temp_sensor3_corr);
-$smarty-assign('temp_sensor4_corr', $temp_sensor4_corr);
+$smarty->assign('temp_sensor_corr', $temp_sensor_corr);
+$smarty->assign('temp_sensor2_corr', $temp_sensor2_corr);
+$smarty->assign('temp_sensor3_corr', $temp_sensor3_corr);
+$smarty->assign('temp_sensor4_corr', $temp_sensor4_corr);
 
 $smarty->assign('friendly_names', $friendly_names);
 
