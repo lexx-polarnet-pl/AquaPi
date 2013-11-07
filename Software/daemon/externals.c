@@ -90,7 +90,7 @@ double read_temp(char *sensor_id) {
 	}
 }
 
-double ReadTempFromSensor(char *temp_sensor) {
+double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
 	int fail_count;
 	double temp_act = -200;
 	char buff[200];
@@ -113,7 +113,7 @@ double ReadTempFromSensor(char *temp_sensor) {
 		Log("Błąd odczytu sensora temperatury",E_CRIT);
 	}
 	
-	return temp_act;
+	return temp_act+temp_sensor_corr;
 }
 
 void SetPortAsOutput (char *port) {
