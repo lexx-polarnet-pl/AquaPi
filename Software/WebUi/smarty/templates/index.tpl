@@ -11,7 +11,7 @@
 </div>
 
 <div id="dashboard">
-<img src ="/img/welcome_logo.png" style="float:left;">
+<img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
 <tr><td>Czas</td><td>{$time}</td></tr>

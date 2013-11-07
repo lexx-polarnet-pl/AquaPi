@@ -76,7 +76,7 @@
 	<tr><td>Rozpoczęcie:</td><td><input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}" /></td></tr>
 	<tr><td>Zakończenie:</td><td><input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" /></td></tr>
 	</table>	
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 
 
@@ -119,7 +119,7 @@
         korekta: <input class="temp_select" type="text" id="temp_sensor4_corr" name="temp_sensor4_corr" value ="{$temp_sensor4_corr}">
         </td></tr>
 	</table>
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 	
 </div>	
 
@@ -145,7 +145,7 @@
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
 		<div id="slide_hysteresis" style="margin:10px;"></div>
 	</div>					
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 	
 </div>
 
@@ -156,7 +156,7 @@
 		<tr><td>{$friendly_name.device} ({$friendly_name.output}):</td><td><input class="rest" type="text" id="device_{$friendly_name.device}" name="device_{$friendly_name.device}" value="{$friendly_name.fname}"></td></tr>
 	{/foreach}
 	</table>
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 	
 </div>
 

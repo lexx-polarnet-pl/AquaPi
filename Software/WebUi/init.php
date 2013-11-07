@@ -30,14 +30,25 @@ $ini_array = parse_ini_file("/etc/aquapi.ini");
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
 
+define('MAIN_DIR',getcwd());
+define('SMARTY_COMPILE_DIR',MAIN_DIR.'/smarty/templates_c');
+
+if(!is_dir(SMARTY_COMPILE_DIR))
+        die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
+
+if(!is_writable(SMARTY_COMPILE_DIR))
+        die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
+
+
+
 // inicjalizacja smarty
-require('/var/www/smarty/libs/Smarty.class.php');
+require(MAIN_DIR.'/smarty/libs/Smarty.class.php');
 $smarty = new Smarty();
 
-$smarty->setTemplateDir('/var/www/smarty/templates');
-$smarty->setCompileDir('/var/www/smarty/templates_c');
-$smarty->setCacheDir('/var/www/smarty/cache');
-$smarty->setConfigDir('/var/www/smarty/configs');
+$smarty->setTemplateDir(MAIN_DIR.'/smarty/templates');
+$smarty->setCompileDir(SMARTY_COMPILE_DIR);
+$smarty->setCacheDir(MAIN_DIR.'/smarty/cache');
+$smarty->setConfigDir(MAIN_DIR.'/smarty/configs');
 
 $smarty->assign('aquapi_ver',$aquapi_ver);
 
