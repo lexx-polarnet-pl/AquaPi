@@ -49,16 +49,16 @@ if ($_POST['day_start'] > "") {
 	$db->Execute($query);
 
         $query = 'update settings set value="' . $_POST['temp_sensor_corr'] . '" where `key`="temp_sensor_corr";';
-        $db-Execute($query);
+        $db->Execute($query);
  
         $query = 'update settings set value="' . $_POST['temp_sensor2_corr'] . '" where `key`="temp_sensor2_corr";';
-        $db-Execute($query);
+        $db->Execute($query);
  
         $query = 'update settings set value="' . $_POST['temp_sensor3_corr'] . '" where `key`="temp_sensor3_corr";';
-        $db-Execute($query);
+        $db->Execute($query);
  
         $query = 'update settings set value="' . $_POST['temp_sensor4_corr'] . '" where `key`="temp_sensor4_corr";';
-        $db-Execute($query);
+        $db->Execute($query);
 
 	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
 	$db->Execute($query);
