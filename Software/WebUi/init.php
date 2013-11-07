@@ -68,8 +68,10 @@ $my_menu = Array (
     Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
 );
 
+$self= end(explode('/', $_SERVER["PHP_SELF"]));
+
 foreach ($my_menu as &$pos) {
-    if ($pos['url'] == $_SERVER["PHP_SELF"]) {
+    if ($pos['url'] == $self) {
 		$cur_name = $pos['name'];
 		$pos['selected'] = true;
 	}
