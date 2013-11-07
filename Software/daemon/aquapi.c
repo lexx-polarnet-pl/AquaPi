@@ -34,6 +34,7 @@
 
 int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
+double temp_sensor_corr;
 char main_temp_sensor[80];
 char light_port[10];
 char cooling_port[10];
@@ -63,7 +64,7 @@ void Log(char *msg, int lev) {
 	// log na ekran
 	if ( dontfork ) {
 		timeinfo = localtime ( &rawtime );
-		strftime (timef,80,"%H:%M:%S",timeinfo);	
+		strftime (timef,80,"%H:%M:%S",timeinfo);
 		printf("[%s] %i %s\n",timef,lev,msg);
 	}
 	
@@ -87,30 +88,39 @@ void StoreTempStat(double t_zad) {
 	DB_Query(buff);	
 	
 	DB_GetSetting("temp_sensor",temp_sensor);
-	temp_act = ReadTempFromSensor(temp_sensor);
+	DB_GetSetting("temp_sensor_corr",buff);
+	temp_sensor_corr = atof(buff); 
+	temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
+
 	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,1,%.2f);",rawtime,temp_act);
 	DB_Query(buff);	
 
 	DB_GetSetting("temp_sensor2",temp_sensor);
+	DB_GetSetting("temp_sensor2_corr",buff);
+	temp_sensor_corr = atof(buff);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,2,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}
 
 	DB_GetSetting("temp_sensor3",temp_sensor);
+	DB_GetSetting("temp_sensor3_corr",buff);
+	temp_sensor_corr = atof(buff);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,3,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}
 	
 	DB_GetSetting("temp_sensor4",temp_sensor);
+	DB_GetSetting("temp_sensor4_corr",buff);
+	temp_sensor_corr = atof(buff);
 	pos = strstr(temp_sensor,"none");
 	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor);
+		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
 		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,4,%.2f);",rawtime,temp_act);
 		DB_Query(buff);	
 	}	
@@ -335,7 +345,9 @@ int main() {
 			temp_zal_cool = temp_cool + histereza / 2;
 			temp_wyl_cool = temp_cool - histereza / 2;				
 
-			temp_act = ReadTempFromSensor(main_temp_sensor);
+			DB_GetSetting("temp_sensor_corr",buff);
+			temp_sensor_corr = atof(buff); 
+			temp_act = ReadTempFromSensor(main_temp_sensor, temp_sensor_corr);
 			
 			if (temp_act < -100) {
 				grzanie = 0;
