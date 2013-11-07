@@ -37,7 +37,18 @@ CREATE TABLE `devices` (
 
 LOCK TABLES `devices` WRITE;
 /*!40000 ALTER TABLE `devices` DISABLE KEYS */;
-INSERT INTO `devices` VALUES (1,'light','gpio4','Oœwietlenie'),(4,'heater','gpio1','Grza³ka'),(5,'cooling','gpio5','Ch³odzenie'),(6,'uni1','gpio6','Uniwersalne 1'),(7,'uni2','dummy','Uniwersalne 2'),(8,'uni3','disabled','Uniwersalne 3'),(9,'uni4','disabled','Uniwersalne 4'),(10,'uni5','disabled','Uniwersalne 5'),(11,'uni6','disabled','Uniwersalne 6'),(12,'uni7','disabled','Uniwersalne 7'),(13,'uni8','disabled','Uniwersalne 8'),(14,'uni9','disabled','Uniwersalne 9'),(15,'uni10','disabled','Uniwersalne 10'),(16,'uni11','disabled','Uniwersalne 11'),(17,'uni12','disabled','Uniwersalne 12'),(18,'uni13','disabled','Uniwersalne 13'),(19,'uni14','disabled','Uniwersalne 14'),(20,'uni15','disabled','Uniwersalne 15'),(21,'uni16','disabled','Uniwersalne 16'),(22,'uni17','disabled','Uniwersalne 17'),(23,'uni18','disabled','Uniwersalne 18'),(24,'uni19','disabled','Uniwersalne 19'),(25,'uni20','disabled','Uniwersalne 20');
+INSERT INTO `devices` VALUES (1,'light','gpio4','Oswietlenie'),
+(4,'heater','gpio1','Grzalka'),(5,'cooling','gpio5','Chlodzenie'),
+(6,'uni1','gpio6','Uniwersalne 1'),(7,'uni2','dummy','Uniwersalne 2'),
+(8,'uni3','disabled','Uniwersalne 3'),(9,'uni4','disabled','Uniwersalne 4'),
+(10,'uni5','disabled','Uniwersalne 5'),(11,'uni6','disabled','Uniwersalne 6'),
+(12,'uni7','disabled','Uniwersalne 7'),(13,'uni8','disabled','Uniwersalne 8'),
+(14,'uni9','disabled','Uniwersalne 9'),(15,'uni10','disabled','Uniwersalne 10'),
+(16,'uni11','disabled','Uniwersalne 11'),(17,'uni12','disabled','Uniwersalne 12'),
+(18,'uni13','disabled','Uniwersalne 13'),(19,'uni14','disabled','Uniwersalne 14'),
+(20,'uni15','disabled','Uniwersalne 15'),(21,'uni16','disabled','Uniwersalne 16'),
+(22,'uni17','disabled','Uniwersalne 17'),(23,'uni18','disabled','Uniwersalne 18'),
+(24,'uni19','disabled','Uniwersalne 19'),(25,'uni20','disabled','Uniwersalne 20');
 /*!40000 ALTER TABLE `devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,8 +105,15 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (1,'temp_day','25.0'),(2,'temp_night','24.2'),(3,'hysteresis','0.2'),(4,'day_start','32400'),(5,'day_stop','75600'),(8,'temp_sensor','28-000000000000'),(9,'temp_cool','26.0'),(10,'temp_sensor2','none'),(11,'temp_sensor3','none'),(12,'temp_sensor4','none');
+INSERT INTO `settings` VALUES (1,'temp_day','25.0'),(2,'temp_night','24.2'),(3,'hysteresis','0.2'),
+(4,'day_start','32400'),(5,'day_stop','75600'),(8,'temp_sensor','28-000000000000'),
+(9,'temp_cool','26.0'),(10,'temp_sensor2','none'),(11,'temp_sensor3','none'),
+(12,'temp_sensor4','none');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (NULL, 'temp_sensor_corr', '0');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (NULL, 'temp_sensor2_corr', '-0');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (NULL, 'temp_sensor3_corr', '0');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (NULL, 'temp_sensor4_corr', '-0');
 UNLOCK TABLES;
 
 --
