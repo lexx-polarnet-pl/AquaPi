@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin KrÃ³l (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -31,6 +31,8 @@ $ini_array = parse_ini_file("/etc/aquapi.ini");
 date_default_timezone_set("Europe/Warsaw");
 
 define('MAIN_DIR',getcwd());
+define('ONEWIRE_DIR','/sys/bus/w1/devices');
+
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'/smarty/templates_c');
 
 if(!is_dir(SMARTY_COMPILE_DIR))
@@ -58,12 +60,12 @@ $db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],
 
 // definicja menu
 $my_menu = Array (
-    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "/index.php"),
-    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "/timers.php"),
-    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "/settings.php"),
-    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "/logs.php"),
-    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "/stat.php"),
-    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "/about.php")
+    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php"),
+    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php"),
+    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php"),
+    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php"),
+    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php"),
+    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
 );
 
 foreach ($my_menu as &$pos) {

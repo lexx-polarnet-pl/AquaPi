@@ -107,9 +107,13 @@ $temp_sensor4_corr = $db->GetOne("select value from settings where `key`='temp_s
 $friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
 
 $temp_sensors = NULL;
-$folder = dir('/sys/bus/w1/devices');
-while($plik = $folder->read()) if (substr($plik,0,3) == '28-') $temp_sensors[] = $plik;
-$folder->close();
+
+if(is_dir(ONEWIRE_DIR))
+{
+    $folder = dir(ONEWIRE_DIR);
+    while($plik = $folder->read()) if (substr($plik,0,3) == '28-') $temp_sensors[] = $plik;
+    $folder->close();
+}
 
 $smarty->assign('temp_day', $temp_day);
 $smarty->assign('temp_cool', $temp_cool);
