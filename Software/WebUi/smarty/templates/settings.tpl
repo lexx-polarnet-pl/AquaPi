@@ -88,28 +88,36 @@
 		{foreach from=$temp_sensors item="sensor_id"}
 		<option{if $sensor_id == $temp_sensor} selected="selected"{/if}>{$sensor_id}</option>
 		{/foreach}
-	</select></td></tr>
+	</select>
+        korekta: <input class="temp_select" type="text" id="temp_sensor_corr" name="temp_sensor_corr" value ="{$temp_sensor_corr}">
+        </td></tr>
 	<tr><td>Sensor pomocniczy 1:</td><td>
 	<select name="temp_sensor2" id="temp_sensor2" >
 		<option value="none">Brak</option>
 		{foreach from=$temp_sensors item="sensor_id2"}
 		<option{if $sensor_id2 == $temp_sensor2} selected="selected"{/if}>{$sensor_id2}</option>
 		{/foreach}
-	</select></td></tr>
+	</select>
+        korekta: <input class="temp_select" type="text" id="temp_sensor2_corr" name="temp_sensor2_corr" value ="{$temp_sensor2_corr}">
+        </td></tr>
 	<tr><td>Sensor pomocniczy 2:</td><td>
 	<select name="temp_sensor3" id="temp_sensor3" >
 		<option value="none">Brak</option>
 		{foreach from=$temp_sensors item="sensor_id3"}
 		<option{if $sensor_id3 == $temp_sensor3} selected="selected"{/if}>{$sensor_id3}</option>
 		{/foreach}
-	</select></td></tr>
+	</select>
+        korekta: <input class="temp_select" type="text" id="temp_sensor3_corr" name="temp_sensor3_corr" value ="{$temp_sensor3_corr}">
+        </td></tr>
 	<tr><td>Sensor pomocniczy 3:</td><td>
 	<select name="temp_sensor4" id="temp_sensor4" >
 		<option value="none">Brak</option>
 		{foreach from=$temp_sensors item="sensor_id4"}
 		<option{if $sensor_id4 == $temp_sensor4} selected="selected"{/if}>{$sensor_id4}</option>
 		{/foreach}
-	</select></td></tr>
+	</select>
+        korekta: <input class="temp_select" type="text" id="temp_sensor4_corr" name="temp_sensor4_corr" value ="{$temp_sensor4_corr}">
+        </td></tr>
 	</table>
 	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
 	
