@@ -62,6 +62,9 @@ $db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],
 //graficzny debug
 require(LIB_DIR.'dBug.php');
 
+//funkcje
+require(LIB_DIR.'functions.php');
+
 // definicja menu
 $my_menu = Array (
     Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php"),

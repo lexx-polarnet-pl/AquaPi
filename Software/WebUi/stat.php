@@ -39,15 +39,18 @@ switch ($_GET['limit']) {
 		$limit = time() - (24 * 60 * 60);
 }
 
-$stat	= $db->GetAll('SELECT time_st,temp,sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st;');
+$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st');
+$sensors=array_values(array_msort(
+				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
+						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)')
+				    , array('sensor_id'=>SORT_ASC)
+				 ));
 
-//DATE_FORMAT(date,format)
-
-$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st;');
+//new dBug($sensors);
 
 $first	= reset($stat)['time_st'];
 $last	= end($stat)['time_st'];
-//new dBug($stat[0]);
+
 foreach ($stat as $index=>$value)
 {
 	$date=floor($value['time_st']/60)*60;
@@ -99,6 +102,7 @@ foreach ($outputs_names as $key => $out_name)
 }
 
 $smarty->assign('temperature', $temperature);
+$smarty->assign('sensors', $sensors);
 $smarty->assign('outputs_arr', $outputs_arr);
 $smarty->assign('outputs_names', $outputs_names);
 $smarty->display('stat.tpl');

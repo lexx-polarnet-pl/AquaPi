@@ -45,6 +45,7 @@ class Database {
 	}
 
 	function GetAll($query) {
+		//echo $query."<BR>";
 		$this->Execute($query);
 		$result = NULL;
 		while($row = @mysql_fetch_array($this->_result, MYSQL_ASSOC))

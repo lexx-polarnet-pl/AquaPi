@@ -10,14 +10,17 @@
 		function drawChart() {
 			var TempTable = new google.visualization.DataTable();	  
 			TempTable.addColumn('datetime', 'Czas');
-			TempTable.addColumn('number', 'TZ');	  
-			TempTable.addColumn('number', 'TG');	  
-			TempTable.addColumn('number', 'TP1');	  
-			TempTable.addColumn('number', 'TP2');	  
-			TempTable.addColumn('number', 'TP3');	  
+			{foreach from=$sensors key="key" item="item" name="sensors"}
+				    TempTable.addColumn('number', '{$item.sensor_name}');	 
+			{/foreach}
 			TempTable.addRows([
 			{foreach from=$temperature key="key" item="entry" name="stats"}
-				[new Date({$entry.year}, {$entry.month}, {$entry.day}, {$entry.hour} ,{$entry.minutes}),{if $entry.0==null}null{else}{$entry.0}{/if},{if $entry.1==null}null{else}{$entry.1}{/if},{if $entry.2==null}null{else}{$entry.2}{/if},{if $entry.3==null}null{else}{$entry.3}{/if},{if $entry.4==null}null{else}{$entry.4}{/if}]{if !$smarty.foreach.stats.last},{/if}
+				[new Date({$entry.year}, {$entry.month}, {$entry.day}, {$entry.hour} ,{$entry.minutes}),
+				    {foreach from=$sensors key="key" item="item" name="sensors"}
+						{if $entry.$key}{$entry.$key},{else}null,{/if}
+				    {/foreach}
+				]
+				 {if !$smarty.foreach.stats.last},{/if}
 			{/foreach}
 			]);
 		
