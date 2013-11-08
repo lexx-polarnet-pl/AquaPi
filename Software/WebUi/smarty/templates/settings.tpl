@@ -83,7 +83,7 @@
 {include "sensors_table.tpl"}
 
 
-<div id="dashboard">
+<!--<div id="dashboard">
 <h3>Ustawienia sensorów temperatury:</h3>
 	<table>
 	<tr><td>Sensor główny:</td><td>
@@ -124,7 +124,7 @@
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 	
-</div>	
+</div>	-->
 
 <div id="dashboard">
 <h3>Ustawienia temperatury:</h3>
