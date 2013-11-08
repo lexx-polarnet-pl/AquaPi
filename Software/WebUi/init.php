@@ -31,6 +31,7 @@ $ini_array = parse_ini_file("/etc/aquapi.ini");
 date_default_timezone_set("Europe/Warsaw");
 
 define('MAIN_DIR',getcwd());
+define('LIB_DIR', MAIN_DIR.'/lib');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
 
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'/smarty/templates_c');
@@ -55,11 +56,11 @@ $smarty->setConfigDir(MAIN_DIR.'/smarty/configs');
 $smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
-require('database.php');
+require(LIB_DIR. 'database.php');
 $db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
 
 //graficzny debug
-require('lib/dBug.php');
+require(LIB_DIR.'dBug.php');
 
 // definicja menu
 $my_menu = Array (
