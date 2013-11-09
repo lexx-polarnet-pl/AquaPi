@@ -32,7 +32,7 @@
 #include "externals.c"
 #include "inifile.c"
 
-int dontfork = 1;
+int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
 double temp_sensor_corr;
 char main_temp_sensor[80];
@@ -198,10 +198,10 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 
-	int temp_freq = 5; // co ile sekund kontrolować temp
-	int log_freq = 5; // co ile sekund wypluwać informacje devel
-	int stat_freq = 5; // co ile sekund zapisywac co się dzieje w bazie
-	int conf_freq = 600; // co ile sekund wczytać ustawienia z bazy
+	int temp_freq 	= 300; // co ile sekund kontrolować temp
+	int log_freq 	= 30; // co ile sekund wypluwać informacje devel
+	int stat_freq 	= 300; // co ile sekund zapisywac co się dzieje w bazie
+	int conf_freq 	= 600; // co ile sekund wczytać ustawienia z bazy
 
 	int grzanie = 0;
 	int chlodzenie = 0;
