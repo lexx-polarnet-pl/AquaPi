@@ -99,6 +99,30 @@ CREATE TABLE `settings` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+--
+-- Struktura tabeli dla tabeli `sensors`
+--
+
+CREATE TABLE IF NOT EXISTS `sensors` (
+  `sensor_id` int(5) NOT NULL AUTO_INCREMENT,
+  `sensor_address` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0-temp zadana,1-1wire temp,',
+  `sensor_corr` varchar(6) COLLATE utf8_polish_ci NOT NULL DEFAULT '0' COMMENT 'korekta wartosci sensora',
+  `sensor_warn_min` varchar(6) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_warn_max` varchar(6) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+
+--
+-- Zrzut danych tabeli `sensors`
+--
+
+INSERT INTO `sensors` (`sensor_id`, `sensor_address`, `sensor_name`, `sensor_type`, `sensor_corr`, `sensor_warn_min`, `sensor_warn_max`) VALUES
+(0, 'none', 'Temperatura zadana', 0, '0', '', '');
+
+
 --
 -- Dumping data for table `settings`
 --
