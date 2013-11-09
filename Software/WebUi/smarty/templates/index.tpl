@@ -15,7 +15,7 @@
 <h3>Informacje o sterowniku:</h3>
 <table>
 <tr><td>Czas</td><td>{$time}</td></tr>
-<tr><td>Temperatura zbiornika:</td><td>{if $temp1.sensor_temp==''}--.--{else}{$temp1.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td></tr>
+<tr><td>Temperatura zbiornika:</td><td>{if $temperatures.0.sensor_temp==''}--.--{else}{$temperatures.0.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td></tr>
 <tr><td>Uruchomiony:</td><td>{$enabled}</td></tr>
 <tr><td>Wersja jądra:</td><td>{$uname_r}</td></tr>
 <tr><td>Kompilacja:</td><td>{$uname_v}</td></tr>
