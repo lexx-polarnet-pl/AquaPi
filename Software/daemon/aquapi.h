@@ -52,4 +52,5 @@ typedef struct
     char* db_user; 
 	char* db_password;
 	char* db_database;
+	int dontfork;
 } configuration;

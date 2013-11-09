@@ -32,7 +32,6 @@
 #include "externals.c"
 #include "inifile.c"
 
-int dontfork = 0;
 double temp_dzien,temp_noc,temp_cool,histereza;
 double temp_sensor_corr;
 char main_temp_sensor[80];
@@ -62,7 +61,7 @@ void Log(char *msg, int lev) {
 	time ( &rawtime );
 	
 	// log na ekran
-	if ( dontfork ) {
+	if ( config.dontfork ) {
 		timeinfo = localtime ( &rawtime );
 		strftime (timef,80,"%H:%M:%S",timeinfo);
 		printf("[%s] %i %s\n",timef,lev,msg);
@@ -206,24 +205,18 @@ int main() {
 	int fval = 0;
 	int i,j,seconds_since_midnight;
 
-	//const char inifile[] = "/etc/aquapi.ini";
-	//dontfork = 1;
-    configuration config;
+
+	config.dontfork = 0;
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
         exit(1);
     }
 	
-	//char db_host[] = "localhost";
-	//char db_user[] = "aquapi"; 
-	//char db_password[] = "aquapi"; 
-	//char db_database[] = "aquapi"; 
-	
 	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
     syslog(LOG_INFO, "Daemon started.");
  
-	//DB_Open(db_host,db_user,db_password,db_database);
+
 	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
 	
 	Log("Daemon uruchomiony",E_WARN);
@@ -238,7 +231,7 @@ int main() {
 		outputs[j].new_state = 0;
 	}
 
-	if ( !dontfork ) {
+	if ( !config.dontfork ) {
 		fval = fork();
 		switch(fval) {
 			case -1:

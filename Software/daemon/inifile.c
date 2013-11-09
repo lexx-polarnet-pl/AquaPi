@@ -23,6 +23,8 @@
 #include "inih/ini.h"
 #include "inih/ini.c"
 
+configuration config;
+	
 static int handler(void* user, const char* section, const char* name, const char* value)
 {
     configuration* pconfig = (configuration*)user;
@@ -36,6 +38,8 @@ static int handler(void* user, const char* section, const char* name, const char
         pconfig->db_password = strdup(value);
     } else if (MATCH("database", "database")) {
         pconfig->db_database = strdup(value);
+    } else if (MATCH("daemon", "dontfork")) {
+        pconfig->dontfork = atoi(value);		
     } else {
         return 0;  /* unknown section/name, error */
     }
