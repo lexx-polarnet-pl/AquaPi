@@ -23,4 +23,8 @@ aquapi:	aquapi.o
 clean:
 	rm -f $(OBJ) *~ core tags aquapi
 
+install:
+cp aquapi /usr/local/aquapi/
+
+
 # DO NOT DELETE
