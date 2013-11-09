@@ -53,6 +53,16 @@ class Database {
 		return $result;
 	}
 
+	function GetRow($query) 
+	{
+		//echo $query."<BR>";
+		$this->Execute($query);
+		$result = NULL;
+		$row = mysql_fetch_array($this->_result, MYSQL_ASSOC);
+		$result = $row;
+		return $result;
+	}
+
 	function GetOne($query) {
 		$this->Execute($query);
 		$result = NULL;

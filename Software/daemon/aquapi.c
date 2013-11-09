@@ -32,7 +32,7 @@
 #include "externals.c"
 #include "inifile.c"
 
-int dontfork = 0;
+int dontfork = 1;
 double temp_dzien,temp_noc,temp_cool,histereza;
 double temp_sensor_corr;
 char main_temp_sensor[80];
@@ -78,52 +78,55 @@ void Log(char *msg, int lev) {
 void StoreTempStat(double t_zad) {
 	time_t rawtime;
 	double temp_act = -200;
-	char temp_sensor[80];
+	//char temp_sensor[80];
 	char buff[200];
-	char *pos;
-	
+	//char *pos;
+	MYSQL_RES *result;
+	MYSQL_ROW row;	
 	time ( &rawtime );
+	int i, index=0;
+	char sensors [10] [3] [21]; //ilosc macierzy, elementów w macierzy, max dlugosc elementu
 
+	
 	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,0,%.2f);",rawtime,t_zad);
 	DB_Query(buff);	
 	
-	DB_GetSetting("temp_sensor",temp_sensor);
-	DB_GetSetting("temp_sensor_corr",buff);
-	temp_sensor_corr = atof(buff); 
-	temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
+	
+	
+	
+	mysql_query(conn, "SELECT sensor_id, sensor_address, sensor_corr FROM sensors WHERE sensor_id>0;");
+	result = mysql_store_result(conn);
+	while ((row = mysql_fetch_row(result)))
+	{
+		strncpy(sensors[index][0], row[0], sizeof sensors[index][0] - 1);
+		sensors[index][0][20] = '\0';
+//		printf("sensors[%d][0]=%s \n", index, sensors[index][0]);
 
-	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,1,%.2f);",rawtime,temp_act);
-	DB_Query(buff);	
+		strncpy(sensors[index][1], row[1], sizeof sensors[index][1] - 1);
+		sensors[index][1][20] = '\0';
+//		printf("sensors[%d][1]=%s \n", index, sensors[index][1]);
 
-	DB_GetSetting("temp_sensor2",temp_sensor);
-	DB_GetSetting("temp_sensor2_corr",buff);
-	temp_sensor_corr = atof(buff);
-	pos = strstr(temp_sensor,"none");
-	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
-		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,2,%.2f);",rawtime,temp_act);
-		DB_Query(buff);	
-	}
+		strncpy(sensors[index][2], row[2], sizeof sensors[index][2] - 1);
+		sensors[index][2][20] = '\0';
+//		printf("sensors[%d][2]=%s \n", index, sensors[index][2]);
 
-	DB_GetSetting("temp_sensor3",temp_sensor);
-	DB_GetSetting("temp_sensor3_corr",buff);
-	temp_sensor_corr = atof(buff);
-	pos = strstr(temp_sensor,"none");
-	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
-		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,3,%.2f);",rawtime,temp_act);
+		index++;
+	}	
+	mysql_free_result(result);
+	
+	//petla dla kazdego czujnika start
+	for(i = 0; i < index; i++)
+	{
+		//sensors[*][0] => sensor_id
+		//sensors[*][1] => sensor_address
+		//sensors[*][2] => sensor_corr
+		temp_act = ReadTempFromSensor(sensors[i][1], atof(sensors[i][2]));
+		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld, %d, %.2f);",rawtime, atoi(sensors[i][0]), temp_act);
 		DB_Query(buff);	
 	}
 	
-	DB_GetSetting("temp_sensor4",temp_sensor);
-	DB_GetSetting("temp_sensor4_corr",buff);
-	temp_sensor_corr = atof(buff);
-	pos = strstr(temp_sensor,"none");
-	if (pos == NULL) {	
-		temp_act = ReadTempFromSensor(temp_sensor, temp_sensor_corr);
-		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,4,%.2f);",rawtime,temp_act);
-		DB_Query(buff);	
-	}	
+	//petla dla kazdego czujnika koniec
+	
 }
 
 void ReadConf() {
@@ -195,9 +198,9 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 
-	int temp_freq = 10; // co ile sekund kontrolować temp
-	int log_freq = 60; // co ile sekund wypluwać informacje devel
-	int stat_freq = 600; // co ile sekund zapisywac co się dzieje w bazie
+	int temp_freq = 5; // co ile sekund kontrolować temp
+	int log_freq = 5; // co ile sekund wypluwać informacje devel
+	int stat_freq = 5; // co ile sekund zapisywac co się dzieje w bazie
 	int conf_freq = 600; // co ile sekund wczytać ustawienia z bazy
 
 	int grzanie = 0;
