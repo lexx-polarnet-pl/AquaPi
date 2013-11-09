@@ -44,7 +44,13 @@ if ($_POST['day_start'] > "")
 	{
 //		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=? WHERE sensor_id=?', 
 //			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $index ));
-		$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor istnieje
+			$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
+		elseif(strlen($sensor['sensor_name'])>1)
+		{
+			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr) VALUES ('.$index.', "'.$sensor['sensor_address'].'", "'.$sensor['sensor_name'].'", "'.$sensor['sensor_corr'].'")');
+		}
+		
 	}
 	
 	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
@@ -100,6 +106,7 @@ $smarty->assign('day_stop', date("H:i:s",$day_stop));
 
 $smarty->assign('friendly_names', $friendly_names);
 $smarty->assign('sensors', $sensors);
+$smarty->assign('new_sensor_id', count($sensors)+1);
 $smarty->assign('temp_sensors', $temp_sensors);
 
 $settings = $db->GetAll('select * from settings;');
