@@ -135,10 +135,10 @@ skopiować aquapi.rc do /etc/init.d/ a następnie uruchomić update-rc.d aquapi.
 
 ---------------------------------------------------------------------------
 [database]
-host = "localhost"
-user = "aquapi"
-password = "aquapi"
-database = "aquapi"
+host = localhost
+user = aquapi
+password = aquapi
+database = aquapi
 ---------------------------------------------------------------------------
 
 13. Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom daemona:
