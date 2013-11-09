@@ -29,6 +29,8 @@
 #include <syslog.h>
 #include <wiringPi.h>
 
+int wiringPiSetupFin;
+
 void ChangePortState (char *port,int state) {
 	//char PortNo[2];
 	char buff[200];
@@ -123,6 +125,10 @@ void SetPortAsOutput (char *port) {
 	} else if (strncmp(port,"gpio",4)==0) {
 		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
 		port += 4;
+		if (wiringPiSetupFin == 0) {
+			wiringPiSetupFin = 1;
+			wiringPiSetup ();
+		}
 		pinMode (atoi(port), OUTPUT);
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
@@ -133,12 +139,13 @@ void SetPortAsOutput (char *port) {
 
 int SetupPorts() {
 	int j;
-	if (wiringPiSetup () == -1) {
-		return 1;
-	} else {
+	wiringPiSetupFin = 0;
+	//if (wiringPiSetup () == -1) {
+	//	return 1;
+	//} else {
 		for(j = 0; j <= outputs_count; j++) {
 			SetPortAsOutput(outputs[j].output_port);
 		}
 		return 0;
-	}
+	//}
 }
