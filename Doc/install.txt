@@ -129,17 +129,9 @@ skopiować aquapi.rc do /etc/init.d/ a następnie uruchomić update-rc.d aquapi.
 > mkdir /var/www/smarty/templates_c/
 > chmod 777 /var/www/smarty/templates_c/
 
-12. Stworzyć plik /etc/aquapi.ini i wpisać konfigurację bazy:
+12. Skopiować plik aquapi.ini do katalogu /etc i ewentualnie dostosować ustawienia:
 
-> mcedit /etc/aquapi.ini
-
----------------------------------------------------------------------------
-[database]
-host = localhost
-user = aquapi
-password = aquapi
-database = aquapi
----------------------------------------------------------------------------
+> cp aquapi.ini /etc/
 
 13. Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom daemona:
 
