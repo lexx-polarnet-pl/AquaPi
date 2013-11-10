@@ -122,6 +122,8 @@ CREATE TABLE IF NOT EXISTS `sensors` (
 INSERT INTO `sensors` (`sensor_id`, `sensor_address`, `sensor_name`, `sensor_type`, `sensor_corr`, `sensor_warn_min`, `sensor_warn_max`) VALUES
 (0, 'none', 'Temperatura zadana', 0, '0', '', '');
 
+ALTER TABLE  `sensors` ADD  `sensor_deleted` TINYINT NOT NULL DEFAULT  '0' COMMENT  'czy czujnik jest skasowany';
+
 
 --
 -- Dumping data for table `settings`

@@ -26,6 +26,13 @@ include("init.php");
 $smarty->assign('title', 'Ustawienia');
 //new dbug($_POST);
 
+if ($_GET['action'] == "delete" and $_GET['id']>0)
+{
+	$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
+	$SESSION->redirect("settings.php");
+}
+
+
 if ($_POST['day_start'] > "") 
 {
 	$sensors = $_POST['sensors'];
@@ -44,9 +51,9 @@ if ($_POST['day_start'] > "")
 	{
 //		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=? WHERE sensor_id=?', 
 //			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $index ));
-		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor istnieje
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
 			$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
-		elseif(strlen($sensor['sensor_name'])>1)
+		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
 		{
 			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr) VALUES ('.$index.', "'.$sensor['sensor_address'].'", "'.$sensor['sensor_name'].'", "'.$sensor['sensor_corr'].'")');
 		}
@@ -84,7 +91,7 @@ $day_start	= $db->GetOne("select value from settings where `key`='day_start';");
 $day_stop	= $db->GetOne("select value from settings where `key`='day_stop';");
 
 $friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
-$sensors	= $db->GetAll('SELECT * FROM sensors WHERE sensor_id>0');
+$sensors	= $db->GetAll('SELECT * FROM sensors WHERE sensor_id>0 AND sensor_deleted=0');
 $temp_sensors 	= NULL;
 
 if(is_dir(ONEWIRE_DIR))

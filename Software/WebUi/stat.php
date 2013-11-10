@@ -42,7 +42,8 @@ switch ($_GET['limit']) {
 $stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st');
 $sensors=array_values(array_msort(
 				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
-						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)')
+						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)
+						AND sensor_deleted=0')
 				    , array('sensor_id'=>SORT_ASC)
 				 ));
 

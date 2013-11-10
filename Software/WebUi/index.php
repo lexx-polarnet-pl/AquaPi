@@ -26,10 +26,15 @@ include("init.php");
 // spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
 $limit 		= time() - (15 * 60);
 $limit48h 	= time() - (60 * 60 * 48);
-$sensor_ids	= $db->GetAll('SELECT DISTINCT sensor_id AS id FROM temp_stats WHERE time_st >= '.$limit.'  AND temp > -50 AND sensor_id >0 ORDER BY time_st');
-foreach($sensor_ids as $index => $sensor)
-	$temperatures[]	= $db->GetRow('select s.*,temp as sensor_temp from temp_stats ts, sensors s where s.sensor_id=ts.sensor_id AND ts.sensor_id = '.$sensor['id'].' and time_st > '.$limit.' order by time_st desc limit 0,1;');
 
+$sensor_ids	= $db->GetAll('SELECT DISTINCT sensor_id AS id
+				FROM temp_stats WHERE time_st >= '.$limit.'  AND temp > -50 AND sensor_id >0 ORDER BY time_st');
+foreach($sensor_ids as $index => $sensor)
+	$temperatures[]	= $db->GetRow('SELECT s.*,temp as sensor_temp
+					FROM temp_stats ts, sensors s
+					WHERE s.sensor_id=ts.sensor_id AND s.sensor_deleted=0 AND ts.sensor_id = '.$sensor['id'].' and time_st > '.$limit.' order by time_st desc limit 0,1;');
+$temperatures	= array_values(array_filter($temperatures));
+//new dBug($temperatures);
 
 $last5infologs 	= $db->GetAll('select * from log where level = 0  AND time >'.$limit48h.' order by time desc limit 0,5;');
 $last5warnlogs 	= $db->GetAll('select * from log where level <> 0 AND time >'.$limit48h.' order by time desc limit 0,5;');

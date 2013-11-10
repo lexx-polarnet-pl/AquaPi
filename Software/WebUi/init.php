@@ -57,7 +57,11 @@ $smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
 require(LIB_DIR. 'database.php');
-$db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
+$db		= new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
+
+//init sesji
+require(LIB_DIR. 'session.class.php');
+$SESSION	= new Session();
 
 //graficzny debug
 require(LIB_DIR.'dBug.php');

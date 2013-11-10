@@ -92,9 +92,7 @@ void StoreTempStat(double t_zad) {
 	DB_Query(buff);	
 	
 	
-	
-	
-	mysql_query(conn, "SELECT sensor_id, sensor_address, sensor_corr FROM sensors WHERE sensor_id>0;");
+	mysql_query(conn, "SELECT sensor_id, sensor_address, sensor_corr FROM sensors WHERE sensor_id>0 AND sensor_deleted=0;");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result)))
 	{
