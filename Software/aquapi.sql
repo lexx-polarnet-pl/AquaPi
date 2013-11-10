@@ -104,11 +104,11 @@ INSERT INTO `relayboard` (`relay_id`, `relay_name`, `relay_type`, `relay_state`)
 (1, 'nr1', 0, 0),
 (2, 'nr2', 0, 0),
 (3, 'nr3', 0, 0),
-(4, 'nr4', 0, 1),
+(4, 'nr4', 0, 0),
 (5, 'nr5', 1, 0),
 (6, 'nr6', 1, 0),
 (7, 'nr7', 1, 0),
-(8, 'nr8', 1, 1);
+(8, 'nr8', 1, 0);
 
 
 --
