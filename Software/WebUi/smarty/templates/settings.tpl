@@ -79,8 +79,8 @@
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 
-
-{include "sensors_table.tpl"}
+<!--Ustawienia sensorów temperatury-->
+{include "settings_sensors_table.tpl"}
 
 <div id="dashboard">
 <h3>Ustawienia temperatury:</h3>
@@ -116,10 +116,12 @@
 	{/foreach}
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-	
 </div>
 
-
+<!--Relayboard-->
+{if $relayboard_enable eq 1}
+	{include "settings_relayboard.tpl"}
+{/if}
 
 </form>
 

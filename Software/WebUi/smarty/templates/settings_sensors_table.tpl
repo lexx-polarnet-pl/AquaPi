@@ -21,8 +21,8 @@
 	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$sensor.sensor_id}][sensor_corr]" name="sensors[{$sensor.sensor_id}][sensor_corr]" value ="{$sensor.sensor_corr}"
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
 				onmouseout="return nd();">
-		<td><a href="?action=delete&id={$sensor.sensor_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"><img align="right" src="img/off.png"></a></td>
 	    </td>
+	    <td><a href="?action=delete&id={$sensor.sensor_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"><img align="right" src="img/off.png"></a></td>
 	</tr>
 	{/foreach}
 	<tr>

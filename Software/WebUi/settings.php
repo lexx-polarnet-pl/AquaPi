@@ -23,6 +23,12 @@
  
 include("init.php");
 
+if($CONFIG['plugins']['relayboard']==1)
+{
+	include(MODULES_DIR . "relayboard.php");
+	$smarty->assign('relayboard_enable', 1);
+}
+
 $smarty->assign('title', 'Ustawienia');
 //new dbug($_POST);
 
@@ -33,8 +39,7 @@ if(array_key_exists('action', $_GET))
 		$SESSION->redirect("settings.php");
 	}
 
-if(array_key_exists('day_start', $_POST))
-if ($_POST['day_start'] > "") 
+if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 {
 	$sensors = $_POST['sensors'];
 	

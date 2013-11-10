@@ -25,14 +25,15 @@
 $aquapi_ver = "1.9";
 
 // Wczytanie pliku z ustawieniami
-$ini_array = parse_ini_file("/etc/aquapi.ini");
- 
+$CONFIG = parse_ini_file("/etc/aquapi.ini", true);
+
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
 date_default_timezone_set('UTC');
 
 define('MAIN_DIR',getcwd().'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
+define('MODULES_DIR', MAIN_DIR.'modules/');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c');
 
@@ -57,7 +58,7 @@ $smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
 require(LIB_DIR. 'database.class.php');
-$db		= new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
+$db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
 
 //init sesji
 require(LIB_DIR. 'session.class.php');
