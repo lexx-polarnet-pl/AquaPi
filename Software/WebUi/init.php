@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin KrÃ³l (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -25,38 +25,65 @@
 $aquapi_ver = "1.9";
 
 // Wczytanie pliku z ustawieniami
-$ini_array = parse_ini_file("/etc/aquapi.ini");
- 
+$CONFIG = parse_ini_file("/etc/aquapi.ini", true);
+
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
+date_default_timezone_set('UTC');
+
+define('MAIN_DIR',getcwd().'/');
+define('LIB_DIR', MAIN_DIR.'lib/');
+define('MODULES_DIR', MAIN_DIR.'modules/');
+define('ONEWIRE_DIR','/sys/bus/w1/devices');
+define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c');
+
+
+if(!is_dir(SMARTY_COMPILE_DIR))
+        die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
+
+if(!is_writable(SMARTY_COMPILE_DIR))
+        die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
+
 
 // inicjalizacja smarty
-require('/var/www/smarty/libs/Smarty.class.php');
+require(MAIN_DIR.'smarty/libs/Smarty.class.php');
 $smarty = new Smarty();
 
-$smarty->setTemplateDir('/var/www/smarty/templates');
-$smarty->setCompileDir('/var/www/smarty/templates_c');
-$smarty->setCacheDir('/var/www/smarty/cache');
-$smarty->setConfigDir('/var/www/smarty/configs');
+$smarty->setTemplateDir(MAIN_DIR.'/smarty/templates');
+$smarty->setCompileDir(SMARTY_COMPILE_DIR);
+$smarty->setCacheDir(MAIN_DIR.'smarty/cache');
+$smarty->setConfigDir(MAIN_DIR.'smarty/configs');
 
 $smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
-require('database.php');
-$db = new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
+require(LIB_DIR. 'database.class.php');
+$db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
+
+//init sesji
+require(LIB_DIR. 'session.class.php');
+$SESSION	= new Session();
+
+//graficzny debug
+require(LIB_DIR.'dBug.php');
+
+//funkcje
+require(LIB_DIR.'functions.php');
 
 // definicja menu
 $my_menu = Array (
-    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "/index.php"),
-    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "/timers.php"),
-    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "/settings.php"),
-    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "/logs.php"),
-    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "/stat.php"),
-    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "/about.php")
+    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php"),
+    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php"),
+    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php"),
+    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php"),
+    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php"),
+    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
 );
 
+$self= end(explode('/', $_SERVER["PHP_SELF"]));
+
 foreach ($my_menu as &$pos) {
-    if ($pos['url'] == $_SERVER["PHP_SELF"]) {
+    if ($pos['url'] == $self) {
 		$cur_name = $pos['name'];
 		$pos['selected'] = true;
 	}

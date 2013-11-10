@@ -38,6 +38,12 @@ struct _events {
 	char device[10];
 } events[500]; 
 
+//struct _sensors {
+//	int sensor_id;
+//	char sensor_address[20], sensor_corr[10];
+//} sensors[500]; 
+
+
 struct _outputs {
 	int enabled,new_state;
 	//char *name;

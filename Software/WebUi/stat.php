@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software; you can redistribute it AND/or modify
  * it under the terms of the GNU General Public License Version 2 as
  * published by the Free Software Foundation.
  *
@@ -39,43 +39,55 @@ switch ($_GET['limit']) {
 		$limit = time() - (24 * 60 * 60);
 }
 
-$stat = $db->GetAll('select time_st,temp,sensor_id from temp_stats where time_st >= '.$limit.' and temp>-50 order by time_st;');
+$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st');
+$sensors=array_values(array_msort(
+				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
+						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)
+						AND sensor_deleted=0')
+				    , array('sensor_id'=>SORT_ASC)
+				 ));
 
-$first = $db->GetOne('select time_st from temp_stats where time_st >= '.$limit.' and temp>-50 order by time_st asc limit 1;');
-$last = $db->GetOne('select time_st from temp_stats where time_st >= '.$limit.' and temp>-50 order by time_st desc limit 1;');
-//echo $first." ".$last;
-//var_dump($stat);
+//new dBug($sensors);
 
-foreach ($stat as $value) {
-    //var_dump($value['time_st']);
-	$temp_arr[floor($value['time_st']/60)*60][$value['sensor_id']] = $value['temp'];
+$first	= reset($stat)['time_st'];
+$last	= end($stat)['time_st'];
+
+foreach ($stat as $index=>$value)
+{
+	$date=floor($value['time_st']/60)*60;
+	$temperature[$date]['year'] = date("Y", $date);
+	$temperature[$date]['month'] = date("n", $date)-1;
+	$temperature[$date]['day'] = date("j", $date);
+	$temperature[$date]['hour'] = date("H", $date);
+	$temperature[$date]['minutes'] = date("i", $date);
+	$temperature[$date][$value['sensor_id']] = $value['temp'];
+	//$temperature[$value['sensor_id']][]=array(floor($value['time_st']/60)*60 => $value['temp']);
 }
-
-$out_names = $db->GetAll('select distinct(event) from output_stats where time_st >= '.$limit.' order by time_st;');
-$stat = $db->GetAll('select time_st,state,event from output_stats where time_st >= '.$limit.' order by time_st;');
+//new dBug($temperature);
+$out_names	= $db->GetAll('SELECT distinct(event) FROM output_stats WHERE time_st >= '.$limit.' ORDER BY time_st;');
+$stat		= $db->GetAll('SELECT time_st,state,event FROM output_stats WHERE time_st >= '.$limit.' ORDER BY time_st;');
 
 $i = 0;
-foreach ($out_names as $name) {
-    //var_dump($value['time_st']);
-	//echo $name['event'];
-	//echo "select fname from devices where device = '".$name['event']."';";
+foreach ($out_names as $name)
+{
 	$outputs_names[$name['event']]['id'] = $i;
 	$outputs_names[$name['event']]['prev'] = null;
-	$outputs_names[$name['event']]['fname'] = $db->GetOne("select fname from devices where device = '".$name['event']."';");
+	$outputs_names[$name['event']]['fname'] = $db->GetOne("SELECT fname FROM devices WHERE device = '".$name['event']."';");
 	$i++;
 }
 
 $i = 0;
-foreach ($outputs_names as $key => $out_name) {
-	$ini_val = $db->GetOne('select state from output_stats where time_st < '.$limit.' and event = "'.$key.'" order by time_st desc limit 1;');
+foreach ($outputs_names as $key => $out_name)
+{
+	$ini_val = $db->GetOne('SELECT state FROM output_stats WHERE time_st < '.$limit.' AND event = "'.$key.'" ORDER BY time_st DESC LIMIT 1;');
 	if ($ini_val == null) {$ini_val = 0; }
 	$outputs_names[$key]['prev'] = $ini_val;
 	$outputs_arr[$first][$i] = $ini_val;
 	$i++;
 }
 
-foreach ($stat as $value) {
-    //var_dump($value['time_st']);
+foreach ($stat as $value)
+{
 	if ($outputs_names[$value['event']]['prev'] != $value['state']) {
 		$outputs_arr[$value['time_st']-1][$outputs_names[$value['event']]['id']] = $outputs_names[$value['event']]['prev'];
 	}
@@ -84,17 +96,15 @@ foreach ($stat as $value) {
 }
 
 $i = 0;
-foreach ($outputs_names as $key => $out_name) {
+foreach ($outputs_names as $key => $out_name)
+{
 	$outputs_arr[$last][$i] = $out_name['prev'];
 	$i++;
 }
 
-//echo "<pre>";
-//var_dump($outputs_names);
-//var_dump($outputs_arr);
-$smarty->assign('stat', $temp_arr);
+$smarty->assign('temperature', $temperature);
+$smarty->assign('sensors', $sensors);
 $smarty->assign('outputs_arr', $outputs_arr);
 $smarty->assign('outputs_names', $outputs_names);
-//var_dump($outputs_names);
 $smarty->display('stat.tpl');
 ?>

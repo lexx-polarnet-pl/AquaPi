@@ -23,9 +23,26 @@
  
 include("init.php");
 
-$smarty->assign('title', 'Ustawienia');
+if($CONFIG['plugins']['relayboard']==1)
+{
+	include(MODULES_DIR . "relayboard.php");
+	$smarty->assign('relayboard_enable', 1);
+}
 
-if ($_POST['day_start'] > "") {
+$smarty->assign('title', 'Ustawienia');
+//new dbug($_POST);
+
+if(array_key_exists('action', $_GET))
+	if ($_GET['action'] == "delete" and $_GET['id']>0)
+	{
+		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
+		$SESSION->redirect("settings.php");
+	}
+
+if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
+{
+	$sensors = $_POST['sensors'];
+	
 	$pieces = explode(":", $_POST['day_start']);
 	$day_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
 	$query = 'update settings set value="' . $day_start . '" where `key`= "day_start";';
@@ -35,31 +52,20 @@ if ($_POST['day_start'] > "") {
 	$day_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
 	$query = 'update settings set value="' . $day_stop . '" where `key`= "day_stop";';
 	$db->Execute($query);
+
+	foreach($sensors as $index => $sensor)
+	{
+//		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=? WHERE sensor_id=?', 
+//			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $index ));
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+			$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
+		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
+		{
+			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr) VALUES ('.$index.', "'.$sensor['sensor_address'].'", "'.$sensor['sensor_name'].'", "'.$sensor['sensor_corr'].'")');
+		}
+		
+	}
 	
-	$query = 'update settings set value="' . $_POST['temp_sensor'] . '" where `key`="temp_sensor";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['temp_sensor2'] . '" where `key`="temp_sensor2";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['temp_sensor3'] . '" where `key`="temp_sensor3";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['temp_sensor4'] . '" where `key`="temp_sensor4";';
-	$db->Execute($query);
-
-        $query = 'update settings set value="' . $_POST['temp_sensor_corr'] . '" where `key`="temp_sensor_corr";';
-        $db->Execute($query);
- 
-        $query = 'update settings set value="' . $_POST['temp_sensor2_corr'] . '" where `key`="temp_sensor2_corr";';
-        $db->Execute($query);
- 
-        $query = 'update settings set value="' . $_POST['temp_sensor3_corr'] . '" where `key`="temp_sensor3_corr";';
-        $db->Execute($query);
- 
-        $query = 'update settings set value="' . $_POST['temp_sensor4_corr'] . '" where `key`="temp_sensor4_corr";';
-        $db->Execute($query);
-
 	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
 	$db->Execute($query);
 
@@ -72,64 +78,49 @@ if ($_POST['day_start'] > "") {
 	$query = 'update settings set value="' . $_POST['hysteresis'] . '" where `key`="hysteresis";';
 	$db->Execute($query);
 
-	foreach ($_POST as $key => $value) {
+	foreach ($_POST as $key => $value)
+	{
 		$act_key = explode("_",$key);
-		//var_dump($act_key);
-		if ($act_key[0] == 'device') {
+		if ($act_key[0] == 'device')
+		{
 			$query = 'update devices set fname="' . $value . '" where `device`="' . $act_key[1] . '";';
 			$db->Execute($query);
 		}
 	}
-	//$query = 'update settings set value="' . $_POST['line_5'] . '" where `key`="gpio5_name";';
-	//$db->Execute($query);
-
-	//$query = 'update settings set value="' . $_POST['line_6'] . '" where `key`="gpio6_name";';
-	//$db->Execute($query);
 }
 
-$temp_day = $db->GetOne("select value from settings where `key`='temp_day';");
-$temp_night = $db->GetOne("select value from settings where `key`='temp_night';");
-$temp_cool = $db->GetOne("select value from settings where `key`='temp_cool';");
-$hysteresis = $db->GetOne("select value from settings where `key`='hysteresis';");
-$day_start = $db->GetOne("select value from settings where `key`='day_start';");
-$day_stop = $db->GetOne("select value from settings where `key`='day_stop';");
-
-$temp_sensor = $db->GetOne("select value from settings where `key`='temp_sensor';");
-$temp_sensor2 = $db->GetOne("select value from settings where `key`='temp_sensor2';");
-$temp_sensor3 = $db->GetOne("select value from settings where `key`='temp_sensor3';");
-$temp_sensor4 = $db->GetOne("select value from settings where `key`='temp_sensor4';");
-
-$temp_sensor_corr = $db->GetOne("select value from settings where `key`='temp_sensor_corr';");
-$temp_sensor2_corr = $db->GetOne("select value from settings where `key`='temp_sensor2_corr';");
-$temp_sensor3_corr = $db->GetOne("select value from settings where `key`='temp_sensor3_corr';");
-$temp_sensor4_corr = $db->GetOne("select value from settings where `key`='temp_sensor4_corr';");
+$temp_day	= $db->GetOne("select value from settings where `key`='temp_day';");
+$temp_night	= $db->GetOne("select value from settings where `key`='temp_night';");
+$temp_cool	= $db->GetOne("select value from settings where `key`='temp_cool';");
+$hysteresis	= $db->GetOne("select value from settings where `key`='hysteresis';");
+$day_start	= $db->GetOne("select value from settings where `key`='day_start';");
+$day_stop	= $db->GetOne("select value from settings where `key`='day_stop';");
 
 $friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
+$sensors	= $db->GetAll('SELECT * FROM sensors WHERE sensor_id>0 AND sensor_deleted=0');
+$temp_sensors 	= NULL;
 
-$temp_sensors = NULL;
-$folder = dir('/sys/bus/w1/devices');
-while($plik = $folder->read()) if (substr($plik,0,3) == '28-') $temp_sensors[] = $plik;
-$folder->close();
+if(is_dir(ONEWIRE_DIR))
+{
+    $folder = dir(ONEWIRE_DIR);
+    while($plik = $folder->read())
+	if (substr($plik,0,3) == '28-')
+		$temp_sensors[] = $plik;
+    $folder->close();
+}
 
 $smarty->assign('temp_day', $temp_day);
 $smarty->assign('temp_cool', $temp_cool);
 $smarty->assign('temp_night', $temp_night);
 $smarty->assign('hysteresis', $hysteresis);
-date_default_timezone_set('UTC');
+
 $smarty->assign('day_start', date("H:i:s",$day_start));
 $smarty->assign('day_stop', date("H:i:s",$day_stop));
-date_default_timezone_set("Europe/Warsaw");
-$smarty->assign('temp_sensor', $temp_sensor);
-$smarty->assign('temp_sensor2', $temp_sensor2);
-$smarty->assign('temp_sensor3', $temp_sensor3);
-$smarty->assign('temp_sensor4', $temp_sensor4);
-$smarty->assign('temp_sensors', $temp_sensors);
-$smarty->assign('temp_sensor_corr', $temp_sensor_corr);
-$smarty->assign('temp_sensor2_corr', $temp_sensor2_corr);
-$smarty->assign('temp_sensor3_corr', $temp_sensor3_corr);
-$smarty->assign('temp_sensor4_corr', $temp_sensor4_corr);
 
 $smarty->assign('friendly_names', $friendly_names);
+$smarty->assign('sensors', $sensors);
+$smarty->assign('new_sensor_id', count($sensors)+1);
+$smarty->assign('temp_sensors', $temp_sensors);
 
 $settings = $db->GetAll('select * from settings;');
 $smarty->assign('settings', $settings);

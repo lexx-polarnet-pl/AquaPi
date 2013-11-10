@@ -6,7 +6,7 @@
 <div id="icon">
 {/if}
 <a href="{$pos.url}">
-<img src="/img/{$pos.icon}" title="{$pos.name}">
+<img src="img/{$pos.icon}" title="{$pos.name}">
 </a>
 </div>
 {/foreach}

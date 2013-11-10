@@ -51,7 +51,7 @@
 	<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
 	</td></tr>
 	</table>
-	<INPUT TYPE="image" SRC="/img/submit.png" align="right">
+	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
 </div>
 
@@ -87,7 +87,7 @@
 		<td>{if $entry.day_of_week & 32}x{/if}</td>
 		<td>{if $entry.day_of_week & 64}x{/if}</td>
 		<td>{if $entry.day_of_week & 1}x{/if}</td>
-		<td><a href="timers.php?op=del&id={$entry.id}"><img src="/img/delete_entry.png" title="Skasuj pozycję"></a></td>        
+		<td><a href="timers.php?op=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
     </tr>
 {/foreach}
 </table>

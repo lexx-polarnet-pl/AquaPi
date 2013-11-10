@@ -603,6 +603,10 @@ class Smarty extends Smarty_Internal_TemplateBase {
     public $merged_templates_func = array();
     /**#@-*/
 
+
+    public $_tpl_vars             = array();
+
+
     /**
      * Initialize new Smarty object
      *

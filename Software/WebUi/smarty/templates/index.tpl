@@ -11,15 +11,16 @@
 </div>
 
 <div id="dashboard">
-<img src ="/img/welcome_logo.png" style="float:left;">
+<img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
 <tr><td>Czas</td><td>{$time}</td></tr>
-<tr><td>Temperatura zbiornika:</td><td>{if $temp1==''}--.--{else}{$temp1|string_format:"%.2f"}{/if}&deg;C</td></tr>
+<tr><td>Temperatura zbiornika:</td><td>{if $temperatures.0.sensor_temp==''}--.--{else}{$temperatures.0.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td></tr>
 <tr><td>Uruchomiony:</td><td>{$enabled}</td></tr>
 <tr><td>Wersja jądra:</td><td>{$uname_r}</td></tr>
 <tr><td>Kompilacja:</td><td>{$uname_v}</td></tr>
 <tr><td>Obciążenie:</td><td>{$load.0} {$load.1} {$load.2}</td></tr>
+<tr><td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td></tr>
 <tr><td>Wersja AquaPi:</td><td>{$aquapi_ver}</td></tr>
 </table>
 </div>

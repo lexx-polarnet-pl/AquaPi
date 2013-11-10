@@ -85,6 +85,33 @@ CREATE TABLE `output_stats` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Struktura tabeli dla tabeli `relayboard`
+--
+
+CREATE TABLE IF NOT EXISTS `relayboard` (
+  `relay_id` int(5) NOT NULL AUTO_INCREMENT,
+  `relay_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `relay_type` tinyint(4) NOT NULL COMMENT '0-NO,1-NC',
+  `relay_state` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`relay_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=9 ;
+
+--
+-- Zrzut danych tabeli `relayboard`
+--
+
+INSERT INTO `relayboard` (`relay_id`, `relay_name`, `relay_type`, `relay_state`) VALUES
+(1, 'nr1', 0, 0),
+(2, 'nr2', 0, 0),
+(3, 'nr3', 0, 0),
+(4, 'nr4', 0, 0),
+(5, 'nr5', 1, 0),
+(6, 'nr6', 1, 0),
+(7, 'nr7', 1, 0),
+(8, 'nr8', 1, 0);
+
+
+--
 -- Table structure for table `settings`
 --
 
@@ -98,6 +125,32 @@ CREATE TABLE `settings` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Struktura tabeli dla tabeli `sensors`
+--
+
+CREATE TABLE IF NOT EXISTS `sensors` (
+  `sensor_id` int(5) NOT NULL AUTO_INCREMENT,
+  `sensor_address` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0-temp zadana,1-1wire temp,',
+  `sensor_corr` varchar(6) COLLATE utf8_polish_ci NOT NULL DEFAULT '0' COMMENT 'korekta wartosci sensora',
+  `sensor_warn_min` varchar(6) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_warn_max` varchar(6) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`sensor_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+
+--
+-- Zrzut danych tabeli `sensors`
+--
+
+INSERT INTO `sensors` (`sensor_id`, `sensor_address`, `sensor_name`, `sensor_type`, `sensor_corr`, `sensor_warn_min`, `sensor_warn_max`) VALUES
+(0, 'none', 'Temperatura zadana', 0, '0', '', '');
+
+ALTER TABLE  `sensors` ADD  `sensor_deleted` TINYINT NOT NULL DEFAULT  '0' COMMENT  'czy czujnik jest skasowany';
+
 
 --
 -- Dumping data for table `settings`
