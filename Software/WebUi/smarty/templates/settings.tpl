@@ -73,7 +73,7 @@
 <div id="dashboard">
 <h3>Ustawienia dnia:</h3>
 	<table>
-	<tr><td>Rozpoczęcie:</td><td><input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}" /></td></tr>
+	<tr><td>Rozpoczęcie:</td><td><input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}"/></td></tr>
 	<tr><td>Zakończenie:</td><td><input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" /></td></tr>
 	</table>	
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">

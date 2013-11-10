@@ -26,11 +26,12 @@ include("init.php");
 $smarty->assign('title', 'Ustawienia');
 //new dbug($_POST);
 
-if ($_GET['action'] == "delete" and $_GET['id']>0)
-{
-	$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
-	$SESSION->redirect("settings.php");
-}
+if(array_key_exists('action', $_GET))
+	if ($_GET['action'] == "delete" and $_GET['id']>0)
+	{
+		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
+		$SESSION->redirect("settings.php");
+	}
 
 
 if ($_POST['day_start'] > "") 

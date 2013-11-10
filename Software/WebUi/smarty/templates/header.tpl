@@ -12,5 +12,7 @@
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 </head>
 <body>
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<script type="text/javascript" language="JavaScript" src="js/overlib.js"></script>
 {include "menu.tpl"}
 <h1>{$cur_name}</h1>
