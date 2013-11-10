@@ -33,7 +33,7 @@ if(array_key_exists('action', $_GET))
 		$SESSION->redirect("settings.php");
 	}
 
-
+if(array_key_exists('day_start', $_POST))
 if ($_POST['day_start'] > "") 
 {
 	$sensors = $_POST['sensors'];
