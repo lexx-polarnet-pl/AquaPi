@@ -56,7 +56,7 @@ $smarty->setConfigDir(MAIN_DIR.'smarty/configs');
 $smarty->assign('aquapi_ver',$aquapi_ver);
 
 // inicjalizacja bazy danych
-require(LIB_DIR. 'database.php');
+require(LIB_DIR. 'database.class.php');
 $db		= new Database($ini_array['host'],$ini_array['user'],$ini_array['password'],$ini_array['database']);
 
 //init sesji
