@@ -46,10 +46,15 @@ if ($_GET['op'] == 'del') {
 	//echo $query;
 }
 
+//new dbug($db->GetOne('SELECT device FROM timers WHERE id=?', array('17')));
+//new dbug($db->GetRow('SELECT * FROM timers WHERE id=?', array('17')));
+//new dbug($db->GetAll('SELECT *, ? FROM timers', array('17')));
+
+//die;
 //$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
 //$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
-$friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled" and device like "uni%";');
-$timers = $db->GetAll(' select timers.*,devices.fname from timers left join devices on timers.device = devices.device;');
+$friendly_names = $db->GetAll('SELECT device,fname,output FROM devices WHERE output <> ? AND device ?LIKE? ?;', array("disabled", "uni%"));
+$timers = $db->GetAll('SELECT timers.*,devices.fname FROM timers LEFT JOIN devices ON timers.device = devices.device;');
 //var_dump($timers);
 $smarty->assign('timers', $timers);
 //$smarty->assign('line_5', $line_5);
