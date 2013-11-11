@@ -150,6 +150,7 @@ INSERT INTO `sensors` (`sensor_id`, `sensor_address`, `sensor_name`, `sensor_typ
 (0, 'none', 'Temperatura zadana', 0, '0', '', '');
 
 ALTER TABLE  `sensors` ADD  `sensor_deleted` TINYINT NOT NULL DEFAULT  '0' COMMENT  'czy czujnik jest skasowany';
+ALTER TABLE  `sensors` ADD  `sensor_draw` TINYINT NOT NULL DEFAULT  '1' COMMENT  'czy pokazywac czujnik na wykresie' AFTER  `sensor_corr`;
 
 
 --

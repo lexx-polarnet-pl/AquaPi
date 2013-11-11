@@ -43,7 +43,7 @@ $stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_
 $sensors=array_values(array_msort(
 				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
 						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)
-						AND sensor_deleted=0')
+						AND sensor_deleted=0 AND sensor_draw=1')
 				    , array('sensor_id'=>SORT_ASC)
 				 ));
 
