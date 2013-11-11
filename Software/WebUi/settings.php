@@ -36,6 +36,7 @@ if(array_key_exists('action', $_GET))
 	if ($_GET['action'] == "delete" and $_GET['id']>0)
 	{
 		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
+		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
 
@@ -89,6 +90,7 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 			$db->Execute($query);
 		}
 	}
+	ReloadDaemonConfig();
 }
 
 $temp_day	= $db->GetOne("select value from settings where `key`='temp_day';");
