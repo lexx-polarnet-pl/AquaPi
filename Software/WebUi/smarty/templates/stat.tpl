@@ -6,7 +6,6 @@
 		google.load("visualization", "1", {packages:["corechart"], 'language': 'pl'});
 {/literal}
 		google.setOnLoadCallback(drawChart);
-
 		function drawChart() {
 			var TempTable = new google.visualization.DataTable();	  
 			TempTable.addColumn('datetime', 'Czas');
@@ -24,7 +23,7 @@
 			{/foreach}
 			]);
 		
-{foreach from=$outputs_names key="key" item="entry"}
+	    {foreach from=$outputs_names key="key" item="entry"}
 			var LogicTable{$entry.id} = new google.visualization.DataTable();	  
 			LogicTable{$entry.id}.addColumn('datetime', 'Czas');
 			LogicTable{$entry.id}.addColumn('number', '{$entry.fname}');	  
@@ -35,37 +34,37 @@
 				
 			{/foreach}
 			]);
-{/foreach}
+	    {/foreach}
 {literal}		
 		var options1 = {
 			//'pointSize': 5,
 			'title': 'Przebieg temperatury',
-            'chartArea': {'left': 60, 'top':30, 'height': '300', 'width': '99%'},
-            'legend': {'position': 'bottom'},
+			'chartArea': {'left': 60, 'top':30, 'height': '300', 'width': '99%'},
+			'legend': {'position': 'bottom'},
 			'vAxis': {'title': 'Temperatura'},
 			'hAxis': {'title': 'Czas'}
-		};
+			};
 
 		var options2 = {
 			//'pointSize': 5,
 			'title': 'Przebieg stanów',
-            //'chartArea': {'width': '90%', 'height': '80%'},
-            'chartArea': {'left': 60, 'top':30, 'height': '200', 'width': '99%'},
-            'legend': {'position': 'bottom'},
+			//'chartArea': {'width': '90%', 'height': '80%'},
+			'chartArea': {'left': 60, 'top':30, 'height': '200', 'width': '99%'},
+			'legend': {'position': 'bottom'},
 			'vAxis': {'title': 'Stan'},
 			'hAxis': {'title': 'Czas'}
-		};
+			};
 {/literal}
 		
-		var dataView = new google.visualization.DataView(TempTable);
-        var chart = new google.visualization.LineChart(document.getElementById('chart_temp'));
-        chart.draw(dataView, options1);
+	    var dataView = new google.visualization.DataView(TempTable);
+	    var chart = new google.visualization.LineChart(document.getElementById('chart_temp'));
+	    chart.draw(dataView, options1);
 
-{foreach from=$outputs_names key="key" item="entry"}
-		var dataView = new google.visualization.DataView(LogicTable{$entry.id});
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_logic{$entry.id}'));
-        chart.draw(dataView, options2);		
-{/foreach}
+	    {foreach from=$outputs_names key="key" item="entry"}
+			var dataView = new google.visualization.DataView(LogicTable{$entry.id});
+			var chart = new google.visualization.AreaChart(document.getElementById('chart_logic{$entry.id}'));
+			chart.draw(dataView, options2);		
+	    {/foreach}
 	}
 </script>
 
