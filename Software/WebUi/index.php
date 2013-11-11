@@ -30,7 +30,8 @@ $limit48h 	= time() - (60 * 60 * 48);
 $sensor_ids	= $db->GetAll('SELECT DISTINCT sensor_id AS id
 				FROM temp_stats WHERE time_st >= '.$limit.'  AND temp > -50 AND sensor_id >0 ORDER BY time_st');
 
-if ($sensor_ids!=null) {
+if ($sensor_ids) 
+{
 	foreach($sensor_ids as $index => $sensor)
 		$temperatures[]	= $db->GetRow('SELECT s.*,temp as sensor_temp
 						FROM temp_stats ts, sensors s
@@ -44,7 +45,8 @@ $last5warnlogs 	= $db->GetAll('select * from log where level <> 0 AND time >'.$l
 
 $devices 	= $db->GetAll('select * from devices where output <> "disabled";');
 
-foreach ($devices as $key => $device) {
+foreach ($devices as $key => $device) 
+{
 	$devices[$key]['output_state']= $db->GetOne('select state from output_stats where `event` = "'.$device['device'].'" order by time_st desc limit 0,1;');
 }
 
