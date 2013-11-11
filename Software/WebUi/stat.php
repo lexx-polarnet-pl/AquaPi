@@ -39,11 +39,11 @@ switch ($_GET['limit']) {
 		$limit = time() - (24 * 60 * 60);
 }
 
-$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st');
-$sensors=array_values(array_msort(
+$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st', array($limit));
+$sensors= array_values(array_msort(
 				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
-						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= '.$limit.' AND temp>-50 ORDER BY time_st)
-						AND sensor_deleted=0 AND sensor_draw=1')
+						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st)
+						AND sensor_deleted=0 AND sensor_draw=1', array($limit))
 				    , array('sensor_id'=>SORT_ASC)
 				 ));
 
@@ -68,22 +68,22 @@ foreach ($stat as $index=>$value)
 	//$temperature[$value['sensor_id']][]=array(floor($value['time_st']/60)*60 => $value['temp']);
 }
 //new dBug($temperature);
-$out_names	= $db->GetAll('SELECT distinct(event) FROM output_stats WHERE time_st >= '.$limit.' ORDER BY time_st;');
-$stat		= $db->GetAll('SELECT time_st,state,event FROM output_stats WHERE time_st >= '.$limit.' ORDER BY time_st;');
+$out_names	= $db->GetAll('SELECT distinct(event) FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
+$stat		= $db->GetAll('SELECT time_st,state,event FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
 
 $i = 0;
 foreach ($out_names as $name)
 {
 	$outputs_names[$name['event']]['id'] = $i;
 	$outputs_names[$name['event']]['prev'] = null;
-	$outputs_names[$name['event']]['fname'] = $db->GetOne("SELECT fname FROM devices WHERE device = '".$name['event']."';");
+	$outputs_names[$name['event']]['fname'] = $db->GetOne("SELECT fname FROM devices WHERE device = ?", array($name['event']));
 	$i++;
 }
 
 $i = 0;
 foreach ($outputs_names as $key => $out_name)
 {
-	$ini_val = $db->GetOne('SELECT state FROM output_stats WHERE time_st < '.$limit.' AND event = "'.$key.'" ORDER BY time_st DESC LIMIT 1;');
+	$ini_val = $db->GetOne('SELECT state FROM output_stats WHERE time_st < ? AND event = ? ORDER BY time_st DESC LIMIT 1', array($limit, $key));
 	if ($ini_val == null) {$ini_val = 0; }
 	$outputs_names[$key]['prev'] = $ini_val;
 	$outputs_arr[$first][$i] = $ini_val;
