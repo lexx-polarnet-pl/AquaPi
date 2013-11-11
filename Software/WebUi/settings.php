@@ -30,8 +30,8 @@ if($CONFIG['plugins']['relayboard']==1)
 }
 
 $smarty->assign('title', 'Ustawienia');
-//new dbug($_POST);
 
+//kasowanie czujnika przez $_GET
 if(array_key_exists('action', $_GET))
 	if ($_GET['action'] == "delete" and $_GET['id']>0)
 	{
