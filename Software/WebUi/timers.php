@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin KrÃ³l (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -36,6 +36,7 @@ if ($_GET['op'] == 'add_new') {
 	$query = "INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES ($ev_start,$ev_stop,'$device',$days_of_week);";
 	$db->Execute($query);
 	//echo $query;
+	ReloadDaemonConfig();
 }
 
 if ($_GET['op'] == 'del') {
@@ -44,6 +45,7 @@ if ($_GET['op'] == 'del') {
 	$query = "DELETE FROM timers WHERE Id = $id;";
 	$db->Execute($query);
 	//echo $query;
+	ReloadDaemonConfig();
 }
 
 //new dbug($db->GetOne('SELECT device FROM timers WHERE id=?', array('17')));

@@ -29,6 +29,8 @@ const int E_CRIT = 2;
 
 void Log(char *msg, int lev);
 
+void ReadConf();
+
 void termination_handler(int signum);
 
 int events_count,outputs_count;

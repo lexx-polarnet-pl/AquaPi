@@ -26,6 +26,8 @@
 	
 	}
 
-
+function ReloadDaemonConfig() {
+    IPC_Command("reload");
+}
 
 ?>

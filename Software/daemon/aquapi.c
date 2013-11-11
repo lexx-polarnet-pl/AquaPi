@@ -31,6 +31,7 @@
 #include "database.c"
 #include "externals.c"
 #include "inifile.c"
+#include "ipc.c"
 
 double temp_dzien,temp_noc,temp_cool,histereza;
 double temp_sensor_corr;
@@ -198,7 +199,6 @@ int main() {
 	int temp_freq 	= 300; // co ile sekund kontrolować temp
 	int log_freq 	= 30; // co ile sekund wypluwać informacje devel
 	int stat_freq 	= 300; // co ile sekund zapisywac co się dzieje w bazie
-	int conf_freq 	= 600; // co ile sekund wczytać ustawienia z bazy
 
 	int grzanie = 0;
 	int chlodzenie = 0;
@@ -216,8 +216,7 @@ int main() {
     }
 	
 	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
-    syslog(LOG_INFO, "Daemon started.");
- 
+	syslog(LOG_INFO, "Daemon started.");
 
 	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
 	
@@ -226,6 +225,8 @@ int main() {
 	ReadConf();
 	
 	SetupPorts();
+	
+	InitIPC();
 	
 	// domyślnie wyjścia na zero
 	for(j = 0; j <= outputs_count; j++) {
@@ -253,8 +254,8 @@ int main() {
 	}
 	
 	// termination signals handling
-    signal(SIGINT, termination_handler);
-    signal(SIGTERM, termination_handler);
+	signal(SIGINT, termination_handler);
+	signal(SIGTERM, termination_handler);
 	
 	for (;;) {	
 		// ustalenie timerów i ustalenie czy jest dzien czy noc
@@ -262,10 +263,8 @@ int main() {
 		timeinfo = localtime ( &rawtime );
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
-		// odświerzenie konfiguracji
-		if (seconds_since_midnight % conf_freq== 0) {
-			ReadConf();
-		}
+		// procesuj komunikaty IPC
+		ProcessIPC();
 		
 		for(i = 0; i <= events_count; i++) {
 			// sprawdź czy jest odpowiedni dzień tygodnia
