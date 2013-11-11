@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2012 Marcin KrÃ³l (lexx@polarnet.pl)
  *
  * This program is free software; you can redistribute it AND/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -49,8 +49,12 @@ $sensors=array_values(array_msort(
 
 //new dBug($sensors);
 
-$first	= reset($stat)['time_st'];
-$last	= end($stat)['time_st'];
+//$first	= reset($stat)['time_st'];
+//$last	= end($stat)['time_st'];
+$first	= reset($stat);
+$first	= $first['time_st'];
+$last	= end($stat);
+$last	= $last['time_st'];
 
 foreach ($stat as $index=>$value)
 {
