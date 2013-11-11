@@ -55,13 +55,15 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 
 	foreach($sensors as $index => $sensor)
 	{
-//		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=? WHERE sensor_id=?', 
-//			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $index ));
 		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
-			$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
+		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=?, sensor_draw=? WHERE sensor_id=?', 
+			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $index ));
+		//if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+		//	$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
 		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
 		{
-			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr) VALUES ('.$index.', "'.$sensor['sensor_address'].'", "'.$sensor['sensor_name'].'", "'.$sensor['sensor_corr'].'")');
+			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr, sensor_draw)
+				     VALUES (?, ?, ?, ?, ?)', array($index, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr']));
 		}
 		
 	}
