@@ -205,9 +205,9 @@ int main() {
 	// defaults
 	config.dontfork 	= 0;
 	config.dummy_temp_sensor_val = -100;
-	config.temp_freq 	= 300; // co ile sekund kontrolować temp
+	config.temp_freq 	= 10; // co ile sekund kontrolować temp
 	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
-	config.stat_freq 	= 300; // co ile sekund zapisywac co się dzieje w bazie
+	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
