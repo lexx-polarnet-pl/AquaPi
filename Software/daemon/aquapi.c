@@ -196,10 +196,6 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 
-	int temp_freq 	= 300; // co ile sekund kontrolować temp
-	int log_freq 	= 30; // co ile sekund wypluwać informacje devel
-	int stat_freq 	= 300; // co ile sekund zapisywac co się dzieje w bazie
-
 	int grzanie = 0;
 	int chlodzenie = 0;
 	int dzien = -1;
@@ -207,8 +203,11 @@ int main() {
 	int i,j,seconds_since_midnight;
 
 	// defaults
-	config.dontfork = 0;
+	config.dontfork 	= 0;
 	config.dummy_temp_sensor_val = -100;
+	config.temp_freq 	= 300; // co ile sekund kontrolować temp
+	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
+	config.stat_freq 	= 300; // co ile sekund zapisywac co się dzieje w bazie
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
@@ -327,7 +326,7 @@ int main() {
 		}
 		
 		// obsługa temperatury
-		if (seconds_since_midnight % temp_freq == 0) {
+		if (seconds_since_midnight % config.temp_freq == 0) {
 			if (dzien == 1) {
 				temp_zad = temp_dzien; 
 			} else {
@@ -380,12 +379,12 @@ int main() {
 			}
 		}
 
-		if (seconds_since_midnight % log_freq == 0) {
+		if (seconds_since_midnight % config.devel_freq == 0) {
 			sprintf(buff,"Dzień: %i Grzanie: %i Temp zad: %.2f Temp akt: %.2f Hist: %.2f",dzien,grzanie,temp_zad,temp_act,histereza);
 			Log(buff,E_DEV);
 		}
 
-		if (seconds_since_midnight % stat_freq == 0) {
+		if (seconds_since_midnight % config.stat_freq == 0) {
 			StoreTempStat(temp_zad);
 		}
 		

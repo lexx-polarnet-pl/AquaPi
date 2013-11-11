@@ -56,11 +56,14 @@ struct _outputs {
 
 typedef struct
 {
-    char* db_host;
-    char* db_user; 
+	char* db_host;
+	char* db_user; 
 	char* db_password;
 	char* db_database;
 	int dontfork;
+	int stat_freq;
+	int temp_freq;
+	int devel_freq;
 	double dummy_temp_sensor_val;
 } configuration;
 
