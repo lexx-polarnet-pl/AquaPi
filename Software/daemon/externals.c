@@ -58,36 +58,41 @@ double read_temp(char *sensor_id) {
 	char line2[80];
 	char *pos;
 	double temp;
-
-	sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);
 	
-    fp = fopen (sensor_path, "r");
-    if( fp == NULL ) {
-		sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
-		Log(buff,E_CRIT);
-		return -201;
-    } else {
-		// otwarty plik z danymi sensora, trzeba odczytac
-		fgets(line, 80, fp);
-		fgets(line2, 80, fp);
-		fclose (fp);		
-		// poszukajmy YES w stringu (weryfikacja CRC ok)
-		pos = strstr(line,"YES");
-		if (pos != NULL) {
-			// teraz mamy dane o temperaturze
-			pos = strstr(line2,"t=");
-			if (pos != NULL) {
-				// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
-				pos += 2;
-				temp = (double)atoi(pos)/1000;
-				return temp;
-			} else {
-				return -200;
-			}
+	if (strcmp(sensor_id,"dummy")==0) {
+		// dummy sensor
+		return config.dummy_temp_sensor_val;
+	} else {
+		sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);
+		
+		fp = fopen (sensor_path, "r");
+		if( fp == NULL ) {
+			sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
+			Log(buff,E_CRIT);
+			return -201;
 		} else {
-			//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
-			//Log(buff,E_WARN);
-			return -202;
+			// otwarty plik z danymi sensora, trzeba odczytac
+			fgets(line, 80, fp);
+			fgets(line2, 80, fp);
+			fclose (fp);		
+			// poszukajmy YES w stringu (weryfikacja CRC ok)
+			pos = strstr(line,"YES");
+			if (pos != NULL) {
+				// teraz mamy dane o temperaturze
+				pos = strstr(line2,"t=");
+				if (pos != NULL) {
+					// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
+					pos += 2;
+					temp = (double)atoi(pos)/1000;
+					return temp;
+				} else {
+					return -200;
+				}
+			} else {
+				//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
+				//Log(buff,E_WARN);
+				return -202;
+			}
 		}
 	}
 }

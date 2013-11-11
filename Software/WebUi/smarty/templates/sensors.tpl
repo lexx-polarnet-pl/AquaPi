@@ -6,5 +6,9 @@
 		<td>{$sensor.sensor_name}</td>     
 		<td>{if $sensor.sensor_temp==''}--.--{else}{$sensor.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td>
 	</tr>
-    {/foreach}
+	{foreachelse}
+      <tr bgcolor="#cccccc">
+        <td colspan="2">Brak danych</td>
+      </tr>
+	{/foreach}
 </table>

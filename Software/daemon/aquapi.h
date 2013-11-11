@@ -59,4 +59,7 @@ typedef struct
 	char* db_password;
 	char* db_database;
 	int dontfork;
+	double dummy_temp_sensor_val;
 } configuration;
+
+configuration config;
