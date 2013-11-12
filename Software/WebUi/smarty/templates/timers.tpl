@@ -80,14 +80,14 @@
 		{if $entry.t_start<$entry.t_stop}{$duration = $entry.t_stop - $entry.t_start}{else}{$duration = 86400 -($entry.t_start - $entry.t_stop)}{/if}
 		<td>{$duration|date_format:"%H:%M:%S"}</td>
 		<td>{$entry.fname}</td>
-		<td>{if $entry.day_of_week & 2}x{/if}</td>
-		<td>{if $entry.day_of_week & 4}x{/if}</td>
-		<td>{if $entry.day_of_week & 8}x{/if}</td>
-		<td>{if $entry.day_of_week & 16}x{/if}</td>
-		<td>{if $entry.day_of_week & 32}x{/if}</td>
-		<td>{if $entry.day_of_week & 64}x{/if}</td>
-		<td>{if $entry.day_of_week & 1}x{/if}</td>
-		<td><a href="timers.php?action=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
+		<td align="center">{if $entry.day_of_week & 2}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 4}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 8}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 16}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 32}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 64}x{/if}</td>
+		<td align="center">{if $entry.day_of_week & 1}x{/if}</td>
+		<td align="center"><a href="timers.php?action=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
     </tr>
 {/foreach}
 </table>
