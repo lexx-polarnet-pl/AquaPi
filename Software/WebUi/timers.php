@@ -25,7 +25,7 @@ include("init.php");
 
 $smarty->assign('title', 'Timery');
 
-if ($_GET['op'] == 'add_new') {
+if ($_GET['action'] == 'add') {
 	//var_dump($_POST);
 	$pieces = explode(":", $_POST['ev_start']);
 	$ev_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
@@ -33,17 +33,15 @@ if ($_GET['op'] == 'add_new') {
 	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
 	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
 	$device= $_POST['device'];
-	$query = "INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES ($ev_start,$ev_stop,'$device',$days_of_week);";
-	$db->Execute($query);
+	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,'$device',$days_of_week));
 	//echo $query;
 	ReloadDaemonConfig();
 }
 
-if ($_GET['op'] == 'del') {
+if ($_GET['action'] == 'del') {
 	//var_dump($_POST);
 	$id = $_GET['id'];
-	$query = "DELETE FROM timers WHERE Id = $id;";
-	$db->Execute($query);
+	$db->Execute("DELETE FROM timers WHERE Id = ?", array($id));
 	//echo $query;
 	ReloadDaemonConfig();
 }
@@ -57,7 +55,7 @@ if ($_GET['op'] == 'del') {
 //$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
 $friendly_names = $db->GetAll('SELECT device,fname,output FROM devices WHERE output <> ? AND device ?LIKE? ?;', array("disabled", "uni%"));
 $timers = $db->GetAll('SELECT timers.*,devices.fname FROM timers LEFT JOIN devices ON timers.device = devices.device;');
-//var_dump($timers);
+//new dbug($timers);
 $smarty->assign('timers', $timers);
 //$smarty->assign('line_5', $line_5);
 $smarty->assign('friendly_names', $friendly_names);

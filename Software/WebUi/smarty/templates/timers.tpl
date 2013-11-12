@@ -31,7 +31,7 @@
 
 <div id="dashboard">
 <h3>Dodanie nowego timera:</h3>
-<form action="timers.php?op=add_new" method="post">
+<form action="timers.php?action=add" method="post">
 	<table>
 	<tr><td>Załączenie:</td><td><input class="time_select" type="text" name="ev_start" id="ev_start" value="00:00:00" /></td></tr>
 	<tr><td>Wyłączenie:</td><td><input class="time_select" type="text" name="ev_stop" id="ev_stop" value="00:00:00" /></td></tr>
@@ -87,7 +87,7 @@
 		<td>{if $entry.day_of_week & 32}x{/if}</td>
 		<td>{if $entry.day_of_week & 64}x{/if}</td>
 		<td>{if $entry.day_of_week & 1}x{/if}</td>
-		<td><a href="timers.php?op=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
+		<td><a href="timers.php?action=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
     </tr>
 {/foreach}
 </table>
