@@ -35,32 +35,28 @@ $smarty->assign('title', 'Ustawienia');
 if(array_key_exists('action', $_GET))
 	if ($_GET['action'] == "delete" and $_GET['id']>0)
 	{
-		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id='.$_GET['id']);
+		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id=?', array($_GET['id']));
 		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
 
 if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 {
-	$sensors = $_POST['sensors'];
+	$sensors	= $_POST['sensors'];
 	
-	$pieces = explode(":", $_POST['day_start']);
-	$day_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$query = 'update settings set value="' . $day_start . '" where `key`= "day_start";';
-	$db->Execute($query);
+	$pieces 	= explode(":", $_POST['day_start']);
+	$day_start 	= intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+	$db->Execute('UPDATE settings SET value=? where `key`= ?', array($day_start, 'day_start'));
 
-	$pieces = explode(":", $_POST['day_stop']);
-	$day_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$query = 'update settings set value="' . $day_stop . '" where `key`= "day_stop";';
-	$db->Execute($query);
+	$pieces 	= explode(":", $_POST['day_stop']);
+	$day_stop 	= intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+	$db->Execute('UPDATE settings SET value=? where `key`= ?', array($day_stop, 'day_stop'));
 
 	foreach($sensors as $index => $sensor)
 	{
-		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id=?', array($index))=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
 		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=?, sensor_draw=? WHERE sensor_id=?', 
 			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $index ));
-		//if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id='.$index)=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
-		//	$db->Execute('UPDATE sensors SET sensor_name="'.$sensor['sensor_name'].'", sensor_address="'.$sensor['sensor_address'].'", sensor_corr="'.$sensor['sensor_corr'].'" WHERE sensor_id='.$index);
 		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
 		{
 			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr, sensor_draw)
@@ -69,25 +65,17 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 		
 	}
 	
-	$query = 'update settings set value="' . $_POST['temp_day'] . '" where `key`="temp_day";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['temp_night'] . '" where `key`="temp_night";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['temp_cool'] . '" where `key`="temp_cool";';
-	$db->Execute($query);
-
-	$query = 'update settings set value="' . $_POST['hysteresis'] . '" where `key`="hysteresis";';
-	$db->Execute($query);
+	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_day'], "temp_day"));
+	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_night'], "temp_night"));
+	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_cool'], "temp_cool"));
+	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['hysteresis'], "hysteresis"));
 
 	foreach ($_POST as $key => $value)
 	{
 		$act_key = explode("_",$key);
 		if ($act_key[0] == 'device')
 		{
-			$query = 'update devices set fname="' . $value . '" where `device`="' . $act_key[1] . '";';
-			$db->Execute($query);
+			$db->Execute('update devices set fname= ? where device= ?', array($value, $act_key[1]));
 		}
 	}
 	ReloadDaemonConfig();
