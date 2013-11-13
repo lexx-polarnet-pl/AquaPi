@@ -4,4 +4,4 @@ AquaPi
 Ten plik zawiera listę wszystkich developerów AquaPi:
 
 * Marcin 'Lexx' Król <lexx@polarnet.pl>
-* Jarosław 'SirYaro' Czarniak <jczarniak@gmail.com>
+* Jarosław 'Sir_Yaro' Czarniak <jaroslaw@czarniak.org>
