@@ -160,7 +160,7 @@ ALTER TABLE  `sensors` ADD  `sensor_draw` TINYINT NOT NULL DEFAULT  '1' COMMENT 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 INSERT INTO `settings` VALUES (1,'temp_day','25.0'),(2,'temp_night','24.2'),(3,'hysteresis','0.2'),
-(4,'day_start','32400'),(5,'day_stop','75600'),(8,'temp_sensor','28-000000000000'),
+(4,'day_start','32400'),(5,'day_stop','75600'),(8,'temp_sensor','none'),
 (9,'temp_cool','26.0'),(10,'temp_sensor2','none'),(11,'temp_sensor3','none'),
 (12,'temp_sensor4','none');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;

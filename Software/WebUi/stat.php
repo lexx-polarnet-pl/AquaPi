@@ -25,20 +25,24 @@ include("init.php");
 
 $smarty->assign('title', 'Statystyki');
 
-switch ($_GET['limit']) {
-    case 'week':
-		$limit = time() - (7 * 24 * 60 * 60);
-        break;
-    case 'month':
-		$limit = time() - (31 * 24 * 60 * 60);
-        break;
-    case 'no_limit':
-		$limit = 0;
-        break;
-    default:
-		$limit = time() - (24 * 60 * 60);
-}
-
+if(array_key_exists('limit', $_GET))
+    switch ($_GET['limit'])
+    {
+	case 'week':
+		    $limit = time() - (7 * 24 * 60 * 60);
+	    break;
+	case 'month':
+		    $limit = time() - (31 * 24 * 60 * 60);
+	    break;
+	case 'no_limit':
+		    $limit = 0;
+	    break;
+	default:
+		    $limit = time() - (24 * 60 * 60);
+    }
+else
+    $limit = time() - (24 * 60 * 60);
+    
 $stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st', array($limit));
 $sensors= array_values(array_msort(
 				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
