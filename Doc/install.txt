@@ -1,4 +1,4 @@
-﻿Instalacja "szybka"
+Instalacja "szybka"
 
 Możesz mnie poprosić o ostatni obraz AquaPi jaki posiadam. Ten obraz (o ile będzie stabilny) powinien zawierać już 
 skonfigurowaną i działającą wersję AquaPi. Taki obraz wystarczy zgrać na kartę, uruchomić system, skonfigurować pod
@@ -14,14 +14,13 @@ Instalacja od początku
 
 > apt-get update
 > apt-get upgrade
-> apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql mc
+> apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql git
 
 (Uwaga - przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql)
-(Uwaga 2 - mc nie jest wymagany, ale ułatwia życie)
 
 3. Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać w1-gpio i w1-therm
 
-> mcedit /etc/modules
+> nano /etc/modules
 
 ---------------------------------------------------------------------------
 w1-gpio
@@ -34,7 +33,7 @@ Aby włączyć obsługę php5 w lighttpd trzeba zmodyfikować dwa pliki, /etc/ph
 
 Najpierw otwórz /etc/php5/cgi/php.ini i dodaj linię cgi.fix_pathinfo = 1 na samym końcu pliku:
 
-> mcedit /etc/php5/cgi/php.ini
+> nano /etc/php5/cgi/php.ini
 
 ---------------------------------------------------------------------------
 cgi.fix_pathinfo = 1
@@ -69,9 +68,15 @@ fastcgi.server = ( ".php" => ((
 6. Ściągnij pliki AquaPi
 
 > cd /usr/local/src
-> wget https://github.com/lexx-polarnet-pl/AquaPi/archive/master.zip
-> unzip master.zip
-> rm master.zip
+> git clone https://github.com/lexx-polarnet-pl/AquaPi.git
+
+Teraz pobrałeś wszystkie pliki projektu. Uwaga, wersja którą pobrałeś może nie działać stabilnie, lub nawet wcale.
+Aby się cofnąć do ostatniej przetestowanej rewizji, wykonaj polecenie:
+
+> cd AquaPi
+> git checkout 656b76bff59234a661d9fc8ff97642fc4ef83faa
+
+To spowoduje że Twoje AquaPi zostanie cofnięte do ostatniej przetestowanej rewizji.
 
 7. konfiguracja mysqla
 
@@ -91,15 +96,14 @@ tworzymy użytkownika, bazę i tabele:
 
 a potem tworzymy tabele najlepiej posiłkująć się plikiem Software/aquapi.sql 
 
-> SOURCE /usr/local/src/AquaPi-master/Software/aquapi.sql
+> SOURCE /usr/local/src/AquaPi/Software/aquapi.sql
 > QUIT
 
 8. Zainstalować WiringPi
 
-wchodzimy do katalogu daemon/wiringPi/wiringPi i odpalamy:
+wchodzimy do katalogu Software/daemon/wiringPi/wiringPi i odpalamy:
 
-> cd daemon/wiringPi/wiringPi
-> make clean
+> cd Software/daemon/wiringPi/wiringPi
 > make all
 > make install
 
