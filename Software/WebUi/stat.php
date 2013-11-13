@@ -55,6 +55,9 @@ $sensors= array_values(array_msort(
 
 //$first	= reset($stat)['time_st'];
 //$last	= end($stat)['time_st'];
+
+$stat?:$stat=array();
+
 $first	= reset($stat);
 $first	= $first['time_st'];
 $last	= end($stat);
