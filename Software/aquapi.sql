@@ -137,10 +137,14 @@ CREATE TABLE IF NOT EXISTS `sensors` (
   `sensor_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
   `sensor_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0-temp zadana,1-1wire temp,',
   `sensor_corr` varchar(6) COLLATE utf8_polish_ci NOT NULL DEFAULT '0' COMMENT 'korekta wartosci sensora',
+  `sensor_draw` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'czy pokazywac czujnik na wykresie',
+  `sensor_master` tinyint(4) DEFAULT '0',
   `sensor_warn_min` varchar(6) COLLATE utf8_polish_ci NOT NULL,
   `sensor_warn_max` varchar(6) COLLATE utf8_polish_ci NOT NULL,
+  `sensor_deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'czy czujnik jest skasowany',
   PRIMARY KEY (`sensor_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+
 
 --
 -- Zrzut danych tabeli `sensors`
