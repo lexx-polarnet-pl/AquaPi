@@ -83,7 +83,8 @@ $my_menu = Array (
     Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
 );
 
-$self= end(explode('/', $_SERVER["PHP_SELF"]));
+$self = explode('/', $_SERVER["PHP_SELF"]);
+$self = end($self);
 
 foreach ($my_menu as &$pos) {
     if ($pos['url'] == $self) {
