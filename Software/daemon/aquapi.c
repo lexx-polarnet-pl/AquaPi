@@ -82,7 +82,7 @@ void StoreTempStat(double t_zad) {
 	char buff[200];
 	//char *pos;
 	MYSQL_RES *result;
-	MYSQL_ROW row;	
+	MYSQL_ROW row;
 	time ( &rawtime );
 	int i, index=0;
 	char sensors [10] [3] [21]; //ilosc macierzy, elementów w macierzy, max dlugosc elementu
@@ -142,7 +142,12 @@ void ReadConf() {
 	DB_GetSetting("temp_cool",buff);
 	temp_cool = atof(buff); 
 	
-	DB_GetSetting("temp_sensor",main_temp_sensor);
+	//DB_GetSetting("temp_sensor",main_temp_sensor);
+	mysql_query(conn, "SELECT sensor_address FROM sensors WHERE sensor_master=1;");
+	result = mysql_store_result(conn);
+	row = mysql_fetch_row(result);
+	strncpy(main_temp_sensor, row[0], sizeof main_temp_sensor - 1);
+	main_temp_sensor[79] = '\0';
 	
 	
 	// wczytanie ustawień timerów
@@ -201,6 +206,7 @@ int main() {
 	int dzien = -1;
 	int fval = 0;
 	int i,j,seconds_since_midnight;
+	MYSQL_ROW row;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -338,8 +344,12 @@ int main() {
 			temp_zal_cool = temp_cool + histereza / 2;
 			temp_wyl_cool = temp_cool - histereza / 2;				
 
-			DB_GetSetting("temp_sensor_corr",buff);
-			temp_sensor_corr = atof(buff); 
+			//DB_GetSetting("temp_sensor_corr",buff);
+			//temp_sensor_corr = atof(buff); 
+			mysql_query(conn, "SELECT sensor_corr FROM sensors WHERE sensor_master=1;");
+			row = mysql_fetch_row(mysql_store_result(conn));
+			temp_sensor_corr=atof(row[0]);
+
 			temp_act = ReadTempFromSensor(main_temp_sensor, temp_sensor_corr);
 			
 			if (temp_act < -100) {
