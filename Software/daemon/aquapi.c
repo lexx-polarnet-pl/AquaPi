@@ -36,9 +36,9 @@
 double temp_dzien,temp_noc,temp_cool,histereza;
 double temp_sensor_corr;
 char main_temp_sensor[80];
-char light_port[10];
-char cooling_port[10];
-char heater_port[10];
+char light_port[30];
+char cooling_port[30];
+char heater_port[30];
 
 void termination_handler(int signum)	{
 	// przy wychodzeniu wyłącz grzałkę

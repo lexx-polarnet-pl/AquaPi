@@ -50,7 +50,7 @@ struct _outputs {
 	int enabled,new_state;
 	//char *name;
 	char name[40];
-	char output_port[10];
+	char output_port[30];
 	char device[10];
 } outputs[40];
 

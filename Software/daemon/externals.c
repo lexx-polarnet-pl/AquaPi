@@ -28,11 +28,45 @@
 #include <time.h>
 #include <syslog.h>
 #include <wiringPi.h>
+#include <rb.h>
 
-int wiringPiSetupFin;
+int wiringPiSetupFin,RelayBoardSetupFin;
+
+void ChangePortStateRelBrd (char *port,int state) {
+	char buff[200];
+	char *pch;
+	int przekaznik;
+	char device_path[50];
+	strcpy(buff,port);
+	// numer przekaźnika jest za ostanim :
+	pch=strrchr(buff,':');
+	przekaznik=atoi(pch+1);
+	if (przekaznik<1 || przekaznik >8) {
+		sprintf(buff,"Zły numer przekaźnika w definicji %s.",port);
+		Log(buff,E_CRIT);
+	} else {
+		// obetnij ciąg na tym :
+		pch[0] = 0;
+		// teraz znajdź pierwszy :
+		pch=strchr(buff,':');
+		// i przesuń wskaźnik o 1
+		pch++;
+		sprintf (device_path,"/dev/%s",pch);
+		if (RelayBoardPortInit(device_path)) {
+			sprintf(buff,"Karta RelayBoard na porcie %s nie odpowiada.",device_path);
+			Log(buff,E_CRIT);
+			//exit(-1);
+		}
+		if (state == 0) {
+			RelayBoardOff(ADRESS,przekaznik-1);
+		} else {
+			RelayBoardOn(ADRESS,przekaznik-1);
+		}
+		RelayBoardPortClose();
+	}
+}
 
 void ChangePortState (char *port,int state) {
-	//char PortNo[2];
 	char buff[200];
 	if (strcmp(port,"dummy")==0) {
 		// do nothing
@@ -41,7 +75,9 @@ void ChangePortState (char *port,int state) {
 		port += 4;
 		digitalWrite (atoi(port),state);
 		sprintf(buff,"Port GPIO%i Stan: %i",atoi(port),state);
-		Log(buff,E_DEV);		
+		Log(buff,E_DEV);
+	} else if (strncmp(port,"relbrd:",7)==0) {
+		ChangePortStateRelBrd (port,state);
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -125,16 +161,17 @@ double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
 
 void SetPortAsOutput (char *port) {
 	char buff[200];
+	
 	if (strcmp(port,"dummy")==0||strcmp(port,"disabled")==0) {
 		// do nothing
 	} else if (strncmp(port,"gpio",4)==0) {
-		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
-		port += 4;
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
 			wiringPiSetup ();
 		}
 		pinMode (atoi(port), OUTPUT);
+	} else if (strncmp(port,"relbrd:",7)==0) {
+		// Relay Board - tu nie ma co robić
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -145,12 +182,9 @@ void SetPortAsOutput (char *port) {
 int SetupPorts() {
 	int j;
 	wiringPiSetupFin = 0;
-	//if (wiringPiSetup () == -1) {
-	//	return 1;
-	//} else {
-		for(j = 0; j <= outputs_count; j++) {
-			SetPortAsOutput(outputs[j].output_port);
-		}
-		return 0;
-	//}
+	RelayBoardSetupFin = 0;
+	for(j = 0; j <= outputs_count; j++) {
+		SetPortAsOutput(outputs[j].output_port);
+	}
+	return 0;
 }
