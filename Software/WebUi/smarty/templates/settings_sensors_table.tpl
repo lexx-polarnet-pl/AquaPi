@@ -48,7 +48,9 @@
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
 				onmouseout="return nd();">
 	    </td>
-	    <td></td>
+	    <td><input type="checkbox" name="sensors[{$new_sensor_id}][sensor_draw]" value="1" 
+				onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
+				onmouseout="return nd();"></td>
 	</tr>
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
@@ -59,6 +59,8 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $index ));
 		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
 		{
+                        if(!$sensor['sensor_draw'])
+                            $sensor['sensor_draw']=0;
 			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr, sensor_draw)
 				     VALUES (?, ?, ?, ?, ?)', array($index, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr']));
 		}
@@ -120,3 +122,4 @@ $smarty->assign('settings', $settings);
 
 $smarty->display('settings.tpl');
 ?>
+
