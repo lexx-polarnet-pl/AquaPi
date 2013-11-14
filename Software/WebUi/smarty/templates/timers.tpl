@@ -75,9 +75,11 @@
 </tr>
 {foreach from=$timers item="entry"}
     <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{$entry.t_start|date_format:"%H:%M:%S"}</td>
-		<td>{$entry.t_stop|date_format:"%H:%M:%S"}</td>
+		{$t_start = $entry.t_start+86400}
+		{$t_stop = $entry.t_stop+86400}
 		{if $entry.t_start<$entry.t_stop}{$duration = $entry.t_stop - $entry.t_start}{else}{$duration = 86400 -($entry.t_start - $entry.t_stop)}{/if}
+		<td>{$t_start|date_format:"%H:%M:%S"}</td>
+		<td>{$t_stop|date_format:"%H:%M:%S"}</td>
 		<td>{$duration|date_format:"%H:%M:%S"}</td>
 		<td>{$entry.fname}</td>
 		<td align="center">{if $entry.day_of_week & 2}x{/if}</td>
