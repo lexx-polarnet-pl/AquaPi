@@ -25,6 +25,9 @@
 	    <td><input type="checkbox" name="sensors[{$sensor.sensor_id}][sensor_draw]" value="1" {if $sensor.sensor_draw eq 1}checked="checked"{/if}
 				onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
 				onmouseout="return nd();"></td>
+	    <td><input type="checkbox" name="sensors[{$sensor.sensor_id}][sensor_master]" value="1" {if $sensor.sensor_master eq 1}checked="checked"{/if}
+				onmouseover="return overlib('Czujnik główny. Zaznacz tylko jeden!');"
+				onmouseout="return nd();"></td>
 	    <td><a href="?action=delete&id={$sensor.sensor_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"><img align="right" src="img/off.png"></a></td>
 	</tr>
 	{/foreach}

@@ -43,7 +43,8 @@ if(array_key_exists('action', $_GET))
 if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 {
 	$sensors	= $_POST['sensors'];
-	
+	//new dbug($sensors);
+
 	$pieces 	= explode(":", $_POST['day_start']);
 	$day_start 	= intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
 	$db->Execute('UPDATE settings SET value=? where `key`= ?', array($day_start, 'day_start'));
@@ -55,8 +56,15 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
 	foreach($sensors as $index => $sensor)
 	{
 		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id=?', array($index))=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
-		$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=?, sensor_draw=? WHERE sensor_id=?', 
-			array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $index ));
+		{
+			if(!$sensor['sensor_master'] or $sensor_master==1)
+				$sensor['sensor_master']=0;
+			else
+				$sensor_master=1;
+			
+			$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=?, sensor_draw=?, sensor_master=? WHERE sensor_id=?', 
+				array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $index ));
+		}
 		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
 		{
                         if(!$sensor['sensor_draw'])
