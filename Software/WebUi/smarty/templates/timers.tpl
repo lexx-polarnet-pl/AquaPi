@@ -89,6 +89,10 @@
 		<td align="center">{if $entry.day_of_week & 1}x{/if}</td>
 		<td align="center"><a href="timers.php?action=del&id={$entry.id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
     </tr>
+{foreachelse}
+ <tr bgcolor="#cccccc">
+ <td colspan="12">Brak zdefiniowanych timerów</td>
+ </tr>
 {/foreach}
 </table>
 </div>
