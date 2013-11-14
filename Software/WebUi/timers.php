@@ -33,7 +33,7 @@ if ($_GET['action'] == 'add') {
 	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
 	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
 	$device= $_POST['device'];
-	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,'$device',$days_of_week));
+	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,$device,$days_of_week));
 	//echo $query;
 	ReloadDaemonConfig();
 }
