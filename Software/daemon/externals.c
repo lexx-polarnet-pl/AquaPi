@@ -30,13 +30,18 @@
 #include <wiringPi.h>
 #include <rb.h>
 
-int wiringPiSetupFin,RelayBoardSetupFin;
+char *PORT_RELBRD_PREFIX = "relbrd:";
+char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
+char *PORT_DUMMY_PREFIX = "dummy";
 
-void ChangePortStateRelBrd (char *port,int state) {
+int wiringPiSetupFin;
+
+int ChangePortStateRelBrd (char *port,int state) {
 	char buff[200];
 	char *pch;
-	int przekaznik;
+	int przekaznik,ret;
 	char device_path[50];
+	ret = 0;
 	strcpy(buff,port);
 	// numer przekaźnika jest za ostanim :
 	pch=strrchr(buff,':');
@@ -44,6 +49,7 @@ void ChangePortStateRelBrd (char *port,int state) {
 	if (przekaznik<1 || przekaznik >8) {
 		sprintf(buff,"Zły numer przekaźnika w definicji %s.",port);
 		Log(buff,E_CRIT);
+		ret = -1;
 	} else {
 		// obetnij ciąg na tym :
 		pch[0] = 0;
@@ -56,32 +62,44 @@ void ChangePortStateRelBrd (char *port,int state) {
 			sprintf(buff,"Karta RelayBoard na porcie %s nie odpowiada.",device_path);
 			Log(buff,E_CRIT);
 			//exit(-1);
+			ret = -1;
 		}
 		if (state == 0) {
 			RelayBoardOff(ADRESS,przekaznik-1);
 		} else {
 			RelayBoardOn(ADRESS,przekaznik-1);
 		}
+		sprintf(buff,"Port %s Stan: %i",port,state);
+		Log(buff,E_DEV);		
 		RelayBoardPortClose();
 	}
+	return ret;
 }
 
+int ChangePortStateGpio(char *port,int state) {
+	char buff[200];
+	// numer GPIO jest za ostatnim :
+	port=strrchr(port,':')+1;
+	//digitalWrite (atoi(port),state);
+	sprintf(buff,"Port GPIO %i Stan: %i",atoi(port),state);
+	Log(buff,E_DEV);
+	return 0;
+}
+
+int ChangePortStateDummy(char *port,int state) {
+	char buff[200];
+	sprintf(buff,"Port DUMMY Stan: %i",state);
+	Log(buff,E_DEV);
+	return(0);
+}
 void ChangePortState (char *port,int state) {
 	char buff[200];
-	if (strcmp(port,"dummy")==0) {
-		// do nothing
-		sprintf(buff,"Port DUMMY Stan: %i",state);
-		Log(buff,E_WARN);
-	} else if (strncmp(port,"gpio",4)==0) {
-		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
-		port += 4;
-		digitalWrite (atoi(port),state);
-		sprintf(buff,"Port GPIO%i Stan: %i",atoi(port),state);
-		Log(buff,E_DEV);
-	} else if (strncmp(port,"relbrd:",7)==0) {
+	if (strcmp(port,PORT_DUMMY_PREFIX)==0) {
+		ChangePortStateDummy(port,state);
+	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
+		ChangePortStateGpio(port,state);
+	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		ChangePortStateRelBrd (port,state);
-		sprintf(buff,"Port %s Stan: %i",port,state);
-		Log(buff,E_WARN);
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -166,15 +184,15 @@ double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
 void SetPortAsOutput (char *port) {
 	char buff[200];
 	
-	if (strcmp(port,"dummy")==0||strcmp(port,"disabled")==0) {
+	if (strcmp(port,PORT_DUMMY_PREFIX)==0||strcmp(port,"disabled")==0) {
 		// do nothing
-	} else if (strncmp(port,"gpio",4)==0) {
+	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
-			wiringPiSetup ();
+			//wiringPiSetup ();
 		}
 		pinMode (atoi(port), OUTPUT);
-	} else if (strncmp(port,"relbrd:",7)==0) {
+	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		// Relay Board - tu nie ma co robić
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
@@ -186,7 +204,6 @@ void SetPortAsOutput (char *port) {
 int SetupPorts() {
 	int j;
 	wiringPiSetupFin = 0;
-	RelayBoardSetupFin = 0;
 	for(j = 0; j <= outputs_count; j++) {
 		SetPortAsOutput(outputs[j].output_port);
 	}
