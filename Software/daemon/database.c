@@ -25,7 +25,7 @@
 
 MYSQL *conn;
 
-void DB_Query(char *query);
+int DB_Query(char *query);
 
 void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database) {
 	conn = mysql_init(NULL);
@@ -39,15 +39,15 @@ void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database)
 		fprintf(stderr,"Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
 		exit(1);
 	}
-	DB_Query("SET NAMES utf8;");
+	DB_Query("SET NAMES utf8");
 }
 
 void DB_Close() {
 	mysql_close(conn);
 }
 
-void DB_Query(char *query) {
-	mysql_query(conn, query);
+int DB_Query(char *query) {
+	return mysql_query(conn, query);
 }
 
 void DB_GetSetting(char *key, char *value) {
@@ -55,7 +55,7 @@ void DB_GetSetting(char *key, char *value) {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	
-	sprintf(query,"select value from settings where `key`='%s';",key);
+	sprintf(query,"select value from settings where `key`='%s'",key);
 	mysql_query(conn, query);
 	result = mysql_store_result(conn);
 	row = mysql_fetch_row(result);
@@ -63,14 +63,26 @@ void DB_GetSetting(char *key, char *value) {
 	mysql_free_result(result);
 }
 
-void DB_GetOne(char *query, char *value, int res_size) {
+int DB_GetOne(char *query, char *value, int res_size) {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
-	
-	mysql_query(conn, query);
-	result = mysql_store_result(conn);
-	row = mysql_fetch_row(result);
-	//memcpy (value, row[0], sizeof(**value));
-	memcpy (value, row[0], res_size);
-	mysql_free_result(result);
+	char buff[200];
+	if (DB_Query(query)) {
+		sprintf(buff,"Błąd SQL: %s",mysql_error(conn));
+		Log(buff,E_SQL);
+		exit(1);
+	} else {
+		result = mysql_store_result(conn);
+		row = mysql_fetch_row(result);
+		if (row != NULL) {
+			//memcpy (value, row[0], sizeof(**value));
+			memcpy (value, row[0], res_size);
+			mysql_free_result(result);
+			return(0);
+		} else {
+			sprintf(buff,"Zapytanie SQL: %s zwróciło pusty wynik",query);
+			Log(buff,E_SQL);
+			return(1);
+		}
+	}
 }

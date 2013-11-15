@@ -22,10 +22,11 @@
 
 #define APPNAME "AquaPi"
 
-const int E_DEV = -1;
+const int E_DEV  = -1;
 const int E_INFO = 0;
 const int E_WARN = 1;
 const int E_CRIT = 2;
+const int E_SQL  = 3;
 
 void Log(char *msg, int lev);
 

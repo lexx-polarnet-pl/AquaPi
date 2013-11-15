@@ -70,6 +70,8 @@ void ChangePortState (char *port,int state) {
 	char buff[200];
 	if (strcmp(port,"dummy")==0) {
 		// do nothing
+		sprintf(buff,"Port DUMMY Stan: %i",state);
+		Log(buff,E_WARN);
 	} else if (strncmp(port,"gpio",4)==0) {
 		// przestaw wskaźnik tam gdzie powinien znajdować się numer portu
 		port += 4;
@@ -78,6 +80,8 @@ void ChangePortState (char *port,int state) {
 		Log(buff,E_DEV);
 	} else if (strncmp(port,"relbrd:",7)==0) {
 		ChangePortStateRelBrd (port,state);
+		sprintf(buff,"Port %s Stan: %i",port,state);
+		Log(buff,E_WARN);
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);

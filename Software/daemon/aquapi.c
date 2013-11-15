@@ -68,7 +68,7 @@ void Log(char *msg, int lev) {
 		printf("[%s] %i %s\n",timef,lev,msg);
 	}
 	
-	if (lev >= 0) {
+	if (lev >= 0 && lev != E_SQL) {
 		sprintf(query,"INSERT INTO log (time,level,message) VALUES (%ld,%i,'%s');",rawtime,lev,msg);
 		DB_Query(query);
 	}
@@ -143,13 +143,11 @@ void ReadConf() {
 	temp_cool = atof(buff); 
 	
 	//DB_GetSetting("temp_sensor",main_temp_sensor);
-	mysql_query(conn, "SELECT sensor_address FROM sensors WHERE sensor_master=1;");
-	result = mysql_store_result(conn);
-	row = mysql_fetch_row(result);
-	strncpy(main_temp_sensor, row[0], sizeof main_temp_sensor - 1);
-	main_temp_sensor[79] = '\0';
-	
-	
+	if (DB_GetOne("SELECT sensor_address FROM sensors WHERE sensor_master=1",main_temp_sensor,sizeof(main_temp_sensor))) {
+	    Log("Praca bez wskazania głównego sensora temperatury nie jest możliwa.",E_CRIT);
+	    termination_handler(1);
+	};
+
 	// wczytanie ustawień timerów
 	events_count = 	0;
 	mysql_query(conn, "SELECT t_start,t_stop,device,day_of_week FROM timers;");
