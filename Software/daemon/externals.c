@@ -80,7 +80,7 @@ int ChangePortStateGpio(char *port,int state) {
 	char buff[200];
 	// numer GPIO jest za ostatnim :
 	port=strrchr(port,':')+1;
-	//digitalWrite (atoi(port),state);
+	digitalWrite (atoi(port),state);
 	sprintf(buff,"Port GPIO %i Stan: %i",atoi(port),state);
 	Log(buff,E_DEV);
 	return 0;
@@ -103,7 +103,6 @@ void ChangePortState (char *port,int state) {
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
-		// nie obsługiwany port
 	}
 }
 
@@ -189,7 +188,7 @@ void SetPortAsOutput (char *port) {
 	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
-			//wiringPiSetup ();
+			wiringPiSetup ();
 		}
 		pinMode (atoi(port), OUTPUT);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
