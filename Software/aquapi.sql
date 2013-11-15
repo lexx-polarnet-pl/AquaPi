@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `devices`;
 CREATE TABLE `devices` (
   `id` int(5) NOT NULL AUTO_INCREMENT,
   `device` char(10) COLLATE utf8_polish_ci NOT NULL,
-  `output` char(10) COLLATE utf8_polish_ci NOT NULL,
+  `output` char(30) COLLATE utf8_polish_ci NOT NULL,
   `fname` char(40) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
