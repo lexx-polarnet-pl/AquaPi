@@ -3,20 +3,29 @@
     <title>Wprowadzenie</title>
      <sect1 id="about-aquapi">
           <title>O AquaPi</title>
-          <para>Sterownik akwariowy AquaPi umożliwia sterowanie i kontrolowanie podstawowych parametrów w akwarium. Jest opartym o Raspberry Pi rozwiązaniem 
-		  na które składa się sprzęt i oprogramowanie sterujące. Całość projektu oparta jest o licencję GPL. Cele które miał sterownik realizować, to:</para>
+          <para>Sterownik akwariowy AquaPi umożliwia sterowanie i kontrolowanie podstawowych parametrów w akwarium. 
+          Jest opartym o Raspberry Pi rozwiązaniem, na które składa się sprzęt i oprogramowanie sterujące. Całość 
+          projektu oparta jest o licencję GPL. Cele, które miał sterownik realizować, to:</para>
           <itemizedlist>
-             <listitem><para>prostota części elektronicznej (prosta płytka, bez elementów SMD - do wykonania w domu)</para></listitem>
-             <listitem><para>sterowanie ogrzewaniem (nastawy temperatury dziennej, nocnej oraz histerezy)</para></listitem>
-             <listitem><para>zaawansowane statystyki oraz logi systemowe</para></listitem>
-             <listitem><para>sterowanie przez smartphone, lub przez komputer (przez internet)</para></listitem>
+             <listitem><para>Sterowanie ogrzewaniem (nastawy temperatury dziennej, nocnej oraz histerezy)</para></listitem>
+             <listitem><para>Sterowanie chłodzeniem (nastawy temperatury załączania oraz histerezy)</para></listitem>
+             <listitem><para>Zaawansowane statystyki oraz logi systemowe</para></listitem>
+             <listitem><para>Możliwość zapisu statystyki temperatur z wielu czujników</para></listitem>
+             <listitem><para>Sterowanie przez przeglądarkę</para></listitem>
+             <listitem><para>Sterowanie wyjściami uniwersalnymi z dokładnością do 1 sec (sterownik obsługuje niezależnie do 20 wyjść)</para></listitem>
+             <listitem><para>Współpraca oprogramowania z różnym sprzętem, w tym:
+                <itemizedlist>
+                <listitem><para>Elektronika w wersji 0.1 - prosta płytka, bez elementów SMD z minimum elementów</para></listitem>
+                <listitem><para>Elektronika w wersji 2.0 - nieco bardziej skomplikowane rozwiązanie niż powyższe, budowane modułowo, z większymi możliwościami</para></listitem>
+                <listitem><para>Karta przekaźników RelayBoard - komercyjna karta podłączana do sterownika przez USB</para></listitem>
+             </itemizedlist></para></listitem>
           </itemizedlist>
-		  <para> i powyższe zostały zrealizowane. Najbliższe plany rozwojowe zakładają:</para>
+		  <para>I powyższe zostały zrealizowane. Najbliższe plany rozwojowe zakładają:</para>
           <itemizedlist>
-             <listitem><para>dodanie wyjść PWM</para></listitem>
-             <listitem><para>dodanie pomiaru pH i obsługa nawożenia CO2</para></listitem>
-             <listitem><para>streaming video z kamerki do przeglądarki (podgląd akwarium na żywo)</para></listitem>
-             <listitem><para>komunikaty głosowe (np. o awarii)</para></listitem>
+             <listitem><para>Dodanie wyjść PWM</para></listitem>
+             <listitem><para>Dodanie pomiaru pH i obsługa nawożenia CO2</para></listitem>
+             <listitem><para>Strumieniowanie wideo z kamerki do przeglądarki (podgląd akwarium na żywo)</para></listitem>
+             <listitem><para>Komunikaty głosowe (np. o awarii)</para></listitem>
           </itemizedlist>
         </sect1>
 	<sect1 id="about-manual">
@@ -37,17 +46,15 @@ user = aquapi
 password = aquapi
 database = aquapi
 		</programlisting>
-Sposób obrazowania komend wpisywanych przez użytkownika i odpowiedzi systemu jest pokazany poniżej:
+Sposób, w jaki przedstawiane są komendy do wpisania przez użytkownika i odpowiedzi systemu jest pokazany poniżej:
 <screen>
 <prompt>root@raspberrypi:~# </prompt><userinput>make love</userinput> 
 make: *** No rule to make target `love'. Stop.
 </screen>
-		
+		W tym przypadku użytkownik wpisał polecenie make love.
 		</para>
 	</sect1>
      <sect1 id="authors">
-         <title>Autorzy</title>
-         <sect2 id="aquapi">
             <title>Developerzy AquaPi</title>   
 			<para>AquaPi składa się ze sprzętu i z oprogramowania. Za poszczególne elementy odpowiadają poniższe osoby:</para>
           <itemizedlist>
@@ -67,10 +74,9 @@ make: *** No rule to make target `love'. Stop.
                </para>
           </listitem>
          </itemizedlist>
-         </sect2>
      </sect1>
      <sect1 id="legalnotice">
-          <title>Prawa autorkskie</title>
+          <title>Prawa autorskie</title>
          <para>Sterownik (sprzęt jak i oprogramowanie) dostępne jest na licencji GNU GPL w wersji 2.0.
 			Pełen tekst licencji można znaleźć <ulink url="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">tutaj</ulink>, 
 			a skrócone objaśnienie <ulink url="http://pl.wikipedia.org/wiki/GNU_General_Public_License">tutaj</ulink>.</para>
@@ -89,7 +95,7 @@ make: *** No rule to make target `love'. Stop.
 
           <sect2 id="latest">
                <title>Najnowsza wersja</title>
-               <para>AquaPi nie posiada stałego cyklu wydawniczego. Najświerzszą wersję oprogramowania możesz ściągnąć bezpośrednio z repozytorium GitHob dostępnego pod tym adresem:
+               <para>AquaPi nie posiada stałego cyklu wydawniczego. Najświerzszą wersję oprogramowania możesz ściągnąć bezpośrednio z repozytorium GitHub dostępnego pod tym adresem:
 		<ulink url="https://github.com/lexx-polarnet-pl/AquaPi">https://github.com/lexx-polarnet-pl/AquaPi</ulink></para>
 	</sect2>
      </sect1>

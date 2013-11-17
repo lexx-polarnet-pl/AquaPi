@@ -3,6 +3,9 @@
    <!-- <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/docbook.xsl"/> -->
    <xsl:import href="/usr/share/xml/docbook/stylesheet/nwalsh/xhtml/chunk.xsl"/> 
    <xsl:param name="toc.max.depth">2</xsl:param>
+   <xsl:param name="section.autolabel" select="1"></xsl:param>
+   <xsl:param name="section.label.includes.component.label" select="1"></xsl:param>
+   
    <xsl:param name="html.stylesheet" select="'static/aquapi.css'"/>
    <xsl:param name="admon.graphics.extension">.png</xsl:param>
    <xsl:param name="admon.graphics.path">static/</xsl:param>
