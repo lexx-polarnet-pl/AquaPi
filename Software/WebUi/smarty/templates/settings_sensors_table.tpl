@@ -1,57 +1,60 @@
-<div id="dashboard">
+<div id="dashboard_1wire" style="display: none">
 <h3>Ustawienia sensorów temperatury:</h3>
 	<table>
-
-	{foreach from=$sensors key=key item=sensor}
+	{foreach from=$interfaces.1wire key=key item=sensor}
 	<tr>
 	    <td>
-		<input class="long" name="sensors[{$sensor.sensor_id}][sensor_name]" value="{$sensor.sensor_name}"
-				onmouseover="return overlib('Podaj nową nazwę czujnika. Minimum 2 litery.');"
+		<input class="long" name="sensors[{$sensor.interface_id}][sensor_name]" value="{$sensor.interface_name}"
+				onmouseover="return overlib('Podaj nową nazwę czujnika. Minimum 2 znaki.');"
 				onmouseout="return nd();">
 	    </td>
 	    <td>
-		<select name="sensors[{$sensor.sensor_id}][sensor_address]" id="sensors[{$sensor.sensor_id}][sensor_address]"
+		<select name="sensors[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
 				onmouseover="return overlib('Wybierz czujnik.');"
 				onmouseout="return nd();">
 			<option value="none">Brak</option>
-			{foreach from=$temp_sensors item="sensor_id"}
-			<option{if $sensor_id == $sensor.sensor_address} selected="selected"{/if}>{$sensor_id}</option>
+			{foreach from=$sensors item="sensor_address"}
+			<option {if $sensor_address eq $sensor.interface_addressshort}selected="selected"{/if}>{$sensor_address}</option>
 			{/foreach}
 		</select>
-	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$sensor.sensor_id}][sensor_corr]" name="sensors[{$sensor.sensor_id}][sensor_corr]" value ="{$sensor.sensor_corr}"
+	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$sensor.interface_id}][sensor_corr]" name="sensors[{$sensor.interface_id}][sensor_corr]" value ="{$sensor.interface_corr}"
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
 				onmouseout="return nd();">
 	    </td>
-	    <td><input type="checkbox" name="sensors[{$sensor.sensor_id}][sensor_draw]" value="1" {if $sensor.sensor_draw eq 1}checked="checked"{/if}
+	    <td><input type="checkbox" name="sensors[{$sensor.interface_id}][sensor_draw]" value="1" {if $sensor.interface_draw eq 1}checked="checked"{/if}
 				onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
 				onmouseout="return nd();"></td>
-	    <td><input type="checkbox" name="sensors[{$sensor.sensor_id}][sensor_master]" value="1" {if $sensor.sensor_master eq 1}checked="checked"{/if}
-				onmouseover="return overlib('Czujnik główny. Zaznacz tylko jeden!');"
+	    <td><input type="checkbox" name="sensors[{$sensor.interface_id}][sensor_conf]" value="1" {if $sensor.interface_conf eq 1}checked="checked"{/if}
+				onmouseover="return overlib('Czujnik główny, wyświetla się na stronie głównej. Zaznacz tylko jeden!');"
 				onmouseout="return nd();"></td>
-	    <td><a href="?action=delete&id={$sensor.sensor_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"><img align="right" src="img/off.png"></a></td>
+	    <td><a href="?action=delete&interface_id={$sensor.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"
+		onmouseover="return overlib('Usunięcie czujnika');"
+				onmouseout="return nd();">
+		<img align="right" src="img/off.png"></a>
+	    </td>
 	</tr>
 	{/foreach}
 	<tr>
 	    <td>
-		<input class="long" name="sensors[{$new_sensor_id}][sensor_name]" value=""
-				onmouseover="return overlib('Podaj nazwę nowego czujnika. Minimum 2 litery.');"
+		<input class="long" name="sensors[{$new_interface_id}][sensor_name]" value=""
+				onmouseover="return overlib('Podaj nazwę nowego czujnika. Minimum 2 znaki.');"
 				onmouseout="return nd();">
 	    </td>
 	    <td>
-		<select name="sensors[{$new_sensor_id}][sensor_address]" id="sensors[{$new_sensor_id}][sensor_address]"
+		<select name="sensors[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"
 				onmouseover="return overlib('Wybierz czujnik.');"
-				onmouseout="return nd();>
-			<option value="none">Brak</option>
-			{foreach from=$temp_sensors item="sensor_id"}
-			<option>{$sensor_id}</option>
+				onmouseout="return nd();">
+			<option value="">Brak</option>
+			{foreach from=$sensors item="sensor_address"}
+			<option>{$sensor_address}</option>
 			{/foreach}
 		</select>
-	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$new_sensor_id}][sensor_corr]"
-				name="sensors[{$new_sensor_id}][sensor_corr]" value ="0"
+	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$new_interface_id}][sensor_corr]"
+				name="sensors[{$new_interface_id}][sensor_corr]" value ="0"
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
 				onmouseout="return nd();">
 	    </td>
-	    <td><input type="checkbox" name="sensors[{$new_sensor_id}][sensor_draw]" value="1" 
+	    <td><input type="checkbox" name="sensors[{$new_interface_id}][sensor_draw]" value="1" 
 				onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
 				onmouseout="return nd();"></td>
 	</tr>

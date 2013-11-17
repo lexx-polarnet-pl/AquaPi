@@ -3,6 +3,7 @@
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -25,7 +26,7 @@
 $aquapi_ver = "1.9";
 
 // Wczytanie pliku z ustawieniami
-$CONFIG = parse_ini_file("/etc/aquapi.ini", true);
+$CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");

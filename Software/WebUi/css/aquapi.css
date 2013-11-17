@@ -2,6 +2,11 @@
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}
   #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard_pwm {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard_dummy {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard_relayboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
   #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
   #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
   #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    
@@ -13,6 +18,7 @@
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
   input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 350px; background-color: #EEEEEE}
+  input.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px; background-color: #EEEEEE}
   div.temp_select {width:100%; margin:5px;}
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }

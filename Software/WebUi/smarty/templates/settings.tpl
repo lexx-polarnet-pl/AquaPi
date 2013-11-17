@@ -1,139 +1,147 @@
 {include "header.tpl"}
 
-<script>
-	$(function() {
-		$("#slide_day").slider({
-			slide: function(event, ui) { 
-					document.getElementById('temp_day').value = ui.value.toFixed(1);
-			},
-			step: 0.1,
-			min: 20,
-			max: 30,
-			value: {$temp_day|default:25}
-		});
-		
-		$("#slide_night").slider({
-			slide: function(event, ui) { 
-					document.getElementById('temp_night').value = ui.value.toFixed(1);
-			},
-			step: 0.1,
-			min: 20,
-			max: 30,
-			value: {$temp_night|default:25}
-		});
-		
-		$("#slide_cool").slider({
-			slide: function(event, ui) { 
-					document.getElementById('temp_cool').value = ui.value.toFixed(1);
-			},
-			step: 0.1,
-			min: 20,
-			max: 30,
-			value: {$temp_cool|default:25}
-		});
-		
-		$("#slide_hysteresis").slider({
-			slide: function(event, ui) { 
-					document.getElementById('hysteresis').value = ui.value.toFixed(1);
-			},
-			step: 0.1,
-			min: 0,
-			max: 1,
-			value: {$hysteresis|default:1}
-		});
-		
-		$('#day_start').timepicker({
-			timeFormat: "hh:mm:ss",
-			showSecond: true,
-			currentText: "Teraz",
-			closeText: "Wybierz",
-			timeOnlyTitle: "Wybierz czas",
-			timeText: "Czas",
-			hourText: "Godzina",
-			minuteText: "Minuta",
-			secondText: "Sekunda"
-		});
-		
-		$('#day_stop').timepicker({
-			timeFormat: "hh:mm:ss",
-			showSecond: true,
-			currentText: "Teraz",
-			closeText: "Wybierz",
-			timeOnlyTitle: "Wybierz czas",
-			timeText: "Czas",
-			hourText: "Godzina",
-			minuteText: "Minuta",
-			secondText: "Sekunda"
-		});		
+<script type="text/javascript">
+function disableF5(e)
+{
+	if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82)
+	{
+		alert('Reload niedozwolony');
+		e.preventDefault();
+	}
+	
+};
+
+$(document).ready(function(){
+     $(document).on("keydown", disableF5);
+});
+
+$(function() {
+	$("#slide_hysteresis").slider({
+		slide: function(event, ui) { 
+				document.getElementById('hysteresis').value = ui.value.toFixed(1);
+		},
+		step: 0.1,
+		min: 0,
+		max: 1,
+		value: {$hysteresis|default:1}
 	});
+	
+	$('#day_start').timepicker({
+		timeFormat: "hh:mm:ss",
+		showSecond: true,
+		currentText: "Teraz",
+		closeText: "Wybierz",
+		timeOnlyTitle: "Wybierz czas",
+		timeText: "Czas",
+		hourText: "Godzina",
+		minuteText: "Minuta",
+		secondText: "Sekunda"
+	});
+	
+	$('#day_stop').timepicker({
+		timeFormat: "hh:mm:ss",
+		showSecond: true,
+		currentText: "Teraz",
+		closeText: "Wybierz",
+		timeOnlyTitle: "Wybierz czas",
+		timeText: "Czas",
+		hourText: "Godzina",
+		minuteText: "Minuta",
+		secondText: "Sekunda"
+	});		
+});
 </script>
 
 <form action="settings.php" method="post">
 
 <div id="dashboard">
-<h3>Ustawienia dnia:</h3>
+<h3>Devices:</h3>
 	<table>
-	<tr><td>Rozpoczęcie:</td><td><input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}"/></td></tr>
-	<tr><td>Zakończenie:</td><td><input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" /></td></tr>
-	</table>	
-	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-</div>
-
-<!--Ustawienia sensorów temperatury-->
-{include "settings_sensors_table.tpl"}
-
-<div id="dashboard">
-<h3>Ustawienia temperatury:</h3>
-	<div class="temp_select">
-		Temperatura w dzień:
-		<input class="temp_select" type="text" readonly id="temp_day" name="temp_day" value ="{$temp_day}">
-		<div id="slide_day" style="margin:10px;"></div>
-	</div>
-	<div class="temp_select">
-		Temperatura w nocy:
-		<input class="temp_select" type="text" readonly id="temp_night" name="temp_night" value ="{$temp_night}">
-		<div id="slide_night" style="margin:10px;"></div>
-	</div>					
-	<div class="temp_select">
-		Temperatura włączenia chłodzenia:
-		<input class="temp_select" type="text" readonly id="temp_cool" name="temp_cool" value ="{$temp_cool}">
-		<div id="slide_cool" style="margin:10px;"></div>
-	</div>	
+	<tr>
+		<td>
+			<select name="devices" id="devices"
+				onmouseover="return overlib('Wybierz urządzenie do konfiguracji.');"
+				onmouseout="return nd();"
+				onchange="showdivs()">
+				<option value="none">-- wybierz --</option>
+				{foreach from=$devices item="device"}
+				<option>{$device.device_name}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			{foreach from=$devices item="device"}
+				<div id="{$device.device_name}" style="display: none">
+					<select name="device_{$device.device_name}" id="devices_{$device.device_name}">
+						<option value="1" {if $device.device_disabled eq 1} selected="selected"{/if}>Wyłączone</option>
+						<option value="0" {if $device.device_disabled eq 0} selected="selected"{/if}>Włączone</option>
+					</select>
+					<a href="?action=delete&device_id={$device.device_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');"
+							onmouseover="return overlib('Usunięcie urządzenia');"
+							onmouseout="return nd();">
+						<img align="right" src="img/off.png"></a>
+				</div>
+			{/foreach}
+		</td>
+	</tr>
+	</table>
+	<!--<input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}"/>-->
+	<!--<input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" />-->
 	<div class="temp_select">
 		Histereza:
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
 		<div id="slide_hysteresis" style="margin:10px;"></div>
-	</div>					
+	</div>	
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-	
 </div>
 
-<div id="dashboard">
-<h3>Przyjazne nazwy wyjść:</h3>
-	<table>
-	{foreach from=$friendly_names item="friendly_name"}
-		<tr><td>{$friendly_name.device} ({$friendly_name.output}):</td><td><input class="rest" type="text" id="device_{$friendly_name.device}" name="device_{$friendly_name.device}" value="{$friendly_name.fname}"></td></tr>
-	{/foreach}
-	</table>
-	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-</div>
+
+<!--Ustawienia sensorów temperatury-->
+{include "settings_sensors_table.tpl"}
+
+<!--GPIO-->
+{include "settings_gpio.tpl"}
+
+<!--PWM-->
+{include "settings_pwm.tpl"}
 
 <!--Relayboard-->
-{if $relayboard_enable eq 1}
-	{include "settings_relayboard.tpl"}
-{/if}
+{include "settings_relayboard.tpl"}
+
+<!--Dummy-->
+{include "settings_dummy.tpl"}
 
 </form>
 
-{*
-<table>
-<tr><th>Klucz</th><th>Wartość</th></tr>
-{foreach from=$settings item="entry"}
-    <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{$entry.key}</td>        
-		<td>{$entry.value}</td>
-    </tr>
-{/foreach}
-</table>
-*}
+<script>
+function showdivs()
+{
+	
+	var devices = new Array();
+	{foreach from=$devices item="device"}
+	devices.push('{$device.device_name}');
+	{/foreach}
+
+	var length = devices.length;
+	//ukrywam wszystkie elementy
+	for (var i = 0; i < length; i++)
+	{
+		//console.log(devices[i]);
+		document.getElementById(devices[i]).style.display		= 'none';
+		document.getElementById('dashboard_'+devices[i]).style.display	= 'none';
+	}
+	
+	//pokazuje tylko pasujacy do wybranego
+	var e = document.getElementById("devices");
+	var name = e.options[e.selectedIndex].value;
+	if(name!='none')
+	{
+		document.getElementById(name).style.display		= 'inline-block';
+		document.getElementById('dashboard_'+name).style.display= '';
+	}
+}
+</script>
+
 {include "footer.tpl"}
