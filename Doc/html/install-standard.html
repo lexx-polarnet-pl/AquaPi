@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Instalacja standardowa</title><link rel="stylesheet" type="text/css" href="static/aquapi.css" /><meta name="generator" content="DocBook XSL Stylesheets V1.76.1" /><link rel="home" href="index.html" title="Komputer akwariowy AquaPi" /><link rel="up" href="install.html" title="Rozdział 2. Instalacja" /><link rel="prev" href="install.html" title="Rozdział 2. Instalacja" /></head><body><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Instalacja standardowa</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="install.html">Poprzedni</a> </td><th width="60%" align="center">Rozdział 2. Instalacja</th><td width="20%" align="right"> </td></tr></table><hr /></div><div class="sect1" title="Instalacja standardowa"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="install-standard"></a>Instalacja standardowa</h2></div></div></div><div class="sect2" title="Ściągnąć najnowszą wersję rapsbiana, zainstalować i ustawić podstawowy system."><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-1"></a>Ściągnąć najnowszą wersję rapsbiana, zainstalować i ustawić podstawowy system.</h3></div></div></div><p>(Uwaga - na karcie 2GB raczej się nie zmieścisz. Powinieneś mieć min 4GB kartę i powinieneś wykonać extend filesystem)</p></div><div class="sect2" title="Zaktualizować system, i zainstalować potrzebne pakiety:"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-2"></a>Zaktualizować system, i zainstalować potrzebne pakiety:</h3></div></div></div><pre class="screen">apt-get update
+apt-get upgrade
+apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql git</pre><p>(Uwaga - przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql)</p></div><div class="sect2" title="Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać w1-gpio i w1-therm"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-3"></a>Włączyć obsługę 1-wire (obsługa sensora temperatury), czyli do /etc/modules dopisać w1-gpio i w1-therm</h3></div></div></div><pre class="screen">nano /etc/modules
+
+---------------------------------------------------------------------------
+w1-gpio
+w1-therm
+---------------------------------------------------------------------------</pre></div><div class="sect2" title="Skonfigurować serwer www i php"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-4"></a>Skonfigurować serwer www i php</h3></div></div></div><p>Aby włączyć obsługę php5 w lighttpd trzeba zmodyfikować dwa pliki, /etc/php5/cgi/php.ini i /etc/lighttpd/lighttpd.conf. 
+			Najpierw otwórz /etc/php5/cgi/php.ini i dodaj linię cgi.fix_pathinfo = 1 na samym końcu pliku:</p><pre class="screen">&gt; nano /etc/php5/cgi/php.ini
+
+---------------------------------------------------------------------------
+cgi.fix_pathinfo = 1
+---------------------------------------------------------------------------</pre><p>Teraz otwórz /etc/lighttpd/lighttpd.conf i dodaj "mod_fastcgi", do sekcji server.modules : </p><pre class="screen">&gt; mcedit /etc/lighttpd/lighttpd.conf
+
+---------------------------------------------------------------------------
+server.modules = (
+	"mod_access",
+	"mod_alias",
+	"mod_compress",
+	"mod_redirect",
+	"mod_fastcgi",
+#       "mod_rewrite",
+)
+---------------------------------------------------------------------------</pre><p>A następnie na końcu pliku dodaj następującą sekcję:</p><pre class="screen">---------------------------------------------------------------------------
+fastcgi.server = ( ".php" =&gt; ((
+                     "bin-path" =&gt; "/usr/bin/php5-cgi",
+                     "socket" =&gt; "/tmp/php.socket"
+                 )))
+---------------------------------------------------------------------------</pre></div><div class="sect2" title="Zresetuj Pi."><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-5"></a>Zresetuj Pi.</h3></div></div></div><p>Zresetuj Pi.</p></div><div class="sect2" title="Ściągnij pliki AquaPi"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-6"></a>Ściągnij pliki AquaPi</h3></div></div></div><pre class="screen">&gt; cd /usr/local/src
+&gt; git clone https://github.com/lexx-polarnet-pl/AquaPi.git</pre><p>Teraz pobrałeś wszystkie pliki projektu. Uwaga, wersja którą pobrałeś może nie działać stabilnie, lub nawet wcale.
+			Aby się cofnąć do ostatniej przetestowanej rewizji, wykonaj polecenie:</p><pre class="screen">&gt; cd AquaPi
+&gt; git checkout 656b76bff59234a661d9fc8ff97642fc4ef83faa</pre><p>To spowoduje że Twoje AquaPi zostanie cofnięte do ostatniej przetestowanej rewizji.</p></div><div class="sect2" title="konfiguracja mysqla"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-7"></a>konfiguracja mysqla</h3></div></div></div><p>wchodzimy w mysql monitor:</p><pre class="screen">&gt; mysql -u root -p</pre><p>(i podajemy hasło administratora które ustawiliśmy przy instalacji pakietu)
+
+			tworzymy użytkownika, bazę i tabele:</p><pre class="screen">&gt; CREATE DATABASE IF NOT EXISTS `aquapi`;
+&gt; ALTER DATABASE `aquapi` DEFAULT CHARACTER SET utf8 COLLATE utf8_polish_ci;
+&gt; CREATE USER 'aquapi'@'localhost' IDENTIFIED BY 'aquapi';
+&gt; GRANT ALL PRIVILEGES ON `aquapi`.* TO 'aquapi';
+&gt; USE aquapi;</pre><p>a potem tworzymy tabele najlepiej posiłkująć się plikiem Software/aquapi.sql </p><pre class="screen">&gt; SOURCE /usr/local/src/AquaPi/Software/aquapi.sql
+&gt; QUIT</pre></div><div class="sect2" title="Zainstalować WiringPi"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-8"></a>Zainstalować WiringPi</h3></div></div></div><p>wchodzimy do katalogu Software/daemon/wiringPi/wiringPi i odpalamy:</p><pre class="screen">&gt; cd Software/daemon/wiringPi/wiringPi
+&gt; make all
+&gt; make install</pre></div><div class="sect2" title="Skompilować daemona"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-9"></a>Skompilować daemona</h3></div></div></div><p>Wchodzimy do katalogu daemon i odpalamy make. Po kompilacji daemona można uruchomić przez ./aquapi, jednak lepiej robić to z RC.</p><pre class="screen">&gt; cd ..
+&gt; cd ..
+&gt; make
+&gt; mkdir /usr/local/aquapi/
+&gt; cp aquapi /usr/local/aquapi/</pre></div><div class="sect2" title="Dodać skrypty do RC aby odpalać daemona przy starcie"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-10"></a>Dodać skrypty do RC aby odpalać daemona przy starcie</h3></div></div></div><p>skopiować aquapi.rc do /etc/init.d/ a następnie uruchomić update-rc.d aquapi.rc defaults</p><pre class="screen">&gt; cd..
+&gt; cp aquapi.rc /etc/init.d/
+&gt; chmod +x /etc/init.d/aquapi.rc
+&gt; update-rc.d aquapi.rc defaults</pre></div><div class="sect2" title="Instalacja AquaPi"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-11"></a>Instalacja AquaPi</h3></div></div></div><p>Skopiować pliki zawierające WebUI do /var/www/</p><pre class="screen">&gt; cp -r WebUI/* /var/www/
+&gt; chmod 775 -R /var/www/
+&gt; mkdir /var/www/smarty/templates_c/
+&gt; chmod 777 /var/www/smarty/templates_c/</pre></div><div class="sect2" title="Skopiować plik aquapi.ini do katalogu /etc i ewentualnie dostosować ustawienia:"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-12"></a>Skopiować plik aquapi.ini do katalogu /etc i ewentualnie dostosować ustawienia:</h3></div></div></div><pre class="screen">&gt; cp aquapi.ini /etc/</pre></div><div class="sect2" title="Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom daemona:"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-13"></a>Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom daemona:</h3></div></div></div><pre class="screen">&gt; /etc/init.d/aquapi.rc start</pre><p>Gratulacje! Twoje AquaPi powinno już działać :)</p></div></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="install.html">Poprzedni</a> </td><td width="20%" align="center"><a accesskey="u" href="install.html">Początek rozdziału</a></td><td width="40%" align="right"> </td></tr><tr><td width="40%" align="left" valign="top">Rozdział 2. Instalacja </td><td width="20%" align="center"><a accesskey="h" href="index.html">Spis treści</a></td><td width="40%" align="right" valign="top"> </td></tr></table></div></body></html>

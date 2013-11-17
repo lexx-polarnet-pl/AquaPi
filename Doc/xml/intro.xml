@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chapter id="intro">
+    <title>Wprowadzenie</title>
+     <sect1 id="about-aquapi">
+          <title>O AquaPi</title>
+          <para>Sterownik akwariowy AquaPi umożliwia sterowanie i kontrolowanie podstawowych parametrów w akwarium. Jest opartym o Raspberry Pi rozwiązaniem 
+		  na które składa się sprzęt i oprogramowanie sterujące. Całość projektu oparta jest o licencję GPL. Cele które miał sterownik realizować, to:</para>
+          <itemizedlist>
+             <listitem><para>prostota części elektronicznej (prosta płytka, bez elementów SMD - do wykonania w domu)</para></listitem>
+             <listitem><para>sterowanie ogrzewaniem (nastawy temperatury dziennej, nocnej oraz histerezy)</para></listitem>
+             <listitem><para>zaawansowane statystyki oraz logi systemowe</para></listitem>
+             <listitem><para>sterowanie przez smartphone, lub przez komputer (przez internet)</para></listitem>
+          </itemizedlist>
+		  <para> i powyższe zostały zrealizowane. Najbliższe plany rozwojowe zakładają:</para>
+          <itemizedlist>
+             <listitem><para>dodanie wyjść PWM</para></listitem>
+             <listitem><para>dodanie pomiaru pH i obsługa nawożenia CO2</para></listitem>
+             <listitem><para>streaming video z kamerki do przeglądarki (podgląd akwarium na żywo)</para></listitem>
+             <listitem><para>komunikaty głosowe (np. o awarii)</para></listitem>
+          </itemizedlist>
+        </sect1>
+	<sect1 id="about-manual">
+		<title>O tym podręczniku</title>
+		<para>Oznaczenia użyte w tym podręczniku:
+		<note><title>Notatka</title><para>Ta sekcja zawiera notatkę</para></note>
+		<tip><title>Podpowiedź</title><para>Ta sekcja zawiera podpowiedź</para></tip>
+		<warning><title>Ostrzeżenie</title><para>Ta sekcja zawiera ostrzeżenie</para></warning>
+		<important><title>Ważne</title><para>Ta sekcja zawiera ważną informację</para></important>
+		Sposób w jaki pokazywana jest zawartość plików (zwłaszcza konfiguracyjnych)
+		<programlisting>
+[database]
+; Ta sekcja jest wspólna dla daemona i WebUi.
+
+; Konfiguracja bazy danych 
+host = localhost
+user = aquapi
+password = aquapi
+database = aquapi
+		</programlisting>
+Sposób obrazowania komend wpisywanych przez użytkownika i odpowiedzi systemu jest pokazany poniżej:
+<screen>
+<prompt>root@raspberrypi:~# </prompt><userinput>make love</userinput> 
+make: *** No rule to make target `love'. Stop.
+</screen>
+		
+		</para>
+	</sect1>
+     <sect1 id="authors">
+         <title>Autorzy</title>
+         <sect2 id="aquapi">
+            <title>Developerzy AquaPi</title>   
+			<para>AquaPi składa się ze sprzętu i z oprogramowania. Za poszczególne elementy odpowiadają poniższe osoby:</para>
+          <itemizedlist>
+          <listitem>
+               <para>Oprogramowanie:
+               <simplelist>
+               <member><ulink url="http://lexx.polarnet.pl">Marcin 'Lexx' Król</ulink></member>
+               <member>Jarosław 'Sir_Yaro' Czarniak</member>			   
+               </simplelist>
+               </para>
+          </listitem>
+          <listitem>
+               <para>Część sprzętowa:
+               <simplelist>
+               <member><ulink url="http://lexx.polarnet.pl">Marcin 'Lexx' Król</ulink></member>
+               </simplelist>
+               </para>
+          </listitem>
+         </itemizedlist>
+         </sect2>
+     </sect1>
+     <sect1 id="legalnotice">
+          <title>Prawa autorkskie</title>
+         <para>Sterownik (sprzęt jak i oprogramowanie) dostępne jest na licencji GNU GPL w wersji 2.0.
+			Pełen tekst licencji można znaleźć <ulink url="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">tutaj</ulink>, 
+			a skrócone objaśnienie <ulink url="http://pl.wikipedia.org/wiki/GNU_General_Public_License">tutaj</ulink>.</para>
+         <para>To jest wolne oprogramowanie; możesz je dystrybuować oraz zmieniać zgodnie z warunkami Powszechnej Licencji Publicznej 
+		 GNU opublikowanej przez Fundację Wolnego Oprogramowania; w wersji 2 tej licencji. To oprogramowanie 
+		 rozpowszechniane jest z nadzieją, że będzie użyteczne, ale bez żadnej gwarancji; bez żadnej gwarancji 
+		 przydatności handlowej lub przydatności do określonego celu.</para>         
+     </sect1>
+     <sect1 id="moreinfo">
+          <title>Pozostałe informacje</title>
+          <sect2 id="contact">
+               <title>Kontakt</title>
+               <para>AquaPi ma swoją listę dyskusyjną, dostępną pod: <ulink url="https://groups.google.com/forum/?hl=pl#!forum/aquapi">https://groups.google.com/forum/?hl=pl#!forum/aquapi</ulink>               </para>
+			   <para>Kontakt przez listę jest preferowanym sposobem kontaktu z autorami.</para>
+          </sect2>
+
+          <sect2 id="latest">
+               <title>Najnowsza wersja</title>
+               <para>AquaPi nie posiada stałego cyklu wydawniczego. Najświerzszą wersję oprogramowania możesz ściągnąć bezpośrednio z repozytorium GitHob dostępnego pod tym adresem:
+		<ulink url="https://github.com/lexx-polarnet-pl/AquaPi">https://github.com/lexx-polarnet-pl/AquaPi</ulink></para>
+	</sect2>
+     </sect1>
+</chapter>

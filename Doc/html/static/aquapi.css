@@ -1,0 +1,13 @@
+body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; }
+table {font-family: 'Capriola', sans-serif; font-size: 16px;}
+img {border:0}
+h1,h2,h3 {margin-top:2px; margin-bottom:2px;}
+.note {background-color: #CCCCCC; border-color: #AAAAAA; border-width: 10px; border-left-style: solid; border-right-style: solid;}
+.tip {background-color: #BBBBFF; border-color: #9999DD; border-width: 10px; border-left-style: solid; border-right-style: solid;}
+.warning {background-color: #FFBBBB; border-color: #DD9999; border-width: 10px; border-left-style: solid; border-right-style: solid;}
+.important {background-color: #BBFFBB; border-color: #99DD99; border-width: 10px; border-left-style: solid; border-right-style: solid;}
+.programlisting {background-color: #DDDDDD; border-style: dashed; padding:5px; border-width: 1px;}
+
+.screen {background-color: #DDDDDD; border-style: dashed; padding:5px; border-width: 1px;}
+.prompt {color: #007000;}
+.userinput  {background-color: #BBBBBB;}
