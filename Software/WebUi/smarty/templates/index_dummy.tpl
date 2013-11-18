@@ -1,10 +1,10 @@
 <table style="width:100%">
 <tr bgcolor="#aaaaaa"><th>Czujniki temperatury</th><th>Wartość</th></tr>
-    {foreach from=$temperatures key=key item=sensor}
+    {foreach from=$interfaces.dummy key=key item=sensor}
 
     <tr bgcolor="#cccccc">
-		<td>{$sensor.sensor_name}</td>     
-		<td>{if $sensor.sensor_temp==''}--.--{else}{$sensor.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td>
+		<td>{$sensor.interface_name}</td>     
+		<td>{$sensor.interface_temperature.stat_value|string_format:"%.2f"}&deg;C</td>
 	</tr>
 	{foreachelse}
       <tr bgcolor="#cccccc">

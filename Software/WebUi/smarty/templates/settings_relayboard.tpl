@@ -14,6 +14,16 @@
 		    <option {if $relay.interface_conf eq 1}selected="selected"{/if} value="1">NC</option>
 		</select>
 	    </td>
+	    <td>
+		<select class="medium"
+			onmouseover="return overlib('Wybierz ikonę dla wyjścia.');"
+			onmouseout="return nd();">
+			<option class="imagebacked" style="background-image:url(img/device.png);">&nbsp;device.png</option>
+			{foreach $icons item=icon}
+			<option class="imagebacked" style="background-image:url(img/{$icon});">&nbsp;{$icon}</option>
+			{/foreach}
+		</select> 
+	    </td>
 	</tr>
 	{/foreach}
 	</table>

@@ -17,7 +17,10 @@
   input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; margin-right: 10px}
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
+  select.medium {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 150px}
+  select.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 350px; background-color: #EEEEEE}
+  input.medium {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px; background-color: #EEEEEE}
   input.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px; background-color: #EEEEEE}
   div.temp_select {width:100%; margin:5px;}
 /* css for timepicker */
@@ -31,4 +34,4 @@
 .ui-timepicker-rtl{ direction: rtl; }
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
-  
+.imagebacked {padding-left: 26px; background-repeat: no-repeat;}

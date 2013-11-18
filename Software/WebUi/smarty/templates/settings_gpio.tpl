@@ -15,10 +15,19 @@
 		&nbsp;Pin:
 	    </td>
 	    <td>
-		<input class="long" name="gpios[{$gpio.interface_id}][gpio_address]" value="{$gpio.interface_address}"
+		<input class="medium" name="gpios[{$gpio.interface_id}][gpio_address]" value="{$gpio.interface_address}"
 				onmouseover="return overlib('Podaj nowy adres gpio. Minimum 2 znaki.');"
 				onmouseout="return nd();">
-		    
+	    </td>
+	    <td>
+		<select class="medium"
+			onmouseover="return overlib('Wybierz ikonę dla wyjścia.');"
+			onmouseout="return nd();">
+			<option class="imagebacked" style="background-image:url(img/device.png);">&nbsp;device.png</option>
+			{foreach $icons item=icon}
+			<option class="imagebacked" style="background-image:url(img/{$icon});">&nbsp;{$icon}</option>
+			{/foreach}
+		</select> 
 	    </td>
 	</tr>
 	{/foreach}
@@ -35,10 +44,12 @@
 		&nbsp;Pin:
 	    </td>
 	    <td>
-		<input class="long" name="gpios[{$new_interface_id}][gpio_address]" value=""
+		<input class="medium" name="gpios[{$new_interface_id}][gpio_address]" value=""
 				onmouseover="return overlib('Podaj adres nowego gpio. Minimum 2 znaki.');"
 				onmouseout="return nd();">
-		    
+	    </td>
+	    <td>
+		
 	    </td>
 	</tr>
 	</table>

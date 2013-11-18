@@ -49,4 +49,29 @@ function myFlush()
 	flush();
 }
 
+function GetInterfaces()
+{
+	global $db;
+	$interfaces	= $db->GetAll('SELECT * FROM interfaces i, devices d
+						WHERE interface_disabled=0 AND interface_deleted=0
+						AND i.interface_deviceid=d.device_id
+						AND device_id>0 AND device_deleted=0');
+	
+	foreach($interfaces as $index => $interface)
+	{
+		$addressshort=explode(':',$interface['interface_address']);
+		$interface['interface_addressshort']=$addressshort[2];
+		$interface['interface_addressshortnext']=$addressshort[2]+1;
+		$tmp[$interface['device_name']][]=$interface;
+	}
+	return($tmp);
+}
+
+function GetDevices()
+{
+	global $db;
+	return $db->GetAll('SELECT * FROM devices
+				WHERE device_id>0 AND device_deleted=0');
+}
+
 ?>

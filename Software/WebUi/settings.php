@@ -22,6 +22,10 @@
  * $Id:$
  */
  
+// Requires PHP 5.4 or higher 
+
+//DOKONCZYC OPROGRAMOWANIE IKON !!!!!!!!
+
 include("init.php");
 
 
@@ -132,28 +136,27 @@ if($_POST)
 
 
 
-$devices	= $db->GetAll('SELECT * FROM devices
-					WHERE device_id>0 AND device_deleted=0');
-$interfaces	= $db->GetAll('SELECT * FROM interfaces i, devices d
-					WHERE interface_disabled=0 AND interface_deleted=0
-					AND i.interface_deviceid=d.device_id
-					AND device_id>0 AND device_deleted=0');
-
-foreach($interfaces as $index => $interface)
-{
-	$addressshort=explode(':',$interface['interface_address']);
-	$interface['interface_addressshort']=$addressshort[2];
-	$interface['interface_addressshortnext']=$addressshort[2]+1;
-	$tmp[$interface['device_name']][]=$interface;
-}
-$interfaces	= $tmp;
-unset($tmp);
+$devices	= GetDevices();
+$interfaces	= GetInterfaces();
 //new dbug($devices);
-//new dbug($interfaces['dummy']);
+//new dbug($interfaces);
 //die;
 
 $hysteresis	= $db->GetOne("select setting_value from settings where `setting_key`='hysteresis';");
+$icons 		= scandir('img');
+foreach($icons as $icon)
+{
+	if($icon === '.' or $icon === '..'
+		or $icon=='device.png'
+		or pathinfo('img/'.$icon, PATHINFO_EXTENSION)!='png'
+		or getimagesize('img/'.$icon)[0]>26
+		)
+			{continue;}
+	$result[] = $icon;
+}
+$icons	= $result;
 
+//new dBug($result);
 //if($CONFIG['plugins']['relayboard']==1)
 //{
 //	include(MODULES_DIR . "relayboard.php");
@@ -175,6 +178,7 @@ $smarty->assign('hysteresis', $hysteresis);
 $smarty->assign('sensors', $sensors);
 $smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', $devices);
+$smarty->assign('icons', $icons);
 $smarty->assign('interfaces', $interfaces);
 $smarty->assign('title', 'Ustawienia');
 $smarty->display('settings.tpl');

@@ -21,8 +21,9 @@
  *
  * $Id$
  */
-// wersja AquaPi
 
+ 
+// wersja AquaPi
 $aquapi_ver = "1.9";
 
 // Wczytanie pliku z ustawieniami
@@ -45,6 +46,8 @@ if(!is_dir(SMARTY_COMPILE_DIR))
 if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
+//graficzny debug
+require(LIB_DIR.'dBug.php');
 
 // inicjalizacja smarty
 require(MAIN_DIR.'smarty/libs/Smarty.class.php');
@@ -61,12 +64,18 @@ $smarty->assign('aquapi_ver',$aquapi_ver);
 require(LIB_DIR. 'database.class.php');
 $db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
 
+//uzupełnienie konfigu o dane z bazy
+$configs=$db->GetAll('SELECT setting_key, setting_value FROM settings');
+foreach($configs as $config)
+    $tmp[$config['setting_key']]=$config['setting_value'];
+
+$CONFIG		= array_merge($CONFIG, $tmp);
+unset($tmp);
+
 //init sesji
 require(LIB_DIR. 'session.class.php');
 $SESSION	= new Session();
 
-//graficzny debug
-require(LIB_DIR.'dBug.php');
 
 //funkcje
 require(LIB_DIR.'functions.php');
