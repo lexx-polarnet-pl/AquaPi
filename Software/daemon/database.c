@@ -50,18 +50,6 @@ int DB_Query(char *query) {
 	return mysql_query(conn, query);
 }
 
-void DB_GetSetting(char *key, char *value) {
-	char query[80];
-	MYSQL_RES *result;
-	MYSQL_ROW row;
-	
-	sprintf(query,"select value from settings where `key`='%s'",key);
-	mysql_query(conn, query);
-	result = mysql_store_result(conn);
-	row = mysql_fetch_row(result);
-	memcpy (value, row[0], 60);
-	mysql_free_result(result);
-}
 
 int DB_GetOne(char *query, char *value, int res_size) {
 	MYSQL_RES *result;
@@ -85,4 +73,10 @@ int DB_GetOne(char *query, char *value, int res_size) {
 			return(1);
 		}
 	}
+}
+
+void DB_GetSetting(char *key, char *value) {
+	char query[80];
+	sprintf(query,"select value from settings where `key`='%s'",key);
+	DB_GetOne(query,value,60);
 }

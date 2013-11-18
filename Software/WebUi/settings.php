@@ -70,7 +70,7 @@ if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
                         if(!$sensor['sensor_draw'])
                             $sensor['sensor_draw']=0;
 			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr, sensor_draw)
-				     VALUES (?, ?, ?, ?, ?)', array($index, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr']));
+				     VALUES (?, ?, ?, ?, ?)', array($index, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
 		}
 		
 	}
@@ -110,12 +110,13 @@ if(is_dir(ONEWIRE_DIR))
 		$temp_sensors[] = $plik;
     $folder->close();
 }
-
+//$temp_sensors[] = "dummy";
 $smarty->assign('temp_day', $temp_day);
 $smarty->assign('temp_cool', $temp_cool);
 $smarty->assign('temp_night', $temp_night);
 $smarty->assign('hysteresis', $hysteresis);
 
+date_default_timezone_set('UTC');
 $smarty->assign('day_start', date("H:i:s",$day_start));
 $smarty->assign('day_stop', date("H:i:s",$day_stop));
 
@@ -126,7 +127,6 @@ $smarty->assign('temp_sensors', $temp_sensors);
 
 $settings = $db->GetAll('select * from settings;');
 $smarty->assign('settings', $settings);
-
 
 $smarty->display('settings.tpl');
 ?>

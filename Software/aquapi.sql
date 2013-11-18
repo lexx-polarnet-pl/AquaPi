@@ -37,9 +37,9 @@ CREATE TABLE `devices` (
 
 LOCK TABLES `devices` WRITE;
 /*!40000 ALTER TABLE `devices` DISABLE KEYS */;
-INSERT INTO `devices` VALUES (1,'light','gpio4','Oswietlenie'),
-(4,'heater','gpio1','Grzalka'),(5,'cooling','gpio5','Chlodzenie'),
-(6,'uni1','gpio6','Uniwersalne 1'),(7,'uni2','dummy','Uniwersalne 2'),
+INSERT INTO `devices` VALUES (1,'light','rpi:gpio:4','Oswietlenie'),
+(4,'heater','rpi:gpio:1','Grzalka'),(5,'cooling','rpi:gpio:5','Chlodzenie'),
+(6,'uni1','rpi:gpio:6','Uniwersalne 1'),(7,'uni2','disabled','Uniwersalne 2'),
 (8,'uni3','disabled','Uniwersalne 3'),(9,'uni4','disabled','Uniwersalne 4'),
 (10,'uni5','disabled','Uniwersalne 5'),(11,'uni6','disabled','Uniwersalne 6'),
 (12,'uni7','disabled','Uniwersalne 7'),(13,'uni8','disabled','Uniwersalne 8'),

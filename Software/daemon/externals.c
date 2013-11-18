@@ -101,7 +101,7 @@ void ChangePortState (char *port,int state) {
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		ChangePortStateRelBrd (port,state);
 	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
+		sprintf(buff,"CPS - Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
 }
@@ -194,7 +194,7 @@ void SetPortAsOutput (char *port) {
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		// Relay Board - tu nie ma co robić
 	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
+		sprintf(buff,"SPAO - Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 		// nie obsługiwany port
 	}
