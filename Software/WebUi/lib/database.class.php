@@ -2,8 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
- * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
+ * Copyright (C) 2012-2013 AquaPi Developers
  * Copyright (C) 2001-2011 LMS Developers
  *
  * This program is free software; you can redistribute it and/or modify
