@@ -23,12 +23,6 @@
  
 include("init.php");
 
-if($CONFIG['plugins']['relayboard']==1)
-{
-	include(MODULES_DIR . "relayboard.php");
-	$smarty->assign('relayboard_enable', 1);
-}
-
 $smarty->assign('title', 'Ustawienia');
 
 //kasowanie czujnika przez $_GET

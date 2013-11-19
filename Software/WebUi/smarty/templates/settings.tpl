@@ -118,22 +118,6 @@
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 
-<!--Relayboard-->
-{if $relayboard_enable eq 1}
-	{include "settings_relayboard.tpl"}
-{/if}
-
 </form>
 
-{*
-<table>
-<tr><th>Klucz</th><th>Wartość</th></tr>
-{foreach from=$settings item="entry"}
-    <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{$entry.key}</td>        
-		<td>{$entry.value}</td>
-    </tr>
-{/foreach}
-</table>
-*}
 {include "footer.tpl"}

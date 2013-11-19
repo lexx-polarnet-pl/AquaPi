@@ -85,33 +85,6 @@ CREATE TABLE `output_stats` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Struktura tabeli dla tabeli `relayboard`
---
-
-CREATE TABLE IF NOT EXISTS `relayboard` (
-  `relay_id` int(5) NOT NULL AUTO_INCREMENT,
-  `relay_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
-  `relay_type` tinyint(4) NOT NULL COMMENT '0-NO,1-NC',
-  `relay_state` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`relay_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=9 ;
-
---
--- Zrzut danych tabeli `relayboard`
---
-
-INSERT INTO `relayboard` (`relay_id`, `relay_name`, `relay_type`, `relay_state`) VALUES
-(1, 'nr1', 0, 0),
-(2, 'nr2', 0, 0),
-(3, 'nr3', 0, 0),
-(4, 'nr4', 0, 0),
-(5, 'nr5', 1, 0),
-(6, 'nr6', 1, 0),
-(7, 'nr7', 1, 0),
-(8, 'nr8', 1, 0);
-
-
---
 -- Table structure for table `settings`
 --
 
