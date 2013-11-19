@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chapter id="configure">
+    <title>Konfiguracja AquaPi</title>
+	<para>AquaPi które zainstalowałeś korzysta z ustawień zawartych w dwóch miejscach. Pierwszym z nich jest plik aquapi.ini, a drugim baza danych. Dalej znajdziesz
+	informację odnośnie obu tych miejsc, razem z dokładnym opisem dotyczącym wszystkich parametrów.</para>
+    <sect1 id="aquapi.ini">
+		<title>Opis pliku aquapi.ini</title>
+		<para>Plik aquapi.ini znajduje się w katalogu /etc/ i zawiera podstawowe parametry które umożliwiają pracę AquaPi. Kompletny zestaw opcji jest pokazany poniżej:</para>
+		<programlisting>[database]
+host = localhost
+user = aquapi
+password = aquapi
+database = aquapi
+
+[webui]
+security = none
+login = aquapi
+password = aquapi
+
+[daemon]
+temp_freq = 10
+stat_freq = 600
+dontfork = 0
+devel_freq = 300
+dummy_temp_sensor = 23.5</programlisting>
+		<table frame='none' pgwide='1'><title>Sekcja [database]</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Parametr'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry role="tabelka">Parametr</entry>
+						<entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>host</entry>
+						<entry>Adres hosta zawierającego uruchomiony serwer MySql. Poza nielicznymi przypadkami, zazwyczaj będzie to localhost</entry>
+					</row>
+					<row>
+						<entry>user</entry>
+						<entry>Nazwa użytkownika którego ma użyć program przy łączeniu się z serwerem baz danych</entry>
+					</row>
+					<row>
+						<entry>password</entry>
+						<entry>Hasło użytkownika którego ma użyć program przy łączeniu się z serwerem baz danych</entry>
+					</row>
+					<row>
+						<entry>database</entry>
+						<entry>Nazwa bazy danych w której są przechowywane dane programu</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>
+		<table frame='all' pgwide='1'><title>Sekcja [webui]</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Parametr'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Parametr</entry>
+						<entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>security</entry>
+						<entry>Poziom dostępu do WebUi. Możliwe to none (brak autoryzacji), setup (hasło wymagane do zmiany ustawień) oraz all (autoryzacja przy wszystkim)</entry>
+					</row>
+					<row>
+						<entry>login</entry>
+						<entry>Nazwa użytkownika wymagana przy logowaniu do WebUi</entry>
+					</row>
+					<row>
+						<entry>password</entry>
+						<entry>Hasło wymagane przy logowaniu do WebUi</entry>
+					</row>
+				</tbody>
+			</tgroup>
+		</table>		
+		<table frame='all' pgwide='1'><title>Sekcja [daemon]</title>
+			<tgroup cols='2'>
+				<colspec colname='Parametr'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Parametr</entry>
+						<entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>temp_freq</entry>
+						<entry>Co ile sekund kontrolować temperaturę, i decydować o włączaniu/wyłączaniu grzania i chłodzenia</entry>
+					</row>
+					<row>
+						<entry>stat_freq</entry>
+						<entry>Co ile sekund zapisywać informację o aktualnych temperaturach w bazie</entry>
+					</row>
+					<row>
+						<entry>dontfork</entry>
+						<entry>Opcja dla developerów. Ustawienie 1 spowoduje że demon nie wykona fork, i będzie nieco bardziej gadatliwy niż zwykle</entry>
+					</row>
+					<row>
+						<entry>dummy_temp_sensor</entry>
+						<entry>Opcja dla developerów. Przy ustawieniu sensora temperatury na "dummy", mówi jaką temperaturę ma zwracać ten sensor</entry>
+					</row>
+					<row>
+						<entry>devel_freq</entry>
+						<entry>Opcja dla developerów. W połączeniu z dontfork mówi co ile sekund demon ma pokazywać aktualne parametry</entry>
+					</row>					
+				</tbody>
+			</tgroup>
+		</table>		
+		<warning><title>Uwaga</title><para>Poza sekcją [daemon] wszystkie pozostałe parametry mają pustą wartość domyślną. Brak pliku aquapi.ini lub brak danych w tym pliku spowodują 
+		że aplikacja nie będzie działać.</para></warning>	  
+
+	</sect1>
+</chapter>
