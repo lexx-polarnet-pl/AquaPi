@@ -3,7 +3,11 @@
 Sterownik (sprzęt jak i oprogramowanie) dostępne jest na licencji GNU GPL w wersji 2.0.<br/>
 Pełen tekst licencji można znaleźć <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">tutaj</a>, a skrócone objaśnienie <a href="http://pl.wikipedia.org/wiki/GNU_General_Public_License">tutaj</a>.<br/>
 <br/>
-Autorem jest <a href="http://lexx.polarnet.pl/">Marcin 'Lexx' Król</a><br/>
+Autorami są:
+<ul>
+<li><a href="http://lexx.polarnet.pl/">Marcin 'Lexx' Król</a></li>
+<li>Jarosław 'Sir_Yaro' Czarniak</a></li>
+</ul>
 <br/>
 Pliki projektu można znaleźć w repezytorium GitHub pod adresem <a href="https://github.com/lexx-polarnet-pl/AquaPi">https://github.com/lexx-polarnet-pl/AquaPi</a><br/>
 <br/>
