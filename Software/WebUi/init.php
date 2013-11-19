@@ -35,6 +35,7 @@ date_default_timezone_set("Europe/Warsaw");
 
 define('MAIN_DIR',getcwd().'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
+define('IMG_DIR', MAIN_DIR.'img/');
 define('MODULES_DIR', MAIN_DIR.'modules/');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c');
@@ -46,6 +47,9 @@ if(!is_dir(SMARTY_COMPILE_DIR))
 if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
+if(!is_writable(IMG_DIR))
+        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
+	
 //graficzny debug
 require(LIB_DIR.'dBug.php');
 
@@ -76,12 +80,11 @@ unset($tmp);
 require(LIB_DIR. 'session.class.php');
 $SESSION	= new Session();
 
-
 //funkcje
 require(LIB_DIR.'functions.php');
 
 //IPC
-require(LIB_DIR.'ipc.php');
+//require(LIB_DIR.'ipc.php');
 
 // definicja menu
 $my_menu = Array (

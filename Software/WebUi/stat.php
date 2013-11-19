@@ -3,6 +3,7 @@
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
  *
  * This program is free software; you can redistribute it AND/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -25,6 +26,7 @@ include("init.php");
 
 $smarty->assign('title', 'Statystyki');
 
+
 if(array_key_exists('limit', $_GET))
     switch ($_GET['limit'])
     {
@@ -43,79 +45,88 @@ if(array_key_exists('limit', $_GET))
 else
     $limit = time() - (24 * 60 * 60);
     
-$stat	= $db->GetAll('SELECT time_st, temp, sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st', array($limit));
-$sensors= array_values(array_msort(
-				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
-						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st)
-						AND sensor_deleted=0 AND sensor_draw=1', array($limit))
-				    , array('sensor_id'=>SORT_ASC)
-				 ));
+$wire	= $db->GetOne('SELECT GROUP_CONCAT(interface_id) FROM interfaces i, devices d WHERE interface_disabled =0 AND interface_deleted =0 AND i.interface_deviceid = d.device_id AND device_id >0 AND device_deleted =0 AND device_name =  "1wire"');
 
-//new dBug($sensors);
+//new dBug($stat,"",true);
+//new dBug($stat);
+//die;
+//$sensors= array_values(array_msort(
+//				    $db->GetAll('SELECT * FROM sensors WHERE sensor_id
+//						IN(SELECT distinct sensor_id FROM temp_stats WHERE time_st >= ? AND temp>-50 ORDER BY time_st)
+//						AND sensor_deleted=0 AND sensor_draw=1', array($limit))
+//				    , array('sensor_id'=>SORT_ASC)
+//				 ));
+//
+////new dBug($sensors);
+//
+////$first	= reset($stat)['time_st'];
+////$last	= end($stat)['time_st'];
+//
+//$stat?:$stat=array();
+//
+//$first	= reset($stat);
+//$first	= $first['time_st'];
+//$last	= end($stat);
+//$last	= $last['time_st'];
+//
+//foreach ($stat as $index=>$value)
+//{
+//	$date=floor($value['time_st']/60)*60;
+//	$temperature[$date]['year'] = date("Y", $date);
+//	$temperature[$date]['month'] = date("n", $date)-1;
+//	$temperature[$date]['day'] = date("j", $date);
+//	$temperature[$date]['hour'] = date("H", $date);
+//	$temperature[$date]['minutes'] = date("i", $date);
+//	$temperature[$date][$value['sensor_id']] = $value['temp'];
+//	//$temperature[$value['sensor_id']][]=array(floor($value['time_st']/60)*60 => $value['temp']);
+//}
+////new dBug($temperature);
+//$out_names	= $db->GetAll('SELECT distinct(event) FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
+//$stat		= $db->GetAll('SELECT time_st,state,event FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
+//
+//$i = 0;
+//foreach ($out_names as $name)
+//{
+//	$outputs_names[$name['event']]['id'] = $i;
+//	$outputs_names[$name['event']]['prev'] = null;
+//	$outputs_names[$name['event']]['fname'] = $db->GetOne("SELECT fname FROM devices WHERE device = ?", array($name['event']));
+//	$i++;
+//}
+//
+//$i = 0;
+//foreach ($outputs_names as $key => $out_name)
+//{
+//	$ini_val = $db->GetOne('SELECT state FROM output_stats WHERE time_st < ? AND event = ? ORDER BY time_st DESC LIMIT 1', array($limit, $key));
+//	if ($ini_val == null) {$ini_val = 0; }
+//	$outputs_names[$key]['prev'] = $ini_val;
+//	$outputs_arr[$first][$i] = $ini_val;
+//	$i++;
+//}
+//
+//foreach ($stat as $value)
+//{
+//	if ($outputs_names[$value['event']]['prev'] != $value['state']) {
+//		$outputs_arr[$value['time_st']-1][$outputs_names[$value['event']]['id']] = $outputs_names[$value['event']]['prev'];
+//	}
+//	$outputs_arr[$value['time_st']][$outputs_names[$value['event']]['id']] = $value['state'];
+//	$outputs_names[$value['event']]['prev'] = $value['state'];
+//}
+//
+//$i = 0;
+//foreach ($outputs_names as $key => $out_name)
+//{
+//	$outputs_arr[$last][$i] = $out_name['prev'];
+//	$i++;
+//}
 
-//$first	= reset($stat)['time_st'];
-//$last	= end($stat)['time_st'];
+//$smarty->assign('temperature', $temperature);
+//$smarty->assign('sensors', $sensors);
+//$smarty->assign('outputs_arr', $outputs_arr);
+//$smarty->assign('outputs_names', $outputs_names);
 
-$stat?:$stat=array();
+//new dBug($stat);
 
-$first	= reset($stat);
-$first	= $first['time_st'];
-$last	= end($stat);
-$last	= $last['time_st'];
-
-foreach ($stat as $index=>$value)
-{
-	$date=floor($value['time_st']/60)*60;
-	$temperature[$date]['year'] = date("Y", $date);
-	$temperature[$date]['month'] = date("n", $date)-1;
-	$temperature[$date]['day'] = date("j", $date);
-	$temperature[$date]['hour'] = date("H", $date);
-	$temperature[$date]['minutes'] = date("i", $date);
-	$temperature[$date][$value['sensor_id']] = $value['temp'];
-	//$temperature[$value['sensor_id']][]=array(floor($value['time_st']/60)*60 => $value['temp']);
-}
-//new dBug($temperature);
-$out_names	= $db->GetAll('SELECT distinct(event) FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
-$stat		= $db->GetAll('SELECT time_st,state,event FROM output_stats WHERE time_st >= ? ORDER BY time_st', array($limit));
-
-$i = 0;
-foreach ($out_names as $name)
-{
-	$outputs_names[$name['event']]['id'] = $i;
-	$outputs_names[$name['event']]['prev'] = null;
-	$outputs_names[$name['event']]['fname'] = $db->GetOne("SELECT fname FROM devices WHERE device = ?", array($name['event']));
-	$i++;
-}
-
-$i = 0;
-foreach ($outputs_names as $key => $out_name)
-{
-	$ini_val = $db->GetOne('SELECT state FROM output_stats WHERE time_st < ? AND event = ? ORDER BY time_st DESC LIMIT 1', array($limit, $key));
-	if ($ini_val == null) {$ini_val = 0; }
-	$outputs_names[$key]['prev'] = $ini_val;
-	$outputs_arr[$first][$i] = $ini_val;
-	$i++;
-}
-
-foreach ($stat as $value)
-{
-	if ($outputs_names[$value['event']]['prev'] != $value['state']) {
-		$outputs_arr[$value['time_st']-1][$outputs_names[$value['event']]['id']] = $outputs_names[$value['event']]['prev'];
-	}
-	$outputs_arr[$value['time_st']][$outputs_names[$value['event']]['id']] = $value['state'];
-	$outputs_names[$value['event']]['prev'] = $value['state'];
-}
-
-$i = 0;
-foreach ($outputs_names as $key => $out_name)
-{
-	$outputs_arr[$last][$i] = $out_name['prev'];
-	$i++;
-}
-
-$smarty->assign('temperature', $temperature);
-$smarty->assign('sensors', $sensors);
-$smarty->assign('outputs_arr', $outputs_arr);
-$smarty->assign('outputs_names', $outputs_names);
+$smarty->assign('wire', $wire);
+$smarty->assign('limit', $limit);
 $smarty->display('stat.tpl');
 ?>

@@ -1,5 +1,5 @@
 <?
-
+include (LIB_DIR."rdp.php");
 
 function array_msort($array, $cols)
 {
