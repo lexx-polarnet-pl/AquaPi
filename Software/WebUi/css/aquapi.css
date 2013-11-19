@@ -12,7 +12,7 @@
   input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; margin-right: 10px}
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
-  input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 350px; background-color: #EEEEEE}
+  input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100%;}
   div.temp_select {width:100%; margin:5px;}
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
