@@ -5,6 +5,6 @@ Strona:
 		<a href="/logs.php?&offset={$page}">{$page+1}</a>
 {/for}
 
-{include "log_table.tpl"}
+{include "logs_table.tpl"}
 
 {include "footer.tpl"}
