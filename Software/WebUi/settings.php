@@ -169,13 +169,26 @@ if(is_dir(ONEWIRE_DIR))
     $folder = dir(ONEWIRE_DIR);
     while($plik = $folder->read())
 	if (substr($plik,0,3) == '28-')
-		$sensors[] = $plik;
+		$sensors_fs[] = $plik;
     $folder->close();
 }
 
-
 $smarty->assign('hysteresis', $hysteresis);
-$smarty->assign('sensors', $sensors);
+if(isset($sensors_fs))
+	$smarty->assign('sensors_fs', $sensors_fs);
+else
+{
+	$smarty->assign('sensors_fs', 'FALSE');
+	foreach($devices as $index => $device)
+	{
+		if($device['device_name']=='1wire')
+		{
+			unset($devices[$index]);
+			break;
+		}
+	}
+}
+
 $smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', $devices);
 $smarty->assign('icons', $icons);

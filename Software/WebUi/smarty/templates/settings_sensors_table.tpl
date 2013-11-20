@@ -13,7 +13,7 @@
 				onmouseover="return overlib('Wybierz czujnik.');"
 				onmouseout="return nd();">
 			<option value="none">Brak</option>
-			{foreach from=$sensors item="sensor_address"}
+			{foreach from=$sensors_fs item="sensor_address"}
 			<option {if $sensor_address eq $sensor.interface_addressshort}selected="selected"{/if}>{$sensor_address}</option>
 			{/foreach}
 		</select>

@@ -26,29 +26,29 @@ $(function() {
 		value: {$hysteresis|default:1}
 	});
 	
-	$('#day_start').timepicker({
-		timeFormat: "hh:mm:ss",
-		showSecond: true,
-		currentText: "Teraz",
-		closeText: "Wybierz",
-		timeOnlyTitle: "Wybierz czas",
-		timeText: "Czas",
-		hourText: "Godzina",
-		minuteText: "Minuta",
-		secondText: "Sekunda"
-	});
-	
-	$('#day_stop').timepicker({
-		timeFormat: "hh:mm:ss",
-		showSecond: true,
-		currentText: "Teraz",
-		closeText: "Wybierz",
-		timeOnlyTitle: "Wybierz czas",
-		timeText: "Czas",
-		hourText: "Godzina",
-		minuteText: "Minuta",
-		secondText: "Sekunda"
-	});		
+//	$('#day_start').timepicker({
+//		timeFormat: "hh:mm:ss",
+//		showSecond: true,
+//		currentText: "Teraz",
+//		closeText: "Wybierz",
+//		timeOnlyTitle: "Wybierz czas",
+//		timeText: "Czas",
+//		hourText: "Godzina",
+//		minuteText: "Minuta",
+//		secondText: "Sekunda"
+//	});
+//	
+//	$('#day_stop').timepicker({
+//		timeFormat: "hh:mm:ss",
+//		showSecond: true,
+//		currentText: "Teraz",
+//		closeText: "Wybierz",
+//		timeOnlyTitle: "Wybierz czas",
+//		timeText: "Czas",
+//		hourText: "Godzina",
+//		minuteText: "Minuta",
+//		secondText: "Sekunda"
+//	});		
 });
 </script>
 
@@ -65,7 +65,10 @@ $(function() {
 				onchange="showdivs()">
 				<option value="none">-- wybierz --</option>
 				{foreach from=$devices item="device"}
+				{if $device.device_name eq '1wire' && $sensors_fs == 'FALSE'}
+				{else}
 				<option>{$device.device_name}</option>
+				{/if}
 				{/foreach}
 			</select>
 		</td>
@@ -87,8 +90,8 @@ $(function() {
 		</td>
 	</tr>
 	</table>
-	<!--<input class="time_select" type="text" name="day_start" id="day_start" value="{$day_start}"/>-->
-	<!--<input class="time_select" type="text" name="day_stop" id="day_stop" value="{$day_stop}" />-->
+	<!--<input class="time_select" type="text" name="day_start" id="day_start" value="$day_start"/>-->
+	<!--<input class="time_select" type="text" name="day_stop" id="day_stop" value="$day_stop" />-->
 	<div class="temp_select">
 		Histereza:
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
@@ -99,8 +102,10 @@ $(function() {
 
 
 <!--Ustawienia sensorów temperatury-->
-{include "settings_sensors_table.tpl"}
-
+{if $sensors_fs != 'FALSE'}
+	{include "settings_sensors_table.tpl"}
+{/if}
+	
 <!--GPIO-->
 {include "settings_gpio.tpl"}
 

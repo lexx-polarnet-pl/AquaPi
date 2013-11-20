@@ -99,6 +99,7 @@ $my_menu = Array (
 $self = explode('/', $_SERVER["PHP_SELF"]);
 $self = end($self);
 
+$cur_name	= '';
 foreach ($my_menu as &$pos) {
     if ($pos['url'] == $self) {
 		$cur_name = $pos['name'];

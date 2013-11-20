@@ -87,7 +87,8 @@ function Read1Wire($address)
 
 function SaveLog($level, $message)
 {
-	$DB->Execute('INSERT INTO logs (log_date, log_level, log_value)
+	global $db;
+	$db->Execute('INSERT INTO logs (log_date, log_level, log_value)
                             VALUES (?NOW?, ?, ?)', array($level, $message));
 }
 
