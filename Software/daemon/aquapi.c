@@ -147,7 +147,9 @@ void ReadConf() {
 	    Log("Praca bez wskazania głównego sensora temperatury nie jest możliwa.",E_CRIT);
 	    termination_handler(1);
 	};
-
+	DB_GetOne("SELECT sensor_corr FROM sensors WHERE sensor_master=1;",buff,sizeof(buff));
+	temp_sensor_corr=atof(buff);
+			
 	// wczytanie ustawień timerów
 	events_count = 	0;
 	mysql_query(conn, "SELECT t_start,t_stop,device,day_of_week FROM timers;");
@@ -204,7 +206,6 @@ int main() {
 	int dzien = -1;
 	int fval = 0;
 	int i,j,seconds_since_midnight;
-	MYSQL_ROW row;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -342,11 +343,6 @@ int main() {
 			temp_zal_cool = temp_cool + histereza / 2;
 			temp_wyl_cool = temp_cool - histereza / 2;				
 
-			//DB_GetSetting("temp_sensor_corr",buff);
-			//temp_sensor_corr = atof(buff); 
-			mysql_query(conn, "SELECT sensor_corr FROM sensors WHERE sensor_master=1;");
-			row = mysql_fetch_row(mysql_store_result(conn));
-			temp_sensor_corr=atof(row[0]);
 
 			temp_act = ReadTempFromSensor(main_temp_sensor, temp_sensor_corr);
 			
