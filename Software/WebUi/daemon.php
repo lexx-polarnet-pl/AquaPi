@@ -115,9 +115,13 @@ while(true)
             {
                 $address = explode(':', $sensor['interface_address']);
                 //print_r($sensor);
-                $lines  = file(ONEWIRE_DIR. $address[2]. '/' . 'w1_slave');
-                $temp   = explode('=', $lines[1]);
-                $temp   = round($temp[1]/1000, 2);
+                $temp   = Read1Wire($address[2]);
+                if($temp===FALSE)
+                {
+                    //bład odczytu
+                    SaveLog(2, 'Błąd odczytu sensora '.$address[2]);
+                    continue;
+                }
                 $temp  += $sensor['interface_corr'];
                 
                 $debug .= str_pad(substr($sensor['interface_name'],0,20), 20). "\t => " . sprintf("%01.2f", $temp) . "\xc2\xb0C\n";
