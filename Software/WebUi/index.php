@@ -60,9 +60,9 @@ foreach($interfaces['dummy'] as $index => $sensor)
 {
 	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
 }
-
-new dBug($interfaces	, "", true);
-new dBug($CONFIG, "", true);
+//
+//new dBug($interfaces	, "", true);
+//new dBug($CONFIG, "", true);
 
 
 $last5infologs 	= $db->GetAll('select * from logs where log_level = 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
