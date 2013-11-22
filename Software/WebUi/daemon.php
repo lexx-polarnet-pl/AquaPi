@@ -47,21 +47,21 @@ define('ONEWIRE_DIR','/sys/bus/w1/devices/');
 
 // inicjalizacja bazy danych
 require(LIB_DIR. 'database.class.php');
-$DB		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
+$db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
 
 //funkcje
 require(LIB_DIR.'functions.php');
 
 
-$DEVICES=$DB->GetAll('SELECT * FROM  `devices` WHERE device_id>0 AND device_deleted=0');
+$DEVICES=$db->GetAll('SELECT * FROM  `devices` WHERE device_id>0 AND device_deleted=0');
 reload_config();
 
 function reload_config()
 {
-    global $CONFIG, $DEVICES, $DB;
+    global $CONFIG, $DEVICES, $db;
     $CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
     
-    $DEVICES= $DB->GetAll('SELECT * FROM  `devices` WHERE device_id>0 AND device_deleted=0');
+    $DEVICES= $db->GetAll('SELECT * FROM  `devices` WHERE device_id>0 AND device_deleted=0');
     //print_r($DEVICES);
     foreach($DEVICES as $index => $device)
     {
@@ -81,7 +81,7 @@ function shutdown()
 register_shutdown_function('shutdown');
 
 echo "Server time = ". date("Y-m-d H:i:s")."\n";
-$time=$DB->GetOne('SELECT FROM_UNIXTIME(?)', array(time()));
+$time=$db->GetOne('SELECT FROM_UNIXTIME(?)', array(time()));
 echo "Mysql time  = ". $time."\n";
 echo "\nServer & mysql time must by the same !!\n\n\n";
 
@@ -109,7 +109,7 @@ while(true)
         if(array_key_exists('1wire', $DEVICES ))
         {
             $debug .= "\n--== 1-WIRE ==--\n";
-            $ONEWIRE=$DB->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['1wire']));
+            $ONEWIRE=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['1wire']));
             //new dbug($ONEWIRE);
             foreach($ONEWIRE as $index => $sensor)
             {
@@ -127,7 +127,7 @@ while(true)
                 $debug .= str_pad(substr($sensor['interface_name'],0,20), 20). "\t => " . sprintf("%01.2f", $temp) . "\xc2\xb0C\n";
                 
                 if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
-                    $DB->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
+                    $db->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
                             VALUES (?, ?, ?)', array($now, $sensor['interface_id'], $temp));
             }
             unset($temp);
@@ -139,7 +139,7 @@ while(true)
         if(array_key_exists('gpio', $DEVICES ))
         {
             $debug .= "\n--== GPIO ==--\n";
-            $GPIO=$DB->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['gpio']));
+            $GPIO=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['gpio']));
             //new dbug($GPIO);
             foreach($GPIO as $index => $gpiopin)
             {
@@ -151,7 +151,7 @@ while(true)
                 $debug .= str_pad(substr($gpiopin['interface_name'],0,20), 20). "\t => " . $status . "\n";
                     
                 if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
-                    $DB->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
+                    $db->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
                                 VALUES (?, ?, ?)', array($now, $gpiopin['interface_id'], $status));
             }
             if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
@@ -163,7 +163,7 @@ while(true)
         if(array_key_exists('relayboard', $DEVICES ))
         {
             $debug .= "\n--== RB ==--\n";
-            $RB=$DB->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['relayboard']));
+            $RB=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['relayboard']));
             //new dbug($RB);
             $status=strrev(sprintf('%1$08d', base_convert(exec('sudo '.$CONFIG['relayboard']['binary'].' '.$CONFIG['relayboard']['device']. ' get'), 16, 2)));
             
@@ -172,7 +172,7 @@ while(true)
                 $debug .= str_pad(substr($relay['interface_name'],0,20), 20). "\t => " . $status[$index] . "\n";
                     
                 if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
-                    $DB->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
+                    $db->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
                                 VALUES (?, ?, ?)', array($now, $relay['interface_id'], $status[$index]));
             }
             if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
@@ -195,7 +195,7 @@ while(true)
         print_r($CONFIG);
     }
     sleep(1);
-    $DB->Execute('UPDATE settings SET setting_value=?NOW? WHERE setting_key = "demon_last_activity"'); 
+    $db->Execute('UPDATE settings SET setting_value=?NOW? WHERE setting_key = "demon_last_activity"'); 
 }
 
 ?>
