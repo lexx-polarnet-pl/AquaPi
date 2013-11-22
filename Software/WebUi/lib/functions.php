@@ -53,7 +53,8 @@ function GetInterfaces()
 	$interfaces	= $db->GetAll('SELECT *, NULL AS interface_icon FROM interfaces i, devices d
 						WHERE interface_disabled=0 AND interface_deleted=0
 						AND i.interface_deviceid=d.device_id
-						AND device_id>0 AND device_deleted=0');
+						AND device_id>0 AND device_deleted=0
+						ORDER BY interface_address ASC');
 	
 	foreach($interfaces as $index => $interface)
 	{

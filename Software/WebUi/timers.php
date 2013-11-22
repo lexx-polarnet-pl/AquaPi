@@ -25,26 +25,26 @@ include("init.php");
 
 $smarty->assign('title', 'Timery');
 
-if ($_GET['action'] == 'add') {
-	//var_dump($_POST);
-	$pieces = explode(":", $_POST['ev_start']);
-	$ev_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$pieces = explode(":", $_POST['ev_stop']);
-	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
-	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
-	$device= $_POST['device'];
-	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,$device,$days_of_week));
-	//echo $query;
-	ReloadDaemonConfig();
-}
-
-if ($_GET['action'] == 'del') {
-	//var_dump($_POST);
-	$id = $_GET['id'];
-	$db->Execute("DELETE FROM timers WHERE Id = ?", array($id));
-	//echo $query;
-	ReloadDaemonConfig();
-}
+//if ($_GET['action'] == 'add') {
+//	//var_dump($_POST);
+//	$pieces = explode(":", $_POST['ev_start']);
+//	$ev_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+//	$pieces = explode(":", $_POST['ev_stop']);
+//	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
+//	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
+//	$device= $_POST['device'];
+//	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,$device,$days_of_week));
+//	//echo $query;
+//	ReloadDaemonConfig();
+//}
+//
+//if ($_GET['action'] == 'del') {
+//	//var_dump($_POST);
+//	$id = $_GET['id'];
+//	$db->Execute("DELETE FROM timers WHERE Id = ?", array($id));
+//	//echo $query;
+//	ReloadDaemonConfig();
+//}
 
 //new dbug($db->GetOne('SELECT device FROM timers WHERE id=?', array('17')));
 //new dbug($db->GetRow('SELECT * FROM timers WHERE id=?', array('17')));
@@ -53,13 +53,16 @@ if ($_GET['action'] == 'del') {
 //die;
 //$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
 //$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
-$friendly_names = $db->GetAll('SELECT device,fname,output FROM devices WHERE output <> ? AND device ?LIKE? ?;', array("disabled", "uni%"));
-$timers = $db->GetAll('SELECT timers.*,devices.fname FROM timers LEFT JOIN devices ON timers.device = devices.device;');
+//$friendly_names = $db->GetAll('SELECT device,fname,output FROM devices WHERE output <> ? AND device ?LIKE? ?;', array("disabled", "uni%"));
+//$timers = $db->GetAll('SELECT timers.*,devices.fname FROM timers LEFT JOIN devices ON timers.device = devices.device;');
 //new dbug($timers);
 $smarty->assign('timers', $timers);
 //$smarty->assign('line_5', $line_5);
-$smarty->assign('friendly_names', $friendly_names);
+//$smarty->assign('friendly_names', $friendly_names);
 
-date_default_timezone_set('UTC');
+//date_default_timezone_set('UTC');
+$interfaces	= GetInterfaces();
+$smarty->assign('interfaces', $interfaces);
+new dBug($interfaces,"",true);
 $smarty->display('timers.tpl');
 ?>
