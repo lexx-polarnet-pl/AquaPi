@@ -79,7 +79,6 @@ $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
 $smarty->assign('interfaces', $interfaces);
 $smarty->assign('sensor_master_temp', $sensor_master_temp);
-$smarty->assign('CONFIG', $CONFIG);
 $smarty->assign('uname_r', $uname_r);
 $smarty->assign('uname_v', $uname_v);
 $smarty->assign('load', $load);

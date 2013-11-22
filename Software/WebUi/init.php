@@ -109,6 +109,7 @@ foreach ($my_menu as &$pos) {
 
 $smarty->assign('my_menu', $my_menu);
 $smarty->assign('cur_name', $cur_name);
+$smarty->assign('CONFIG', $CONFIG);
 
 //var_dump($my_menu);
 ?>

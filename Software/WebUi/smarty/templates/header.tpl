@@ -1,4 +1,4 @@
-<html>
+<html {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}style="background-color: #FF0000;"{/if}>
 <head>
 <link href='http://fonts.googleapis.com/css?family=Capriola&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <title>AquaPi - {$cur_name}</title>
@@ -11,7 +11,7 @@
 <script type="text/javascript" src="js/jquery-ui-1.9.0.custom.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 </head>
-<body>
+<body {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}style="background-color: #FF0000;"{/if}>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script type="text/javascript" language="JavaScript" src="js/overlib.js"></script>
 {include "menu.tpl"}

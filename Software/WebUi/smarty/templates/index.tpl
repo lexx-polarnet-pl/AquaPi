@@ -23,9 +23,9 @@
 <tr><td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td></tr>
 <tr><td>Wersja AquaPi:</td><td>{$aquapi_ver}</td></tr>
 <tr><td>Ostatnia aktywność daemona:</td><td>
-{if $CONFIG.demon_last_activity lt $smarty.now-180}<B><U>{/if}
+{if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}<B><U>{/if}
 {$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
-{if $CONFIG.demon_last_activity lt $smarty.now-180}</B></U>{/if}
+{if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}</B></U>{/if}
 </td></tr>
 </table>
 </div>
