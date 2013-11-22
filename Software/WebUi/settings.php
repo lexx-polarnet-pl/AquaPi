@@ -58,7 +58,9 @@ if($_POST)
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_relayboard'], 	'relayboard'));
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_dummy'], 	'dummy'));
 	
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 		'hysteresis'));	
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 		'hysteresis'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['simplify_graphs']?$_POST['simplify_graphs']:0, 	'simplify_graphs'));
+	
 	
 	
 	//1WIRE
@@ -188,11 +190,11 @@ else
 		}
 	}
 }
-
 $smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', $devices);
 $smarty->assign('icons', $icons);
 $smarty->assign('interfaces', $interfaces);
+$smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
 $smarty->assign('title', 'Ustawienia');
 $smarty->display('settings.tpl');
 ?>

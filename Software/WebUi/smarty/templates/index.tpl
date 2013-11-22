@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div id="dashboard">
+<div id="{if $CONFIG.demon_last_activity lt $smarty.now-180}dashboard_red{else}dashboard{/if}">
 <img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
@@ -22,6 +22,11 @@
 <tr><td>Obciążenie:</td><td>{$load.0} {$load.1} {$load.2}</td></tr>
 <tr><td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td></tr>
 <tr><td>Wersja AquaPi:</td><td>{$aquapi_ver}</td></tr>
+<tr><td>Ostatnia aktywność daemona:</td><td>
+{if $CONFIG.demon_last_activity lt $smarty.now-180}<B><U>{/if}
+{$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
+{if $CONFIG.demon_last_activity lt $smarty.now-180}</B></U>{/if}
+</td></tr>
 </table>
 </div>
 

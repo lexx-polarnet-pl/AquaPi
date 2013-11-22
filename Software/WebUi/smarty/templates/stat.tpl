@@ -15,7 +15,7 @@ $(function() {
 
 	    $.each(names, function(i, name)
 	    {
-			$.getJSON('jsonp.php?interfaceid='+ name +'&limit={/literal}{$limit}{literal}&callback=?',
+			$.getJSON('jsonp.php?interfaceid='+ name +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
 			function(data) {
 				    seriesOptions[i] = {
 						name: name,

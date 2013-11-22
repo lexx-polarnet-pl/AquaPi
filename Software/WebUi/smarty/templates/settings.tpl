@@ -96,7 +96,11 @@ $(function() {
 		Histereza:
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
 		<div id="slide_hysteresis" style="margin:10px;"></div>
-	</div>	
+	</div>
+		Uprość wykresy:
+		<input type="checkbox" name="simplify_graphs" value="1" {if $simplify_graphs eq 1}checked="checked"{/if}
+				onmouseover="return overlib('Uproszczone wykresy. Pokazuje tylko zmiany.');"
+				onmouseout="return nd();">
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 

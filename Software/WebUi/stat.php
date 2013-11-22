@@ -125,6 +125,7 @@ $wire	= $db->GetOne('SELECT GROUP_CONCAT(interface_id) FROM interfaces i, device
 //$smarty->assign('outputs_names', $outputs_names);
 
 //new dBug($stat);
+$smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
 
 $smarty->assign('wire', $wire);
 $smarty->assign('limit', $limit);

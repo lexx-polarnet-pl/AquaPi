@@ -1,12 +1,13 @@
   body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}
-  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
-  #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
-  #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
-  #dashboard_pwm {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
-  #dashboard_dummy {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
-  #dashboard_relayboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_red {margin: 5px; padding: 5px; width:48%; float:left; background-color: #FF0000; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_pwm {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_dummy {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_relayboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
   #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
   #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    
@@ -35,3 +36,6 @@
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 .imagebacked {padding-left: 26px; background-repeat: no-repeat;}
+
+.red		{ color: #FF0000; }
+
