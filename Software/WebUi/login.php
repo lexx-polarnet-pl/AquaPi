@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
@@ -18,35 +18,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id:$
  */
  
-class Session {
+include("init.php");
 
-		function Session() 
-		{
-			session_start();
-		}
-
-        function save($variable, $content)
-        {
-			$_SESSION[$variable] = $content;
-        }
-
-        function restore($variable, &$content)
-        {
-                if(isset($_SESSION[$variable]))
-                        $content = $_SESSION[$variable];
-                else
-                        $content = NULL;
-        }
-		
-        function redirect($location)
-        {
-                header('Location: '.$location);
-                die;
-        }
-
+if (($_POST['login'] == $CONFIG['webui']['login']) && ($_POST['password'] == $CONFIG['webui']['password'])) {
+	$SESSION -> restore('old_url',$old_url);
+	$SESSION -> save('logged_in',true);
+	if ($old_url != null) {
+		$SESSION -> redirect($old_url);
+	} else {
+		$SESSION -> redirect("index.php");
+	}
+} else {
+	$SESSION -> save('logged_in',false);
+	if (isset($_POST['login'])) {
+		$e_msg = "Zły login lub hasło";
+		$smarty->assign('e_msg', $e_msg);
+	} 
+	$smarty->display('login.tpl');
 }
-
 ?>
+

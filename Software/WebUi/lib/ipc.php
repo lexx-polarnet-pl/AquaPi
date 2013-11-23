@@ -60,4 +60,3 @@ function IPC_GetPid() {
 }
 
 ?>
-

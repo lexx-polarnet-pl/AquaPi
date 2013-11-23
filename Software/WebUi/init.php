@@ -75,26 +75,32 @@ require(LIB_DIR.'ipc.php');
 
 // definicja menu
 $my_menu = Array (
-    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php"),
-    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php"),
-    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php"),
-    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php"),
-    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php"),
-    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
+    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" ),
+    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"),
+    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"),
+    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php",	"acl" => "r" ),
+    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php",	"acl" => "r" ),
+    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r" )
 );
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
 $self = end($self);
 
+$SESSION -> restore('logged_in',$logged_in);
+	
 foreach ($my_menu as &$pos) {
     if ($pos['url'] == $self) {
 		$cur_name = $pos['name'];
 		$pos['selected'] = true;
+		if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) {
+			// nie jesteś zalogowany
+			$SESSION -> save('old_url',$self);
+			$SESSION -> redirect('login.php');			
+		}
 	}
 }
 
 $smarty->assign('my_menu', $my_menu);
 $smarty->assign('cur_name', $cur_name);
 
-//var_dump($my_menu);
 ?>
