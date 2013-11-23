@@ -50,7 +50,7 @@ function myFlush()
 function GetInterfaces()
 {
 	global $db;
-	$interfaces	= $db->GetAll('SELECT *, NULL AS interface_icon FROM interfaces i, devices d
+	$interfaces	= $db->GetAll('SELECT * FROM interfaces i, devices d
 						WHERE interface_disabled=0 AND interface_deleted=0
 						AND i.interface_deviceid=d.device_id
 						AND device_id>0 AND device_deleted=0
@@ -162,5 +162,53 @@ function RamerDouglasPeucker($pointList, $epsilon)
     // Return the result
     return $resultList;
 }
+
+function AddTimer($timer)
+{
+	global $db;
+	//new dBug($timer);
+	//czasowy
+	if($timer['type']==1)
+	{
+		$db->Execute('INSERT INTO timers
+					(timer_type,
+					timer_timeif,
+					timer_direction,
+					timer_action,
+					timer_interfaceidthen,
+					timer_days )
+				VALUES (?,?,?,?,?,?)',
+				array(
+					$timer['type'],
+					$timer['timeif'],
+					$timer['direction'],
+					$timer['action'],
+					$timer['interfaceidthen'],
+					$timer['days'],
+				));
+	}
+	elseif($timer['type']==2)
+	{
+		$db->Execute('INSERT INTO timers
+					(timer_type,
+					timer_interfaceidif,
+					timer_direction,
+					timer_value,
+					timer_action,
+					timer_interfaceidthen,
+					timer_days )
+				VALUES (?,?,?,?,?,?,?)',
+				array(
+					$timer['type'],
+					$timer['interfaceidif'],
+					$timer['direction'],
+					$timer['value'],
+					$timer['action'],
+					$timer['interfaceidthen'],
+					$timer['days'],
+				));
+	}
+}
+
 
 ?>

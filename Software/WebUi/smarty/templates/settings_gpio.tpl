@@ -15,17 +15,20 @@
 		&nbsp;Pin:
 	    </td>
 	    <td>
-		<input class="medium" name="gpios[{$gpio.interface_id}][gpio_address]" value="{$gpio.interface_address}"
+		<input class="short" name="gpios[{$gpio.interface_id}][gpio_address]" value="{$gpio.interface_address}"
 				onmouseover="return overlib('Podaj nowy adres gpio. Minimum 2 znaki.');"
 				onmouseout="return nd();">
 	    </td>
+	    <td style="width: 75px; text-align: right;">
+		<img src="img/{$gpio.interface_icon}">
+	    </td>
 	    <td>
-		<select class="medium"
+		<select class="medium" name="gpios[{$gpio.interface_id}][gpio_icon]"
 			onmouseover="return overlib('Wybierz ikonę dla wyjścia.');"
 			onmouseout="return nd();">
-			<option class="imagebacked" style="background-image:url(img/device.png);">&nbsp;device.png</option>
+			<option class="imagebacked" style="background-image:url(img/device.png);" {if $gpio.interface_icon eq "device.png"}selected{/if}>device.png</option>
 			{foreach $icons item=icon}
-			<option class="imagebacked" style="background-image:url(img/{$icon});">&nbsp;{$icon}</option>
+			<option class="imagebacked" style="background-image:url(img/{$icon});" {if $gpio.interface_icon eq $icon}selected{/if}>{$icon}</option>
 			{/foreach}
 		</select> 
 	    </td>
@@ -44,12 +47,9 @@
 		&nbsp;Pin:
 	    </td>
 	    <td>
-		<input class="medium" name="gpios[{$new_interface_id}][gpio_address]" value=""
+		<input class="short" name="gpios[{$new_interface_id}][gpio_address]" value=""
 				onmouseover="return overlib('Podaj adres nowego gpio. Minimum 2 znaki.');"
 				onmouseout="return nd();">
-	    </td>
-	    <td>
-		
 	    </td>
 	</tr>
 	</table>

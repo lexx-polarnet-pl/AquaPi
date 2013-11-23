@@ -42,17 +42,17 @@ foreach($interfaces['1wire'] as $index => $sensor)
 
 foreach($interfaces['gpio'] as $index => $gpio)
 {
-	foreach($CONFIG as $index2 => $config)
-		if($index2 == $gpio['interface_address'])
-			$interfaces['gpio'][$index]['interface_icon']=$config;
+	//foreach($CONFIG as $index2 => $config)
+	//	if($index2 == $gpio['interface_address'])
+	//		$interfaces['gpio'][$index]['interface_icon']=$config;
 	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
 }
 
 foreach($interfaces['relayboard'] as $index => $relay)
 {
-	foreach($CONFIG as $index2 => $config)
-		if($index2 == $relay['interface_address'])
-			$interfaces['relayboard'][$index]['interface_icon']=$config;
+	//foreach($CONFIG as $index2 => $config)
+	//	if($index2 == $relay['interface_address'])
+	//		$interfaces['relayboard'][$index]['interface_icon']=$config;
 	$interfaces['relayboard'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($relay['interface_id']));
 }
 

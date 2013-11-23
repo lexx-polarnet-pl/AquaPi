@@ -49,7 +49,7 @@ if(array_key_exists('action', $_GET))
 //aktualizacja konfiguracji
 if($_POST)
 {
-	//new dBug($_POST);
+	//new dBug($_POST,'',true);
 	//die;
 	
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_1wire'],		'1wire'));
@@ -94,8 +94,8 @@ if($_POST)
 		//jesli nazwa na min 2 znaki i gpio już istnieje w tabeli sensors
 		if(strlen($gpio['gpio_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
-			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=? WHERE interface_id=?', 
-				array($gpio['gpio_name'], $gpio['gpio_address'], $interface_id ));
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=? WHERE interface_id=?', 
+				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj gpio
 		elseif(strlen($gpio['gpio_name'])>1) 
@@ -109,8 +109,8 @@ if($_POST)
 	//RELAYBOARD
 	foreach($_POST['relays'] as $interface_id => $relay)
 	{
-		$db->Execute('UPDATE interfaces SET interface_conf=? WHERE interface_id=?', 
-			array($relay['relay_conf'], $interface_id ));
+		$db->Execute('UPDATE interfaces SET interface_conf=?, interface_name=?, interface_icon=? WHERE interface_id=?', 
+			array($relay['relay_conf'], $relay['relay_name'], $relay['relay_icon'], $interface_id ));
 		
 	}
 	
@@ -190,6 +190,7 @@ else
 		}
 	}
 }
+//new dBug($interfaces);
 $smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', $devices);
 $smarty->assign('icons', $icons);
