@@ -61,7 +61,7 @@ foreach($interfaces['dummy'] as $index => $sensor)
 	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
 }
 //
-//new dBug($interfaces	, "", true);
+new dBug($interfaces	, "", true);
 //new dBug($CONFIG, "", true);
 
 

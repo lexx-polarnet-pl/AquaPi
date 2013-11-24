@@ -178,6 +178,26 @@ while(true)
             if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
                 $insert .= "Saved relayboard into database.\n";
         }
+        
+        //jesli dummy jest aktywny
+        if(array_key_exists('dummy', $DEVICES ))
+        {
+            $debug .= "\n--== DUMMY ==--\n";
+            $DUMMY=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['dummy']));
+            //new dbug($RB);
+            //$status=strrev(sprintf('%1$08d', base_convert(exec('sudo '.$CONFIG['relayboard']['binary'].' '.$CONFIG['relayboard']['device']. ' get'), 16, 2)));
+            //
+            foreach($DUMMY as $index => $dummypin)
+            {
+                $debug .= str_pad(substr($dummypin['interface_name'],0,20), 20). "\t => " . $dummypin['interface_conf'] . "\n";
+                    
+                if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
+                    $db->Execute('INSERT INTO stats (stat_date, stat_interfaceid, stat_value)
+                                VALUES (?, ?, ?)', array($now, $dummypin['interface_id'], $dummypin['interface_conf']));
+            }
+            if($seconds_since_midnight % $CONFIG['daemon']['store_freq'] == 0)
+              $insert .= "Saved dummy into database.\n";
+        }
     }
     echo date("Y-m-d H:i:s")."\r";
     if(isset($debug))

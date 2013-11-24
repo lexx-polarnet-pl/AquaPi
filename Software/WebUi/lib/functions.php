@@ -210,5 +210,10 @@ function AddTimer($timer)
 	}
 }
 
+function TimeToUnixTime($time)
+{
+	$pieces = explode(":", $time);
+	return intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+}
 
 ?>

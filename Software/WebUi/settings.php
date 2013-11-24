@@ -24,7 +24,6 @@
  
 // Requires PHP 5.4 or higher 
 
-//DOKONCZYC OPROGRAMOWANIE IKON !!!!!!!!
 
 include("init.php");
 
@@ -52,15 +51,19 @@ if($_POST)
 	//new dBug($_POST,'',true);
 	//die;
 	
+	//UPDATE DEVICES
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_1wire'],		'1wire'));
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_gpio'], 		'gpio'));
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_pwm'], 		'pwm'));
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_relayboard'], 	'relayboard'));
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_dummy'], 	'dummy'));
 	
+	//SET GLOBAL SETTINGS
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 		'hysteresis'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['simplify_graphs']?$_POST['simplify_graphs']:0, 	'simplify_graphs'));
-	
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 'night_start'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  'night_stop'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 	'temp_night_corr'));
 	
 	
 	//1WIRE
@@ -75,7 +78,7 @@ if($_POST)
 				$sensor_master=1;
 			
 			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=? WHERE interface_id=?', 
-				array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $interface_id ));
+				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
@@ -144,7 +147,6 @@ $interfaces	= GetInterfaces();
 //new dbug($interfaces);
 //die;
 
-$hysteresis	= $db->GetOne("select setting_value from settings where `setting_key`='hysteresis';");
 $icons 		= scandir('img');
 foreach($icons as $icon)
 {
@@ -175,7 +177,6 @@ if(is_dir(ONEWIRE_DIR))
     $folder->close();
 }
 
-$smarty->assign('hysteresis', $hysteresis);
 if(isset($sensors_fs))
 	$smarty->assign('sensors_fs', $sensors_fs);
 else

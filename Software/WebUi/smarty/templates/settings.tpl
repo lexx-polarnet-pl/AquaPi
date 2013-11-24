@@ -23,32 +23,41 @@ $(function() {
 		step: 0.1,
 		min: 0,
 		max: 1,
-		value: {$hysteresis|default:1}
+		value: {$CONFIG.hysteresis|default:1}
 	});
 	
-//	$('#day_start').timepicker({
-//		timeFormat: "hh:mm:ss",
-//		showSecond: true,
-//		currentText: "Teraz",
-//		closeText: "Wybierz",
-//		timeOnlyTitle: "Wybierz czas",
-//		timeText: "Czas",
-//		hourText: "Godzina",
-//		minuteText: "Minuta",
-//		secondText: "Sekunda"
-//	});
-//	
-//	$('#day_stop').timepicker({
-//		timeFormat: "hh:mm:ss",
-//		showSecond: true,
-//		currentText: "Teraz",
-//		closeText: "Wybierz",
-//		timeOnlyTitle: "Wybierz czas",
-//		timeText: "Czas",
-//		hourText: "Godzina",
-//		minuteText: "Minuta",
-//		secondText: "Sekunda"
-//	});		
+	$('#night_start').timepicker({
+		timeFormat: "hh:mm:ss",
+		showSecond: true,
+		currentText: "Teraz",
+		closeText: "Wybierz",
+		timeOnlyTitle: "Wybierz czas",
+		timeText: "Czas",
+		hourText: "Godzina",
+		minuteText: "Minuta",
+		secondText: "Sekunda"
+	});
+	
+	$('#night_stop').timepicker({
+		timeFormat: "hh:mm:ss",
+		showSecond: true,
+		currentText: "Teraz",
+		closeText: "Wybierz",
+		timeOnlyTitle: "Wybierz czas",
+		timeText: "Czas",
+		hourText: "Godzina",
+		minuteText: "Minuta",
+		secondText: "Sekunda"
+	});
+	$("#slide_temp_night_corr").slider({
+		slide: function(event, ui) { 
+				document.getElementById('temp_night_corr').value = ui.value.toFixed(1);
+		},
+		step: 0.1,
+		min: -2,
+		max: 2,
+		value: {$CONFIG.temp_night_corr|default:-0.5}
+	});
 });
 </script>
 
@@ -90,17 +99,24 @@ $(function() {
 		</td>
 	</tr>
 	</table>
-	<!--<input class="time_select" type="text" name="day_start" id="day_start" value="$day_start"/>-->
-	<!--<input class="time_select" type="text" name="day_stop" id="day_stop" value="$day_stop" />-->
+	<BR><HR>
+	&nbsp;Rozpoczęcie nocy: <input class="time_select" type="text" name="night_start" id="night_start" value="{$CONFIG.night_start|date_format:"%H:%M:%S"}"/>,
+	zakończenie nocy: <input class="time_select" type="text" name="night_stop" id="night_stop" value="{$CONFIG.night_stop|date_format:"%H:%M:%S"}" />.
+	<BR><BR>
+	<div class="temp_select">
+		Korekcja temperatury w nocy:
+		<input class="temp_select" type="text" readonly id="temp_night_corr" name="temp_night_corr" value ="{$CONFIG.temp_night_corr}">
+		<div id="slide_temp_night_corr" style="margin:10px;"></div>	
+	</div>	
 	<div class="temp_select">
 		Histereza:
-		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$hysteresis}">
-		<div id="slide_hysteresis" style="margin:10px;"></div>
+		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$CONFIG.hysteresis}">
+		<div id="slide_hysteresis" style="margin:10px;"></div>	
 	</div>
-		Uprość wykresy:
-		<input type="checkbox" name="simplify_graphs" value="1" {if $simplify_graphs eq 1}checked="checked"{/if}
-				onmouseover="return overlib('Uproszczone wykresy. Pokazuje tylko zmiany.');"
-				onmouseout="return nd();">
+	Uprość wykresy:
+	<input type="checkbox" name="simplify_graphs" value="1" {if $simplify_graphs eq 1}checked="checked"{/if}
+			onmouseover="return overlib('Uproszczone wykresy. Pokazuje tylko zmiany.');"
+			onmouseout="return nd();">
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 

@@ -35,8 +35,9 @@ if ($_GET['action'] == 'add')
 {
     $timer['type']=$_POST['type'];
     $timer['direction']=$_POST['direction'];
-    $pieces = explode(":", $_POST['timeif']);
-    $timer['timeif'] = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+    //$pieces = explode(":", $_POST['timeif']);
+    $timer['timeif'] = TimeToUnixTime($_POST['timeif']);
+    //intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
     $timer['action'] = $_POST['action'];
     $timer['interfaceidthen'] = $_POST['interfaceidthen'];
     $timer['days'] = ($_POST['d1']?$_POST['d1']:'0') . ($_POST['d2']?$_POST['d2']:'0') . ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
