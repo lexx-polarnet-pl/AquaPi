@@ -1,6 +1,0 @@
-Rzeczy do zrobienia/poprawienia w daemonie
-
-- wykrywanie awarii grzałki
-- komunikaty głosowe
-- alarmowanie o przekroczeniu stanów przy sensorach
-
