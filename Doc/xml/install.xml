@@ -66,15 +66,23 @@ w1-therm</programlisting>
 		</sect2>
 		<sect2 id="install-standard-6">
           <title>Ściągnij pliki AquaPi.</title>
-<screen><prompt>root@raspberrypi:~# </prompt><userinput>cd /usr/local/src</userinput>
+<!-- <screen><prompt>root@raspberrypi:~# </prompt><userinput>cd /usr/local/src</userinput>
 <prompt>root@raspberrypi:~# </prompt><userinput>git clone https://github.com/lexx-polarnet-pl/AquaPi.git</userinput>
 <prompt>root@raspberrypi:~# </prompt><userinput>cd AquaPi</userinput></screen>
 		  <para>Teraz pobrałeś wszystkie pliki projektu. </para>
 		  <warning><title>Uwaga</title><para>Wersja, którą pobrałeś może nie działać stabilnie, lub nawet wcale.
 			Aby się cofnąć do ostatniej przetestowanej rewizji, wykonaj polecenie: 
 			<screen><prompt>root@raspberrypi:~# </prompt><userinput>git checkout 656b76bff59234a661d9fc8ff97642fc4ef83faa</userinput></screen>
-			To spowoduje, że Twoje AquaPi zostanie cofnięte do ostatniej przetestowanej rewizji.</para></warning>	 
-		
+			To spowoduje, że Twoje AquaPi zostanie cofnięte do ostatniej przetestowanej rewizji.</para></warning>	 -->
+		<!-- zakładamy że użytkownik sam sobie ściągnie pliki ze strony -->
+			<para>Pliki AquaPi można znaleźć na oficjalnej stronie projektu, czyli na <ulink url="http://aquapi.polarnet.pl/">http://aquapi.polarnet.pl/</ulink> Na tej
+			stronie znajdziesz wydania stabilne, jak i gotowe obrazy do nagrania na kartę.</para>
+			<para>Możesz również ściągnąć pliki bezpośrednio z repozytorium GitHub:</para>
+<screen><prompt>root@raspberrypi:~# </prompt><userinput>cd /usr/local/src</userinput>
+<prompt>root@raspberrypi:~# </prompt><userinput>git clone https://github.com/lexx-polarnet-pl/AquaPi.git</userinput>
+<prompt>root@raspberrypi:~# </prompt><userinput>cd AquaPi</userinput></screen>
+		  <para>Teraz pobrałeś wszystkie pliki projektu. </para>
+		  <warning><title>Uwaga</title><para>Wersja, którą pobrałeś z GitHub może nie działać stabilnie, lub nawet wcale.</para></warning>
 		</sect2>
 		<sect2 id="install-standard-7">
           <title>Skonfiguruj bazę danych</title>
