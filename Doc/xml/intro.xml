@@ -7,12 +7,20 @@
           Jest opartym o Raspberry Pi rozwiązaniem, na które składa się sprzęt i oprogramowanie sterujące. Całość 
           projektu oparta jest o licencję GPL. Cele, które miał sterownik realizować, to:</para>
           <itemizedlist>
+             <listitem><para>Sterowanie oświetleniem</para></listitem>
              <listitem><para>Sterowanie ogrzewaniem (nastawy temperatury dziennej, nocnej oraz histerezy)</para></listitem>
              <listitem><para>Sterowanie chłodzeniem (nastawy temperatury załączania oraz histerezy)</para></listitem>
              <listitem><para>Zaawansowane statystyki oraz logi systemowe</para></listitem>
              <listitem><para>Możliwość zapisu statystyki temperatur z wielu czujników</para></listitem>
              <listitem><para>Sterowanie przez przeglądarkę</para></listitem>
-             <listitem><para>Sterowanie wyjściami uniwersalnymi z dokładnością do 1 sec (sterownik obsługuje niezależnie do 20 wyjść)</para></listitem>
+             <listitem><para>Sterowanie wyjściami uniwersalnymi z dokładnością do 1 sec (sterownik obsługuje niezależnie do 20 wyjść), a co za tym idzie:
+			 <itemizedlist>
+                <listitem><para>Sterowanie dodatkowym oświetleniem (w tym nocnym)</para></listitem>
+                <listitem><para>Obsługa automatycznych karmników</para></listitem>
+                <listitem><para>Obsługa dozowników nawozów</para></listitem>
+                <listitem><para>Sterowanie elektrozaworami - nawożenie CO<subscript>2</subscript></para></listitem>
+				<listitem><para>I inne...</para></listitem>
+			 </itemizedlist></para></listitem>
              <listitem><para>Współpraca oprogramowania z różnym sprzętem, w tym:
                 <itemizedlist>
                 <listitem><para>Elektronika w wersji 0.1 - prosta płytka, bez elementów SMD z minimum elementów</para></listitem>
@@ -23,7 +31,7 @@
 		  <para>I powyższe zostały zrealizowane. Najbliższe plany rozwojowe zakładają:</para>
           <itemizedlist>
              <listitem><para>Dodanie wyjść PWM</para></listitem>
-             <listitem><para>Dodanie pomiaru pH i obsługa nawożenia CO2</para></listitem>
+             <listitem><para>Dodanie pomiaru pH i obsługa nawożenia CO<subscript>2</subscript> na podstawie tego pomiaru</para></listitem>
              <listitem><para>Strumieniowanie wideo z kamerki do przeglądarki (podgląd akwarium na żywo)</para></listitem>
              <listitem><para>Komunikaty głosowe (np. o awarii)</para></listitem>
           </itemizedlist>

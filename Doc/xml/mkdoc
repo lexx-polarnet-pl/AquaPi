@@ -1,0 +1,4 @@
+#!/bin/bash
+
+xsltproc aquapi.xsl index.xml
+mv *.html ../html/

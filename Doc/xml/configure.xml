@@ -23,13 +23,13 @@ stat_freq = 600
 dontfork = 0
 devel_freq = 300
 dummy_temp_sensor = 23.5</programlisting>
-		<table frame='none' pgwide='1'><title>Sekcja [database]</title>
+		<table frame='all' pgwide='1'><title>Sekcja [database]</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Parametr'/>
 				<colspec colname='Opis'/>
 				<thead>
 					<row>
-						<entry role="tabelka">Parametr</entry>
+						<entry>Parametr</entry>
 						<entry>Opis</entry>
 					</row>
 				</thead>
@@ -115,6 +115,65 @@ dummy_temp_sensor = 23.5</programlisting>
 		</table>		
 		<warning><title>Uwaga</title><para>Poza sekcją [daemon] wszystkie pozostałe parametry mają pustą wartość domyślną. Brak pliku aquapi.ini lub brak danych w tym pliku spowodują 
 		że aplikacja nie będzie działać.</para></warning>	  
+
+	</sect1>
+    <sect1 id="configuredb">
+		<title>Pozostałe opcje konfiguracyjne</title>
+		<para>Większość parametrów możesz ustawić bezpośrednio z poziomu przeglądarki. Wyjątkiem jest tutaj konfiguracja portów wyjściowych 
+		(przypisanie wyjść do określonych urządzeń), które należy wykonać bezpośrednio w bazie.</para>
+		  <para>Aby zmienić przypisanie wyjścia do urządzenia, wykonaj następujące kroki:
+<screen><prompt>root@raspberrypi:~# </prompt><userinput>mysql -u aquapi -p</userinput> 
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+<prompt>mysql> </prompt><userinput>USE aquapi;</userinput>
+Database changed
+<prompt>mysql> </prompt><userinput>select * from devices;</userinput>
++----+---------+----------+----------------+
+| id | device  | output   | fname          |
++----+---------+----------+----------------+
+|  1 | light   | dummy    | Oswietlenie    |
+|  4 | heater  | dummy    | Grzalka        |
+|  5 | cooling | dummy    | Chlodzenie     |
+|  6 | uni1    | dummy    | Uniwersalne 1  |
+|  7 | uni2    | disabled | Uniwersalne 2  |
+|  8 | uni3    | disabled | Uniwersalne 3  |
+|  9 | uni4    | disabled | Uniwersalne 4  |
+| 10 | uni5    | disabled | Uniwersalne 5  |
+| 11 | uni6    | disabled | Uniwersalne 6  |
+| 12 | uni7    | disabled | Uniwersalne 7  |
+| 13 | uni8    | disabled | Uniwersalne 8  |
+| 14 | uni9    | disabled | Uniwersalne 9  |
+| 15 | uni10   | disabled | Uniwersalne 10 |
+| 16 | uni11   | disabled | Uniwersalne 11 |
+| 17 | uni12   | disabled | Uniwersalne 12 |
+| 18 | uni13   | disabled | Uniwersalne 13 |
+| 19 | uni14   | disabled | Uniwersalne 14 |
+| 20 | uni15   | disabled | Uniwersalne 15 |
+| 21 | uni16   | disabled | Uniwersalne 16 |
+| 22 | uni17   | disabled | Uniwersalne 17 |
+| 23 | uni18   | disabled | Uniwersalne 18 |
+| 24 | uni19   | disabled | Uniwersalne 19 |
+| 25 | uni20   | disabled | Uniwersalne 20 |
++----+---------+----------+----------------+
+</screen>		  
+			Teraz możesz zmienić przypisanie wyjścia do urządzenia. Zanim jednak to zrobisz, zapoznaj się z możliwymi ustawieniami:
+			<itemizedlist>
+                <listitem><para>disabled - urządzenie wyłączone. Aplikacja nie będzie używać tego urządzenia.</para></listitem>
+				<listitem><para>rpi:gpio:? - urządzenie będzie korzystać z portu GPIO. Zamiast ? należy podać numer portu. 
+				<tip><title>Podpowiedź</title><para>Przykładowy porty to rpi:gpio:4 - oznacza on pin nr. 4 na porcie GPIO według rozpiski WiringPi</para></tip></para></listitem>
+				<listitem><para>relbrd:ttyUSB?:? - urządzenie będzie korzystać z karty RelayBoard. Zamiast pierwszego ? należy podać numer portu USB do którego
+				została podłączona karta. Zamiast drugiego ? należy podać numer przekaźnika na karcie.
+				<tip><title>Podpowiedź</title><para>Przykładowy porty to relbrd:ttyUSB0:4 - oznacza on przekaźnik nr. 4 na karcie RelayBoard widoczej w systemie pod /dev/ttyUSB0</para></tip></para></listitem>
+                <listitem><para>dummy - urządzenie dummy, przydatne przy rozwoju oprogramowania. Aplikacja normalnie korzysta z tego urządzenia, ale zmiana jego stanu
+				nie ma na nic wpływu.</para></listitem>
+			 </itemizedlist>		
+			Teraz jeśli wiesz jakie jest nazewnictwo portów, możesz przypisać takie porty jakie sobie zażyczysz:
+<screen><prompt>mysql> </prompt><userinput>update devices set output="rpi:gpio:4" where device="heater";</userinput>
+Query OK, 1 row affected (0.00 sec)
+<prompt>mysql> </prompt><userinput>update devices set output="relbrd:ttyUSB0:4" where device="light";</userinput>
+Query OK, 1 row affected (0.00 sec)</screen>				
+			Powyższe spowoduje że AquaPi będzie sterowało grzałką podłączoną pod pin 4 GPIO, oraz oświetleniem podłączonym pod 4 przekaźnik karty RelayBoard wpiętej w ttyUSB0.
+		</para>
 
 	</sect1>
 </chapter>

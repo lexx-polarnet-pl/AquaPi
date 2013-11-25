@@ -2,6 +2,5 @@ Rzeczy do zrobienia/poprawienia w daemonie
 
 - wykrywanie awarii grzałki
 - komunikaty głosowe
-- logowanie do WebUi
 - alarmowanie o przekroczeniu stanów przy sensorach
 
