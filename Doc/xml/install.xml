@@ -80,7 +80,8 @@ w1-therm</programlisting>
 			<para>Możesz również ściągnąć pliki bezpośrednio z repozytorium GitHub:</para>
 <screen><prompt>root@raspberrypi:~# </prompt><userinput>cd /usr/local/src</userinput>
 <prompt>root@raspberrypi:~# </prompt><userinput>git clone https://github.com/lexx-polarnet-pl/AquaPi.git</userinput>
-<prompt>root@raspberrypi:~# </prompt><userinput>cd AquaPi</userinput></screen>
+<prompt>root@raspberrypi:~# </prompt><userinput>cd AquaPi</userinput>
+<prompt>root@raspberrypi:~# </prompt><userinput>git checkout 1.0</userinput></screen>
 		  <para>Teraz pobrałeś wszystkie pliki projektu. </para>
 		  <warning><title>Uwaga</title><para>Wersja, którą pobrałeś z GitHub może nie działać stabilnie, lub nawet wcale.</para></warning>
 		</sect2>
