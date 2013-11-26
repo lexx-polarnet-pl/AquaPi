@@ -131,9 +131,6 @@ $(function() {
 <!--PWM-->
 {include "settings_pwm.tpl"}
 
-<!--Relayboard-->
-{include "settings_relayboard.tpl"}
-
 <!--Dummy-->
 {include "settings_dummy.tpl"}
 

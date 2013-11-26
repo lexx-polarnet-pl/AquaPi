@@ -30,12 +30,15 @@ $limit48h 	= time() - (60 * 60 * 48);
 
 
 $interfaces	= GetInterfaces();
-foreach($interfaces['1wire'] as $index => $sensor)
+if (!is_null($interfaces['1wire'])) 
 {
-	$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
-	if($sensor['interface_conf']==1)
+	foreach($interfaces['1wire'] as $index => $sensor)
 	{
-		$sensor_master_temp = $interfaces['1wire'][$index]['interface_temperature']['stat_value'];
+		$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
+		if($sensor['interface_conf']==1)
+		{
+			$sensor_master_temp = $interfaces['1wire'][$index]['interface_temperature']['stat_value'];
+		}
 	}
 }
 

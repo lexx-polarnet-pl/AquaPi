@@ -23,9 +23,8 @@
  
 // Requires PHP 5.4 or higher 
 
-$smarty->assign('title', 'Ustawienia');
-
 include("init.php");
+$smarty->assign('title', 'Ustawienia');
 
 //kasowanie urzadzen i interfejsów
 if(array_key_exists('action', $_GET))
