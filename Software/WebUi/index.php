@@ -24,31 +24,48 @@
 include("init.php");
 
 // spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
-$limit 		= time() - (15 * 60);
+// $limit jest na razie nie brany pod uwage! Trzeba później dopisać!
+//$limit 		= time() - (15 * 60);
 $limit48h 	= time() - (60 * 60 * 48);
 
-$sensor_ids	= $db->GetAll('SELECT DISTINCT sensor_id AS id
-				FROM temp_stats WHERE time_st >= ? AND temp > -50 AND sensor_id >0 ORDER BY time_st', array($limit));
 
-if ($sensor_ids) 
+$interfaces	= GetInterfaces();
+foreach($interfaces['1wire'] as $index => $sensor)
 {
-	foreach($sensor_ids as $index => $sensor)
-		$temperatures[]	= $db->GetRow('SELECT s.*,temp as sensor_temp
-						FROM temp_stats ts, sensors s
-						WHERE s.sensor_id=ts.sensor_id AND s.sensor_deleted=0 AND ts.sensor_id = ? and time_st > ? order by time_st desc limit 0,1', array($sensor['id'], $limit));
-	$temperatures	= array_values(array_filter($temperatures));
+	$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
+	if($sensor['interface_conf']==1)
+	{
+		$sensor_master_temp = $interfaces['1wire'][$index]['interface_temperature']['stat_value'];
+	}
 }
-//new dBug($temperatures);
 
-$last5infologs 	= $db->GetAll('select * from log where level = 0  AND time > ? order by time desc limit 0,5;', array($limit48h));
-$last5warnlogs 	= $db->GetAll('select * from log where level <> 0 AND time > ? order by time desc limit 0,5;', array($limit48h));
-
-$devices 	= $db->GetAll('select * from devices where output <> ? ', array("disabled"));
-
-foreach ($devices as $key => $device) 
+foreach($interfaces['gpio'] as $index => $gpio)
 {
-	$devices[$key]['output_state']= $db->GetOne('select state from output_stats where `event` = ? order by time_st desc limit 0,1', array($device['device']));
+	//foreach($CONFIG as $index2 => $config)
+	//	if($index2 == $gpio['interface_address'])
+	//		$interfaces['gpio'][$index]['interface_icon']=$config;
+	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
 }
+
+foreach($interfaces['relayboard'] as $index => $relay)
+{
+	//foreach($CONFIG as $index2 => $config)
+	//	if($index2 == $relay['interface_address'])
+	//		$interfaces['relayboard'][$index]['interface_icon']=$config;
+	$interfaces['relayboard'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($relay['interface_id']));
+}
+
+foreach($interfaces['dummy'] as $index => $sensor)
+{
+	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
+}
+//
+new dBug($interfaces	, "", true);
+//new dBug($CONFIG, "", true);
+
+
+$last5infologs 	= $db->GetAll('select * from logs where log_level = 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
+$last5warnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
 
 $uptime 	= exec("cat /proc/uptime | awk '{ print $1 }'");
 $enabled 	= date("d.m.Y H:i",time() - $uptime);
@@ -59,14 +76,15 @@ $cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
-$smarty->assign('temperatures', $temperatures);
+$smarty->assign('interfaces', $interfaces);
+$smarty->assign('sensor_master_temp', $sensor_master_temp);
 $smarty->assign('uname_r', $uname_r);
 $smarty->assign('uname_v', $uname_v);
 $smarty->assign('load', $load);
 $smarty->assign('cputemp', $cputemp);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
-$smarty->assign('devices', $devices);
+//$smarty->assign('devices', $devices);
 $smarty->display('index.tpl');
 ?>
 

@@ -2,8 +2,8 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Kr�l (lexx@polarnet.pl)
- * Copyright (C) 2013 Jaros?aw Czarniak (jaroslaw@czarniak.org)
+ * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -21,25 +21,14 @@
  *
  * $Id:$
  */
- 
+
 include("init.php");
 
-$smarty->assign('title', 'Zdarzenia systemowe');
+if(!file_exists('/dev/vchiq'))
+    $smarty->assign('message', 'No camera available');
 
-$count=20;
-$offset=0;
+$smarty->display('camera.tpl');
 
-if(isset($_GET['offset']))$offset = $count*$_GET['offset'];
 
-$r = $db->GetOne('select count(*) from logs;'); 
-$pages = ceil($r/$count);
-$logs = $db->GetAll('select * from logs order by log_date desc limit '.$count.' offset '.$offset.';');
-
-//$smarty->assign('time', date("H:i"));
-//$smarty->assign('temp', $temp);
-//$smarty->assign('heating', false);
-//$smarty->assign('day', false);
-$smarty->assign('logs', $logs);
-$smarty->assign('pages', $pages);
-$smarty->display('logs.tpl');
 ?>
+

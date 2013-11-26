@@ -24,42 +24,53 @@
 include("init.php");
 
 $smarty->assign('title', 'Timery');
-
-if ($_GET['action'] == 'add') {
-	//var_dump($_POST);
-	$pieces = explode(":", $_POST['ev_start']);
-	$ev_start = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$pieces = explode(":", $_POST['ev_stop']);
-	$ev_stop = intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);	
-	$days_of_week = $_POST['d1'] +$_POST['d2'] +$_POST['d3'] +$_POST['d4'] +$_POST['d5'] +$_POST['d6'] +$_POST['d7'];
-	$device= $_POST['device'];
-	$db->Execute("INSERT INTO timers (t_start,t_stop,device,day_of_week) VALUES (?, ?, ?, ?)", array($ev_start,$ev_stop,$device,$days_of_week));
-	//echo $query;
-	ReloadDaemonConfig();
+/*if($_POST)
+{
+    new dBug($_GET);
+    new dBug($_POST);
+    
+}
+else*/
+if ($_GET['action'] == 'add')
+{
+    $timer['type']=$_POST['type'];
+    $timer['direction']=$_POST['direction'];
+    //$pieces = explode(":", $_POST['timeif']);
+    $timer['timeif'] = TimeToUnixTime($_POST['timeif']);
+    //intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
+    $timer['action'] = $_POST['action'];
+    $timer['interfaceidthen'] = $_POST['interfaceidthen'];
+    $timer['days'] = ($_POST['d1']?$_POST['d1']:'0') . ($_POST['d2']?$_POST['d2']:'0') . ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
+                    ($_POST['d5']?$_POST['d5']:'0') . ($_POST['d6']?$_POST['d6']:'0') . ($_POST['d7']?$_POST['d7']:'0');
+    $timer['interfaceidif'] = $_POST['interfaceidif'];
+    $timer['value'] = $_POST['value'];
+    AddTimer($timer);
+    $SESSION->redirect('timers.php');
 }
 
-if ($_GET['action'] == 'del') {
-	//var_dump($_POST);
-	$id = $_GET['id'];
-	$db->Execute("DELETE FROM timers WHERE Id = ?", array($id));
-	//echo $query;
-	ReloadDaemonConfig();
+if ($_GET['action'] == 'delete')
+{
+    $timerid = $_GET['timerid'];
+    $db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
+    //ReloadDaemonConfig();
 }
 
-//new dbug($db->GetOne('SELECT device FROM timers WHERE id=?', array('17')));
-//new dbug($db->GetRow('SELECT * FROM timers WHERE id=?', array('17')));
-//new dbug($db->GetAll('SELECT *, ? FROM timers', array('17')));
+$interfaces         = GetInterfaces();
+$timers['time']     = $db->GetAll('SELECT *,
+                                    (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
+                                    (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
+                                  FROM timers t
+                                  WHERE timer_type=1');
+$timers['1wire']    = $db->GetAll('SELECT *,
+                                  (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
+                                  (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
+                                  FROM timers t
+                                  WHERE timer_type=2');
 
-//die;
-//$line_5 = $db->GetOne("select value from settings where `key`='gpio5_name';");
-//$line_6 = $db->GetOne("select value from settings where `key`='gpio6_name';");
-$friendly_names = $db->GetAll('SELECT device,fname,output FROM devices WHERE output <> ? AND device ?LIKE? ?;', array("disabled", "uni%"));
-$timers = $db->GetAll('SELECT timers.*,devices.fname FROM timers LEFT JOIN devices ON timers.device = devices.device;');
-//new dbug($timers);
+//new dBug($timers);
+
 $smarty->assign('timers', $timers);
-//$smarty->assign('line_5', $line_5);
-$smarty->assign('friendly_names', $friendly_names);
-
-date_default_timezone_set('UTC');
+$smarty->assign('interfaces', $interfaces);
+//new dBug($interfaces,"",true);
 $smarty->display('timers.tpl');
 ?>

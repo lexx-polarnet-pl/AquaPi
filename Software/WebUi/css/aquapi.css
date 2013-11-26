@@ -1,7 +1,13 @@
   body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}
-  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD}
+  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_red {margin: 5px; padding: 5px; width:48%; float:left; background-color: #FF0000; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_pwm {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_dummy {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_relayboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
   #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
   #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    
@@ -12,7 +18,13 @@
   input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; margin-right: 10px}
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
-  input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100%;}
+  select.medium {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 150px}
+  select.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
+  select.vshort {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px}  
+  input.long {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 350px; background-color: #EEEEEE}
+  input.medium {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px; background-color: #EEEEEE}
+  input.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px; background-color: #EEEEEE}
+  input.vshort {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; background-color: #EEEEEE}
   div.temp_select {width:100%; margin:5px;}
   h2.error {color: red; }
 /* css for timepicker */
@@ -26,4 +38,7 @@
 .ui-timepicker-rtl{ direction: rtl; }
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
-  
+.imagebacked {padding-left: 26px; background-repeat: no-repeat;}
+
+.red		{ color: #FF0000; }
+

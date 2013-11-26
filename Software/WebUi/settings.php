@@ -21,107 +21,182 @@
  * $Id:$
  */
  
-include("init.php");
+// Requires PHP 5.4 or higher 
 
 $smarty->assign('title', 'Ustawienia');
 
-//kasowanie czujnika przez $_GET
+include("init.php");
+
+//kasowanie urzadzen i interfejsów
 if(array_key_exists('action', $_GET))
-	if ($_GET['action'] == "delete" and $_GET['id']>0)
+{
+	if ($_GET['action'] == "delete" and $_GET['device_id']>0)
 	{
-		$db->Execute('UPDATE sensors SET sensor_deleted=1 WHERE sensor_id=?', array($_GET['id']));
-		ReloadDaemonConfig();
+		$db->Execute('UPDATE devices SET device_deleted=1 WHERE device_id=?', array($_GET['device_id']));
+		//ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
-
-if(array_key_exists('day_start', $_POST)) if ($_POST['day_start'] > "")
-{
-	$sensors	= $_POST['sensors'];
-	//new dbug($sensors);
-
-	$pieces 	= explode(":", $_POST['day_start']);
-	$day_start 	= intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$db->Execute('UPDATE settings SET value=? where `key`= ?', array($day_start, 'day_start'));
-
-	$pieces 	= explode(":", $_POST['day_stop']);
-	$day_stop 	= intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-	$db->Execute('UPDATE settings SET value=? where `key`= ?', array($day_stop, 'day_stop'));
-
-	foreach($sensors as $index => $sensor)
+	elseif($_GET['action'] == "delete" and $_GET['interface_id']>0)
 	{
-		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM sensors WHERE sensor_id=?', array($index))=="1") //jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+		$db->Execute('UPDATE interfaces SET interface_deleted=1 WHERE interface_id=?', array($_GET['interface_id']));
+		//ReloadDaemonConfig();
+		$SESSION->redirect("settings.php");
+	}
+}
+
+//aktualizacja konfiguracji
+if($_POST)
+{
+	//new dBug($_POST,'',true);
+	//die;
+	
+	//UPDATE DEVICES
+	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_1wire'],		'1wire'));
+	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_gpio'], 		'gpio'));
+	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_pwm'], 		'pwm'));
+	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_relayboard'], 	'relayboard'));
+	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_dummy'], 	'dummy'));
+	
+	//SET GLOBAL SETTINGS
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 		'hysteresis'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['simplify_graphs']?$_POST['simplify_graphs']:0, 	'simplify_graphs'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 'night_start'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  'night_stop'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 	'temp_night_corr'));
+	
+	
+	//1WIRE
+	foreach($_POST['sensors'] as $interface_id => $sensor)
+	{
+		//jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
-			if(!$sensor['sensor_master'] or $sensor_master==1)
+			if(!$sensor['sensor_conf'] or $sensor_master==1)
 				$sensor['sensor_master']=0;
 			else
 				$sensor_master=1;
 			
-			$db->Execute('UPDATE sensors SET sensor_name=?, sensor_address=?, sensor_corr=?, sensor_draw=?, sensor_master=? WHERE sensor_id=?', 
-				array($sensor['sensor_name'], $sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $index ));
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=? WHERE interface_id=?', 
+				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $interface_id ));
 		}
-		elseif(strlen($sensor['sensor_name'])>1) //jesli nie istnieje i jest podana nazwa dodaj czujnik
+		//jesli nie istnieje i jest podana nazwa dodaj czujnik
+		elseif(strlen($sensor['sensor_name'])>1) 
 		{
                         if(!$sensor['sensor_draw'])
                             $sensor['sensor_draw']=0;
-			$db->Execute('INSERT INTO sensors(sensor_id, sensor_address, sensor_name, sensor_corr, sensor_draw)
-				     VALUES (?, ?, ?, ?, ?)', array($index, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_corr, interface_draw)
+				     VALUES (?, ?, ?, ?, ?)', array($interface_id, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
 		}
 		
 	}
 	
-	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_day'], "temp_day"));
-	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_night'], "temp_night"));
-	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['temp_cool'], "temp_cool"));
-	$db->Execute('update settings set value= ? where `key`= ?', array($_POST['hysteresis'], "hysteresis"));
-
-	foreach ($_POST as $key => $value)
+	//GPIO
+	foreach($_POST['gpios'] as $interface_id => $gpio)
 	{
-		$act_key = explode("_",$key);
-		if ($act_key[0] == 'device')
+		//jesli nazwa na min 2 znaki i gpio już istnieje w tabeli sensors
+		if(strlen($gpio['gpio_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
-			$db->Execute('update devices set fname= ? where device= ?', array($value, $act_key[1]));
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=? WHERE interface_id=?', 
+				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
 		}
+		//jesli nie istnieje i jest podana nazwa dodaj gpio
+		elseif(strlen($gpio['gpio_name'])>1) 
+		{
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name)
+				     VALUES (?, ?, ?)', array($interface_id, $gpio['gpio_address'], $gpio['gpio_name']));
+		}
+		
 	}
-	ReloadDaemonConfig();
+
+	//RELAYBOARD
+	foreach($_POST['relays'] as $interface_id => $relay)
+	{
+		$db->Execute('UPDATE interfaces SET interface_conf=?, interface_name=?, interface_icon=? WHERE interface_id=?', 
+			array($relay['relay_conf'], $relay['relay_name'], $relay['relay_icon'], $interface_id ));
+		
+	}
+	
+	//DUMMY
+	foreach($_POST['dummies'] as $interface_id => $dummy)
+	{
+		//jesli nazwa na min 2 znaki i gpio już istnieje w tabeli sensors
+		if(strlen($dummy['dummy_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
+		{
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_conf=? WHERE interface_id=?', 
+				array($dummy['dummy_name'], $dummy['dummy_conf'], $interface_id ));
+		}
+		//jesli nie istnieje i jest podana nazwa dodaj dummy
+		elseif(strlen($dummy['dummy_name'])>1) 
+		{
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_conf)
+				     VALUES (?, ?, ?, ?)', array($interface_id, $dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
+		}
+		
+	}
+	
+	//ReloadDaemonConfig();
 }
 
-$temp_day	= $db->GetOne("select value from settings where `key`='temp_day';");
-$temp_night	= $db->GetOne("select value from settings where `key`='temp_night';");
-$temp_cool	= $db->GetOne("select value from settings where `key`='temp_cool';");
-$hysteresis	= $db->GetOne("select value from settings where `key`='hysteresis';");
-$day_start	= $db->GetOne("select value from settings where `key`='day_start';");
-$day_stop	= $db->GetOne("select value from settings where `key`='day_stop';");
 
-$friendly_names = $db->GetAll('select device,fname,output from devices where output <> "disabled";');
-$sensors	= $db->GetAll('SELECT * FROM sensors WHERE sensor_id>0 AND sensor_deleted=0');
-$temp_sensors 	= NULL;
+
+
+$devices	= GetDevices();
+$interfaces	= GetInterfaces();
+//new dbug($devices);
+//new dbug($interfaces);
+//die;
+
+$icons 		= scandir('img');
+foreach($icons as $icon)
+{
+	if($icon === '.' or $icon === '..'
+		or $icon=='device.png'
+		or pathinfo('img/'.$icon, PATHINFO_EXTENSION)!='png'
+		or getimagesize('img/'.$icon)[0]>26
+		)
+			{continue;}
+	$result[] = $icon;
+}
+$icons	= $result;
+
+//new dBug($result);
+//if($CONFIG['plugins']['relayboard']==1)
+//{
+//	include(MODULES_DIR . "relayboard.php");
+//	$smarty->assign('relayboard_enable', 1);
+//}
+
 
 if(is_dir(ONEWIRE_DIR))
 {
     $folder = dir(ONEWIRE_DIR);
     while($plik = $folder->read())
 	if (substr($plik,0,3) == '28-')
-		$temp_sensors[] = $plik;
+		$sensors_fs[] = $plik;
     $folder->close();
 }
-//$temp_sensors[] = "dummy";
-$smarty->assign('temp_day', $temp_day);
-$smarty->assign('temp_cool', $temp_cool);
-$smarty->assign('temp_night', $temp_night);
-$smarty->assign('hysteresis', $hysteresis);
 
-date_default_timezone_set('UTC');
-$smarty->assign('day_start', date("H:i:s",$day_start));
-$smarty->assign('day_stop', date("H:i:s",$day_stop));
-
-$smarty->assign('friendly_names', $friendly_names);
-$smarty->assign('sensors', $sensors);
-$smarty->assign('new_sensor_id', count($sensors)+1);
-$smarty->assign('temp_sensors', $temp_sensors);
-
-$settings = $db->GetAll('select * from settings;');
-$smarty->assign('settings', $settings);
-
+if(isset($sensors_fs))
+	$smarty->assign('sensors_fs', $sensors_fs);
+else
+{
+	$smarty->assign('sensors_fs', 'FALSE');
+	foreach($devices as $index => $device)
+	{
+		if($device['device_name']=='1wire')
+		{
+			unset($devices[$index]);
+			break;
+		}
+	}
+}
+//new dBug($interfaces);
+$smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
+$smarty->assign('devices', $devices);
+$smarty->assign('icons', $icons);
+$smarty->assign('interfaces', $interfaces);
+$smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
+$smarty->assign('title', 'Ustawienia');
 $smarty->display('settings.tpl');
 ?>
 

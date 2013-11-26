@@ -2,8 +2,8 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Kr�l (lexx@polarnet.pl)
- * Copyright (C) 2013 Jaros?aw Czarniak (jaroslaw@czarniak.org)
+ * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
+ * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -21,25 +21,28 @@
  *
  * $Id:$
  */
- 
-include("init.php");
 
-$smarty->assign('title', 'Zdarzenia systemowe');
 
-$count=20;
-$offset=0;
+if(isset($_GET['action']))
+{
+    if($_GET['w'])
+        $options.=' -w '.$_GET['w'].' ';
+    else
+        $options.=' -w 800 ';
+    if($_GET['h'])
+        $options.=' -h '.$_GET['h'].' ';
+    else
+        $options.=' -h 600 ';
+    if($_GET['rot'])
+        $options.=' -rot '.$_GET['rot'].' ';
+        
+    system('raspistill -hf '.$options.' -o /tmp/imageembed.jpg -t 0');
+    $filename = "/tmp/imageembed.jpg";
+    $handle = fopen($filename, "rb");
+    $contents = fread($handle, filesize($filename));
+    fclose($handle);
+    echo $contents;
+}
 
-if(isset($_GET['offset']))$offset = $count*$_GET['offset'];
 
-$r = $db->GetOne('select count(*) from logs;'); 
-$pages = ceil($r/$count);
-$logs = $db->GetAll('select * from logs order by log_date desc limit '.$count.' offset '.$offset.';');
-
-//$smarty->assign('time', date("H:i"));
-//$smarty->assign('temp', $temp);
-//$smarty->assign('heating', false);
-//$smarty->assign('day', false);
-$smarty->assign('logs', $logs);
-$smarty->assign('pages', $pages);
-$smarty->display('logs.tpl');
 ?>

@@ -1,40 +1,55 @@
 {include "header.tpl"}
 
 <div id="dashboard">
-<h3>Wyjścia & sensory:</h3>
-<div style="width:49%; float:left;">
-{include "ports.tpl"}
-</div>
-<div style="width:49%; float:left;">
-{include "sensors.tpl"}
-</div>
+    <h3>Wyjścia & sensory:</h3>
+    <div style="width:49%; float:left;">
+    {include "index_gpio.tpl"}
+    </div>
+    <div style="width:49%; float:left;">
+    {include "index_1wire.tpl"}
+    </div>
 </div>
 
-<div id="dashboard">
+<div id="{if $CONFIG.demon_last_activity lt $smarty.now-180}dashboard_red{else}dashboard{/if}">
 <img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
 <tr><td>Czas</td><td>{$time}</td></tr>
-<tr><td>Temperatura zbiornika:</td><td>{if $temperatures.0.sensor_temp==''}--.--{else}{$temperatures.0.sensor_temp|string_format:"%.2f"}{/if}&deg;C</td></tr>
+<tr><td>Temperatura zbiornika:</td><td>{$sensor_master_temp|string_format:"%.2f"}&deg;C</td></tr>
 <tr><td>Uruchomiony:</td><td>{$enabled}</td></tr>
 <tr><td>Wersja jądra:</td><td>{$uname_r}</td></tr>
 <tr><td>Kompilacja:</td><td>{$uname_v}</td></tr>
-<tr><td>Obciążenie:</td><td>{$load.0} {$load.1} {$load.2}</td></tr>
+<tr><td>Obciążenie:</td><td>{$load.0}, {$load.1}, {$load.2}</td></tr>
 <tr><td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td></tr>
-<tr><td>Wersja AquaPi:</td><td>{$aquapi_ver}</td></tr>
+<tr><td>Wersja AquaPi/DB:</td><td>{$aquapi_ver}/{$CONFIG.db_version}</td></tr>
+<tr><td>Ostatnia aktywność daemona:</td><td>
+{if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}<B><U>{/if}
+{$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
+{if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}</B></U>{/if}
+</td></tr>
 </table>
 </div>
 
+<div id="dashboard">
+    <h3>Wyjścia & sensory:</h3>
+    <div style="width:49%; float:left;">
+    {include "index_relayboard.tpl"}
+    </div>
+    <div style="width:49%; float:left;">
+    {include "index_dummy.tpl"}
+    </div>
+</div>
+
 
 <div id="dashboard">
-<h3>Ostatnie 5 komunikatów informacyjnych:</h3>
-{include "log_table.tpl" logs = $last5infologs}
+<h3>Komunikaty informacyjne z ostatnich 48h:</h3>
+{include "index_logtable.tpl" logs = $last5infologs}
 </div>
 </div>
 
 <div id="dashboard">
-<h3>Ostatnie 5 komunikatów błędów:</h3>
-{include "log_table.tpl" logs = $last5warnlogs}
+<h3>Komunikaty błędów z ostatnich 48h:</h3>
+{include "index_logtable.tpl" logs = $last5warnlogs}
 </div>
 
 {include "footer.tpl"}

@@ -20,12 +20,12 @@
  *
  * $Id$
  */
-// wersja AquaPi
 
-$aquapi_ver = "1.0";
+// wersja AquaPi
+$aquapi_ver = "1.9-devel";
 
 // Wczytanie pliku z ustawieniami
-$CONFIG = parse_ini_file("/etc/aquapi.ini", true);
+$CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
@@ -33,9 +33,10 @@ date_default_timezone_set("Europe/Warsaw");
 
 define('MAIN_DIR',getcwd().'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
+define('IMG_DIR', MAIN_DIR.'img/');
 define('MODULES_DIR', MAIN_DIR.'modules/');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
-define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c');
+define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c/');
 
 
 if(!is_dir(SMARTY_COMPILE_DIR))
@@ -44,6 +45,14 @@ if(!is_dir(SMARTY_COMPILE_DIR))
 if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
+if(!is_readable('/dev/vchiq') and file_exists('/dev/vchiq'))
+	die('Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.');
+	
+//if(!is_writable(IMG_DIR))
+//        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
+	
+//graficzny debug
+require(LIB_DIR.'dBug.php');
 
 // inicjalizacja smarty
 require(MAIN_DIR.'smarty/libs/Smarty.class.php');
@@ -60,18 +69,23 @@ $smarty->assign('aquapi_ver',$aquapi_ver);
 require(LIB_DIR. 'database.class.php');
 $db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
 
+//uzupełnienie konfigu o dane z bazy
+$configs=$db->GetAll('SELECT setting_key, setting_value FROM settings');
+foreach($configs as $config)
+    $tmp[$config['setting_key']]=$config['setting_value'];
+
+$CONFIG		= array_merge($CONFIG, $tmp);
+unset($tmp);
+
 //init sesji
 require(LIB_DIR. 'session.class.php');
 $SESSION	= new Session();
-
-//graficzny debug
-require(LIB_DIR.'dBug.php');
 
 //funkcje
 require(LIB_DIR.'functions.php');
 
 //IPC
-require(LIB_DIR.'ipc.php');
+//require(LIB_DIR.'ipc.php');
 
 // definicja menu
 $my_menu = Array (
@@ -88,6 +102,8 @@ $self = end($self);
 
 $SESSION -> restore('logged_in',$logged_in);
 	
+$cur_name	= '';
+
 foreach ($my_menu as &$pos) {
     if ($pos['url'] == $self) {
 		$cur_name = $pos['name'];
@@ -102,5 +118,6 @@ foreach ($my_menu as &$pos) {
 
 $smarty->assign('my_menu', $my_menu);
 $smarty->assign('cur_name', $cur_name);
+$smarty->assign('CONFIG', $CONFIG);
 
 ?>
