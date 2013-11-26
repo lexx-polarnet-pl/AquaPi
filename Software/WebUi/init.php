@@ -38,7 +38,7 @@ define('LIB_DIR', MAIN_DIR.'lib/');
 define('IMG_DIR', MAIN_DIR.'img/');
 define('MODULES_DIR', MAIN_DIR.'modules/');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
-define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c');
+define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c/');
 
 
 if(!is_dir(SMARTY_COMPILE_DIR))
@@ -47,6 +47,9 @@ if(!is_dir(SMARTY_COMPILE_DIR))
 if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
+if(!is_readable('/dev/vchiq') and file_exists('/dev/vchiq'))
+	die('Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.');
+	
 //if(!is_writable(IMG_DIR))
 //        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
 	
@@ -93,6 +96,7 @@ $my_menu = Array (
     Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php"),
     Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php"),
     Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php"),
+    Array ("selected" => false,	"name" => "Kamera",	 	"icon" => "camera.png", 	"url" => "camera.php"),
     Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php")
 );
 
