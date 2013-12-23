@@ -190,6 +190,8 @@ void SetPortAsOutput (char *port) {
 			wiringPiSetupFin = 1;
 			wiringPiSetup ();
 		}
+		// numer GPIO jest za ostatnim :
+		port=strrchr(port,':')+1;
 		pinMode (atoi(port), OUTPUT);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		// Relay Board - tu nie ma co robić
