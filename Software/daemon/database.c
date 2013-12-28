@@ -77,6 +77,6 @@ int DB_GetOne(char *query, char *value, int res_size) {
 
 void DB_GetSetting(char *key, char *value) {
 	char query[80];
-	sprintf(query,"select value from settings where `key`='%s'",key);
+	sprintf(query,"SELECT setting_value FROM settings WHERE `setting_key`='%s'",key);
 	DB_GetOne(query,value,60);
 }
