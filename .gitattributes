@@ -10,3 +10,10 @@
 #*.png binary
 #*.jpg binary
 #*.gif binary
+
+#enable $id$ tag
+*.c ident
+*.h ident
+*.php ident
+*.tpl ident
+
