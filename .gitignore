@@ -1,5 +1,6 @@
 /Software/WebUi/smarty/templates_c/*
 /Software/WebUi/img/unused/*
+/Software/ncclient/*
 /Software/aquapi-backup.sql
 /Hardware/*/*.b*
 /Hardware/*/*.s*
