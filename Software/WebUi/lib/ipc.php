@@ -88,4 +88,27 @@ function IPC_GetDaemonData() {
 	}
 	return array("pid" => $pid, "compilation" => $compilation);
 }
+
+function IPC_CommandWithReply($command) {
+	global $myfifo,$myfifo2;
+	IPC_Command($command);
+
+	$fp2=fopen($myfifo2, "r+"); // ensures at least one writer (us) so will be non-blocking
+	stream_set_blocking($fp2, false);
+	$failcount =0;
+	do {
+	    if ($failcount > 0) usleep(100000);
+	    $failcount++;
+	    $data = fread($fp2,10000);
+	    if (strrpos($data,"<reply type=\"".$command."\"/>") > 0) break;
+	} while ($failcount < 3);
+	fclose($fp2); 
+
+	if ($failcount == 3) {
+	    $ret = -1;
+	} else {
+	    $ret = $data;
+	}
+	return $ret;
+}
 ?>

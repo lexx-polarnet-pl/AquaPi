@@ -66,7 +66,7 @@ void Log(char *msg, int lev) {
 	if ( config.dontfork ) {
 		timeinfo = localtime ( &rawtime );
 		strftime (timef,80,"%H:%M:%S",timeinfo);
-		printf("[%s] %i %s\n",timef,lev,msg);
+		printf("[%s] %2i %s\n",timef,lev,msg);
 	}
 	
 	if (lev >= 0 && lev != E_SQL) {

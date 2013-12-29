@@ -63,7 +63,7 @@ foreach($interfaces['dummy'] as $index => $sensor)
 	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
 }
 //
-new dBug($interfaces	, "", true);
+//new dBug($interfaces	, "", true);
 //new dBug($CONFIG, "", true);
 
 
@@ -76,7 +76,7 @@ $uname_r 	= php_uname("r");
 $uname_v 	= php_uname("v");
 $load 		= sys_getloadavg();
 $cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
-$daemon		= IPC_GetDaemonData(); 
+$daemon_data = @simplexml_load_string(IPC_CommandWithReply("status"));
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
@@ -86,10 +86,11 @@ $smarty->assign('uname_r', $uname_r);
 $smarty->assign('uname_v', $uname_v);
 $smarty->assign('load', $load);
 $smarty->assign('cputemp', $cputemp);
-$smarty->assign('daemon_data', $daemon);
+$smarty->assign('daemon_data', $daemon_data);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 //$smarty->assign('devices', $devices);
 $smarty->display('index.tpl');
+
 ?>
 

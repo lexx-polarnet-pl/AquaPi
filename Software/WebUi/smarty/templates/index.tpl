@@ -2,15 +2,30 @@
 
 <div id="dashboard">
     <h3>Wyjścia & sensory:</h3>
-    <div style="width:49%; float:left;">
-    {include "index_gpio.tpl"}
-    </div>
-    <div style="width:49%; float:left;">
-    {include "index_1wire.tpl"}
-    </div>
+	<table style="width:100%">
+	<tr bgcolor="#aaaaaa"><th>Wyjście</th><th>Typ</th><th>Stan</th></tr>
+	{foreach from=$daemon_data->devices->device item="device"}
+    <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
+		<td>{$device->name} ({$device->address})</td>
+		<td>{$device->type}</td>
+		<td>
+			{if $device.interface_icon}
+				    <img src="img/{$device.interface_icon}">
+			{else}
+				    <img src="img/device.png">
+			{/if}
+		
+		<img src="img/{if $device->state == 1}on.png{else}off.png{/if}" style="position:relative; left:-15px"></td>
+    </tr>
+	{foreachelse}
+		<tr bgcolor="#cccccc">
+			<td colspan="3">Brak komunikacji z demonem</td>
+		</tr>	
+	{/foreach}	
+	</table>
 </div>
 
-<div id="{if $daemon_data.pid < 0}dashboard_red{else}dashboard{/if}">
+<div id="{if $daemon_data->daemon->pid == null}dashboard_red{else}dashboard{/if}">
 <img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
@@ -27,21 +42,10 @@
 {$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
 {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}</B></U>{/if}
 </td></tr>
-<tr><td>PID demona:</td><td>{if $daemon_data.pid < 0}Nie uruchomiony{else}{$daemon_data.pid}{/if}</td></tr>
-<tr><td>Kompilacja demona:</td><td>{if $daemon_data.pid < 0}Nie uruchomiony{else}{$daemon_data.compilation}{/if}</td></tr>
+<tr><td>PID demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->pid}{/if}</td></tr>
+<tr><td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date}{/if}</td></tr>
 </table>
 </div>
-
-<div id="dashboard">
-    <h3>Wyjścia & sensory:</h3>
-    <div style="width:49%; float:left;">
-    {include "index_relayboard.tpl"}
-    </div>
-    <div style="width:49%; float:left;">
-    {include "index_dummy.tpl"}
-    </div>
-</div>
-
 
 <div id="dashboard">
 <h3>Komunikaty informacyjne z ostatnich 48h:</h3>

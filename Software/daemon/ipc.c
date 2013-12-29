@@ -30,6 +30,10 @@ char *myfifo = "/tmp/aquapi.cmd";
 char *myfifo2 = "/tmp/aquapi.res";
 int fds[2];
 
+char *XMLHead = "<?xml version=\"1.0\"?>\n"
+				"<aquapi>\n";
+char *XMLFoot = "</aquapi>\n";
+
 void IPCCommandReload() {
 	Log("Otrzymałem polecenie odświerzenia konfiguracji",E_INFO);
 	ReadConf();
@@ -53,6 +57,40 @@ void IPCCommandAbout() {
 	write(fds[1],buff,strlen(buff));
 	sprintf(buff,"aquapi>about>end of reply.\n");
 	write(fds[1],buff,strlen(buff));
+	close(fds[1]);	
+}
+
+void IPCCommandStatus() {
+	Log("Otrzymałem polecenie status",E_DEV);
+	char buff[400];
+	int x;
+	
+	fds[1]=open(myfifo2,O_RDWR);
+
+	write(fds[1],XMLHead,strlen(XMLHead));
+	sprintf(buff,"<reply type=\"status\"/>\n");
+	write(fds[1],buff,strlen(buff));	
+	// przedstaw się ładnie
+	sprintf(buff,"<daemon>\n");
+	write(fds[1],buff,strlen(buff));
+	sprintf(buff,"<pid>%i</pid>\n",getpid());
+	write(fds[1],buff,strlen(buff));
+	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
+	write(fds[1],buff,strlen(buff));
+	sprintf(buff,"</daemon>\n");
+	write(fds[1],buff,strlen(buff));
+	// opowiedz co tam panie słychać w urządzonkach
+	sprintf(buff,"<devices>\n");
+	write(fds[1],buff,strlen(buff));
+
+	for(x = 0; x <= interfaces_count; x++) {
+		sprintf(buff,"<device id=\"%i\"><address>%s</address><name>%s</name><type>%i</type><state>%i</state></device>\n",interfaces[x].id,interfaces[x].address,interfaces[x].name,interfaces[x].type,interfaces[x].state);
+		write(fds[1],buff,strlen(buff));
+	}	
+	
+	sprintf(buff,"</devices>\n");
+	write(fds[1],buff,strlen(buff));
+	write(fds[1],XMLFoot,strlen(XMLFoot));
 	close(fds[1]);	
 }
 
@@ -89,7 +127,9 @@ void ProcessIPC() {
 	if (strncmp("aquapi:about",tab,12)==0) {
 		IPCCommandAbout();
 	}
-
+	if (strncmp("aquapi:status",tab,13)==0) {
+		IPCCommandStatus();
+	}
 }
 
 void CloseIPC() {
