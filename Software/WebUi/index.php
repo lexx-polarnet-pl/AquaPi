@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
  
 include("init.php");
@@ -76,6 +76,7 @@ $uname_r 	= php_uname("r");
 $uname_v 	= php_uname("v");
 $load 		= sys_getloadavg();
 $cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
+$daemon		= IPC_GetDaemonData(); 
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
@@ -85,6 +86,7 @@ $smarty->assign('uname_r', $uname_r);
 $smarty->assign('uname_v', $uname_v);
 $smarty->assign('load', $load);
 $smarty->assign('cputemp', $cputemp);
+$smarty->assign('daemon_data', $daemon);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 //$smarty->assign('devices', $devices);

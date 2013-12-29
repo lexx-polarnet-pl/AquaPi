@@ -85,7 +85,7 @@ $SESSION	= new Session();
 require(LIB_DIR.'functions.php');
 
 //IPC
-//require(LIB_DIR.'ipc.php');
+require(LIB_DIR.'ipc.php');
 
 // definicja menu
 $my_menu = Array (

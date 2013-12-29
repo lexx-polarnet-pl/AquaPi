@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
  
 #include <unistd.h>
@@ -48,6 +48,8 @@ void IPCCommandAbout() {
 	sprintf(buff,"aquapi>about>and I am aquarium computer daemon.\n");
 	write(fds[1],buff,strlen(buff));
 	sprintf(buff,"aquapi>about>PID:%i\n",getpid());
+	write(fds[1],buff,strlen(buff));
+	sprintf(buff,"aquapi>about>compilation: %s %s\n",build_date,build_time);
 	write(fds[1],buff,strlen(buff));
 	sprintf(buff,"aquapi>about>end of reply.\n");
 	write(fds[1],buff,strlen(buff));

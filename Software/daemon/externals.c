@@ -30,9 +30,6 @@
 #include <wiringPi.h>
 #include <rb.h>
 
-char *PORT_RELBRD_PREFIX = "relbrd:";
-char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
-char *PORT_DUMMY_PREFIX = "dummy";
 
 int wiringPiSetupFin;
 
@@ -88,20 +85,20 @@ int ChangePortStateGpio(char *port,int state) {
 
 int ChangePortStateDummy(char *port,int state) {
 	char buff[200];
-	sprintf(buff,"Port DUMMY Stan: %i",state);
+	sprintf(buff,"Port %s Stan: %i",port,state);
 	Log(buff,E_DEV);
 	return(0);
 }
 void ChangePortState (char *port,int state) {
 	char buff[200];
-	if (strcmp(port,PORT_DUMMY_PREFIX)==0) {
+	if (strncmp(port,PORT_DUMMY_PREFIX,sizeof(PORT_DUMMY_PREFIX)-1)==0) {
 		ChangePortStateDummy(port,state);
 	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
 		ChangePortStateGpio(port,state);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		ChangePortStateRelBrd (port,state);
 	} else {
-		sprintf(buff,"CPS - Nie obsługiwany port: %s",port);
+		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
 }
@@ -183,8 +180,8 @@ double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
 void SetPortAsOutput (char *port) {
 	char buff[200];
 	
-	if (strcmp(port,PORT_DUMMY_PREFIX)==0||strcmp(port,"disabled")==0) {
-		// do nothing
+	if (strncmp(port,PORT_DUMMY_PREFIX,sizeof(PORT_DUMMY_PREFIX)-1)==0) {
+		// Dla portów dummy nie rób nic
 	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
@@ -196,17 +193,22 @@ void SetPortAsOutput (char *port) {
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
 		// Relay Board - tu nie ma co robić
 	} else {
-		sprintf(buff,"SPAO - Nie obsługiwany port: %s",port);
+		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 		// nie obsługiwany port
 	}
 }
 
 int SetupPorts() {
-	int j;
+	int x;
 	wiringPiSetupFin = 0;
-	for(j = 0; j <= outputs_count; j++) {
-		SetPortAsOutput(outputs[j].output_port);
-	}
+	for(x = 0; x <= interfaces_count; x++) {
+		if (interfaces[x].type == DEV_OUTPUT) {
+			SetPortAsOutput(interfaces[x].address);
+		}
+	}	
+	//for(j = 0; j <= outputs_count; j++) {
+		//SetPortAsOutput(outputs[j].output_port);
+	//}
 	return 0;
 }

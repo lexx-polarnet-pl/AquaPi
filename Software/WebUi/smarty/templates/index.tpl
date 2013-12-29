@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<div id="{if $CONFIG.demon_last_activity lt $smarty.now-180}dashboard_red{else}dashboard{/if}">
+<div id="{if $daemon_data.pid < 0}dashboard_red{else}dashboard{/if}">
 <img src ="img/welcome_logo.png" style="float:left;">
 <h3>Informacje o sterowniku:</h3>
 <table>
@@ -27,6 +27,8 @@
 {$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
 {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}</B></U>{/if}
 </td></tr>
+<tr><td>PID demona:</td><td>{if $daemon_data.pid < 0}Nie uruchomiony{else}{$daemon_data.pid}{/if}</td></tr>
+<tr><td>Kompilacja demona:</td><td>{if $daemon_data.pid < 0}Nie uruchomiony{else}{$daemon_data.compilation}{/if}</td></tr>
 </table>
 </div>
 
