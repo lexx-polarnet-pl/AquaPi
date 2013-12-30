@@ -22,12 +22,17 @@
 
 #define APPNAME "AquaPi"
 
-char *build_date = __DATE__;  // data kompilacji
-char *build_time = __TIME__;  // czas kompilacji
+const char *build_date = __DATE__;  // data kompilacji
+const char *build_time = __TIME__;  // czas kompilacji
 
+//prefiksy portów wejœciowych
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
+
+//prefiksy portów wyjœciowych
+const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
+const char *INPUT_DUMMY_PREFIX = "dummy:";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
@@ -35,9 +40,17 @@ const int E_WARN = 1;
 const int E_CRIT = 2;
 const int E_SQL  = 3;
 
+// typ urz¹dzenia
+const int DEV_INPUT = 1;
 const int DEV_OUTPUT = 2;
 
+// typ triggera
 const int TRIGGER_TIME = 1;
+const int TRIGGER_SENSOR = 2;
+
+// kierunek triggera
+const int DIRECTION_BIGGER = 1;
+const int DIRECTION_SMALLER = 2;
 
 void Log(char *msg, int lev);
 
@@ -52,6 +65,9 @@ struct _interfaces {
 	int type;
 	int state;
 	int new_state;
+	int draw;
+	double correction;
+	double measured_value;
 } interfaces[100];
 
 int interfaces_count;
@@ -61,6 +77,9 @@ struct _timers {
 	int timeif;
 	int action;
 	int interfaceidthen;
+	int direction;
+	int interfaceidif;
+	double value;
 } timers[100];
 
 int timers_count;	

@@ -3,23 +3,25 @@
 <div id="dashboard">
     <h3>Wyjścia & sensory:</h3>
 	<table style="width:100%">
-	<tr bgcolor="#aaaaaa"><th>Wyjście</th><th>Typ</th><th>Stan</th></tr>
+	<tr bgcolor="#aaaaaa"><th>Nazwa</th><th>Typ</th><th>Wart.</th><th>Stan</th></tr>
 	{foreach from=$daemon_data->devices->device item="device"}
     <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
 		<td>{$device->name} ({$device->address})</td>
 		<td>{$device->type}</td>
+		<td>{if $device->type == 1}{$device->measured_value|string_format:"%.1f"}{/if}</td>
 		<td>
+		{if $device->type == 2}
 			{if $device.interface_icon}
 				    <img src="img/{$device.interface_icon}">
 			{else}
 				    <img src="img/device.png">
 			{/if}
 		
-		<img src="img/{if $device->state == 1}on.png{else}off.png{/if}" style="position:relative; left:-15px"></td>
+		<img src="img/{if $device->state == 1}on.png{else}off.png{/if}" style="position:relative; left:-24px">{/if}</td>
     </tr>
 	{foreachelse}
 		<tr bgcolor="#cccccc">
-			<td colspan="3">Brak komunikacji z demonem</td>
+			<td colspan="4">Brak komunikacji z demonem</td>
 		</tr>	
 	{/foreach}	
 	</table>

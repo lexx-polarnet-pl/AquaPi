@@ -91,11 +91,11 @@ int ChangePortStateDummy(char *port,int state) {
 }
 void ChangePortState (char *port,int state) {
 	char buff[200];
-	if (strncmp(port,PORT_DUMMY_PREFIX,sizeof(PORT_DUMMY_PREFIX)-1)==0) {
+	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
 		ChangePortStateDummy(port,state);
-	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
+	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) {
 		ChangePortStateGpio(port,state);
-	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
+	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		ChangePortStateRelBrd (port,state);
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
@@ -113,17 +113,18 @@ double read_temp(char *sensor_id) {
 	char *pos;
 	double temp;
 	
-	if (strcmp(sensor_id,"dummy")==0) {
+	if (strncmp(sensor_id,INPUT_DUMMY_PREFIX,strlen(INPUT_DUMMY_PREFIX))==0) {
 		// dummy sensor
 		return config.dummy_temp_sensor_val;
-	} else {
+	} else if (strncmp(sensor_id,INPUT_RPI_1W_PREFIX,strlen(INPUT_RPI_1W_PREFIX))==0) {
+		sensor_id=strrchr(sensor_id,':')+1;		
 		sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);
 		
 		fp = fopen (sensor_path, "r");
 		if( fp == NULL ) {
 			sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
 			Log(buff,E_CRIT);
-			return -201;
+			return -100;
 		} else {
 			// otwarty plik z danymi sensora, trzeba odczytac
 			fgets(line, 80, fp);
@@ -140,15 +141,19 @@ double read_temp(char *sensor_id) {
 					temp = (double)atoi(pos)/1000;
 					return temp;
 				} else {
-					return -200;
+					return -100;
 				}
 			} else {
 				//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
 				//Log(buff,E_WARN);
-				return -202;
+				return -100;
 			}
 		}
-	}
+	} else {
+		sprintf(buff,"Nie obsługiwane wejście: %s",sensor_id);
+		Log(buff,E_WARN);
+		return -100;
+	}		
 }
 
 double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
@@ -180,9 +185,9 @@ double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
 void SetPortAsOutput (char *port) {
 	char buff[200];
 	
-	if (strncmp(port,PORT_DUMMY_PREFIX,sizeof(PORT_DUMMY_PREFIX)-1)==0) {
+	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
 		// Dla portów dummy nie rób nic
-	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,sizeof(PORT_RPI_GPIO_PREFIX)-1)==0) {
+	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) {
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
 			wiringPiSetup ();
@@ -190,7 +195,7 @@ void SetPortAsOutput (char *port) {
 		// numer GPIO jest za ostatnim :
 		port=strrchr(port,':')+1;
 		pinMode (atoi(port), OUTPUT);
-	} else if (strncmp(port,PORT_RELBRD_PREFIX,sizeof(PORT_RELBRD_PREFIX)-1)==0) {
+	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		// Relay Board - tu nie ma co robić
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);

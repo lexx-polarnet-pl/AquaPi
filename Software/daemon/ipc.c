@@ -84,7 +84,7 @@ void IPCCommandStatus() {
 	write(fds[1],buff,strlen(buff));
 
 	for(x = 0; x <= interfaces_count; x++) {
-		sprintf(buff,"<device id=\"%i\"><address>%s</address><name>%s</name><type>%i</type><state>%i</state></device>\n",interfaces[x].id,interfaces[x].address,interfaces[x].name,interfaces[x].type,interfaces[x].state);
+		sprintf(buff,"<device id=\"%i\"><address>%s</address><name>%s</name><type>%i</type><state>%i</state><id>%i</id><measured_value>%f</measured_value></device>\n",interfaces[x].id,interfaces[x].address,interfaces[x].name,interfaces[x].type,interfaces[x].state,interfaces[x].id,interfaces[x].measured_value);
 		write(fds[1],buff,strlen(buff));
 	}	
 	

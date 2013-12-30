@@ -34,13 +34,6 @@
 #include "inifile.c"
 #include "ipc.c"
 
-//double temp_dzien,temp_noc,temp_cool,histereza;
-//double temp_sensor_corr;
-//char main_temp_sensor[80];
-//char light_port[30];
-//char cooling_port[30];
-//char heater_port[30];
-
 void termination_handler(int signum)	{
 	// przy wychodzeniu wyłącz grzałkę
 	//ChangePortState(heater_port,0);
@@ -75,7 +68,7 @@ void Log(char *msg, int lev) {
 	}
 }
 
-
+/*
 void StoreTempStat(double t_zad) {
 	time_t rawtime;
 	double temp_act = -200;
@@ -126,7 +119,7 @@ void StoreTempStat(double t_zad) {
 	
 	//petla dla kazdego czujnika koniec
 	
-}
+}*/
 
 void ReadConf() {
 	MYSQL_RES *result;
@@ -138,7 +131,7 @@ void ReadConf() {
 	// Wczytanie interfeaców
 	Log("Wczytanie interfeaców",E_DEV);
 	interfaces_count = 	-1;
-	mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type FROM interfaces WHERE interface_disabled = 0 AND interface_deleted = 0");
+	mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type,interface_corr FROM interfaces WHERE interface_disabled = 0 AND interface_deleted = 0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -146,6 +139,7 @@ void ReadConf() {
 		memcpy(interfaces[interfaces_count].address,row[1],sizeof(interfaces[interfaces_count].address));
 		memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
 		interfaces[interfaces_count].type = atof(row[3]);
+		interfaces[interfaces_count].correction = atof(row[4]);
 	}	
 	mysql_free_result(result);	
 	
@@ -155,12 +149,15 @@ void ReadConf() {
 			interfaces[x].state = -1;
 			interfaces[x].new_state = -1;
 		}
+		if (interfaces[x].type == DEV_INPUT) {
+			interfaces[x].measured_value = -200;
+		}		
 	}
 
 	// Wczytanie timerów
 	Log("Wczytanie timerów",E_DEV);
 	timers_count = 	-1;
-	mysql_query(conn, "SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen FROM timers ORDER BY timer_timeif ASC");
+	mysql_query(conn, "SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif FROM timers ORDER BY timer_timeif ASC");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		timers_count++;
@@ -170,6 +167,13 @@ void ReadConf() {
 		}
 		timers[timers_count].action = atof(row[2]);
 		timers[timers_count].interfaceidthen = atof(row[3]);
+		timers[timers_count].direction = atof(row[4]);
+		if (row[5] != NULL) {
+			timers[timers_count].value = atof(row[5]);
+		}
+		if (row[6] != NULL) {
+			timers[timers_count].interfaceidif = atof(row[6]);
+		}		
 	}	
 	mysql_free_result(result);	
 	
@@ -187,7 +191,7 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 	int fval = 0;
-	int x,y,seconds_since_midnight,last_sec_run = 0;
+	int x,y,z,seconds_since_midnight,last_sec_run = 0;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -251,6 +255,15 @@ int main() {
 			// nie sprawdzałeś, to sprawdzaj
 			last_sec_run = seconds_since_midnight;
 			
+			// obsługa temperatury
+			if (seconds_since_midnight % config.temp_freq == 0) {
+				for(x = 0; x <= interfaces_count; x++) {
+					if (interfaces[x].type == DEV_INPUT) {
+						interfaces[x].measured_value = ReadTempFromSensor(interfaces[x].address, interfaces[x].correction);
+					}
+				}
+			}
+			
 			// Dobra, spróbujmy przelecieć timery i określić jaki powinien być stan wyjść
 			// przebieg 1 to dzień -1
 			for (x=0; x <= timers_count; x++) {
@@ -258,152 +271,64 @@ int main() {
 					for (y=0; y <= interfaces_count; y++) {
 						if (timers[x].interfaceidthen == interfaces[y].id) {
 							interfaces[y].new_state = timers[x].action;
-							//printf("Przebieg 1, ID: %i ST: %i\n",interfaces[y].id,interfaces[y].state);
 						}
 					}
 				}
 			}
-			// przebieg 2 to przebieg dla dnia bierzącego, teraz trzeba wziąść pod uwagę jeszcze czas
+			
+			// przebieg 2 to przebieg dla dnia bierzącego
 			for (x=0; x <= timers_count; x++) {
-				if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= seconds_since_midnight)) {
-					for (y=0; y <= interfaces_count; y++) {
+				for (y=0; y <= interfaces_count; y++) {
+					// teraz trzeba wziąść pod uwagę jeszcze czas
+					if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= seconds_since_midnight)) {
 						if (timers[x].interfaceidthen == interfaces[y].id) {
 							interfaces[y].new_state = timers[x].action;
-							//printf("Przebieg 2, ID: %i ST: %i\n",interfaces[y].id,interfaces[y].state);
+						}
+					}
+					// w tym przebiegu weź też pod uwagę wskazania sensorów
+					if (timers[x].type == TRIGGER_SENSOR) {
+						if (timers[x].interfaceidthen == interfaces[y].id) {
+							// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
+							for (z=0; z <= interfaces_count; z++) {
+								if (timers[x].interfaceidif == interfaces[z].id) {
+									//ignoruj stany nieustalone
+									if (interfaces[z].measured_value > -100) { 
+										if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value > timers[x].value)) {
+											interfaces[y].new_state = timers[x].action;
+										}
+										if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value < timers[x].value)) {
+											interfaces[y].new_state = timers[x].action;
+										}
+									}
+								}
+							}
 						}
 					}
 				}
 			}	
-			// timery czasowe załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
+			
+			// timery załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
 			for(x = 0; x <= interfaces_count; x++) {
 				if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
 					// konieczna jest zmiana stanu wyjścia
 					interfaces[x].state = interfaces[x].new_state;
 					ChangePortState(interfaces[x].address,interfaces[x].state);
-					sprintf(buff,"Zmiana stanu wyjścia %s na %i",interfaces[x].name,interfaces[x].state);
+					if (interfaces[x].state == 1) {
+						sprintf(buff,"Załączam %s",interfaces[x].name);
+					} else {
+						sprintf(buff,"Wyłączam %s",interfaces[x].name);
+					}
 					Log(buff,E_INFO);					
 				}
 			}		
-			/*
-			for(i = 0; i <= events_count; i++) {
-				// sprawdź czy jest odpowiedni dzień tygodnia
-				if (events[i].day_of_week & (int)round(pow(2,timeinfo->tm_wday))) {
-					// tm_wday -> days since Sunday	0-6
-					// takie todo
-					if (events[i].start<events[i].stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
-						if ((seconds_since_midnight >= events[i].start) && (seconds_since_midnight < events[i].stop)) {
-							events[i].enabled = 1;
-						} else {
-							events[i].enabled = 0;
-						}
-					} else { // przypadek kiedy zdarzenie przechodzi przez północ
-						if ((seconds_since_midnight < events[i].start) && (seconds_since_midnight >= events[i].stop)) {
-							events[i].enabled = 0;
-						} else {
-							events[i].enabled = 1;
-						}
-					}
-				}
-			}
-
-			// domyślnie wyjścia wyłączone
-			for(j = 0; j <= outputs_count; j++) {
-				outputs[j].new_state = 0;
-			}
-
-			// ustalenie jaki powinien być stan wyjść uniwersalnych (timery przecież mogą się nakładać)
-			for(i = 0; i <= events_count; i++) {
-				if (events[i].enabled == 1) {
-						for(j = 0; j <= outputs_count; j++) {
-							if (strcmp(outputs[j].device,events[i].device)==0) {
-								outputs[j].new_state = 1;
-							}
-						}
-				}
-			}
 			
-			// ustalenie czy wymagana jest zmiana stanu logicznego wyjść
-			for(j = 0; j <= outputs_count; j++) {
-				if (outputs[j].enabled != outputs[j].new_state) {
-					outputs[j].enabled = outputs[j].new_state;
-					sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'%s',%i);",rawtime,outputs[j].device,outputs[j].enabled);
-					DB_Query(buff);					
-					ChangePortState (outputs[j].output_port,outputs[j].enabled);
-				}
-			}
-
-			// zmiana trybu dzień - noc
-			if (events[0].enabled != dzien) {
-				dzien = events[0].enabled;
-				if (dzien == 1) {
-					Log("Przechodzę w tryb dzień",E_INFO);
-				} else {
-					Log("Przechodzę w tryb noc",E_INFO);
-				}
-				sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'light',%i);",rawtime,dzien);
-				DB_Query(buff);					
-				ChangePortState(light_port,dzien);
-			}
-			
-			// obsługa temperatury
-			if (seconds_since_midnight % config.temp_freq == 0) {
-				if (dzien == 1) {
-					temp_zad = temp_dzien; 
-				} else {
-					temp_zad = temp_noc; 
-				}
-			
-				temp_zal = temp_zad - histereza / 2;
-				temp_wyl = temp_zad + histereza / 2;	
-				temp_zal_cool = temp_cool + histereza / 2;
-				temp_wyl_cool = temp_cool - histereza / 2;				
-
-
-				temp_act = ReadTempFromSensor(main_temp_sensor, temp_sensor_corr);
-				
-				if (temp_act < -100) {
-					grzanie = 0;
-					chlodzenie = 0;
-					ChangePortState(heater_port,grzanie);
-					ChangePortState(cooling_port,chlodzenie);
-				} else {
-					if ((temp_act < temp_zal) && (grzanie == 0)) {
-						grzanie = 1;
-						//Log("Włączam grzanie",E_INFO);
-						sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',1);",rawtime);
-						DB_Query(buff);		
-						ChangePortState(heater_port,grzanie);
-					} 
-					if ((temp_act > temp_wyl) && (grzanie == 1)) {
-						grzanie = 0;
-						//Log("Wyłączam grzanie",E_INFO);
-						sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'heater',0);",rawtime);
-						DB_Query(buff);					
-						ChangePortState(heater_port,grzanie);
-					} 
-					if ((temp_act < temp_wyl_cool) && (chlodzenie == 1)) {
-						chlodzenie = 0;
-						//Log("Wyłączam chłodzenie",E_INFO);
-						sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',0);",rawtime);
-						DB_Query(buff);		
-						ChangePortState(cooling_port,chlodzenie);			
-					} 
-					if ((temp_act > temp_zal_cool) && (chlodzenie == 0)) {
-						chlodzenie = 1;
-						//Log("Włączam chłodzenie",E_INFO);
-						sprintf(buff,"INSERT INTO output_stats (time_st,event,state) VALUES (%ld,'cooling',1);",rawtime);
-						DB_Query(buff);					
-						ChangePortState(cooling_port,chlodzenie);			
-					} 				
-				}
-			}*/
-
+			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {
 				Log("========== Zrzut interfaceów ==========",E_DEV);
-				Log("|Tp|St|Nazwa",E_DEV);
+				Log("|Tp|St|Wartos|Nazwa",E_DEV);
 				Log("----------------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%2i|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].name);
+					sprintf(buff,"|%2i|%2i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].measured_value,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("========== Zrzut timerów ==========",E_DEV);				

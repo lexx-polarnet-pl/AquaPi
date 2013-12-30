@@ -91,6 +91,7 @@ $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 //$smarty->assign('devices', $devices);
 $smarty->display('index.tpl');
-
+//echo"<pre>";
+//var_dump($daemon_data);
 ?>
 
