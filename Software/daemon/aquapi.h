@@ -1,4 +1,4 @@
-/*
+Ôªø/*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012-2013 AquaPi Developers
@@ -25,12 +25,12 @@
 const char *build_date = __DATE__;  // data kompilacji
 const char *build_time = __TIME__;  // czas kompilacji
 
-//prefiksy portÛw wejúciowych
+//prefiksy port√≥w wej≈õciowych
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 
-//prefiksy portÛw wyjúciowych
+//prefiksy port√≥w wyj≈õciowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 
@@ -40,7 +40,7 @@ const int E_WARN = 1;
 const int E_CRIT = 2;
 const int E_SQL  = 3;
 
-// typ urzπdzenia
+// typ urzƒÖdzenia
 const int DEV_INPUT = 1;
 const int DEV_OUTPUT = 2;
 
