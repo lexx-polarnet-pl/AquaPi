@@ -17,7 +17,7 @@
 				    <img src="img/device.png">
 			{/if}
 		
-		<img src="img/{if $device->state == 1}on.png{else}off.png{/if}" style="position:relative; left:-24px">{/if}</td>
+		<img src="img/{if $device->state == -1}unknown.gif{elseif $device->state == 1}on.png{else}off.png{/if}" style="position:relative; left:-24px">{/if}</td>
     </tr>
 	{foreachelse}
 		<tr bgcolor="#cccccc">

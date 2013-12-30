@@ -1,4 +1,4 @@
-﻿/*
+/*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012-2013 AquaPi Developers
