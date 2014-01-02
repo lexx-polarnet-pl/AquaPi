@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2013 AquaPi Developers
+ * Copyright (C) 2012-2014 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -20,10 +20,10 @@
  *
  * $Id$
  */
- 
+
 class Session {
 
-		function Session() 
+		function Session()
 		{
 			session_start();
 		}
@@ -40,7 +40,7 @@ class Session {
                 else
                         $content = NULL;
         }
-		
+
         function redirect($location)
         {
                 header('Location: '.$location);

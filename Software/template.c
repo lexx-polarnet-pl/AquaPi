@@ -1,7 +1,7 @@
 ﻿/*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2013 AquaPi Developers
+ * Copyright (C) 2012-2014 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -17,6 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
  
