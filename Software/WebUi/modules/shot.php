@@ -2,8 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012 Marcin Król (lexx@polarnet.pl)
- * Copyright (C) 2013 Jarosław Czarniak (jaroslaw@czarniak.org)
+ * Copyright (C) 2012-2014 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -19,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
 
 
@@ -35,7 +34,7 @@ if(isset($_GET['action']))
         $options.=' -h 600 ';
     if($_GET['rot'])
         $options.=' -rot '.$_GET['rot'].' ';
-        
+
     system('raspistill -hf '.$options.' -o /tmp/imageembed.jpg -t 0');
     $filename = "/tmp/imageembed.jpg";
     $handle = fopen($filename, "rb");
