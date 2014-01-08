@@ -32,13 +32,13 @@ if(array_key_exists('action', $_GET))
 	if ($_GET['action'] == "delete" and $_GET['device_id']>0)
 	{
 		$db->Execute('UPDATE devices SET device_deleted=1 WHERE device_id=?', array($_GET['device_id']));
-		//ReloadDaemonConfig();
+		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
 	elseif($_GET['action'] == "delete" and $_GET['interface_id']>0)
 	{
 		$db->Execute('UPDATE interfaces SET interface_deleted=1 WHERE interface_id=?', array($_GET['interface_id']));
-		//ReloadDaemonConfig();
+		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
 }
@@ -133,7 +133,7 @@ if($_POST)
 		
 	}
 	
-	//ReloadDaemonConfig();
+	ReloadDaemonConfig();
 }
 
 

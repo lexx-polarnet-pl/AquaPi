@@ -34,7 +34,11 @@ else*/
 if ($_GET['action'] == 'add')
 {
     $timer['type']=$_POST['type'];
-    $timer['direction']=$_POST['direction'];
+	if ($_POST['direction'] != '') {
+		$timer['direction']=$_POST['direction'];
+	} else{
+		$timer['direction']=0;
+	}
     //$pieces = explode(":", $_POST['timeif']);
     $timer['timeif'] = TimeToUnixTime($_POST['timeif']);
     //intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
@@ -45,6 +49,7 @@ if ($_GET['action'] == 'add')
     $timer['interfaceidif'] = $_POST['interfaceidif'];
     $timer['value'] = $_POST['value'];
     AddTimer($timer);
+    ReloadDaemonConfig();
     $SESSION->redirect('timers.php');
 }
 
@@ -52,7 +57,7 @@ if ($_GET['action'] == 'delete')
 {
     $timerid = $_GET['timerid'];
     $db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
-    //ReloadDaemonConfig();
+    ReloadDaemonConfig();
 }
 
 $interfaces         = GetInterfaces();

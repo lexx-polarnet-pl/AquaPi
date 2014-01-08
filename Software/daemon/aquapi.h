@@ -68,6 +68,8 @@ struct _interfaces {
 	int draw;
 	double correction;
 	double measured_value;
+	int override_value;
+	int override_expire;
 } interfaces[100];
 
 int interfaces_count;
@@ -80,6 +82,7 @@ struct _timers {
 	int direction;
 	int interfaceidif;
 	double value;
+	char days[7]; 
 } timers[100];
 
 int timers_count;	

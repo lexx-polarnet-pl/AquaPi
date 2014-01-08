@@ -34,13 +34,13 @@
 <h3>Dodanie zdarzenia czasowego:</h3>
 <form action="timers.php?action=add" method="post">
 			W dni tygodnia:
-			<input type="checkbox" name="d1" value="1" checked="checked"/>Pn
-			<input type="checkbox" name="d2" value="1" checked="checked"/>Wt
-			<input type="checkbox" name="d3" value="1" checked="checked"/>Śr
-			<input type="checkbox" name="d4" value="1" checked="checked"/>Cz
-			<input type="checkbox" name="d5" value="1" checked="checked"/>Pt
-			<input type="checkbox" name="d6" value="1" checked="checked"/>So
-			<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
+			<input type="checkbox" name="d2" value="1" checked="checked"/>Pn
+			<input type="checkbox" name="d3" value="1" checked="checked"/>Wt
+			<input type="checkbox" name="d4" value="1" checked="checked"/>Śr
+			<input type="checkbox" name="d5" value="1" checked="checked"/>Cz
+			<input type="checkbox" name="d6" value="1" checked="checked"/>Pt
+			<input type="checkbox" name="d7" value="1" checked="checked"/>So
+			<input type="checkbox" name="d1" value="1" checked="checked"/>Nd
 			<br/>	
 			O godzinie
 			<input class="time_select" type="text" name="timeif" id="timeif" value="00:00:00" />
@@ -111,13 +111,13 @@
 	<tr>
 		<td>
 			Dni tygodnia
-			<input type="checkbox" name="d1" value="1" checked="checked"/>Pn
-			<input type="checkbox" name="d2" value="1" checked="checked"/>Wt
-			<input type="checkbox" name="d3" value="1" checked="checked"/>Śr
-			<input type="checkbox" name="d4" value="1" checked="checked"/>Cz
-			<input type="checkbox" name="d5" value="1" checked="checked"/>Pt
-			<input type="checkbox" name="d6" value="1" checked="checked"/>So
-			<input type="checkbox" name="d7" value="1" checked="checked"/>Nd
+			<input type="checkbox" name="d2" value="1" checked="checked"/>Pn
+			<input type="checkbox" name="d3" value="1" checked="checked"/>Wt
+			<input type="checkbox" name="d4" value="1" checked="checked"/>Śr
+			<input type="checkbox" name="d5" value="1" checked="checked"/>Cz
+			<input type="checkbox" name="d6" value="1" checked="checked"/>Pt
+			<input type="checkbox" name="d7" value="1" checked="checked"/>So
+			<input type="checkbox" name="d1" value="1" checked="checked"/>Nd
 		</td>
 	</tr>
 	</table>
@@ -148,13 +148,13 @@
 			    <td>O godzinie {$entry.timer_timeif|date_format:"%H:%M:%S"} </td>
 			    <td>{if $entry.timer_action eq 1}włącz{else}wyłącz{/if}</td>
 			    <td>{$entry.timer_interfacethenname}</td>
-			    <td align="center">{if $entry.timer_days.0 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.1 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.2 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.3 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.4 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.5 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.6 eq 1}x{/if}</td>
+			    <td align="center">{if $entry.timer_days.0 eq 1}x{/if}</td>
 			    <td align="center"><a href="timers.php?action=delete&timerid={$entry.timer_id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
 		</tr>
 		{foreachelse}
@@ -167,13 +167,13 @@
 			    <td>Jeśli czujnik "{$entry.timer_interfaceifname}" wskazał {if $entry.timer_direction eq 1}>{else}<{/if} {$entry.timer_value}<small><small>(&plusmn;{$CONFIG.hysteresis})</small></small>&deg;C,</td>
 			    <td>{if $entry.timer_action eq 1}włącz{else}wyłącz{/if}</td>
 			    <td>{$entry.timer_interfacethenname}</td>
-			    <td align="center">{if $entry.timer_days.0 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.1 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.2 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.3 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.4 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.5 eq 1}x{/if}</td>
 			    <td align="center">{if $entry.timer_days.6 eq 1}x{/if}</td>
+			    <td align="center">{if $entry.timer_days.0 eq 1}x{/if}</td>
 			    <td align="center"><a href="timers.php?action=delete&timerid={$entry.timer_id}"><img src="img/delete_entry.png" title="Skasuj pozycję"></a></td>        
 		</tr>
 		{foreachelse}

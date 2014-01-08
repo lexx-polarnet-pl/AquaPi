@@ -148,6 +148,8 @@ void ReadConf() {
 		if (interfaces[x].type == DEV_OUTPUT) {
 			interfaces[x].state = -1;
 			interfaces[x].new_state = -1;
+			interfaces[x].override_value = -1;
+			interfaces[x].override_expire = -1;
 		}
 		if (interfaces[x].type == DEV_INPUT) {
 			interfaces[x].measured_value = -200;
@@ -157,7 +159,7 @@ void ReadConf() {
 	// Wczytanie timerów
 	Log("Wczytanie timerów",E_DEV);
 	timers_count = 	-1;
-	mysql_query(conn, "SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif FROM timers ORDER BY timer_timeif ASC");
+	mysql_query(conn, "SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif,timer_days FROM timers ORDER BY timer_timeif ASC");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		timers_count++;
@@ -174,6 +176,7 @@ void ReadConf() {
 		if (row[6] != NULL) {
 			timers[timers_count].interfaceidif = atof(row[6]);
 		}		
+		memcpy(timers[timers_count].days,row[7],sizeof(timers[timers_count].days));
 	}	
 	mysql_free_result(result);	
 	
@@ -278,26 +281,28 @@ int main() {
 			
 			// przebieg 2 to przebieg dla dnia bierzącego
 			for (x=0; x <= timers_count; x++) {
-				for (y=0; y <= interfaces_count; y++) {
-					// teraz trzeba wziąść pod uwagę jeszcze czas
-					if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= seconds_since_midnight)) {
-						if (timers[x].interfaceidthen == interfaces[y].id) {
-							interfaces[y].new_state = timers[x].action;
+				if (strncmp(timers[x].days+timeinfo->tm_wday,"1",1)  == 0) { // kontrola dnia tygodnia
+					for (y=0; y <= interfaces_count; y++) {
+						// teraz trzeba wziąść pod uwagę jeszcze czas
+						if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= seconds_since_midnight)) {
+							if (timers[x].interfaceidthen == interfaces[y].id) {
+								interfaces[y].new_state = timers[x].action;
+							}
 						}
-					}
-					// w tym przebiegu weź też pod uwagę wskazania sensorów
-					if (timers[x].type == TRIGGER_SENSOR) {
-						if (timers[x].interfaceidthen == interfaces[y].id) {
-							// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
-							for (z=0; z <= interfaces_count; z++) {
-								if (timers[x].interfaceidif == interfaces[z].id) {
-									//ignoruj stany nieustalone
-									if (interfaces[z].measured_value > -100) { 
-										if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value > timers[x].value)) {
-											interfaces[y].new_state = timers[x].action;
-										}
-										if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value < timers[x].value)) {
-											interfaces[y].new_state = timers[x].action;
+						// w tym przebiegu weź też pod uwagę wskazania sensorów
+						if (timers[x].type == TRIGGER_SENSOR) {
+							if (timers[x].interfaceidthen == interfaces[y].id) {
+								// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
+								for (z=0; z <= interfaces_count; z++) {
+									if (timers[x].interfaceidif == interfaces[z].id) {
+										//ignoruj stany nieustalone
+										if (interfaces[z].measured_value > -100) { 
+											if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value > timers[x].value)) {
+												interfaces[y].new_state = timers[x].action;
+											}
+											if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value < timers[x].value)) {
+												interfaces[y].new_state = timers[x].action;
+											}
 										}
 									}
 								}
