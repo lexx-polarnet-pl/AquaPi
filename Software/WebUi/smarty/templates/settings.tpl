@@ -131,6 +131,9 @@ $(function() {
 <!--PWM-->
 {include "settings_pwm.tpl"}
 
+<!--RELAYBOARD-->
+{include "settings_relayboard.tpl"}
+
 <!--Dummy-->
 {include "settings_dummy.tpl"}
 
@@ -149,7 +152,7 @@ function showdivs()
 	//ukrywam wszystkie elementy
 	for (var i = 0; i < length; i++)
 	{
-		//console.log(devices[i]);
+		console.log(devices[i]);
 		document.getElementById(devices[i]).style.display		= 'none';
 		document.getElementById('dashboard_'+devices[i]).style.display	= 'none';
 	}
