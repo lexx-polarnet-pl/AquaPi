@@ -75,6 +75,8 @@ function GetDevices()
 
 function Read1Wire($address)
 {
+	if(!file_exists(ONEWIRE_DIR. $address. '/' . 'w1_slave'))
+	    return FALSE;
 	$lines  = file(ONEWIRE_DIR. $address. '/' . 'w1_slave');
 	if (preg_match('/YES/', $lines[0]))
 	{
