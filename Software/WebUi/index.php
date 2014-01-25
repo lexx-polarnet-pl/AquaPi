@@ -76,7 +76,7 @@ $uname_r 	= php_uname("r");
 $uname_v 	= php_uname("v");
 $load 		= sys_getloadavg();
 $cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
-$daemon_data = @simplexml_load_string(IPC_CommandWithReply("status"));
+$daemon_data 	= @simplexml_load_string(IPC_CommandWithReply("status"));
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
