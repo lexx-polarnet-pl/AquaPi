@@ -51,8 +51,8 @@ function GetInterfaces()
 {
 	global $db;
 	$interfaces	= $db->GetAll('SELECT * FROM interfaces i, devices d
-						WHERE interface_disabled=0 AND interface_deleted=0
-						AND i.interface_deviceid=d.device_id
+						WHERE i.interface_deviceid=d.device_id
+						AND interface_deleted=0
 						AND device_id>0 AND device_deleted=0
 						ORDER BY interface_address ASC');
 	

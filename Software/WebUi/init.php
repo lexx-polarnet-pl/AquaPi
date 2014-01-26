@@ -27,6 +27,7 @@ $aquapi_ver = "1.9-devel";
 // Wczytanie pliku z ustawieniami
 $CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
 
+
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
 //date_default_timezone_set('UTC');
@@ -116,6 +117,8 @@ foreach ($my_menu as &$pos) {
 		}
 	}
 }
+
+//new dbug($CONFIG, "", TRUE);
 
 $smarty->assign('my_menu', $my_menu);
 $smarty->assign('cur_name', $cur_name);

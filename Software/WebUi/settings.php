@@ -75,8 +75,8 @@ if($_POST)
 			else
 				$sensor_master=1;
 			
-			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=? WHERE interface_id=?', 
-				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $interface_id ));
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=?, interface_disabled=? WHERE interface_id=?', 
+				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $sensor['sensor_disabled'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
@@ -130,9 +130,7 @@ if($_POST)
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_conf)
 				     VALUES (?, ?, ?, ?)', array($interface_id, $dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
 		}
-		
 	}
-	
 	ReloadDaemonConfig();
 }
 
@@ -179,13 +177,16 @@ if(isset($sensors_fs))
 	$smarty->assign('sensors_fs', $sensors_fs);
 else
 {
-	$smarty->assign('sensors_fs', 'FALSE');
-	foreach($devices as $index => $device)
+	if($CONFIG['daemon']['location']=='local') //jesli demon jest lokalny to brak czujników jest błedem i wyłaczammy magistrale
 	{
-		if($device['device_name']=='1wire')
+		$smarty->assign('sensors_fs', 'FALSE');
+		foreach($devices as $index => $device)
 		{
+			if($device['device_name']=='1wire')
+			{
 			unset($devices[$index]);
 			break;
+			}
 		}
 	}
 }

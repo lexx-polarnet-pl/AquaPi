@@ -74,9 +74,9 @@ $(function() {
 				onchange="showdivs()">
 				<option value="none">-- wybierz --</option>
 				{foreach from=$devices item="device"}
-				{if $device.device_name eq '1wire' && $sensors_fs == 'FALSE'}
+				{if $device.device_name == '1wire' && $sensors_fs == 'FALSE'}
 				{else}
-				<option>{$device.device_name}</option>
+					<option>{$device.device_name}</option>
 				{/if}
 				{/foreach}
 			</select>

@@ -26,6 +26,7 @@ include("init.php");
 // spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
 // $limit jest na razie nie brany pod uwage! Trzeba później dopisać!
 //$limit 		= time() - (15 * 60);
+$limit15m	= time() - (15 * 60);
 $limit48h 	= time() - (60 * 60 * 48);
 
 
@@ -34,7 +35,7 @@ if (!is_null($interfaces['1wire']))
 {
 	foreach($interfaces['1wire'] as $index => $sensor)
 	{
-		$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
+		$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? AND stat_date > ? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id'], $limit15m));
 		if($sensor['interface_conf']==1)
 		{
 			$sensor_master_temp = $interfaces['1wire'][$index]['interface_temperature']['stat_value'];
