@@ -46,7 +46,7 @@
 	    <td>Czas</td><td>{$time}</td>
 	</tr>
 	<tr>
-	    <td>Temperatura zbiornika:</td><td>{$sensor_master_temp|string_format:"%.2f"}&deg;C</td>
+	    <td>Temperatura zbiornika:</td><td>{if $sensor_master_temp gt 0}{$sensor_master_temp|string_format:"%.2f"}&deg;C{else}?{/if}</td>
 	</tr>
 	<tr>
 	    <td>Uruchomiony:</td><td>{$enabled}</td>
@@ -61,7 +61,7 @@
 	    <td>Obciążenie:</td><td>{$load.0}, {$load.1}, {$load.2}</td>
 	</tr>
 	<tr>
-	    <td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td>
+	    <td>Temperatura CPU:</td><td>{if $cputemp gt 0}{$cputemp|string_format:"%.2f"}&deg;C{else}?{/if}</td>
 	</tr>
 	<tr>
 	    <td>Wersja AquaPi/DB:</td><td>{$aquapi_ver}/{$CONFIG.db_version}</td>

@@ -43,6 +43,12 @@ if (!is_null($interfaces['1wire']))
 	}
 }
 
+//if(intval($sensor_master_temp)==0)
+//{
+//	$sensor_master_temp ='?';
+//}
+//echo $sensor_master_temp ;
+
 foreach($interfaces['gpio'] as $index => $gpio)
 {
 	//foreach($CONFIG as $index2 => $config)

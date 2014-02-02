@@ -62,13 +62,14 @@ function reload_config()
     $CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
     
     $DEVICES= $db->GetAll('SELECT * FROM  `devices` WHERE device_id>0 AND device_deleted=0');
-    //print_r($DEVICES);
+
     foreach($DEVICES as $index => $device)
     {
         $tmp[$device['device_name']]=$device['device_id'];
     }
     $DEVICES = $tmp;
 }
+
 function shutdown()
 {
     // This is our shutdown function, in 
