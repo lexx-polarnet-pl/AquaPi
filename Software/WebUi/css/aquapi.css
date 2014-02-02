@@ -40,5 +40,9 @@
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 .imagebacked {padding-left: 26px; background-repeat: no-repeat;}
 
+.bold           { font-weight:bold; }
+.underline      { text-decoration: underline; }
+.italic         { font-style: italic; }
+
 .red		{ color: #FF0000; }
 .darkgrey	{ color: #DDDDDD; }

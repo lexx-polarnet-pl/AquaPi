@@ -37,26 +37,49 @@
 	</table>
 </div>
 
-<div id="{if $daemon_data->daemon->pid == null}dashboard_red{else}dashboard{/if}">
+<div id="{if $daemon_data->daemon->pid == null && $CONFIG.daemon.location == 'local'}dashboard_red{else}dashboard{/if}">
     <!-- $CONFIG.demon_last_activity lt $smarty.now-180 -->
     <img src ="img/welcome_logo.png" style="float:left;">
     <h3>Informacje o sterowniku:</h3>
     <table>
-    <tr><td>Czas</td><td>{$time}</td></tr>
-    <tr><td>Temperatura zbiornika:</td><td>{$sensor_master_temp|string_format:"%.2f"}&deg;C</td></tr>
-    <tr><td>Uruchomiony:</td><td>{$enabled}</td></tr>
-    <tr><td>Wersja jądra:</td><td>{$uname_r}</td></tr>
-    <tr><td>Kompilacja:</td><td>{$uname_v}</td></tr>
-    <tr><td>Obciążenie:</td><td>{$load.0}, {$load.1}, {$load.2}</td></tr>
-    <tr><td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td></tr>
-    <tr><td>Wersja AquaPi/DB:</td><td>{$aquapi_ver}/{$CONFIG.db_version}</td></tr>
-    <tr><td>Ostatnia aktywność daemona:</td><td>
-    {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}<B><U>{/if}
-    {$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
-    {if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}</B></U>{/if}
-    </td></tr>
-    <tr><td>PID demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->pid}{/if}</td></tr>
-    <tr><td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date}{/if}</td></tr>
+	<tr>
+	    <td>Czas</td><td>{$time}</td>
+	</tr>
+	<tr>
+	    <td>Temperatura zbiornika:</td><td>{$sensor_master_temp|string_format:"%.2f"}&deg;C</td>
+	</tr>
+	<tr>
+	    <td>Uruchomiony:</td><td>{$enabled}</td>
+	</tr>
+	<tr>
+	    <td>Wersja jądra:</td><td>{$uname_r}</td>
+	</tr>
+	<tr>
+	    <td>Kompilacja:</td><td>{$uname_v}</td>
+	</tr>
+	<tr>
+	    <td>Obciążenie:</td><td>{$load.0}, {$load.1}, {$load.2}</td>
+	</tr>
+	<tr>
+	    <td>Temperatura CPU:</td><td>{$cputemp|string_format:"%.2f"}&deg;C</td>
+	</tr>
+	<tr>
+	    <td>Wersja AquaPi/DB:</td><td>{$aquapi_ver}/{$CONFIG.db_version}</td>
+	</tr>
+	<tr>
+	    <td>Ostatnia aktywność daemona:</td>
+	    <td class="{if $CONFIG.demon_last_activity lt $smarty.now-$CONFIG.max_daemon_inactivity}bold underline{/if}">
+		    {$smarty.now-$CONFIG.demon_last_activity} sek temu ({$CONFIG.demon_last_activity|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"})
+	    </td>
+	</tr>
+	{if $CONFIG.daemon.location == 'local'}
+	    <tr>
+		<td>PID demona:</td><td>{if $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->pid}{/if}</td>
+	    </tr>
+	    <tr>
+		<td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date}{/if}</td>
+	    </tr>
+	{/if}
     </table>
 </div>
 

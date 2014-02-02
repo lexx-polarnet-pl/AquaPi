@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id:$
+ * $Id$
  */
 
 /*
@@ -109,12 +109,12 @@ while(true)
         if(array_key_exists('1wire', $DEVICES ))
         {
             $debug .= "\n--== 1-WIRE ==--\n";
-            $ONEWIRE=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['1wire']));
+            $ONEWIRE=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_disabled=0 AND interface_deviceid=?', array($DEVICES['1wire']));
             //new dbug($ONEWIRE);
             foreach($ONEWIRE as $index => $sensor)
             {
                 $address = explode(':', $sensor['interface_address']);
-                //print_r($sensor);
+                print_r($sensor);
                 $temp   = Read1Wire($address[2]);
                 if($temp===FALSE)
                 {
@@ -139,7 +139,7 @@ while(true)
         if(array_key_exists('gpio', $DEVICES ))
         {
             $debug .= "\n--== GPIO ==--\n";
-            $GPIO=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['gpio']));
+            $GPIO=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_disabled=0  AND interface_deviceid=?', array($DEVICES['gpio']));
             //new dbug($GPIO);
             foreach($GPIO as $index => $gpiopin)
             {
@@ -163,7 +163,7 @@ while(true)
         if(array_key_exists('relayboard', $DEVICES ))
         {
             $debug .= "\n--== RB ==--\n";
-            $RB=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['relayboard']));
+            $RB=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_disabled=0  AND interface_deviceid=?', array($DEVICES['relayboard']));
             //new dbug($RB);
             $status=strrev(sprintf('%1$08d', base_convert(exec('sudo '.$CONFIG['relayboard']['binary'].' '.$CONFIG['relayboard']['device']. ' get'), 16, 2)));
             
@@ -183,7 +183,7 @@ while(true)
         if(array_key_exists('dummy', $DEVICES ))
         {
             $debug .= "\n--== DUMMY ==--\n";
-            $DUMMY=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0 AND interface_deviceid=?', array($DEVICES['dummy']));
+            $DUMMY=$db->GetAll('SELECT * FROM  `interfaces` WHERE interface_id>0 AND interface_deleted=0  AND interface_disabled=0  AND interface_deviceid=?', array($DEVICES['dummy']));
             //new dbug($RB);
             //$status=strrev(sprintf('%1$08d', base_convert(exec('sudo '.$CONFIG['relayboard']['binary'].' '.$CONFIG['relayboard']['device']. ' get'), 16, 2)));
             //
