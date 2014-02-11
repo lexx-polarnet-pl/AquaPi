@@ -46,7 +46,7 @@ if(array_key_exists('action', $_GET))
 //aktualizacja konfiguracji
 if($_POST)
 {
-	//new dBug($_POST,'',true);
+	new dBug($_POST['sensors'],'',true);
 	//die;
 	
 	//UPDATE DEVICES
@@ -70,13 +70,17 @@ if($_POST)
 		//jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
 		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
-			if(!$sensor['sensor_conf'] or $sensor_master==1)
-				$sensor['sensor_master']=0;
+			if(!$sensor['sensor_conf'] or $sensor_master_set==1) //jesli nie jest ustawione lub już jakis inny został masterem
+				$sensor['sensor_conf']=0;
 			else
-				$sensor_master=1;
+				$sensor_master_set=1;
+//			{
+//				$sensor['sensor_master']=1;
+
+//			}
 			
 			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=?, interface_disabled=? WHERE interface_id=?', 
-				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_master'], $sensor['sensor_disabled'], $interface_id ));
+				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
