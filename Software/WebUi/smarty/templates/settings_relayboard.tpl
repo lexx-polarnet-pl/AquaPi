@@ -29,8 +29,8 @@
 		<select class="medium" name="relays[{$relay.interface_id}][relay_conf]"
 			onmouseover="return overlib('Wybierz typ wyjścia. Gniazdo NO (Normal Open - normalnie otwarty), przerwa - rezystancja nieskończenie wielka. Gniazdo NC (Normal Connect - normalnie zwarty), zwarcie - rezystancja równa zero.');"
 			onmouseout="return nd();">
-			<option {if $relay.interface_conf eq 0}selected{/if}>NO</option>
-			<option {if $relay.interface_conf eq 1}selected{/if}>NC</option>
+			<option {if $relay.interface_conf eq 0}selected{/if} value="0">NO</option>
+			<option {if $relay.interface_conf eq 1}selected{/if} value="1">NC</option>
 		</select> 
 	    </td>
 	</tr>

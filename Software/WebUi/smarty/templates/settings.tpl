@@ -3,6 +3,7 @@
 <script type="text/javascript">
 function disableF5(e)
 {
+	return 0;
 	if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82)
 	{
 		alert('Reload niedozwolony');
