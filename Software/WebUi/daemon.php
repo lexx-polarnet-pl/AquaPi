@@ -38,7 +38,7 @@ $CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
-//date_default_timezone_set('UTC');
+//date_default_timezone_set('UTC'); //trzeba sprawdzic wrzucane daty bo godziny sie rozjeżdzają.
 
 define('MAIN_DIR',getcwd().'/');
 define('LIB_DIR', MAIN_DIR.'lib/');

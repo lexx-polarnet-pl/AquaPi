@@ -43,33 +43,23 @@ if (!is_null($interfaces['1wire']))
 	}
 }
 
-//if(intval($sensor_master_temp)==0)
-//{
-//	$sensor_master_temp ='?';
-//}
-//echo $sensor_master_temp ;
 
 foreach($interfaces['gpio'] as $index => $gpio)
 {
-	//foreach($CONFIG as $index2 => $config)
-	//	if($index2 == $gpio['interface_address'])
-	//		$interfaces['gpio'][$index]['interface_icon']=$config;
 	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
 }
 
 foreach($interfaces['relayboard'] as $index => $relay)
 {
-	//foreach($CONFIG as $index2 => $config)
-	//	if($index2 == $relay['interface_address'])
-	//		$interfaces['relayboard'][$index]['interface_icon']=$config;
 	$interfaces['relayboard'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($relay['interface_id']));
+	$interfaces['relayboard'][$index]['interface_state']['stat_value'] = (int)$interfaces['relayboard'][$index]['interface_state']['stat_value'] ^ (int)$interfaces['relayboard'][$index]['interface_conf'];
 }
 
 foreach($interfaces['dummy'] as $index => $sensor)
 {
 	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
 }
-//
+
 //new dBug($interfaces	, "", true);
 //new dBug($CONFIG, "", true);
 

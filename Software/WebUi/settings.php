@@ -43,10 +43,11 @@ if(array_key_exists('action', $_GET))
 	}
 }
 
+
 //aktualizacja konfiguracji
 if($_POST)
 {
-	new dBug($_POST['sensors'],'',true);
+	//new dBug($_POST['sensors'],'',true);
 	//die;
 	
 	//UPDATE DEVICES
@@ -136,8 +137,8 @@ if($_POST)
 		}
 	}
 	ReloadDaemonConfig();
+	$SESSION->redirect("settings.php"); //przekierowanie w celu odswierzenia zmiennej $CONFIG inicjalizowanej przed wykonaniem update
 }
-
 
 
 

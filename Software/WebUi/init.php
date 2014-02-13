@@ -30,7 +30,7 @@ $CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
-//date_default_timezone_set('UTC');
+date_default_timezone_set('UTC');
 
 define('MAIN_DIR',getcwd().'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
@@ -106,19 +106,22 @@ $SESSION -> restore('logged_in',$logged_in);
 	
 $cur_name	= '';
 
-foreach ($my_menu as &$pos) {
-    if ($pos['url'] == $self) {
+foreach ($my_menu as &$pos) 
+{
+	if ($pos['url'] == $self) 
+	{
 		$cur_name = $pos['name'];
 		$pos['selected'] = true;
-		if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) {
+		if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) 
+		{
 			// nie jesteś zalogowany
 			$SESSION -> save('old_url',$self);
-			$SESSION -> redirect('login.php');			
+			$SESSION -> redirect('login.php');
 		}
 	}
 }
 
-//new dbug($CONFIG, "", TRUE);
+//new dbug($CONFIG);
 
 $smarty->assign('my_menu', $my_menu);
 $smarty->assign('cur_name', $cur_name);

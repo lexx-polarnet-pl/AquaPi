@@ -24,58 +24,52 @@
 include("init.php");
 
 $smarty->assign('title', 'Timery');
-/*if($_POST)
-{
-    new dBug($_GET);
-    new dBug($_POST);
-    
-}
-else*/
+
 if ($_GET['action'] == 'add')
 {
-    $timer['type']=$_POST['type'];
-	if ($_POST['direction'] != '') {
+	$timer['type']=$_POST['type'];
+	if ($_POST['direction'] != '') 
 		$timer['direction']=$_POST['direction'];
-	} else{
+	else
 		$timer['direction']=0;
-	}
-    //$pieces = explode(":", $_POST['timeif']);
-    $timer['timeif'] = TimeToUnixTime($_POST['timeif']);
-    //intval($pieces[0])*60*60 + intval($pieces[1]*60) + intval($pieces[2]);
-    $timer['action'] = $_POST['action'];
-    $timer['interfaceidthen'] = $_POST['interfaceidthen'];
-    $timer['days'] = ($_POST['d1']?$_POST['d1']:'0') . ($_POST['d2']?$_POST['d2']:'0') . ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
-                    ($_POST['d5']?$_POST['d5']:'0') . ($_POST['d6']?$_POST['d6']:'0') . ($_POST['d7']?$_POST['d7']:'0');
-    $timer['interfaceidif'] = $_POST['interfaceidif'];
-    $timer['value'] = $_POST['value'];
-    AddTimer($timer);
-    ReloadDaemonConfig();
-    $SESSION->redirect('timers.php');
+	
+	$timer['timeif'] = TimeToUnixTime($_POST['timeif']);
+	$timer['action'] = $_POST['action'];
+	$timer['interfaceidthen'] = $_POST['interfaceidthen'];
+	$timer['days'] = ($_POST['d1']?$_POST['d1']:'0') . ($_POST['d2']?$_POST['d2']:'0') . 
+			 ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
+			 ($_POST['d5']?$_POST['d5']:'0') . ($_POST['d6']?$_POST['d6']:'0') . 
+			 ($_POST['d7']?$_POST['d7']:'0');
+	$timer['interfaceidif'] = $_POST['interfaceidif'];
+	$timer['value'] = $_POST['value'];
+	AddTimer($timer);
+	ReloadDaemonConfig();
+	$SESSION->redirect('timers.php');
 }
 
 if ($_GET['action'] == 'delete')
 {
-    $timerid = $_GET['timerid'];
-    $db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
-    ReloadDaemonConfig();
+	$timerid = $_GET['timerid'];
+	$db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
+	ReloadDaemonConfig();
 }
 
 $interfaces         = GetInterfaces();
 $timers['time']     = $db->GetAll('SELECT *,
-                                    (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-                                    (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
-                                  FROM timers t
-                                  WHERE timer_type=1');
+				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
+				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
+				FROM timers t
+				WHERE timer_type=1');
 $timers['1wire']    = $db->GetAll('SELECT *,
-                                  (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-                                  (SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
-                                  FROM timers t
-                                  WHERE timer_type=2');
+				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
+				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
+				FROM timers t
+				WHERE timer_type=2');
 
 //new dBug($timers);
+//new dBug($interfaces,"",true);
 
 $smarty->assign('timers', $timers);
 $smarty->assign('interfaces', $interfaces);
-//new dBug($interfaces,"",true);
 $smarty->display('timers.tpl');
 ?>

@@ -101,8 +101,8 @@ $(function() {
 	</tr>
 	</table>
 	<BR><HR>
-	&nbsp;Rozpoczęcie nocy: <input class="time_select" type="text" name="night_start" id="night_start" value="{$CONFIG.night_start|date_format:"%H:%M:%S"}"/>,
-	zakończenie nocy: <input class="time_select" type="text" name="night_stop" id="night_stop" value="{$CONFIG.night_stop|date_format:"%H:%M:%S"}" />.
+	&nbsp;Rozpoczęcie nocy: <input class="time_select" type="text" name="night_start" id="night_start" value="{if $CONFIG.night_start eq 0}00:00:00{else}{$CONFIG.night_start|date_format:"%H:%M:%S"}{/if}"/>,
+	zakończenie nocy: <input class="time_select" type="text" name="night_stop" id="night_stop" value="{if $CONFIG.night_stop eq 0}00:00:00{else}{$CONFIG.night_stop|date_format:"%H:%M:%S"}{/if}" />.
 	<BR><BR>
 	<div class="temp_select">
 		Korekcja temperatury w nocy:
