@@ -68,58 +68,20 @@ void Log(char *msg, int lev) {
 	}
 }
 
-/*
-void StoreTempStat(double t_zad) {
+void StoreTempStat() {
 	time_t rawtime;
-	double temp_act = -200;
-	//char temp_sensor[80];
 	char buff[200];
-	//char *pos;
-	MYSQL_RES *result;
-	MYSQL_ROW row;
 	time ( &rawtime );
-	int i, index=0;
-	char sensors [10] [3] [21]; //ilosc macierzy, elementów w macierzy, max dlugosc elementu
+	int x;
 
-	
-	sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld,0,%.2f);",rawtime,t_zad);
-	DB_Query(buff);	
-	
-	
-	mysql_query(conn, "SELECT sensor_id, sensor_address, sensor_corr FROM sensors WHERE sensor_id>0 AND sensor_deleted=0;");
-	result = mysql_store_result(conn);
-	while ((row = mysql_fetch_row(result)))
-	{
-		strncpy(sensors[index][0], row[0], sizeof sensors[index][0] - 1);
-		sensors[index][0][20] = '\0';
-//		printf("sensors[%d][0]=%s \n", index, sensors[index][0]);
-
-		strncpy(sensors[index][1], row[1], sizeof sensors[index][1] - 1);
-		sensors[index][1][20] = '\0';
-//		printf("sensors[%d][1]=%s \n", index, sensors[index][1]);
-
-		strncpy(sensors[index][2], row[2], sizeof sensors[index][2] - 1);
-		sensors[index][2][20] = '\0';
-//		printf("sensors[%d][2]=%s \n", index, sensors[index][2]);
-
-		index++;
-	}	
-	mysql_free_result(result);
-	
-	//petla dla kazdego czujnika start
-	for(i = 0; i < index; i++)
-	{
-		//sensors[*][0] => sensor_id
-		//sensors[*][1] => sensor_address
-		//sensors[*][2] => sensor_corr
-		temp_act = ReadTempFromSensor(sensors[i][1], atof(sensors[i][2]));
-		sprintf(buff,"INSERT INTO temp_stats (time_st,sensor_id,temp) VALUES (%ld, %d, %.2f);",rawtime, atoi(sensors[i][0]), temp_act);
-		DB_Query(buff);	
+	for(x = 0; x <= interfaces_count; x++) {
+		if (interfaces[x].type == DEV_INPUT) {
+			sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %.2f)",rawtime, interfaces[x].id, interfaces[x].measured_value);
+			DB_Query(buff);							
+		}
 	}
-	
-	//petla dla kazdego czujnika koniec
-	
-}*/
+
+}
 
 void ReadConf() {
 	MYSQL_RES *result;
@@ -342,9 +304,9 @@ int main() {
 				Log("========== Koniec zrzutu ==========",E_DEV);
 			}
 
-			//if (seconds_since_midnight % config.stat_freq == 0) {
-			//	StoreTempStat(temp_zad);
-			//}
+			if (seconds_since_midnight % config.stat_freq == 0) {
+				StoreTempStat();
+			}
 			
 			#warning Dla zgodności z daemonem PHP. Do wyrzucenia i przerobienia na IPC
 			sprintf(buff,"UPDATE settings SET setting_value=%ld WHERE setting_key = 'demon_last_activity'",rawtime);
