@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chapter id="devel">
+    <title>Dla developerów</title>
+     <sect1 id="database">
+        <title>Baza danych</title>
+	<para>
+        Ten rozdział opisuje strukturę bazy MySQL. Przedstawiono w nim schemat poszczególnych tabel.
+        Opis każdej tabeli składa się z siedmiu kolumn. Znaczenie poszczególnych kolumn to:
+		<orderedlist>
+			<listitem><para>Nazwa pola</para></listitem>
+			<listitem><para>Typ przechowywanych danych</para></listitem>
+			<listitem><para>Wartość logiczna określająca, czy dane pole w tabeli może przechowywać wartość niezdefiniowaną (null).</para></listitem>
+			<listitem><para>Typ klucza. Może przyjmować jedną z wartości:
+				<itemizedlist>
+					<listitem><para>PRI - oznacza, że kolumna to klucz podstawowy</para></listitem>
+					<listitem><para>MUL - ???</para></listitem>
+					<listitem><para>UNI - oznacza, że wartość przechowywana w tym polu jest unikalna dla całej tabeli</para></listitem>
+				</itemizedlist></para></listitem>
+			<listitem><para>Wartość domyślna jaką przyjmie baza danych w przypadku kiedy nie zostanie podana żadna wartość. Znak myślnika oznacza, że pole nie ma zdefiniowanej domyślnej wartości.</para></listitem>
+			<listitem><para>Określa dodatkowe właściwości pola. Może przyjmować jedną z wartości:
+				<itemizedlist>
+					<listitem><para>auto_increment - oznacza, że kolejno dodawane rekordy będą automatycznie inkrementowane</para></listitem>
+				</itemizedlist></para></listitem>
+			<listitem><para>Dodatkowe informacje dotyczące danego pola</para></listitem>
+		</orderedlist>
+        Schemat bazy danych nie zawiera pól typu <code>DATETIME</code>. Daty są przechowywane w formacie timestamp<footnote id="timestamp"><para>
+        Przechowywanie daty w formacie timestamp polega na zapisaniu liczby sekund
+        od daty 1/01/1970, czyli od momentu początku epoki unixa.
+    </para></footnote> w polu o typie <code>INT</code>. 
+    </para>
+	
+		<table><title>Spis tabel</title>
+			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Nazwa'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Nazwa</entry>
+						<entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row><entry>devices</entry><entry>?</entry></row>
+					<row><entry>interfaces</entry><entry>?</entry></row>
+					<row><entry>logs </entry><entry>zawiera logi systemowe</entry></row>
+					<row><entry>settings</entry><entry>?</entry></row>
+					<row><entry>stats </entry><entry>?</entry></row>
+					<row><entry>stats_view</entry><entry>?</entry></row>
+					<row><entry>timers </entry><entry>?</entry></row>
+				</tbody>
+			</tgroup>
+		</table>
+
+&db-struct;
+     </sect1>
+     <sect1 id="daemon">
+          <title>Demon</title>
+          <para>Stałe demona:</para>	
+<programlisting>
+//prefiksy portów wejściowych
+const char *PORT_RELBRD_PREFIX = "relbrd:";
+const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
+const char *PORT_DUMMY_PREFIX = "dummy:";
+
+//prefiksy portów wyjściowych
+const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
+const char *INPUT_DUMMY_PREFIX = "dummy:";
+
+const int E_DEV  = -1;
+const int E_INFO = 0;
+const int E_WARN = 1;
+const int E_CRIT = 2;
+const int E_SQL  = 3;
+
+// typ urządzenia
+const int DEV_INPUT = 1;
+const int DEV_OUTPUT = 2;
+
+// typ triggera
+const int TRIGGER_TIME = 1;
+const int TRIGGER_SENSOR = 2;
+
+// kierunek triggera
+const int DIRECTION_BIGGER = 1;
+const int DIRECTION_SMALLER = 2;
+</programlisting>
+          <para>Definicje struktur:</para>	
+<programlisting>
+struct _interfaces {
+	int id;
+	char address[30];
+	char name[30];
+	int type;
+	int state;
+	int new_state;
+	int draw;
+	double correction;
+	double measured_value;
+	int override_value;
+	int override_expire;
+} interfaces[100];
+
+int interfaces_count;
+
+struct _timers {
+	int type;
+	int timeif;
+	int action;
+	int interfaceidthen;
+	int direction;
+	int interfaceidif;
+	double value;
+	char days[7]; 
+} timers[100];
+
+int timers_count;	
+
+typedef struct
+{
+	char* db_host;
+	char* db_user; 
+	char* db_password;
+	char* db_database;
+	int dontfork;
+	int stat_freq;
+	int temp_freq;
+	int devel_freq;
+	double dummy_temp_sensor_val;
+} configuration;
+</programlisting>
+     </sect1>
+</chapter>

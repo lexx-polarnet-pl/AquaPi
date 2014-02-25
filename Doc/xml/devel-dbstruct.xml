@@ -1,0 +1,486 @@
+﻿		<table><title>Tabela devices</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>device_id</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>device_name</entry>
+						<entry>char(40)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>device_disabled</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>device_deleted</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela interfaces</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>interface_id</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_deviceid</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>MUL</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_address</entry>
+						<entry>varchar(30)</entry>
+						<entry>NO</entry>
+						<entry>UNI</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_name</entry>
+						<entry>varchar(30)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_type</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>1</entry>
+						<entry></entry>
+						<entry>0-temp zadana,1-1wire temp,2-przekaznik</entry>
+					</row>		
+					<row>
+						<entry>interface_corr</entry>
+						<entry>varchar(6)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry>korekta wartosci sensora</entry>
+					</row>		
+					<row>
+						<entry>interface_draw</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>1</entry>
+						<entry></entry>
+						<entry>czy pokazywac czujnik na wykresie</entry>
+					</row>		
+					<row>
+						<entry>interface_icon</entry>
+						<entry>varchar(20)</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_conf</entry>
+						<entry>float</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_disabled</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>interface_deleted</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry>czy interfejs jest skasowany</entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela logs</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>log_id</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>log_date</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>log_level</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>log_value</entry>
+						<entry>char(200)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela settings</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>setting_id</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>setting_key</entry>
+						<entry>char(30)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>setting_value</entry>
+						<entry>char(60)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela stats</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>stat_id</entry>
+						<entry>int(11)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_date</entry>
+						<entry>int(11)</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_interfaceid</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>MUL</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_value</entry>
+						<entry>float</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela stats_view</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>stat_id</entry>
+						<entry>int(11)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry>0</entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_date</entry>
+						<entry>int(11)</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_interfaceid</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_value</entry>
+						<entry>float</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>stat_data</entry>
+						<entry>datetime</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
+		<table><title>Tabela timers</title>
+			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Pole'/>
+				<colspec colname='Typ'/>
+				<colspec colname='Null'/>
+				<colspec colname='Klucz'/>
+				<colspec colname='Domyślnie'/>
+				<colspec colname='Ekstra'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Pole</entry><entry>Typ</entry><entry>Null</entry><entry>Klucz</entry><entry>Domyślnie</entry><entry>Ekstra</entry><entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>timer_id</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>PRI</entry>
+						<entry></entry>
+						<entry>auto_increment</entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>timer_type</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>1-czas, 2-1wire</entry>
+					</row>		
+					<row>
+						<entry>timer_timeif</entry>
+						<entry>int(5)</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>timer_interfaceidif</entry>
+						<entry>int(5)</entry>
+						<entry>YES</entry>
+						<entry>MUL</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+					</row>		
+					<row>
+						<entry>timer_direction</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>1 &gt;, 2 &lt; </entry>
+					</row>		
+					<row>
+						<entry>timer_value</entry>
+						<entry>float</entry>
+						<entry>YES</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>wartosc interfejsu na ktora reagujemy</entry>
+					</row>		
+					<row>
+						<entry>timer_action</entry>
+						<entry>tinyint(4)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>0 - wyłacz, 1-włacz</entry>
+					</row>		
+					<row>
+						<entry>timer_interfaceidthen</entry>
+						<entry>int(5)</entry>
+						<entry>NO</entry>
+						<entry>MUL</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>ktory interfejs przelaczyc jest prawda</entry>
+					</row>		
+					<row>
+						<entry>timer_days</entry>
+						<entry>varchar(7)</entry>
+						<entry>NO</entry>
+						<entry></entry>
+						<entry></entry>
+						<entry></entry>
+						<entry>w jakie dni reagowac</entry>
+					</row>		
+				</tbody>
+			</tgroup>
+		</table>			
