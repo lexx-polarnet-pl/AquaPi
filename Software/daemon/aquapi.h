@@ -25,12 +25,12 @@
 const char *build_date = __DATE__;  // data kompilacji
 const char *build_time = __TIME__;  // czas kompilacji
 
-//prefiksy portów wejściowych
+//prefiksy portów wyjściowych
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 
-//prefiksy portów wyjściowych
+//prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 

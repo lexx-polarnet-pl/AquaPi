@@ -51,7 +51,7 @@
 					</row>		
 				</tbody>
 			</tgroup>
-		</table>			
+		</table>	
 		<table><title>Tabela interfaces</title>
 			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Pole'/>
@@ -74,7 +74,7 @@
 						<entry>PRI</entry>
 						<entry></entry>
 						<entry>auto_increment</entry>
-						<entry></entry>
+						<entry>Identyfikator</entry>
 					</row>		
 					<row>
 						<entry>interface_deviceid</entry>
@@ -92,7 +92,18 @@
 						<entry>UNI</entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Adres interfejsu. Dla wejść może zaczynać się od:
+							<itemizedlist>
+							<listitem><para>rpi:1w: - sensory temperatury podłączone do magistrali 1wire na GPIO.</para></listitem>
+							<listitem><para>dummy: - sensor dummy (wirtualny) przydatny przy rozwoju aplikacji</para></listitem>
+							</itemizedlist>
+							Dla wyjść może zaczynać się od:
+							<itemizedlist>
+							<listitem><para>relbrd: - karta przekaźników RelayBoard (wersja USB)</para></listitem>
+							<listitem><para>rpi:gpio: - pin GPIO</para></listitem>
+							<listitem><para>dummy: - wyjście dummy (wirtualne) przydatne przy rozwoju aplikacji</para></listitem>
+							</itemizedlist>
+						</entry>
 					</row>		
 					<row>
 						<entry>interface_name</entry>
@@ -101,7 +112,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Nazwa interfejsu. Przykładowe nazwy to "oświetlenie główne", "grzałka", etc.</entry>
 					</row>		
 					<row>
 						<entry>interface_type</entry>
@@ -110,7 +121,13 @@
 						<entry></entry>
 						<entry>1</entry>
 						<entry></entry>
-						<entry>0-temp zadana,1-1wire temp,2-przekaznik</entry>
+						<entry>Typ interfejsu. Dopuszczalne wartości to:
+							<itemizedlist>
+							<listitem><para>0 - temperatura zadana (nie wykorzystywane w demonie)</para></listitem>
+							<listitem><para>1 - wejście (np. sensor temperatury)</para></listitem>
+							<listitem><para>2 - wyjście (np. port GPIO)</para></listitem>
+							</itemizedlist>						
+						</entry>
 					</row>		
 					<row>
 						<entry>interface_corr</entry>
@@ -191,7 +208,7 @@
 						<entry>PRI</entry>
 						<entry></entry>
 						<entry>auto_increment</entry>
-						<entry></entry>
+						<entry>Identyfikator</entry>
 					</row>		
 					<row>
 						<entry>log_date</entry>
@@ -200,7 +217,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Znacznik czasu</entry>
 					</row>		
 					<row>
 						<entry>log_level</entry>
@@ -209,7 +226,13 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Typ loga. Możliwe wartości to:
+							<itemizedlist>
+							<listitem><para>0 - informacja</para></listitem>
+							<listitem><para>1 - ostrzeżenie</para></listitem>
+							<listitem><para>2 - błąd krytyczny</para></listitem>
+							</itemizedlist>
+						</entry>
 					</row>		
 					<row>
 						<entry>log_value</entry>
@@ -218,7 +241,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Zawartość loga</entry>
 					</row>		
 				</tbody>
 			</tgroup>
@@ -267,7 +290,7 @@
 					</row>		
 				</tbody>
 			</tgroup>
-		</table>			
+		</table>	
 		<table><title>Tabela stats</title>
 			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Pole'/>
@@ -290,7 +313,7 @@
 						<entry>PRI</entry>
 						<entry></entry>
 						<entry>auto_increment</entry>
-						<entry></entry>
+						<entry>Identyfikator</entry>
 					</row>		
 					<row>
 						<entry>stat_date</entry>
@@ -299,7 +322,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Znacznik czasu</entry>
 					</row>		
 					<row>
 						<entry>stat_interfaceid</entry>
@@ -308,7 +331,7 @@
 						<entry>MUL</entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Identyfikator interfejsu którego dotyczy zachowana wartość</entry>
 					</row>		
 					<row>
 						<entry>stat_value</entry>
@@ -317,7 +340,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Wartość odczytana z interfejsu</entry>
 					</row>		
 				</tbody>
 			</tgroup>
@@ -407,7 +430,7 @@
 						<entry>PRI</entry>
 						<entry></entry>
 						<entry>auto_increment</entry>
-						<entry></entry>
+						<entry>Identyfikator</entry>
 					</row>		
 					<row>
 						<entry>timer_type</entry>
@@ -416,7 +439,12 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>1-czas, 2-1wire</entry>
+						<entry>Rodzaj triggera. Możliwe wartości to:
+							<itemizedlist>
+							<listitem><para>1 - trigger wyzwalany czasem</para></listitem>
+							<listitem><para>2 - trigger wyzwalany czujnikiem</para></listitem>
+							</itemizedlist>
+						</entry>						
 					</row>		
 					<row>
 						<entry>timer_timeif</entry>
@@ -425,7 +453,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Uproszczony znacznik czasu informujący kiedy timer ma być aktywny. W odróżnieniu od zwykłego znacznika, ten zawiera liczbę sekund która upłyneła od północy. W połączeniu z timer_direction decyduje czy timer jest w danym momencie aktywny, czy nie.</entry>
 					</row>		
 					<row>
 						<entry>timer_interfaceidif</entry>
@@ -434,7 +462,7 @@
 						<entry>MUL</entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Identyfikator interfejsu z którego odczytać dane - dotyczy zdarzeń sterowanych wartością z interfejsu</entry>
 					</row>		
 					<row>
 						<entry>timer_direction</entry>
@@ -443,7 +471,17 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>1 &gt;, 2 &lt; </entry>
+						<entry>"Kierunek" triggera. Dla triggerów sterowanych czujnikiem:
+							<itemizedlist>
+							<listitem><para>1 - przełącz interfejs jeśli wartość odczytana z sensora jest większa niż podana w timer_value</para></listitem>
+							<listitem><para>2 - przełącz interfejs jeśli wartość odczytana z sensora jest mniejsza niż podana w timer_value</para></listitem>
+							</itemizedlist>
+							Dla triggerów sterowanych czasem:
+							<itemizedlist>
+							<listitem><para>1 - przełącz interfejs jeśli aktualnie jest po czasie podanym w timer_timeif</para></listitem>
+							<listitem><para>2 - przełącz interfejs jeśli aktualnie jest przed czasem podanym w timer_timeif</para></listitem>
+							</itemizedlist>							
+						</entry>						
 					</row>		
 					<row>
 						<entry>timer_value</entry>
@@ -452,7 +490,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>wartosc interfejsu na ktora reagujemy</entry>
+						<entry>Wartosc interfejsu na którą reagujemy</entry>
 					</row>		
 					<row>
 						<entry>timer_action</entry>
@@ -461,7 +499,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>0 - wyłacz, 1-włacz</entry>
+						<entry>Nowa wartość dla interfejsu przełączanego. 0 - wyłacz, 1-włacz</entry>
 					</row>		
 					<row>
 						<entry>timer_interfaceidthen</entry>
@@ -470,7 +508,7 @@
 						<entry>MUL</entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>ktory interfejs przelaczyc jest prawda</entry>
+						<entry>Identyfikator interfejsu który ma być przyłączony jeśli warunki zdarzenia są spełnione</entry>
 					</row>		
 					<row>
 						<entry>timer_days</entry>
@@ -479,7 +517,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry>w jakie dni reagowac</entry>
+						<entry>Dni tygodnia w kórych timer powinien być sprawdzany. Dni są zapisane jako ciąg zer i jedynek. Od lewej strony zaczynając dni to: niedziela, poniedziałek, wtorek, środa, czwartek, piątek, sobota.</entry>
 					</row>		
 				</tbody>
 			</tgroup>

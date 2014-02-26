@@ -40,13 +40,13 @@
 					</row>
 				</thead>
 				<tbody>
-					<row><entry>devices</entry><entry>?</entry></row>
-					<row><entry>interfaces</entry><entry>?</entry></row>
-					<row><entry>logs </entry><entry>zawiera logi systemowe</entry></row>
-					<row><entry>settings</entry><entry>?</entry></row>
-					<row><entry>stats </entry><entry>?</entry></row>
-					<row><entry>stats_view</entry><entry>?</entry></row>
-					<row><entry>timers </entry><entry>?</entry></row>
+					<row><entry>devices</entry><entry>? - nie używana w demonie</entry></row>
+					<row><entry>interfaces</entry><entry>Zawiera dane interfejsów (wejść i wyjść)</entry></row>
+					<row><entry>logs </entry><entry>Zawiera logi systemowe</entry></row>
+					<row><entry>settings</entry><entry>Zawiera podstawowe ustawienia systemowe. Aktualnie nie używana w demonie</entry></row>
+					<row><entry>stats </entry><entry>Zawiera statystyki (dane odczytane z czujników)</entry></row>
+					<row><entry>stats_view</entry><entry>? - nie używana w demonie</entry></row>
+					<row><entry>timers </entry><entry>Zawiera spis timerów (zdarzeń)</entry></row>
 				</tbody>
 			</tgroup>
 		</table>
@@ -57,12 +57,12 @@
           <title>Demon</title>
           <para>Stałe demona:</para>	
 <programlisting>
-//prefiksy portów wejściowych
+//prefiksy portów wyjściowych
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 
-//prefiksy portów wyjściowych
+//prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 

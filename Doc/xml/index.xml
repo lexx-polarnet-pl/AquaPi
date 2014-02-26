@@ -4,6 +4,8 @@
 <!ENTITY rozdzial1 SYSTEM "intro.xml">
 <!ENTITY rozdzial2 SYSTEM "install.xml">
 <!ENTITY rozdzial3 SYSTEM "configure.xml">
+<!ENTITY rozdzial4 SYSTEM "devel.xml">
+<!ENTITY db-struct SYSTEM "devel-dbstruct.xml">
 ]>
 
 <book lang="pl">
@@ -19,4 +21,5 @@
 &rozdzial1;
 &rozdzial2;
 &rozdzial3;
+&rozdzial4;
 </book>
