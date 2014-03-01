@@ -66,6 +66,18 @@ function GetInterfaces()
 	return($tmp);
 }
 
+function GetInterfacesIcons()
+{
+	global $db;
+	$interfaces	= $db->GetAll('SELECT interface_id,interface_icon FROM interfaces WHERE interface_type=2');
+	
+	foreach($interfaces as $index => $interface)
+	{
+		$tmp[$interface['interface_id']]=$interface['interface_icon'];
+	}
+	return($tmp);
+}
+
 function GetDevices()
 {
 	global $db;

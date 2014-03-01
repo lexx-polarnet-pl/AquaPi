@@ -74,6 +74,7 @@ $uname_v 	= php_uname("v");
 $load 		= sys_getloadavg();
 $cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
 $daemon_data 	= @simplexml_load_string(IPC_CommandWithReply("status"));
+$icons		= GetInterfacesIcons();
 
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
@@ -86,9 +87,9 @@ $smarty->assign('cputemp', $cputemp);
 $smarty->assign('daemon_data', $daemon_data);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
+$smarty->assign('icons', $icons);
 //$smarty->assign('devices', $devices);
 $smarty->display('index.tpl');
-//echo"<pre>";
-//var_dump($daemon_data);
+
 ?>
 

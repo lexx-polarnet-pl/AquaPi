@@ -21,8 +21,8 @@
 		<td>{if $device->type == 1}{$device->measured_value|string_format:"%.1f"}{/if}</td>
 		<td>
 		{if $device->type == 2}
-			{if $device.interface_icon}
-				    <img src="img/{$device.interface_icon}">
+			{if $icons[{$device->id}]}
+				    <img src="img/{$icons[{$device->id}]}">
 			{else}
 				    <img src="img/device.png">
 			{/if}
