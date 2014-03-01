@@ -1,7 +1,6 @@
 {include "header.tpl"}
 
 <div id="loginbox">
-	<h1>Ta sekcja wymaga zalogowania</h1>
 	{if $e_msg}<h2 class="error">Wystąpił błąd: {$e_msg}</h2>{/if}
 	<form action="login.php" method="post">
 	Podaj login: <input type="text" name="login"/>
