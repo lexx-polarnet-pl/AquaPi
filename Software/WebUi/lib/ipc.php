@@ -104,7 +104,7 @@ function IPC_CommandWithReply($command) {
 	} while ($failcount < 3);
 	fclose($fp2); 
 
-	if ($failcount == 3) {
+	if ($failcount == 10) {
 	    $ret = -1;
 	} else {
 	    $ret = $data;
