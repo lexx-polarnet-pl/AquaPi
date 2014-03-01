@@ -128,5 +128,27 @@ typedef struct
 	double dummy_temp_sensor_val;
 } configuration;
 </programlisting>
-     </sect1>
+    </sect1>
+    <sect1 id="device-names">
+        <title>Nazewnictwo urządzeń</title>
+		  
+        <para>Wyjścia:
+  			<itemizedlist>
+				<listitem><para>rpi:gpio:? - szyna GPIO. Zamiast ? należy podać numer pinu. 
+				<tip><title>Podpowiedź</title><para>Przykładowe ustawienie to rpi:gpio:4 - oznacza on pin nr. 4 na porcie GPIO według rozpiski WiringPi</para></tip></para></listitem>
+				<listitem><para>relbrd:ttyUSB?:? - karta RelayBoard. Zamiast pierwszego ? należy podać numer portu USB do którego
+				została podłączona karta. Zamiast drugiego ? należy podać numer przekaźnika na karcie.
+				<tip><title>Podpowiedź</title><para>Przykładowe ustawienie to relbrd:ttyUSB0:4 - oznacza on przekaźnik nr. 4 na karcie RelayBoard widoczej w systemie pod /dev/ttyUSB0</para></tip></para></listitem>
+                <listitem><para>dummy:? - urządzenie dummy, przydatne przy rozwoju oprogramowania. Aplikacja normalnie korzysta z tego urządzenia, ale zmiana jego stanu
+				nie ma na nic wpływu. Ze względu na indeks unique w bazie zamiast ? należy podstawić dowolną liczbę.</para></listitem>
+			</itemizedlist>		
+		</para>	
+        <para>Wejścia:
+  			<itemizedlist>
+				<listitem><para>rpi:1w:? - sensor temperatury DS18B20 podpięty do szyny 1-wire. Zamiast ? należy podać adres czujnika. </para></listitem>
+                <listitem><para>dummy:? - wejście dummy, przydatne przy rozwoju oprogramowania. Zwracana wartość będzie wartością ustawioną w pliku INI (ustawienie dummy_temp_sensor w sekcji [daemon]).</para></listitem>
+			</itemizedlist>		
+		</para>	
+    </sect1>
+
 </chapter>

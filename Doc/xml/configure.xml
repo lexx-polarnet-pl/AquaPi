@@ -119,6 +119,7 @@ dummy_temp_sensor = 23.5</programlisting>
 	</sect1>
     <sect1 id="configuredb">
 		<title>Pozostałe opcje konfiguracyjne</title>
+		<warning><title>Ostrzeżenie</title><para>Ta sekcja jest nieaktualna. Dotyczy konfiguracji portów w wersji 1.0. W obecnej wersji zostało to zmienione.</para></warning>
 		<para>Większość parametrów możesz ustawić bezpośrednio z poziomu przeglądarki. Wyjątkiem jest tutaj konfiguracja portów wyjściowych 
 		(przypisanie wyjść do określonych urządzeń), które należy wykonać bezpośrednio w bazie.</para>
 		  <para>Aby zmienić przypisanie wyjścia do urządzenia, wykonaj następujące kroki:
