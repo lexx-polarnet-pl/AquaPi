@@ -32,7 +32,7 @@ if (($_POST['login'] == $CONFIG['webui']['login']) && ($_POST['password'] == $CO
 		$SESSION -> redirect("index.php");
 	}
 } else {
-	$smarty->assign('cur_name', "Ta sekcja wymaga zalogowaniaa");
+	$smarty->assign('cur_name', "Ta sekcja wymaga zalogowania");
 	$SESSION -> save('logged_in',false);
 	if (isset($_POST['login'])) {
 		$e_msg = "Zły login lub hasło";
