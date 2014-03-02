@@ -1,5 +1,7 @@
 {include "header.tpl"}
 
+{include "outputs.tpl"}
+
 {if $CONFIG.webui.show_data_from_DB eq 1}
 <div id="dashboard">
     <h3>Wyjścia & sensory:</h3>
@@ -12,34 +14,6 @@
 </div>
 {/if}
 
-<div id="dashboard">
-	<h3>Wyjścia</h3>
-    <table style="width:100%">
-	<tr bgcolor="#aaaaaa"><th>Nazwa</th><th>Stan</th></tr>
-	{foreach from=$daemon_data->devices->device item="device"}
-		{if $device->type == 2}
-        <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-			<td>
-				{if $icons[{$device->id}]}
-						<img src="img/{$icons[{$device->id}]}">
-				{else}
-						<img src="img/device.png">
-				{/if}
-				{$device->name}
-			</td>
-			<td>
-				<img src="img/{if $device->state == -1}unknown.gif{elseif $device->state == 1}on.png{else}off.png{/if}"
-					   title="{if $device->state == -1}Nieokreślony{elseif $device->state == 1}Załączony{else}Wyłączony{/if}">
-			</td>
-		</tr>
-		{/if}
-	{foreachelse}
-		<tr bgcolor="#cccccc">
-			<td colspan="2">Brak komunikacji z demonem</td>
-		</tr>	
-	{/foreach}	
-	</table>
-</div>
 <div id="dashboard">
 	<h3>Wejścia</h3>
     <table style="width:100%">

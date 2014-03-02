@@ -2,6 +2,9 @@
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}
   #dashboard {margin: 5px; padding: 5px; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #device {margin: 5px; padding: 5px; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius:  15px; border: solid; border-color:silver;}
+  #device-on {margin: 5px; padding: 5px; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px; border: solid; border-color:green;}
+  #device-off {margin: 5px; padding: 5px; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px; border: solid; border-color:red;}
   #dashboard_red {margin: 5px; padding: 5px; width:48%; float:left; background-color: #FF0000; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
