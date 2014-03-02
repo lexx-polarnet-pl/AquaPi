@@ -16,5 +16,5 @@
 <body>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <script type="text/javascript" language="JavaScript" src="js/overlib.js"></script>
-{include "menu.tpl"}
+{if !$ismobile}{include "menu.tpl"}{/if}
 <h1>{$cur_name}</h1>

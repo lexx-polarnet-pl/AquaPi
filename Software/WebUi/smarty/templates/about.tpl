@@ -25,6 +25,7 @@ Pozostałe elementy wchodzące w skład sterownika to:
     <li>Smarty</li>
     <li>jquery</li>
     <li>ikonki Crystal project</li>
+	<li>PHP Mobile Detect</li>
     <li>oraz oczywiście Raspbian </li>
 </ul>
 

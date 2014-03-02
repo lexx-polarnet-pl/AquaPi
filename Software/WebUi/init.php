@@ -88,6 +88,10 @@ require(LIB_DIR.'functions.php');
 //IPC
 require(LIB_DIR.'ipc.php');
 
+//mobile detect
+require(LIB_DIR.'Mobile_Detect.php');
+$detect = new Mobile_Detect;
+
 // definicja menu
 $my_menu = Array (
     Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" ),
@@ -124,6 +128,7 @@ foreach ($my_menu as &$pos)
 //new dbug($CONFIG);
 
 $smarty->assign('my_menu', $my_menu);
+$smarty->assign('ismobile', $detect->isMobile());
 $smarty->assign('cur_name', $cur_name);
 $smarty->assign('CONFIG', $CONFIG);
 
