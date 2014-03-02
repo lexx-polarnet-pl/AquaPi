@@ -1,7 +1,7 @@
   body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; margin:0;}
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}
-  #dashboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard {margin: 5px; padding: 5px; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_red {margin: 5px; padding: 5px; width:48%; float:left; background-color: #FF0000; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_1wire {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_gpio {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
