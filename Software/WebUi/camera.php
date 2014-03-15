@@ -24,7 +24,7 @@
 include("init.php");
 
 if(!file_exists('/dev/vchiq'))
-    $smarty->assign('message', 'No camera available');
+    $smarty->assign('message', 'No camera available, please connect it.');
 
 $smarty->display('camera.tpl');
 

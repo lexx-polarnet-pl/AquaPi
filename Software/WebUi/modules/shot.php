@@ -36,9 +36,9 @@ if(isset($_GET['action']))
         $options.=' -rot '.$_GET['rot'].' ';
 
     system('raspistill -hf '.$options.' -o /tmp/imageembed.jpg -t 0');
-    $filename = "/tmp/imageembed.jpg";
-    $handle = fopen($filename, "rb");
-    $contents = fread($handle, filesize($filename));
+    $filename   = "/tmp/imageembed.jpg";
+    $handle     = fopen($filename, "rb");
+    $contents   = fread($handle, filesize($filename));
     fclose($handle);
     echo $contents;
 }

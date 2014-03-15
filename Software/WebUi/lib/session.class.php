@@ -23,14 +23,14 @@
 
 class Session {
 
-		function Session()
-		{
-			session_start();
-		}
+        function Session()
+        {
+                session_start();
+        }
 
         function save($variable, $content)
         {
-			$_SESSION[$variable] = $content;
+		$_SESSION[$variable] = $content;
         }
 
         function restore($variable, &$content)
