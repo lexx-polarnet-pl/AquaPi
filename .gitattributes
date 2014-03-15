@@ -12,8 +12,8 @@
 #*.gif binary
 
 #enable $id$ tag
-*.c ident
-*.h ident
-*.php ident
-*.tpl ident
+#*.c ident
+#*.h ident
+#*.php ident
+#*.tpl ident
 
