@@ -164,6 +164,7 @@ int main() {
 	config.temp_freq 	= 10; // co ile sekund kontrolować temp
 	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
+	config.reload_freq  = -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez IPC)
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
@@ -306,6 +307,11 @@ int main() {
 
 			if (seconds_since_midnight % config.stat_freq == 0) {
 				StoreTempStat();
+			}
+
+			if ((seconds_since_midnight % config.reload_freq == 0) && (config.reload_freq != -1)) {
+				Log("Automatyczne odświerzenie konfiguracji",E_DEV);
+				ReadConf();
 			}
 			
 			#warning Dla zgodności z daemonem PHP. Do wyrzucenia i przerobienia na IPC

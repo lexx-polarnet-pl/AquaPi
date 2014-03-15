@@ -97,6 +97,7 @@ typedef struct
 	int stat_freq;
 	int temp_freq;
 	int devel_freq;
+	int reload_freq;
 	double dummy_temp_sensor_val;
 } configuration;
 
