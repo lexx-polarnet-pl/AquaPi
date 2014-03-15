@@ -90,8 +90,8 @@ void ReadConf() {
 
 	Log("Odczyt konfiguracji",E_DEV);
 	
-	// Wczytanie interfeaców
-	Log("Wczytanie interfeaców",E_DEV);
+	// Wczytanie interface'ów
+	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = 	-1;
 	mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type,interface_corr FROM interfaces WHERE interface_disabled = 0 AND interface_deleted = 0");
 	result = mysql_store_result(conn);
