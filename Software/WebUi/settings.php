@@ -58,11 +58,11 @@ if($_POST)
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_dummy'], 	'dummy'));
 	
 	//SET GLOBAL SETTINGS
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 		'hysteresis'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 					'hysteresis'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['simplify_graphs']?$_POST['simplify_graphs']:0, 	'simplify_graphs'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 'night_start'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  'night_stop'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 	'temp_night_corr'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 			'night_start'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  			'night_stop'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 				'temp_night_corr'));
 	
 	
 	//1WIRE
@@ -80,16 +80,19 @@ if($_POST)
 
 //			}
 			
-			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=?, interface_disabled=? WHERE interface_id=?', 
-				array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
+			$db->Execute('UPDATE interfaces
+					SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=?, interface_disabled=?
+					WHERE interface_id=?', 
+					array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
 		{
                         if(!$sensor['sensor_draw'])
                             $sensor['sensor_draw']=0;
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_corr, interface_draw)
-				     VALUES (?, ?, ?, ?, ?)', array($interface_id, $sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw)
+				     VALUES (?, ?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('1wire'), 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
 		}
 		
 	}
@@ -101,13 +104,14 @@ if($_POST)
 		if(strlen($gpio['gpio_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
 			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=? WHERE interface_id=?', 
-				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
+				array($gpio['gpio_name'], 'rpi:gpio:'.$gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj gpio
 		elseif(strlen($gpio['gpio_name'])>1) 
 		{
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name)
-				     VALUES (?, ?, ?)', array($interface_id, $gpio['gpio_address'], $gpio['gpio_name']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name)
+				     VALUES (?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('gpio'), 'rpi:gpio:'.$gpio['gpio_address'], $gpio['gpio_name']));
 		}
 		
 	}
@@ -132,8 +136,9 @@ if($_POST)
 		//jesli nie istnieje i jest podana nazwa dodaj dummy
 		elseif(strlen($dummy['dummy_name'])>1) 
 		{
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_conf)
-				     VALUES (?, ?, ?, ?)', array($interface_id, $dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_conf)
+				     VALUES (?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('dummy'), 'rpi:dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
 		}
 	}
 	ReloadDaemonConfig();

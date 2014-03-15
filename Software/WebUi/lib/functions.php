@@ -85,6 +85,13 @@ function GetDevices()
 				WHERE device_id>0 AND device_deleted=0');
 }
 
+function GetDeviceId($name)
+{
+	global $db;
+	return $db->GetOne('SELECT device_id FROM devices
+				WHERE device_name=?', array($name));
+}
+
 function Read1Wire($address)
 {
 	if(!file_exists(ONEWIRE_DIR. $address. '/' . 'w1_slave'))
