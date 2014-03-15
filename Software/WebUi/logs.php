@@ -25,19 +25,16 @@ include("init.php");
 
 $smarty->assign('title', 'Zdarzenia systemowe');
 
-$count=20;
-$offset=0;
+$count  = 20;
+$offset = 0;
 
-if(isset($_GET['offset']))$offset = $count*$_GET['offset'];
+if(isset($_GET['offset']))
+    $offset = $count*$_GET['offset'];
 
-$r = $db->GetOne('select count(*) from logs;');
-$pages = ceil($r/$count);
-$logs = $db->GetAll('select * from logs order by log_date desc limit '.$count.' offset '.$offset.';');
+$r      = $db->GetOne('select count(*) from logs;');
+$pages  = ceil($r/$count);
+$logs   = $db->GetAll('select * from logs order by log_date desc limit '.$count.' offset '.$offset.';');
 
-//$smarty->assign('time', date("H:i"));
-//$smarty->assign('temp', $temp);
-//$smarty->assign('heating', false);
-//$smarty->assign('day', false);
 $smarty->assign('logs', $logs);
 $smarty->assign('pages', $pages);
 $smarty->display('logs.tpl');

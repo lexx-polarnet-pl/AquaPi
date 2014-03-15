@@ -5,22 +5,23 @@
 <script src="js/modules/exporting.js"></script>
 {literal}
 <script>
-    
 $(function() {
 	    var seriesOptions = [],
-			yAxisOptions = [],
-			seriesCounter = 0,
-			names = [{/literal}{$wire}{literal}],
-			colors = Highcharts.getOptions().colors;
+	    yAxisOptions = [],
+	    seriesCounter = 0,
+	    names = [{/literal}{foreach from=$sensors item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}"], {/foreach}{literal}],
+	    colors = Highcharts.getOptions().colors;
 
 	    $.each(names, function(i, name)
 	    {
-			$.getJSON('jsonp.php?interfaceid='+ name +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
+			$.getJSON('jsonp.php?interfaceid='+ name[0] +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
 			function(data) {
 				    seriesOptions[i] = {
-						name: name,
-						type: 'spline',
-						data: data
+						name:	name[1],
+						id:	name[0],
+						type:	'spline',
+						//datagrouping: { enabled: false},
+						data:	data
 				    };
 			seriesCounter++;
 			
@@ -34,47 +35,53 @@ $(function() {
 	function createChart() {
 
 		$('#container').highcharts('StockChart', {
-		    chart: {
-		    },
+				    chart: {
+			},
 
-		    rangeSelector: {
-		        selected: 4
-		    },
+			rangeSelector: {
+				    inputEnabled: $('#container').width() > 480,
+				    selected: 1
+			},
 
-		    yAxis: {
-		    	labels: {
-		    		formatter: function() {
-		    			return (this.value > 0 ? '+' : '') + this.value + '%';
-		    		}
-		    	},
-		    	plotLines: [{
-		    		value: 0,
-		    		width: 2,
-		    		color: 'silver'
-		    	}]
-		    },
-		    
-		    plotOptions: {
-		    	series: {
-		    		compare: 'percent'
-		    	}
-		    },
-		    
-		    tooltip: {
-		    	pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
-		    	valueDecimals: 2
-		    },
-		    
-		    series: seriesOptions
+			title: {
+				    text: 'Czujniki 1-wire'
+			},
+			yAxis : {
+				    title : {
+					    text : 'Temperatura [°C]'
+				    },
+			},
+			xAxis: {
+				    type: "datetime",
+				    ordinal: false,
+			},
+			legend: {
+				    enabled: true,
+			},
+			tooltip: {
+				    valueDecimals: 1,
+				    valueSuffix: '°C',
+				    crosshairs: [true,true]
+		        },
+			plotOptions: {
+				    line: {
+						//connectNulls: false,
+						//gapSize: 1
+				    }
+			},
+			series: seriesOptions
 		});
 	}
 
-});    
+});
+
+
+
 </script>
+
+
+
 {/literal}
-
-
-
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 
