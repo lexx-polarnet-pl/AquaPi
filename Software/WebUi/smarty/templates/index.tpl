@@ -2,6 +2,8 @@
 
 {include "outputs.tpl"}
 
+
+
 {if $CONFIG.webui.show_data_from_DB eq 1}
 <div id="dashboard">
     <h3>Wyjścia & sensory:</h3>
@@ -47,9 +49,6 @@
     <table>
 	<tr>
 	    <td>Czas</td><td>{$time}</td>
-	</tr>
-	<tr>
-	    <td>Temperatura zbiornika:</td><td>{if $sensor_master_temp gt 0}{$sensor_master_temp|string_format:"%.2f"}&deg;C{else}?{/if}</td>
 	</tr>
 	<tr>
 	    <td>Uruchomiony:</td><td>{$enabled}</td>
