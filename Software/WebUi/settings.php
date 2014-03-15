@@ -138,7 +138,7 @@ if($_POST)
 		{
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_conf)
 				     VALUES (?, ?, ?, ?, ?)',
-				     array($interface_id, GetDeviceId('dummy'), 'rpi:dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
+				     array($interface_id, GetDeviceId('dummy'), 'dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
 		}
 	}
 	ReloadDaemonConfig();
