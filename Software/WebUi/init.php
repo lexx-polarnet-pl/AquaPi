@@ -98,8 +98,8 @@ $my_menu = Array (
     Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" ),
     Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"),
     Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"),
-    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs.png", 		"url" => "logs.php",	"acl" => "r" ),
-    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "stat.png", 		"url" => "stat.php",	"acl" => "r" ),
+    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r" ),
+    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r" ),
     Array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r" ),
     Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r" )
 );
