@@ -56,7 +56,19 @@ void Log(char *msg, int lev) {
 	if ( config.dontfork ) {
 		timeinfo = localtime ( &rawtime );
 		strftime (timef,80,"%H:%M:%S",timeinfo);
-		printf("[%s] %2i %s\n",timef,lev,msg);
+		printf("\x1b[33m[%s] ",timef);	// timestamp na żółto
+		if (lev==E_DEV) {
+				printf("\x1b[34mDEV  ");
+		} else if (lev==E_INFO) {
+				printf("\x1b[32mINFO ");
+		} else if (lev==E_WARN) {
+				printf("\x1b[33mWARN ");
+		} else if (lev==E_CRIT) {
+				printf("\x1b[31mCRIT ");
+		} else if (lev==E_SQL) {
+				printf("\x1b[31mSQL  ");
+		}
+		printf("\x1b[39m%s\n",msg);
 	}
 	
 	if (lev >= 0 && lev != E_SQL) {
