@@ -18,23 +18,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id: 01d7e8bf9c5ff6819e09617e7e850c928e54f23b $
  */
 
 include("init.php");
 
-$smarty->assign('title', 'Zdarzenia systemowe');
-
-$count  = 20;
-$offset = 0;
+$count  = 30;
+$start  = 0;
+$period = 30 * 24 * 60 * 60; //30 dni
 
 if(isset($_GET['offset']))
-    $offset = $count*$_GET['offset'];
+{
+    $start = $count * $_GET['offset'];
+}
 
+$end    = $start + $count;
 $r      = $db->GetOne('select count(*) from logs;');
 $pages  = ceil($r/$count);
-$logs   = $db->GetAll('select * from logs order by log_date desc limit '.$count.' offset '.$offset.';');
 
+$logs   = $db->GetAll('SELECT * FROM logs ORDER BY log_date DESC LIMIT ?, ?', array($start, $end));
+$db->Execute('DELETE FROM logs WHERE log_date<?', array(time() - $CONFIG['webui']['purge_logs']));
+
+$smarty->assign('title', 'Zdarzenia systemowe');
 $smarty->assign('logs', $logs);
 $smarty->assign('pages', $pages);
 $smarty->display('logs.tpl');

@@ -18,14 +18,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id: 1202746a7d2d546d168e6b25a9e32c8bdbc83b8b $
  */
 
 // wersja AquaPi
 $aquapi_ver = "1.9-devel";
 
 // Wczytanie pliku z ustawieniami
-$CONFIG = parse_ini_file("/etc/aquapi2.ini", true);
+$CONFIG = parse_ini_file("/etc/aquapi.ini", true);
 
 
 // ustawienie odpowiedniej strefy czasowej
