@@ -107,7 +107,7 @@ void* TCPConnections (void* unused) {
 	serwer.sin_family=AF_INET;
 	serwer.sin_port=htons(config.port);
 	// serwer.sin_addr.s_addr=INADDR_ANY; // INADDR_ANY oznacza że nasłuchujemy na każdym adresie IP danego hosta
-	serwer.sin_addr.s_addr=inet_addr(config.interface);
+	serwer.sin_addr.s_addr=inet_addr(config.host);
 
 	// przypisanie adresu ...
 	if (bind(sh, (struct sockaddr *) &serwer, sizeof(struct sockaddr_in)) < 0) {
@@ -116,7 +116,7 @@ void* TCPConnections (void* unused) {
 		exit(EXIT_FAILURE);
 	}
 
-	sprintf(buff,"Zaczynam nasłuchiwać na %s:%i",config.interface,config.port);
+	sprintf(buff,"Zaczynam nasłuchiwać na %s:%i",config.host,config.port);
 	Log(buff,E_INFO);
 		
 	while(1) {
