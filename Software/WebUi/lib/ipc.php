@@ -22,8 +22,8 @@
  */
 
 
-$host	= $CONFIG['daemon']['host'];
-$port	= $CONFIG['daemon']['port'];
+$host	= $CONFIG['daemon']['bind_address'];
+$port	= $CONFIG['daemon']['bind_port'];
 
 
 function IPC_Command($command) {
