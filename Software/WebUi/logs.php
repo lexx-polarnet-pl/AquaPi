@@ -18,7 +18,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id: 01d7e8bf9c5ff6819e09617e7e850c928e54f23b $
  */
 
 include("init.php");
