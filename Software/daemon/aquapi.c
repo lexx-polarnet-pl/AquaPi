@@ -161,7 +161,7 @@ int main() {
 	config.temp_freq 	= 10; // co ile sekund kontrolować temp
 	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
-	config.reload_freq  = -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez IPC)
+	config.reload_freq  = -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
 	config.interface 	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
 	config.port			=  6580;		// domyślny port na którym demon ma nasłuchiwać
 
@@ -181,9 +181,6 @@ int main() {
 
 	ReadConf();
 	
-	//InitIPC();
-	InitTCP();
-	
 	if ( !config.dontfork ) {
 		fval = fork();
 		switch(fval) {
@@ -202,6 +199,8 @@ int main() {
 				exit(0); // parent exits
 		}
 	}
+
+	InitTCP();
 	
 	// termination signals handling
 	signal(SIGINT, termination_handler);
@@ -213,9 +212,6 @@ int main() {
 		timeinfo = localtime ( &rawtime );
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
-		// procesuj komunikaty IPC
-		//ProcessIPC();
-		
 		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę
 		if (seconds_since_midnight != last_sec_run) {
 			// nie sprawdzałeś, to sprawdzaj
@@ -314,9 +310,9 @@ int main() {
 				ReadConf();
 			}
 			
-			#warning Dla zgodności z daemonem PHP. Do wyrzucenia i przerobienia na IPC
-			sprintf(buff,"UPDATE settings SET setting_value=%ld WHERE setting_key = 'demon_last_activity'",rawtime);
-			DB_Query(buff);		
+			//#warning Dla zgodności z daemonem PHP. Do wyrzucenia i przerobienia na IPC
+			//sprintf(buff,"UPDATE settings SET setting_value=%ld WHERE setting_key = 'demon_last_activity'",rawtime);
+			//DB_Query(buff);		
 		}
 		usleep(100000);
 		//sleep(1);

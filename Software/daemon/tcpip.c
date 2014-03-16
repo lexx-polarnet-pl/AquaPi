@@ -116,6 +116,9 @@ void* TCPConnections (void* unused) {
 		exit(EXIT_FAILURE);
 	}
 
+	sprintf(buff,"Zaczynam nasłuchiwać na %s:%i",config.interface,config.port);
+	Log(buff,E_INFO);
+		
 	while(1) {
 		// otwarcie portu do nasluchiwania
 		if (listen(sh, QUERY_SIZE) < 0) {
@@ -123,8 +126,7 @@ void* TCPConnections (void* unused) {
 			Log(buff,E_CRIT);
 			exit(EXIT_FAILURE);
 		}
-		sprintf(buff,"TCPIP: nasłuchuję na %s:%i",config.interface,config.port);
-		Log(buff,E_DEV);
+
 
 		// odebranie połączenia
 		struct sockaddr_in from;
