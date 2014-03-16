@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id: 42a2c131619c6a5164a68903a574c03c5df95f62 $
  */
  
 // Requires PHP 5.4 or higher 
@@ -147,8 +147,18 @@ if($_POST)
 
 
 
-$devices	= GetDevices();
+$devices 	= GetDevices();
 $interfaces	= GetInterfaces();
+
+if($CONFIG['plugins']['relayboard']==0)
+{
+	foreach($devices as $index => $device)
+	{
+		if($device['device_name']=='relayboard')
+			unset($devices[$index]);
+	}
+	$devices	= array_values($devices);
+}
 //new dbug($devices);
 //new dbug($interfaces);
 //die;

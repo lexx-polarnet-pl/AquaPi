@@ -94,15 +94,16 @@ require(LIB_DIR.'Mobile_Detect.php');
 $detect = new Mobile_Detect;
 
 // definicja menu
-$my_menu = Array (
-    Array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" ),
-    Array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"),
-    Array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"),
-    Array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r" ),
-    Array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r" ),
-    Array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r" ),
-    Array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r" )
-);
+$my_menu	= array();
+$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" );
+$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r" );
+$my_menu[]	= array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r" );
+if($CONFIG['plugins']['camera']==1)
+    $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r" );
+$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r" );
+
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
 $self = end($self);
