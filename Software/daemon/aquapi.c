@@ -162,8 +162,8 @@ int main() {
 	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
 	config.reload_freq  	= -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
-	config.bind-address	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
-	config.bind-port	=  6580;	// domyślny port na którym demon ma nasłuchiwać
+	config.bind_address	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
+	config.bind_port	=  6580;	// domyślny port na którym demon ma nasłuchiwać
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
