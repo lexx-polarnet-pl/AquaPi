@@ -1,8 +1,11 @@
 {include "header.tpl"}
 
-{include "outputs.tpl"}
-
-
+<div id="dashboard">
+    <h3>Wyjścia:</h3>
+    <div style="float:left;">
+        {include "index_outputs.tpl"}
+    </div>
+</div>
 
 {if $CONFIG.webui.show_data_from_DB eq 1}
 <div id="dashboard">
