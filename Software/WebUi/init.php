@@ -79,6 +79,10 @@ foreach($configs as $config)
 $CONFIG		= array_merge($CONFIG, $tmp);
 unset($tmp);
 
+// Wartości domyślne
+if (!isset($CONFIG['daemon']['bind_address'])) 	{ $CONFIG['daemon']['bind_address'] = "127.0.0.1"; }
+if (!isset($CONFIG['daemon']['bind_port'])) 	{ $CONFIG['daemon']['bind_port'] = 6580; }
+
 //init sesji
 require(LIB_DIR. 'session.class.php');
 $SESSION	= new Session();
