@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <inttypes.h>
 #include <arpa/inet.h>
+#include <dirent.h>
 
 #define BUF_SIZE 255
 #define QUERY_SIZE 1
@@ -92,6 +93,57 @@ void TCPCommandStatus() {
 	fflush(net);		
 }
 
+void TCPCommand1wList() {
+	Log("Otrzymałem polecenie 1wlist",E_DEV);
+	char buff[400];
+    DIR * d;
+    char * dir_name = "/sys/bus/w1/devices/";
+	
+	fputs(XMLHead,net);	
+	sprintf(buff,"<reply type=\"1wlist\"/>\n");
+	fputs(buff,net);
+	// przedstaw się ładnie
+	sprintf(buff,"<daemon>\n");
+	fputs(buff,net);
+	sprintf(buff,"<pid>%i</pid>\n",getpid());
+	fputs(buff,net);
+	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
+	fputs(buff,net);
+	sprintf(buff,"</daemon>\n");
+	fputs(buff,net);
+	// opowiedz co tam widać w 1-wire
+
+    d = opendir (dir_name);
+    if (! d) {
+		sprintf(buff,"<reply status=\"error\"/>\n");
+		fputs(buff,net);		
+		sprintf(buff,"<error id=%i>Nie umiem otworzyć katalogu '%s': %s</error>\n",errno,dir_name, strerror (errno));
+		fputs(buff,net);	
+    } else {
+		sprintf(buff,"<list>\n");
+		fputs(buff,net);
+		
+		while (1) {
+			struct dirent * entry;
+			
+			entry = readdir (d);
+			if (! entry) {
+				break;
+			}
+			if (!strncmp("28-",entry->d_name,3)) { 
+				// pokazujemy to co zaczyna się od 28-
+				sprintf(buff,"\t<item>%s</item>\n",entry->d_name);
+				fputs(buff,net);			
+			}
+		}
+		closedir(d);
+		sprintf(buff,"</list>\n");
+		fputs(buff,net);
+	}
+	fputs(XMLFoot,net);
+	fflush(net);		
+}
+
 void* TCPConnections (void* unused) {
 	char buff[200];
 	// gniazdo ...
@@ -145,6 +197,10 @@ void* TCPConnections (void* unused) {
 			}
 			if (strncmp("aquapi:status",buf,13)==0) {
 				TCPCommandStatus();
+				shutdown(sh2,SHUT_RDWR);
+			}	
+			if (strncmp("aquapi:1wlist",buf,13)==0) {
+				TCPCommand1wList();
 				shutdown(sh2,SHUT_RDWR);
 			}	
 		}
