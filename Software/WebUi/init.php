@@ -26,7 +26,8 @@ $aquapi_ver = "1.9-devel";
 
 // Wczytanie pliku z ustawieniami
 $CONFIG = parse_ini_file("/etc/aquapi.ini", true);
-
+if ($CONFIG['webui']['purge_logs']<7 or !isset($CONFIG['webui']['purge_logs']))
+    $CONFIG['webui']['purge_logs']=7;
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
