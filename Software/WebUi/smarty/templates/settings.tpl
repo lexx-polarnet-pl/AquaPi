@@ -123,7 +123,7 @@ $(function() {
 
 <!--Ustawienia sensorów temperatury-->
 {if $sensors_fs != 'FALSE'}
-	{include "settings_sensors_table.tpl"}
+	{include "settings_1wire.tpl"}
 {/if}
 	
 <!--GPIO-->
