@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id:$
  */
 
 #define APPNAME "AquaPi"
@@ -98,6 +98,8 @@ typedef struct
 	int temp_freq;
 	int devel_freq;
 	int reload_freq;
+	int port;
+	char* interface;
 	double dummy_temp_sensor_val;
 } configuration;
 

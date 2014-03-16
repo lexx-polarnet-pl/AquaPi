@@ -9,10 +9,7 @@
 #define RB_H_
 #include "crc8.h"
 #include <unistd.h>
-#ifndef uint8_t
-#define uint8_t unsigned short
-#endif /*uint8_t*/
-
+typedef unsigned char uint8_t;
 //#define TRUE 0x01
 //#define FALSE 0x00
 #define RETRANSMIT_COUNT 5

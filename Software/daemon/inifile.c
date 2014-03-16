@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id:$
  */
 
 #include "inih/ini.h"
@@ -48,6 +48,10 @@ static int handler(void* user, const char* section, const char* name, const char
         pconfig->reload_freq = atoi(value);		
     } else if (MATCH("daemon", "dummy_temp_sensor")) {
         pconfig->dummy_temp_sensor_val = atof(value);
+    } else if (MATCH("daemon", "interface")) {
+        pconfig->interface = strdup(value);		
+    } else if (MATCH("daemon", "port")) {
+        pconfig->port = atoi(value);		
     } else {
         return 0;  /* unknown section/name, error */
     }

@@ -17,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
  */
  
 #include <stdio.h>
@@ -29,14 +28,12 @@
 #include <syslog.h>
 #include <mysql.h>
 #include "aquapi.h"
+#include "tcpip.c"
 #include "database.c"
 #include "externals.c"
 #include "inifile.c"
-#include "ipc.c"
 
 void termination_handler(int signum)	{
-	// przy wychodzeniu wyłącz grzałkę
-	//ChangePortState(heater_port,0);
 	if( signum ) {
 		syslog(LOG_ERR, "Daemon exited abnormally.");
 		Log("Praca daemona została przerwana",E_CRIT);
@@ -165,6 +162,8 @@ int main() {
 	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
 	config.reload_freq  = -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez IPC)
+	config.interface 	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
+	config.port			=  6580;		// domyślny port na którym demon ma nasłuchiwać
 
     if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
         printf("Can't load '/etc/aquapi.ini'\n");
@@ -182,7 +181,8 @@ int main() {
 
 	ReadConf();
 	
-	InitIPC();
+	//InitIPC();
+	InitTCP();
 	
 	if ( !config.dontfork ) {
 		fval = fork();
@@ -214,7 +214,7 @@ int main() {
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
 		// procesuj komunikaty IPC
-		ProcessIPC();
+		//ProcessIPC();
 		
 		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę
 		if (seconds_since_midnight != last_sec_run) {

@@ -18,12 +18,14 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
+ * $Id:$
  */
-$myfifo = "/tmp/aquapi.cmd";
-$myfifo2 = "/tmp/aquapi.res";
 
 
+$host = "localhost";
+$port = 6580;
+
+/*
 function IPC_Command($command) {
 	global $myfifo;
 	$fp=fopen($myfifo, "r+"); // ensures at least one writer (us) so will be non-blocking
@@ -110,5 +112,36 @@ function IPC_CommandWithReply($command) {
 	    $ret = $data;
 	}
 	return $ret;
+}*/
+
+function IPC_Command($command) {
+	global $host,$port;
+	$fp = fsockopen($host, $port, $errno, $errstr, 2);
+	if (!$fp) {
+		//echo "$errstr ($errno)<br />\n";
+		$ret = -1;
+	} else {
+		fwrite($fp, "aquapi:".$command."\n");
+		fclose($fp);
+	}
 }
+
+function IPC_CommandWithReply($command) {
+	$ret = "";
+	global $host,$port;
+	$fp = fsockopen($host, $port, $errno, $errstr, 2);
+	if (!$fp) {
+		//echo "$errstr ($errno)<br />\n";
+		$ret = -1;
+	} else {
+		fwrite($fp, "aquapi:".$command."\n");
+		while (!feof($fp)) {
+			$ret .= fgets($fp, 128);
+			//echo strpos($ret,"koniec");
+		}
+		fclose($fp);
+	}
+	return $ret;
+}
+
 ?>
