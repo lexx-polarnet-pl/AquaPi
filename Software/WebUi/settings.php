@@ -176,14 +176,6 @@ foreach($icons as $icon)
 }
 $icons	= $result;
 
-//new dBug($result);
-//if($CONFIG['plugins']['relayboard']==1)
-//{
-//	include(MODULES_DIR . "relayboard.php");
-//	$smarty->assign('relayboard_enable', 1);
-//}
-
-
 if(is_dir(ONEWIRE_DIR))
 {
     $folder = dir(ONEWIRE_DIR);
@@ -211,12 +203,12 @@ else
 	}
 }
 //new dBug($interfaces);
-$smarty->assign('new_interface_id', $db->GetOne("select max(interface_id)+1 from interfaces"));
-$smarty->assign('devices', $devices);
-$smarty->assign('icons', $icons);
-$smarty->assign('interfaces', $interfaces);
-$smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
-$smarty->assign('title', 'Ustawienia');
+$smarty->assign('new_interface_id',	$db->GetOne("select max(interface_id)+1 from interfaces"));
+$smarty->assign('devices', 		$devices);
+$smarty->assign('icons', 		$icons);
+$smarty->assign('interfaces', 		$interfaces);
+$smarty->assign('simplify_graphs', 	$CONFIG['simplify_graphs']);
+$smarty->assign('title', 		'Ustawienia');
 $smarty->display('settings.tpl');
 ?>
 
