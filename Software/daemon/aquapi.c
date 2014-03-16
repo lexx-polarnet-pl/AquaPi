@@ -90,7 +90,7 @@ void ReadConf() {
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = 	-1;
-	mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type,interface_corr FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
+	mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -99,6 +99,11 @@ void ReadConf() {
 		memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
 		interfaces[interfaces_count].type = atof(row[3]);
 		interfaces[interfaces_count].correction = atof(row[4]);
+		if (row[5] != NULL) {
+			interfaces[interfaces_count].conf = atof(row[5]);
+		} else {
+			interfaces[interfaces_count].conf = 0;
+		}
 	}	
 	mysql_free_result(result);	
 	
@@ -276,7 +281,11 @@ int main() {
 				if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
 					// konieczna jest zmiana stanu wyjścia
 					interfaces[x].state = interfaces[x].new_state;
-					ChangePortState(interfaces[x].address,interfaces[x].state);
+					if (interfaces[x].conf == 0) {
+						ChangePortState(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortState(interfaces[x].address,1-interfaces[x].state);
+					}
 					if (interfaces[x].state == 1) {
 						sprintf(buff,"Załączam %s",interfaces[x].name);
 					} else {
@@ -289,10 +298,10 @@ int main() {
 			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {
 				Log("========== Zrzut interfaceów ==========",E_DEV);
-				Log("|Tp|St|Wartos|Nazwa",E_DEV);
+				Log("|Tp|St|Co|Wartos|Nazwa",E_DEV);
 				Log("----------------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%2i|%2i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].measured_value,interfaces[x].name);
+					sprintf(buff,"|%2i|%2i|%2i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].measured_value,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("========== Zrzut timerów ==========",E_DEV);				

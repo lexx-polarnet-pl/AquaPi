@@ -70,6 +70,7 @@ struct _interfaces {
 	double measured_value;
 	int override_value;
 	int override_expire;
+	int conf;
 } interfaces[100];
 
 int interfaces_count;

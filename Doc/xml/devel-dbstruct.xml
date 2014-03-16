@@ -154,7 +154,7 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Ikonka przypisana do urządzenia</entry>
 					</row>		
 					<row>
 						<entry>interface_conf</entry>
@@ -163,7 +163,12 @@
 						<entry></entry>
 						<entry></entry>
 						<entry></entry>
-						<entry></entry>
+						<entry>Negowanie sygnału wyjściowego. Możliwe ustawienia
+							<itemizedlist>
+							<listitem><para>0 - standardowe działanie</para></listitem>
+							<listitem><para>1 - zanegowanie wyjścia. Dla tego ustawienia "wyłączony" w AquaPi będzie oznaczało "załączony" w rzeczywistości</para></listitem>
+							</itemizedlist>							
+						</entry>
 					</row>		
 					<row>
 						<entry>interface_disabled</entry>
