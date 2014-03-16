@@ -9,7 +9,7 @@
 				onmouseout="return nd();">
 	    </td>
 	    <td>
-		{if $CONFIG.daemon.location == 'local'}
+		<!--if $CONFIG.daemon.location == 'local'-->
 			<select name="sensors[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]" {if $sensor.interface_disabled eq 1}style="color:grey"{/if}
 				onmouseover="return overlib('Wybierz czujnik.');"
 				onmouseout="return nd();">
@@ -18,12 +18,12 @@
 				<option {if $sensor_address eq $sensor.interface_addressshort}selected="selected"{/if}>{$sensor_address}</option>
 			    {/foreach}
 			</select>
-		{else}
-			<input class="medium" {if $sensor.interface_disabled eq 1}style="color:grey"{/if} type="text" name="sensors[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
-				value="{$sensor.interface_addressshort}"
-				onmouseover="return overlib('Wprowadź ręcznie adres czujnika');"
-				onmouseout="return nd();">
-		{/if}
+		<!--else-->
+		<!--	<input class="medium" {if $sensor.interface_disabled eq 1}style="color:grey"{/if} type="text" name="sensors[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"-->
+		<!--		value="{$sensor.interface_addressshort}"-->
+		<!--		onmouseover="return overlib('Wprowadź ręcznie adres czujnika');"-->
+		<!--		onmouseout="return nd();">-->
+		<!--/if-->
 	        korekta:&nbsp;<input class="temp_select" {if $sensor.interface_disabled eq 1}style="color:grey"{/if} type="text" id="sensors[{$sensor.interface_id}][sensor_corr]" name="sensors[{$sensor.interface_id}][sensor_corr]" value ="{$sensor.interface_corr}"
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
 				onmouseout="return nd();">
@@ -52,22 +52,22 @@
 				onmouseout="return nd();">
 	    </td>
 	    <td>
-		{if $CONFIG.daemon.location == 'local'}
+		<!--if $CONFIG.daemon.location == 'local'-->
 		<select name="sensors[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"
 				onmouseover="return overlib('Wybierz czujnik.');"
 				onmouseout="return nd();">
 			<option value="">Brak</option>
-			{foreach from=$sensors item="sensor_address"}
+			{foreach from=$sensors_fs item="sensor_address"}
 			<option>{$sensor_address}</option>
 			{/foreach}
 		</select>
-		{else}
-			<input class="medium" type="text" name="sensors[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"
-				value=""
-				onmouseover="return overlib('Wprowadź ręcznie adres nowego czujnika');"
-				onmouseout="return nd();">
-
-		{/if}
+		<!--else-->
+		<!--	<input class="medium" type="text" name="sensors[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"-->
+		<!--		value=""-->
+		<!--		onmouseover="return overlib('Wprowadź ręcznie adres nowego czujnika');"-->
+		<!--		onmouseout="return nd();">-->
+		<!---->
+		<!--/if-->
 	        korekta:&nbsp;<input class="temp_select" type="text" id="sensors[{$new_interface_id}][sensor_corr]"
 				name="sensors[{$new_interface_id}][sensor_corr]" value ="0"
 				onmouseover="return overlib('O ile skorygować odczytaną temperaturę. Przykładowe wartości:<br>0.4, -1.3, 4, -0.1 ...');"
