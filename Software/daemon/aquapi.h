@@ -98,8 +98,8 @@ typedef struct
 	int temp_freq;
 	int devel_freq;
 	int reload_freq;
-	int port;
-	char* interface;
+	int bind_port;
+	char* bind_address;
 	double dummy_temp_sensor_val;
 } configuration;
 
