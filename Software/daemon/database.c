@@ -17,29 +17,39 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
  * USA.
  *
- * $Id$
  */
  
 #include <my_global.h>
 #include <mysql.h>
 
 MYSQL *conn;
+pthread_mutex_t mysql_mutex=PTHREAD_MUTEX_INITIALIZER;
 
 int DB_Query(char *query);
 
 void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database) {
+	char buff[200];
 	conn = mysql_init(NULL);
-
+	sprintf(buff,"Wersja kilenta MySQL: %s", mysql_get_client_info());
+	Log(buff,E_DEV);
+	
 	if (conn == NULL) {
-		fprintf(stderr,"Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		sprintf(buff,"Błąd SQL %u: %s", mysql_errno(conn), mysql_error(conn));
+		Log(buff,E_SQL);
+		termination_handler(1);
 		exit(1);
 	}
-
 	if (mysql_real_connect(conn, db_host, db_user, db_password, db_database, 0, NULL, 0) == NULL) {
-		fprintf(stderr,"Error %u: %s\n", mysql_errno(conn), mysql_error(conn));
+		sprintf(buff,"Błąd SQL %u: %s", mysql_errno(conn), mysql_error(conn));
+		Log(buff,E_SQL);
+		termination_handler(1);
 		exit(1);
 	}
 	DB_Query("SET NAMES utf8");
+}
+
+void DB_Init() {
+	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
 }
 
 void DB_Close() {
@@ -47,32 +57,38 @@ void DB_Close() {
 }
 
 int DB_Query(char *query) {
-	return mysql_query(conn, query);
+	char buff[200];
+	int res;
+	pthread_mutex_lock(&mysql_mutex);
+	res = mysql_query(conn, query);
+	pthread_mutex_unlock(&mysql_mutex);
+	if (res) {
+		sprintf(buff,"Błąd zapytania \"%s\": %s",query,mysql_error(conn));
+		Log(buff,E_SQL);
+		//termination_handler(1);
+		//exit(1);
+	}
+	return(res);
 }
-
 
 int DB_GetOne(char *query, char *value, int res_size) {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	char buff[200];
-	if (DB_Query(query)) {
-		sprintf(buff,"Błąd SQL: %s",mysql_error(conn));
-		Log(buff,E_SQL);
-		exit(1);
+	//DB_Init();
+	DB_Query(query);
+	result = mysql_store_result(conn);
+	row = mysql_fetch_row(result);
+	if (row != NULL) {
+		memcpy (value, row[0], res_size);
+		mysql_free_result(result);
+		return(0);
 	} else {
-		result = mysql_store_result(conn);
-		row = mysql_fetch_row(result);
-		if (row != NULL) {
-			//memcpy (value, row[0], sizeof(**value));
-			memcpy (value, row[0], res_size);
-			mysql_free_result(result);
-			return(0);
-		} else {
-			sprintf(buff,"Zapytanie SQL: %s zwróciło pusty wynik",query);
-			Log(buff,E_SQL);
-			return(1);
-		}
+		sprintf(buff,"Zapytanie SQL: %s zwróciło pusty wynik",query);
+		Log(buff,E_SQL);
+		return(1);
 	}
+	//DB_Close();
 }
 
 void DB_GetSetting(char *key, char *value) {

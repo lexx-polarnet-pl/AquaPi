@@ -2,10 +2,10 @@
 DEBUG	= -O3
 CC	= gcc
 INCLUDE	= -I/usr/local/include -I/usr/include/mysql -I./RelayBoard
-CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
+CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe -lpthread
 
-LDFLAGS	= -L/usr/local/lib 
-LIBS    = -lwiringPi -lmysqlclient
+LDFLAGS	= -L/usr/local/lib -lpthread
+LIBS    = -lwiringPi -lmysqlclient_r
 
 # Should not alter anything below this line
 ###############################################################################

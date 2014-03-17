@@ -36,7 +36,7 @@
 void termination_handler(int signum)	{
 	if( signum ) {
 		syslog(LOG_ERR, "Daemon exited abnormally.");
-		Log("Praca daemona została przerwana",E_CRIT);
+		//Log("Praca daemona została przerwana",E_CRIT);
 	} else {
 		syslog(LOG_INFO, "Daemon exited.");
 		Log("Daemon zakończył pracę",E_WARN);
@@ -58,22 +58,27 @@ void Log(char *msg, int lev) {
 		strftime (timef,80,"%H:%M:%S",timeinfo);
 		printf("\x1b[33m[%s] ",timef);	// timestamp na żółto
 		if (lev==E_DEV) {
-				printf("\x1b[34mDEV  ");
+				printf("\x1b[34mDEVEL ");
 		} else if (lev==E_INFO) {
-				printf("\x1b[32mINFO ");
+				printf("\x1b[32mINFO  ");
 		} else if (lev==E_WARN) {
-				printf("\x1b[33mWARN ");
+				printf("\x1b[33mWARN  ");
 		} else if (lev==E_CRIT) {
-				printf("\x1b[31mCRIT ");
+				printf("\x1b[31mCRIT  ");
 		} else if (lev==E_SQL) {
-				printf("\x1b[31mSQL  ");
+				printf("\x1b[31mSQLER ");
 		}
 		printf("\x1b[39m%s\n",msg);
 	}
 	
 	if (lev >= 0 && lev != E_SQL) {
-		sprintf(query,"INSERT INTO logs (log_date,log_level,log_value) VALUES (%ld,%i,'%s');",rawtime,lev,msg);
+		sprintf(query,"INSERT INTO logs (log_date,log_level,log_value) VALUES (%ld,%i,'%s')",rawtime,lev,msg);
 		DB_Query(query);
+	}
+	
+	// Tego rodzaju błędy wrzucaj w sysloga
+	if ((lev == E_SQL) || (lev == E_CRIT) || (lev == E_WARN)) {
+		syslog(LOG_ERR, msg);
 	}
 }
 
@@ -86,7 +91,7 @@ void StoreTempStat() {
 	for(x = 0; x <= interfaces_count; x++) {
 		if (interfaces[x].type == DEV_INPUT) {
 			sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %.2f)",rawtime, interfaces[x].id, interfaces[x].measured_value);
-			DB_Query(buff);							
+			DB_Query(buff);
 		}
 	}
 
@@ -94,36 +99,31 @@ void StoreTempStat() {
 
 void ReadConf() {
 	MYSQL_RES *result;
-	MYSQL_ROW row;	
-	char buff[200];	
+	MYSQL_ROW row;
 	int x;
-	#warning Quick & Dirty fix. Trzeba ustalić czemu tak naprawdę połączenie jest zrywane
-	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
+	//#warning Quick & Dirty fix. Trzeba ustalić czemu tak naprawdę połączenie jest zrywane
+	//DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
 	Log("Odczyt konfiguracji",E_DEV);
 	
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
-	interfaces_count = 	-1;
-	if (mysql_query(conn, "SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0")) {
-		sprintf(buff,"Błąd zapytania: %s",mysql_error(conn));
-		Log(buff,E_SQL);
-	} else {
-		result = mysql_store_result(conn);
-		while ((row = mysql_fetch_row(result))) {
-			interfaces_count++;
-			interfaces[interfaces_count].id = atof(row[0]);
-			memcpy(interfaces[interfaces_count].address,row[1],sizeof(interfaces[interfaces_count].address));
-			memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
-			interfaces[interfaces_count].type = atof(row[3]);
-			interfaces[interfaces_count].correction = atof(row[4]);
-			if (row[5] != NULL) {
-				interfaces[interfaces_count].conf = atof(row[5]);
-			} else {
-				interfaces[interfaces_count].conf = 0;
-			}
-		}	
-		mysql_free_result(result);	
-	}
+	interfaces_count = -1;
+	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
+	result = mysql_store_result(conn);
+	while ((row = mysql_fetch_row(result))) {
+		interfaces_count++;
+		interfaces[interfaces_count].id = atof(row[0]);
+		memcpy(interfaces[interfaces_count].address,row[1],sizeof(interfaces[interfaces_count].address));
+		memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
+		interfaces[interfaces_count].type = atof(row[3]);
+		interfaces[interfaces_count].correction = atof(row[4]);
+		if (row[5] != NULL) {
+			interfaces[interfaces_count].conf = atof(row[5]);
+		} else {
+			interfaces[interfaces_count].conf = 0;
+		}
+	}	
+	mysql_free_result(result);
 	
 	// domyślnie wyjścia na stan nieustalony
 	for(x = 0; x <= interfaces_count; x++) {
@@ -141,33 +141,29 @@ void ReadConf() {
 	// Wczytanie timerów
 	Log("Wczytanie timerów",E_DEV);
 	timers_count = 	-1;
-	if (mysql_query(conn, "SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif,timer_days FROM timers ORDER BY timer_timeif ASC")) {
-		sprintf(buff,"Błąd zapytania: %s",mysql_error(conn));
-		Log(buff,E_SQL);
-	} else {	
-		result = mysql_store_result(conn);
-		while ((row = mysql_fetch_row(result))) {
-			timers_count++;
-			timers[timers_count].type = atof(row[0]);
-			if (row[1] != NULL) {
-				timers[timers_count].timeif = atof(row[1]);
-			}
-			timers[timers_count].action = atof(row[2]);
-			timers[timers_count].interfaceidthen = atof(row[3]);
-			timers[timers_count].direction = atof(row[4]);
-			if (row[5] != NULL) {
-				timers[timers_count].value = atof(row[5]);
-			}
-			if (row[6] != NULL) {
-				timers[timers_count].interfaceidif = atof(row[6]);
-			}		
-			memcpy(timers[timers_count].days,row[7],sizeof(timers[timers_count].days));
-		}	
-		mysql_free_result(result);	
-	}
+	DB_Query("SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif,timer_days FROM timers ORDER BY timer_timeif ASC");
+	result = mysql_store_result(conn);
+	while ((row = mysql_fetch_row(result))) {
+		timers_count++;
+		timers[timers_count].type = atof(row[0]);
+		if (row[1] != NULL) {
+			timers[timers_count].timeif = atof(row[1]);
+		}
+		timers[timers_count].action = atof(row[2]);
+		timers[timers_count].interfaceidthen = atof(row[3]);
+		timers[timers_count].direction = atof(row[4]);
+		if (row[5] != NULL) {
+			timers[timers_count].value = atof(row[5]);
+		}
+		if (row[6] != NULL) {
+			timers[timers_count].interfaceidif = atof(row[6]);
+		}		
+		memcpy(timers[timers_count].days,row[7],sizeof(timers[timers_count].days));
+	}	
+	mysql_free_result(result);	
 	
 	Log("Konfiguracja odczytana",E_DEV);
-	
+
 	SetupPorts();
 }
 
@@ -185,29 +181,29 @@ int main() {
 	// defaults
 	config.dontfork 	= 0;
 	config.dummy_temp_sensor_val = -100;
-	config.temp_freq 	= 10; // co ile sekund kontrolować temp
-	config.devel_freq 	= 30; // co ile sekund wypluwać informacje devel
-	config.stat_freq 	= 600; // co ile sekund zapisywac co się dzieje w bazie
-	config.reload_freq  	= -1; // co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
+	config.temp_freq 	= 10;		// co ile sekund kontrolować temp
+	config.devel_freq 	= 30;		// co ile sekund wypluwać informacje devel
+	config.stat_freq 	= 600;		// co ile sekund zapisywac co się dzieje w bazie
+	config.reload_freq  	= -1;		// co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
 	config.bind_address	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
-	config.bind_port	=  6580;	// domyślny port na którym demon ma nasłuchiwać
+	config.bind_port	= 6580;		// domyślny port na którym demon ma nasłuchiwać
 
-    if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
-        printf("Can't load '/etc/aquapi.ini'\n");
-        exit(1);
-    }
+	if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
+		printf("Can't load '/etc/aquapi.ini'\n");
+		exit(1);
+	}
 	
 	openlog(APPNAME, 0, LOG_INFO | LOG_CRIT | LOG_ERR);
 	syslog(LOG_INFO, "Daemon started.");
 
-	DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
-	
+	DB_Init();
+
 	Log("Daemon uruchomiony",E_WARN);
 	sprintf(buff,"Kompilacja daemona: %s %s",build_date,build_time);
 	Log(buff,E_DEV);
 
 	ReadConf();
-	
+
 	if ( !config.dontfork ) {
 		fval = fork();
 		switch(fval) {
@@ -228,7 +224,7 @@ int main() {
 	}
 
 	InitTCP();
-	
+
 	// termination signals handling
 	signal(SIGINT, termination_handler);
 	signal(SIGTERM, termination_handler);
@@ -348,7 +344,7 @@ int main() {
 		usleep(100000);
 		//sleep(1);
 	} 
-	DB_Close();
+	//DB_Close();
 	return 0;
 }
 
