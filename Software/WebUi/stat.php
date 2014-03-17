@@ -19,7 +19,9 @@
  * USA.
  *
  */
- 
+
+// Requires PHP 5.4+
+
 include("init.php");
 
 $smarty->assign('title', 'Statystyki');
@@ -29,33 +31,29 @@ if(array_key_exists('limit', $_GET))
     switch ($_GET['limit'])
     {
 	case 'year':
-		    $limit = time() - (365 * 24 * 60 * 60);
-	    break;
-	case 'week':
-		    $limit = time() - (7 * 24 * 60 * 60);
+	    $limit = time() - (365 * 24 * 60 * 60);
 	    break;
 	case 'month':
-		    $limit = time() - (31 * 24 * 60 * 60);
+	    $limit = time() - (31 * 24 * 60 * 60);
+	    break;
+	case 'week':
+	    $limit = time() - (7 * 24 * 60 * 60);
 	    break;
 	case 'no_limit':
-		    $limit = 0;
+	    $limit = 0;
 	    break;
 	default:
-		    $limit = time() - (24 * 60 * 60);
+	    $limit = time() - (1 * 24 * 60 * 60); //day
     }
 else
     $limit = time() - (24 * 60 * 60);
 
 //aktywne interfejsy    
-//$wire	= $db->GetOne('SELECT GROUP_CONCAT(interface_id)
-//		      FROM interfaces i, devices d
-//		      WHERE interface_disabled =0 AND interface_deleted =0 AND i.interface_deviceid = d.device_id AND device_id >0 AND device_deleted =0 AND device_name =  "1wire"
-//		      ORDER BY interface_id');
-$sensors	= GetInterfaces();
-$sensors	= $sensors['1wire'];
-//$wire	= '1';
-//new dBug($stat,"",true);
-//new dBug($sensors);
+foreach(GetInterfaces()['1wire'] as $sensor)
+{
+    if($sensor['interface_draw']==1)
+	$sensors[]=$sensor;
+}
 
 
 $smarty->assign('sensors', $sensors);
