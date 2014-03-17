@@ -149,9 +149,9 @@ void* TCPConnections (void* unused) {
 	// gniazdo ...
 	int sh = socket(PF_INET, SOCK_STREAM, 0);
 	if (sh<0) {
-	sprintf(buff,"Błąd TCPIP: %s",strerror(errno));
-	Log(buff,E_CRIT);
-	exit(EXIT_FAILURE);
+		sprintf(buff,"Błąd TCPIP: %s",strerror(errno));
+		Log(buff,E_CRIT);
+		exit(EXIT_FAILURE);
 	}
 
 	// utworzenie struktury opisującej adres
