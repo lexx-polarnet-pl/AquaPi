@@ -20,6 +20,11 @@
 					    onmouseout="return nd();">
 				
 			</td>
+			<td><a href="?action=delete&interface_id={$dummy.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten czujnik?');"
+				onmouseover="return overlib('Usunięcie czujnika');"
+						onmouseout="return nd();">
+				<img align="right" src="img/off.png"></a>
+			</td>
 		</tr>
 		{/foreach}
 		<tr>
@@ -34,7 +39,7 @@
 			<td>
 				&nbsp;Wartość:
 			</td>
-			<td>
+			<td colspan="2">
 				<input type="hidden" name="dummies[{$new_interface_id}][dummy_address]" value="{$dummy.interface_addressshortnext}">
 				<input class="short" name="dummies[{$new_interface_id}][dummy_conf]" value=""
 					    onmouseover="return overlib('Podaj wartość którą będzie raportował czujnik. Minimum 2 znaki.');"
