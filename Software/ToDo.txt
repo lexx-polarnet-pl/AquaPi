@@ -4,3 +4,4 @@ Rzeczy do zrobienia/poprawienia w daemonie
 - komunikaty głosowe
 - alarmowanie o przekroczeniu stanów przy sensorach
 - obsługa PWM w UI i w demonie
+- dwustronna komunikacja z RelayBoard i GPIO (czyli też odczyt stanów, nie tylko zapis)
