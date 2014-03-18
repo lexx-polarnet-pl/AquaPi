@@ -78,6 +78,9 @@
 				{foreach from=$interfaces.1wire item=interface}
 				<option value="{$interface.interface_id}">{$interface.interface_name} ({$interface.interface_address})</option>
 				{/foreach}
+				{foreach from=$interfaces.system item=interface}
+				<option value="{$interface.interface_id}">{$interface.interface_name} ({$interface.interface_address})</option>
+				{/foreach}
 			</select>
 			wskaże
 			<select class="short" name="direction" id="direction">
