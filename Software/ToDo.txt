@@ -7,3 +7,6 @@ Rzeczy do zrobienia/poprawienia w daemonie
 - dwustronna komunikacja z RelayBoard i GPIO (czyli też odczyt stanów, nie tylko zapis)
 - dodanie do demona komendy IPC zwracającej wersję jądra, load, etc.
 - dodanie obsługi sensora rpi:system:cputemp zwracającej temperaturę procesora
+- obsługa nocnej korekty temperatury dla urządzeń z interface_nightcorr = 1
+- zapis stanu urządzeń w bazie (statystyka)
+- dla dummy sensorów brać wartość z bazy, nie z INI
