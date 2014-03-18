@@ -162,8 +162,6 @@ CREATE TABLE IF NOT EXISTS `timers` (
 --
 DROP TABLE IF EXISTS `stats_view`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`yaro`@`%` SQL SECURITY DEFINER VIEW `stats_view` AS select `stats`.`stat_id` AS `stat_id`,`stats`.`stat_date` AS `stat_date`,`stats`.`stat_interfaceid` AS `stat_interfaceid`,`stats`.`stat_value` AS `stat_value`,from_unixtime(`stats`.`stat_date`) AS `stat_data` from `stats`;
-
 --
 -- Ograniczenia dla zrzutów tabel
 --
