@@ -20,8 +20,6 @@
  *
  */
 
-// Requires PHP 5.4+
-
 include("init.php");
 
 $smarty->assign('title', 'Statystyki');
@@ -49,12 +47,13 @@ else
     $limit = time() - (24 * 60 * 60);
 
 //aktywne interfejsy    
-foreach(GetInterfaces()['1wire'] as $sensor)
-{
-    if($sensor['interface_draw']==1)
-	$sensors[]=$sensor;
-}
-
+$draw	= array('1wire', 'system');
+foreach(GetInterfaces() as $type => $sensors_tmp)
+    foreach($sensors_tmp as $sensor)
+    {
+	if (in_array($type, $draw) and $sensor['interface_draw']==1)
+	    $sensors[]=$sensor;
+    }
 
 $smarty->assign('sensors', $sensors);
 $smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
