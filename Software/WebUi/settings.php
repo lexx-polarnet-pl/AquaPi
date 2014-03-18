@@ -74,10 +74,6 @@ if($_POST)
 				$sensor['sensor_conf']=0;
 			else
 				$sensor_master_set=1;
-//			{
-//				$sensor['sensor_master']=1;
-
-//			}
 			
 			$db->Execute('UPDATE interfaces
 					SET interface_name=?, interface_address=?, interface_corr=?, interface_nightcorr=?, interface_draw=?, interface_conf=?, interface_disabled=?
@@ -139,6 +135,29 @@ if($_POST)
 				     VALUES (?, ?, ?, ?, ?)',
 				     array($interface_id, GetDeviceId('dummy'), 'dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
 		}
+	}
+	
+	//SYSTEM
+	foreach($_POST['system'] as $interface_id => $sensor)
+	{
+		//jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
+		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
+		{
+			$db->Execute('UPDATE interfaces
+					SET interface_name=?, interface_address=?, interface_corr=?, interface_nightcorr=?, interface_draw=?, interface_conf=?, interface_disabled=?
+					WHERE interface_id=?', 
+					array($sensor['sensor_name'], $sensor['sensor_address'], 0, 0, $sensor['sensor_draw'], 0, $sensor['sensor_disabled'], $interface_id ));
+		}
+		//jesli nie istnieje i jest podana nazwa dodaj czujnik
+		elseif(strlen($sensor['sensor_name'])>1) 
+		{
+                        if(!$sensor['sensor_draw'])
+                            $sensor['sensor_draw']=0;
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw)
+				     VALUES (?, ?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('system'), $sensor['sensor_address'], $sensor['sensor_name'], 0, $sensor['sensor_draw']));
+		}
+		
 	}
 	ReloadDaemonConfig();
 	$SESSION->redirect("settings.php"); //przekierowanie w celu odswierzenia zmiennej $CONFIG inicjalizowanej przed wykonaniem update
