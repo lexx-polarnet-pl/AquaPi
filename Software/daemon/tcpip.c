@@ -1,4 +1,4 @@
-﻿/*
+/*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012-2014 AquaPi Developers
@@ -26,21 +26,38 @@
 #include <inttypes.h>
 #include <arpa/inet.h>
 #include <dirent.h>
+#include <sys/utsname.h>
+#include <sys/sysinfo.h>
 
 #define BUF_SIZE 255
 #define QUERY_SIZE 1
 
 char buf[BUF_SIZE];
 FILE * net;
-	
+
 char *XMLHead = "<?xml version=\"1.0\"?>\n"
 				"<aquapi>\n";
 char *XMLFoot = "</aquapi>\n";
+
+float Get_Numeric_From_File(char *sensor_id) {
+    FILE *fp;
+	char buff[50];
+
+	fp = fopen (sensor_id, "r");
+	if( fp == NULL ) {
+		return -100;
+	} else {
+		fgets(buff, 50, fp);
+		fclose (fp);	
+		return (float)atoi(buff)/1000;
+	}
+}
 
 void TCPCommandReload() {
 	Log("Otrzymałem polecenie odświerzenia konfiguracji",E_INFO);
 	ReadConf();
 }
+
 
 void TCPCommandAbout() {
 	Log("Otrzymałem polecenie about",E_DEV);
@@ -58,15 +75,66 @@ void TCPCommandAbout() {
 	fputs(buff,net);
 	sprintf(buff,"aquapi>about>end of reply.\n");
 	fputs(buff,net);
-	fflush(net);	
+	fflush(net);
+}
+
+void TCPCommandSysinfo() {
+	struct utsname  uts;
+	struct sysinfo  sys;
+	time_t rawtime;
+
+	uname(&uts);
+	sysinfo(&sys);
+	time(&rawtime);
+
+	Log("Otrzymałem polecenie sysinfo",E_DEV);
+	char buff[400];
+
+	fputs(XMLHead,net);
+	fputs("<reply type=\"sysinfo\"/>\n",net);
+	fputs("<uname>\n",net);
+	sprintf(buff,"<sysname>%s</sysname>\n",uts.sysname);
+	fputs(buff,net);
+	sprintf(buff,"<nodename>%s</nodename>\n",uts.nodename);
+	fputs(buff,net);
+	sprintf(buff,"<release>%s</release>\n",uts.release);
+	fputs(buff,net);
+	sprintf(buff,"<version>%s</version>\n",uts.version);
+	fputs(buff,net);
+	fputs("</uname>\n",net);
+
+	fputs("<sysinfo>\n",net);
+	sprintf(buff,"<load><1m>%f</1m><5m>%f</5m><15m>%f</15m></load>\n",sys.loads[0]/65536.0,sys.loads[1]/65536.0,sys.loads[2]/65536.0);
+	fputs(buff,net);
+	sprintf(buff,"<totalram>%llu</totalram>\n",sys.totalram *(unsigned long long)sys.mem_unit);
+	fputs(buff,net);
+	sprintf(buff,"<freeram>%llu</freeram>\n",sys.freeram *(unsigned long long)sys.mem_unit);
+	fputs(buff,net);
+	sprintf(buff,"<uptime>%lu</uptime>\n",sys.uptime);
+	fputs(buff,net);
+	sprintf(buff,"<procs>%d</procs>\n",sys.procs);
+	fputs(buff,net);	
+	fputs("</sysinfo>\n",net);
+
+	fputs("<system>\n",net);
+	sprintf(buff,"<rawtime>%ld</rawtime>\n", rawtime );
+	fputs(buff,net);
+	sprintf(buff,"<cpufreq>%f</cpufreq>\n",Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"));	
+	fputs(buff,net);
+	sprintf(buff,"<cputemp>%f</cputemp>\n",Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp"));
+	fputs(buff,net);
+	fputs("</system>\n",net);
+
+	fputs(XMLFoot,net);
+	fflush(net);
 }
 
 void TCPCommandStatus() {
 	Log("Otrzymałem polecenie status",E_DEV);
 	char buff[400];
 	int x;
-	
-	fputs(XMLHead,net);	
+
+	fputs(XMLHead,net);
 	sprintf(buff,"<reply type=\"status\"/>\n");
 	fputs(buff,net);
 	// przedstaw się ładnie
@@ -85,21 +153,21 @@ void TCPCommandStatus() {
 	for(x = 0; x <= interfaces_count; x++) {
 		sprintf(buff,"<device id=\"%i\"><address>%s</address><name>%s</name><type>%i</type><state>%i</state><id>%i</id><measured_value>%f</measured_value></device>\n",interfaces[x].id,interfaces[x].address,interfaces[x].name,interfaces[x].type,interfaces[x].state,interfaces[x].id,interfaces[x].measured_value);
 		fputs(buff,net);
-	}	
-	
+	}
+
 	sprintf(buff,"</devices>\n");
 	fputs(buff,net);
 	fputs(XMLFoot,net);
-	fflush(net);		
+	fflush(net);
 }
 
 void TCPCommand1wList() {
 	Log("Otrzymałem polecenie 1wlist",E_DEV);
 	char buff[400];
-    DIR * d;
-    char * dir_name = "/sys/bus/w1/devices/";
-	
-	fputs(XMLHead,net);	
+	DIR * d;
+	char * dir_name = "/sys/bus/w1/devices/";
+
+	fputs(XMLHead,net);
 	sprintf(buff,"<reply type=\"1wlist\"/>\n");
 	fputs(buff,net);
 	// przedstaw się ładnie
@@ -113,27 +181,27 @@ void TCPCommand1wList() {
 	fputs(buff,net);
 	// opowiedz co tam widać w 1-wire
 
-    d = opendir (dir_name);
-    if (! d) {
+	d = opendir (dir_name);
+	if (! d) {
 		sprintf(buff,"<reply status=\"error\"/>\n");
-		fputs(buff,net);		
+		fputs(buff,net);
 		sprintf(buff,"<error id=%i>Nie umiem otworzyć katalogu '%s': %s</error>\n",errno,dir_name, strerror (errno));
-		fputs(buff,net);	
-    } else {
+		fputs(buff,net);
+	} else {
 		sprintf(buff,"<list>\n");
 		fputs(buff,net);
-		
+
 		while (1) {
 			struct dirent * entry;
-			
+
 			entry = readdir (d);
 			if (! entry) {
 				break;
 			}
-			if (!strncmp("28-",entry->d_name,3)) { 
+			if (!strncmp("28-",entry->d_name,3)) {
 				// pokazujemy to co zaczyna się od 28-
 				sprintf(buff,"\t<item>%s</item>\n",entry->d_name);
-				fputs(buff,net);			
+				fputs(buff,net);
 			}
 		}
 		closedir(d);
@@ -141,7 +209,7 @@ void TCPCommand1wList() {
 		fputs(buff,net);
 	}
 	fputs(XMLFoot,net);
-	fflush(net);		
+	fflush(net);
 }
 
 void* TCPConnections (void* unused) {
@@ -158,7 +226,6 @@ void* TCPConnections (void* unused) {
 	struct sockaddr_in serwer;
 	serwer.sin_family=AF_INET;
 	serwer.sin_port=htons(config.bind_port);
-	// serwer.sin_addr.s_addr=INADDR_ANY; // INADDR_ANY oznacza że nasłuchujemy na każdym adresie IP danego hosta
 	serwer.sin_addr.s_addr=inet_addr(config.bind_address);
 
 	// przypisanie adresu ...
@@ -170,7 +237,7 @@ void* TCPConnections (void* unused) {
 
 	sprintf(buff,"Zaczynam nasłuchiwać na %s:%i",config.bind_address,config.bind_port);
 	Log(buff,E_INFO);
-		
+
 	while(1) {
 		// otwarcie portu do nasluchiwania
 		if (listen(sh, QUERY_SIZE) < 0) {
@@ -178,7 +245,6 @@ void* TCPConnections (void* unused) {
 			Log(buff,E_CRIT);
 			exit(EXIT_FAILURE);
 		}
-
 
 		// odebranie połączenia
 		struct sockaddr_in from;
@@ -190,7 +256,7 @@ void* TCPConnections (void* unused) {
 			if (strncmp("aquapi:reload",buf,13)==0) {
 				TCPCommandReload();
 				shutdown(sh2,SHUT_RDWR);
-			} 
+			}
 			if (strncmp("aquapi:about",buf,12)==0) {
 				TCPCommandAbout();
 				shutdown(sh2,SHUT_RDWR);
@@ -198,11 +264,15 @@ void* TCPConnections (void* unused) {
 			if (strncmp("aquapi:status",buf,13)==0) {
 				TCPCommandStatus();
 				shutdown(sh2,SHUT_RDWR);
-			}	
+			}
 			if (strncmp("aquapi:1wlist",buf,13)==0) {
 				TCPCommand1wList();
 				shutdown(sh2,SHUT_RDWR);
-			}	
+			}
+			if (strncmp("aquapi:sysinfo",buf,14)==0) {
+				TCPCommandSysinfo();
+				shutdown(sh2,SHUT_RDWR);
+			}			
 		}
 		fclose(net);
 		close(sh2);
@@ -213,7 +283,7 @@ void* TCPConnections (void* unused) {
 
 int InitTCP () {
 	pthread_t id; // ID naszego wątku
-    // Tworzymy nowy wątek, nie przekazujemy atrybutów ani agrumentów funkcji.
-    pthread_create (&id, NULL, &TCPConnections, NULL);
-    return 0;
-} 
+	// Tworzymy nowy wątek, nie przekazujemy atrybutów ani agrumentów funkcji.
+	pthread_create (&id, NULL, &TCPConnections, NULL);
+	return 0;
+}
