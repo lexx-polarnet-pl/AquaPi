@@ -11,6 +11,7 @@
   #dashboard_pwm {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_dummy {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #dashboard_relayboard {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
+  #dashboard_system {margin: 5px; padding: 5px; width:48%; float:left; background-color: #DDDDDD; -moz-border-radius: 15px; border-radius: 15px;}
   #menu { width: 100%; overflow:hidden; background-color: #CCCCCC;}
   #icon 		{ float: left; width: 100px; text-align: center; padding: 3px;}  
   #icon_select 	{ float: left; width: 100px; text-align: center; padding: 3px; background-color: #EEEEEE;}    

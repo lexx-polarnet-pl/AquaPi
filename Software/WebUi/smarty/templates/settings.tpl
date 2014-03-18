@@ -65,7 +65,7 @@ $(function() {
 <form action="settings.php" method="post">
 
 <div id="dashboard">
-<h3>Devices:</h3>
+<h3>Urządzenia:</h3>
 	<table>
 	<tr>
 		<td>
@@ -101,6 +101,7 @@ $(function() {
 	</tr>
 	</table>
 	<BR><HR>
+	<h3>Noc:</h3>
 	&nbsp;Rozpoczęcie nocy: <input class="time_select" type="text" name="night_start" id="night_start" value="{if $CONFIG.night_start eq 0}00:00:00{else}{$CONFIG.night_start|date_format:"%H:%M:%S"}{/if}"/>,
 	zakończenie nocy: <input class="time_select" type="text" name="night_stop" id="night_stop" value="{if $CONFIG.night_stop eq 0}00:00:00{else}{$CONFIG.night_stop|date_format:"%H:%M:%S"}{/if}" />.
 	<BR><BR>
@@ -114,6 +115,13 @@ $(function() {
 		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$CONFIG.hysteresis}">
 		<div id="slide_hysteresis" style="margin:10px;"></div>	
 	</div>
+	korekcja dotyczy czujników:<BR>
+	{foreach from=$interfaces.1wire key=key item=sensor}
+		<input type="checkbox" name="sensors[{$sensor.interface_id}][sensor_nightcorr]" {if $sensor.interface_nightcorr eq 1}checked="checked"{/if}
+			value="1"> {$sensor.interface_name}<BR>
+	{/foreach}
+	<hr>
+	<h3>Wykresy:</h3>
 	Uprość wykresy:
 	<input type="checkbox" name="simplify_graphs" value="1" {if $simplify_graphs eq 1}checked="checked"{/if}
 			onmouseover="return overlib('Uproszczone wykresy. Pokazuje tylko zmiany.');"
@@ -137,6 +145,9 @@ $(function() {
 
 <!--Dummy-->
 {include "settings_dummy.tpl"}
+
+<!--System-->
+{include "settings_system.tpl"}
 
 </form>
 

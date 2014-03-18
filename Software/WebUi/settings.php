@@ -80,9 +80,9 @@ if($_POST)
 //			}
 			
 			$db->Execute('UPDATE interfaces
-					SET interface_name=?, interface_address=?, interface_corr=?, interface_draw=?, interface_conf=?, interface_disabled=?
+					SET interface_name=?, interface_address=?, interface_corr=?, interface_nightcorr=?, interface_draw=?, interface_conf=?, interface_disabled=?
 					WHERE interface_id=?', 
-					array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
+					array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_nightcorr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
