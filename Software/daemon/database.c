@@ -30,7 +30,7 @@ int DB_Query(char *query);
 void DB_Open(char *db_host, char *db_user, char *db_password, char *db_database) {
 	char buff[200];
 	conn = mysql_init(NULL);
-	sprintf(buff,"Wersja kilenta MySQL: %s", mysql_get_client_info());
+	sprintf(buff,"Wersja klienta MySQL: %s", mysql_get_client_info());
 	Log(buff,E_DEV);
 	
 	if (conn == NULL) {
