@@ -104,7 +104,7 @@ void TCPCommandSysinfo() {
 	fputs("</uname>\n",net);
 
 	fputs("<sysinfo>\n",net);
-	sprintf(buff,"<load><1m>%f</1m><5m>%f</5m><15m>%f</15m></load>\n",sys.loads[0]/65536.0,sys.loads[1]/65536.0,sys.loads[2]/65536.0);
+	sprintf(buff,"<load><av1m>%f</av1m><av5m>%f</av5m><av15m>%f</av15m></load>\n",sys.loads[0]/65536.0,sys.loads[1]/65536.0,sys.loads[2]/65536.0);
 	fputs(buff,net);
 	sprintf(buff,"<totalram>%llu</totalram>\n",sys.totalram *(unsigned long long)sys.mem_unit);
 	fputs(buff,net);
