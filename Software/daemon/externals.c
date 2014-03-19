@@ -114,6 +114,9 @@ double read_temp(char *sensor_id) {
 	if (strncmp(sensor_id,INPUT_DUMMY_PREFIX,strlen(INPUT_DUMMY_PREFIX))==0) {
 		// dummy sensor
 		return config.dummy_temp_sensor_val;
+	} else if (strncmp(sensor_id,INPUT_SYSTEM_CPUTEMP,strlen(INPUT_SYSTEM_CPUTEMP))==0) {
+		// rpi:system:cputemp sensor
+		return Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp");	
 	} else if (strncmp(sensor_id,INPUT_RPI_1W_PREFIX,strlen(INPUT_RPI_1W_PREFIX))==0) {
 		sensor_id=strrchr(sensor_id,':')+1;		
 		sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);

@@ -32,6 +32,8 @@ const char *PORT_DUMMY_PREFIX = "dummy:";
 //prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
+//sensory systemowe
+const char *INPUT_SYSTEM_CPUTEMP = "rpi:system:cputemp";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
