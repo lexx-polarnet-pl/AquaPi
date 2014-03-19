@@ -101,14 +101,14 @@ void ReadConf() {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	int x;
-	//#warning Quick & Dirty fix. Trzeba ustalić czemu tak naprawdę połączenie jest zrywane
-	//DB_Open(config.db_host, config.db_user, config.db_password, config.db_database);
+	char buff[200];
+
 	Log("Odczyt konfiguracji",E_DEV);
 	
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = -1;
-	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
+	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf,interface_nightcorr FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -121,6 +121,11 @@ void ReadConf() {
 			interfaces[interfaces_count].conf = atof(row[5]);
 		} else {
 			interfaces[interfaces_count].conf = 0;
+		}
+		if (row[6] != NULL) {
+			interfaces[interfaces_count].nightcorr = atof(row[6]);
+		} else {
+			interfaces[interfaces_count].nightcorr = 0;
 		}
 	}	
 	mysql_free_result(result);
@@ -160,8 +165,18 @@ void ReadConf() {
 		}		
 		memcpy(timers[timers_count].days,row[7],sizeof(timers[timers_count].days));
 	}	
-	mysql_free_result(result);	
-	
+	mysql_free_result(result);
+
+	// pozostałe, "specjalne" parametry
+	DB_GetSetting("night_start",buff);
+	specials.night_start = atof(buff);
+	DB_GetSetting("night_stop",buff);
+	specials.night_stop = atof(buff);
+	DB_GetSetting("temp_night_corr",buff);
+	specials.temp_night_corr = atof(buff);
+	// wymuś stan nieustalony
+	specials.is_night = -1;
+
 	Log("Konfiguracja odczytana",E_DEV);
 
 	SetupPorts();
@@ -177,6 +192,7 @@ int main() {
 	FILE *pidf;
 	int fval = 0;
 	int x,y,z,seconds_since_midnight,last_sec_run = 0;
+	double corr_val;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -239,7 +255,32 @@ int main() {
 		if (seconds_since_midnight != last_sec_run) {
 			// nie sprawdzałeś, to sprawdzaj
 			last_sec_run = seconds_since_midnight;
-			
+
+			// obsługa dnia i nocy
+			if (specials.night_start < specials.night_stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
+				if ((seconds_since_midnight >= specials.night_start) && (seconds_since_midnight < specials.night_stop)) {
+					specials.night_ns = 1;
+				} else {
+					specials.night_ns = 0;
+				}
+			} else { // przypadek kiedy zdarzenie przechodzi przez północ
+				if ((seconds_since_midnight < specials.night_start) && (seconds_since_midnight >= specials.night_stop)) {
+					specials.night_ns = 0;
+				} else {
+					specials.night_ns = 1;
+				}
+			}
+
+			// zmiana trybu dzień - noc
+			if (specials.night_ns != specials.is_night) {
+				specials.is_night = specials.night_ns;
+				if (specials.is_night == 0) {
+					Log("Przechodzę w tryb dzień",E_INFO);
+				} else {
+					Log("Przechodzę w tryb noc",E_INFO);
+				}
+			}
+
 			// obsługa temperatury
 			if (seconds_since_midnight % config.temp_freq == 0) {
 				for(x = 0; x <= interfaces_count; x++) {
@@ -277,12 +318,18 @@ int main() {
 								// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
 								for (z=0; z <= interfaces_count; z++) {
 									if (timers[x].interfaceidif == interfaces[z].id) {
+										// sprawdź czy dla tego wyjścia ma być korekta nocna
+										if ((interfaces[z].nightcorr == 1) && (specials.is_night == 1)) {
+											corr_val = specials.temp_night_corr;
+										} else {
+											corr_val = 0;
+										}									
 										//ignoruj stany nieustalone
 										if (interfaces[z].measured_value > -100) { 
-											if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value > timers[x].value)) {
+											if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value - corr_val > timers[x].value)) {
 												interfaces[y].new_state = timers[x].action;
 											}
-											if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value < timers[x].value)) {
+											if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value - corr_val < timers[x].value)) {
 												interfaces[y].new_state = timers[x].action;
 											}
 										}
@@ -316,10 +363,10 @@ int main() {
 			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {
 				Log("========== Zrzut interfaceów ==========",E_DEV);
-				Log("|Tp|St|Co|Wartos|Nazwa",E_DEV);
-				Log("----------------------------------------------------",E_DEV);
+				Log("|Typ|Stan| Conf |KNoc|Wartos|Nazwa",E_DEV);
+				Log("---------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%2i|%2i|%2i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].measured_value,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].measured_value,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("========== Zrzut timerów ==========",E_DEV);				

@@ -69,7 +69,8 @@ struct _interfaces {
 	double measured_value;
 	int override_value;
 	int override_expire;
-	int conf;
+	double conf;
+	int nightcorr;
 } interfaces[100];
 
 int interfaces_count;
@@ -104,3 +105,11 @@ typedef struct
 } configuration;
 
 configuration config;
+
+struct _specials {
+	int night_start;
+	int night_stop;
+	int is_night;
+	int night_ns;
+	double temp_night_corr;
+} specials;

@@ -103,11 +103,10 @@ void ChangePortState (char *port,int state) {
 }
 
 double read_temp(char *sensor_id) {
-    FILE *fp;
-	
-    char sensor_path[200]; 
+	FILE *fp;
+	char sensor_path[200]; 
 	char buff[200];
-    char line[80];
+	char line[80];
 	char line2[80];
 	char *pos;
 	double temp;
@@ -128,7 +127,7 @@ double read_temp(char *sensor_id) {
 			// otwarty plik z danymi sensora, trzeba odczytac
 			fgets(line, 80, fp);
 			fgets(line2, 80, fp);
-			fclose (fp);		
+			fclose (fp);
 			// poszukajmy YES w stringu (weryfikacja CRC ok)
 			pos = strstr(line,"YES");
 			if (pos != NULL) {
@@ -152,7 +151,7 @@ double read_temp(char *sensor_id) {
 		sprintf(buff,"Nie obsługiwane wejście: %s",sensor_id);
 		Log(buff,E_WARN);
 		return -100;
-	}		
+	}
 }
 
 double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
