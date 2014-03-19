@@ -1,5 +1,6 @@
 <div id="dashboard_1wire" style="display: none">
 <h3>Ustawienia sensorów temperatury:</h3>
+	{if $interfaces.1wire}
 	<table>
 	{foreach from=$interfaces.1wire key=key item=sensor}
 	<tr>
@@ -79,6 +80,8 @@
 	</tr>
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-	
+	{else}
+		<div class="red">Urządzenie wyłączone.</div>
+	{/if}
 </div>	
 

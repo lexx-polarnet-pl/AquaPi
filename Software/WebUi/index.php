@@ -42,11 +42,11 @@ if (!is_null($interfaces['1wire']))
 	}
 }
 
-
-foreach($interfaces['gpio'] as $index => $gpio)
-{
-	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
-}
+if(isset($interfaces['gpio']))
+    foreach($interfaces['gpio'] as $index => $gpio)
+    {
+    	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
+    }
 
 foreach($interfaces['relayboard'] as $index => $relay)
 {
@@ -66,23 +66,30 @@ foreach($interfaces['dummy'] as $index => $sensor)
 $last5infologs 	= $db->GetAll('select * from logs where log_level = 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
 $last5warnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
 
+$sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
+//new dbug($sysinfo);
+
 $uptime 	= exec("cat /proc/uptime | awk '{ print $1 }'");
-$enabled 	= date("d.m.Y H:i",time() - $uptime);
-$uname_r 	= php_uname("r");
-$uname_v 	= php_uname("v");
-$load 		= sys_getloadavg();
-$cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
+$enabled 	= date("d.m.Y H:i",time() - $sysinfo['aquapi']['sysinfo']['uptime']);
+//$uname_r 	= php_uname("r");
+//$uname_v 	= php_uname("v");
+//$load 		= sys_getloadavg();
+//$cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
 $daemon_data 	= @simplexml_load_string(IPC_CommandWithReply("status"));
 $icons		= GetInterfacesIcons();
 
+//var_dump(IPC_CommandWithReply("sysinfo"));
+
+
+$smarty->assign('sysinfo', $sysinfo);
 $smarty->assign('enabled', $enabled);
 $smarty->assign('time', date("H:i"));
 $smarty->assign('interfaces', $interfaces);
 $smarty->assign('sensor_master_temp', $sensor_master_temp);
-$smarty->assign('uname_r', $uname_r);
-$smarty->assign('uname_v', $uname_v);
-$smarty->assign('load', $load);
-$smarty->assign('cputemp', $cputemp);
+//$smarty->assign('uname_r', $uname_r);
+//$smarty->assign('uname_v', $uname_v);
+//$smarty->assign('load', $load);
+//$smarty->assign('cputemp', $cputemp);
 $smarty->assign('daemon_data', $daemon_data);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);

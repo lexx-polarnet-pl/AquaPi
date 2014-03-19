@@ -110,11 +110,6 @@ $(function() {
 		<input class="temp_select" type="text" readonly id="temp_night_corr" name="temp_night_corr" value ="{$CONFIG.temp_night_corr}">
 		<div id="slide_temp_night_corr" style="margin:10px;"></div>	
 	</div>	
-	<div class="temp_select">
-		Histereza:
-		<input class="temp_select" type="text" readonly id="hysteresis" name="hysteresis" value ="{$CONFIG.hysteresis}">
-		<div id="slide_hysteresis" style="margin:10px;"></div>	
-	</div>
 	korekcja dotyczy czujników:<BR>
 	{foreach from=$interfaces.1wire key=key item=sensor}
 		<input type="checkbox" name="sensors[{$sensor.interface_id}][sensor_nightcorr]" {if $sensor.interface_nightcorr eq 1}checked="checked"{/if}
@@ -130,9 +125,7 @@ $(function() {
 </div>
 
 <!--Ustawienia sensorów temperatury-->
-{if $sensors_fs != 'FALSE'}
-	{include "settings_1wire.tpl"}
-{/if}
+{include "settings_1wire.tpl"}
 	
 <!--GPIO-->
 {include "settings_gpio.tpl"}

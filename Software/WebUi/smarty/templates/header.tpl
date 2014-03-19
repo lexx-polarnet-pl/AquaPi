@@ -14,6 +14,7 @@
 <script type="text/javascript" src="js/jquery-ui-1.9.0.custom.js"></script>
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/popup.js"></script>
+<script type="text/javascript" src="js/aquapi.js"></script>
 </head>
 <body>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>

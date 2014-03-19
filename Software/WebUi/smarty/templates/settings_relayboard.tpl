@@ -1,5 +1,6 @@
 <div id="dashboard_relayboard" style="display: none">
 	<h3>Relayboard:</h3>
+	{if $interfaces.relayboard}
 	<table>
 	{foreach from=$interfaces.relayboard  key=key item=relay}
 	<tr>
@@ -37,4 +38,7 @@
 	{/foreach}
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
+	{else}
+		<div class="red">Urządzenie wyłączone.</div>
+	{/if}
 </div>	

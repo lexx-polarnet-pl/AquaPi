@@ -28,13 +28,13 @@ $smarty->assign('title', 'Ustawienia');
 //kasowanie urzadzen i interfejsów
 if(array_key_exists('action', $_GET))
 {
-	if ($_GET['action'] == "delete" and $_GET['device_id']>0)
+	if ($_GET['action'] == "delete" and $_GET['device_id']>0 and $_GET['is_sure']==1)
 	{
 		$db->Execute('UPDATE devices SET device_deleted=1 WHERE device_id=?', array($_GET['device_id']));
 		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
 	}
-	elseif($_GET['action'] == "delete" and $_GET['interface_id']>0)
+	elseif($_GET['action'] == "delete" and $_GET['interface_id']>0 and $_GET['is_sure']==1)
 	{
 		$db->Execute('UPDATE interfaces SET interface_deleted=1 WHERE interface_id=?', array($_GET['interface_id']));
 		ReloadDaemonConfig();
@@ -57,7 +57,6 @@ if($_POST)
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_dummy'], 	'dummy'));
 	
 	//SET GLOBAL SETTINGS
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'], 					'hysteresis'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['simplify_graphs']?$_POST['simplify_graphs']:0, 	'simplify_graphs'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 			'night_start'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  			'night_stop'));
@@ -99,14 +98,14 @@ if($_POST)
 		if(strlen($gpio['gpio_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
 			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=? WHERE interface_id=?', 
-				array($gpio['gpio_name'], 'rpi:gpio:'.$gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
+				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj gpio
 		elseif(strlen($gpio['gpio_name'])>1) 
 		{
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name)
-				     VALUES (?, ?, ?, ?)',
-				     array($interface_id, GetDeviceId('gpio'), 'rpi:gpio:'.$gpio['gpio_address'], $gpio['gpio_name']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_icon)
+				     VALUES (?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('gpio'), $gpio['gpio_address'], $gpio['gpio_name'], 'device.png'));
 		}
 		
 	}

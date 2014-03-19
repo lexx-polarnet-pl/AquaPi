@@ -1,6 +1,7 @@
 <div id="dashboard_system" style="display: none">
 <h3>Sensory systemowe:</h3>
-	<table border=1>
+	{if $interfaces.system}
+	<table>
 	{foreach from=$interfaces.system key=key item=sensor}
 	<tr>
 	    <td>
@@ -51,6 +52,8 @@
 	</tr>
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-	
+	{else}
+		<div class="red">Urządzenie wyłączone.</div>
+	{/if}
 </div>	
 

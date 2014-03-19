@@ -1,5 +1,6 @@
 <div id="dashboard_dummy" style="display: none">
 	<h3>Czujniki statyczne:</h3>
+	{if $interfaces.dummy}
 	<table>
 		{foreach from=$interfaces.dummy key=key item=dummy}
 		<tr>
@@ -49,4 +50,7 @@
 		</tr>
 	</table>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
+	{else}
+		<div class="red">Urządzenie wyłączone.</div>
+	{/if}
 </div>	
