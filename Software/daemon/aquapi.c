@@ -356,7 +356,9 @@ int main() {
 					} else {
 						sprintf(buff,"Wyłączam %s",interfaces[x].name);
 					}
-					Log(buff,E_INFO);					
+					Log(buff,E_INFO);	
+					sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+					DB_Query(buff);				
 				}
 			}		
 			
@@ -384,14 +386,9 @@ int main() {
 				ReadConf();
 			}
 			
-			//#warning Dla zgodności z daemonem PHP. Do wyrzucenia i przerobienia na IPC
-			//sprintf(buff,"UPDATE settings SET setting_value=%ld WHERE setting_key = 'demon_last_activity'",rawtime);
-			//DB_Query(buff);		
 		}
 		usleep(100000);
-		//sleep(1);
 	} 
-	//DB_Close();
 	return 0;
 }
 
