@@ -5,5 +5,4 @@ Rzeczy do zrobienia/poprawienia w daemonie
 - alarmowanie o przekroczeniu stanów przy sensorach
 - obsługa PWM w UI i w demonie
 - dwustronna komunikacja z RelayBoard i GPIO (czyli też odczyt stanów, nie tylko zapis)
-- dodanie obsługi sensora rpi:system:cputemp zwracającej temperaturę procesora
 - dla dummy sensorów brać wartość z bazy, nie z INI
