@@ -90,8 +90,13 @@ void StoreTempStat() {
 
 	for(x = 0; x <= interfaces_count; x++) {
 		if (interfaces[x].type == DEV_INPUT) {
-			sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %.2f)",rawtime, interfaces[x].id, interfaces[x].measured_value);
-			DB_Query(buff);
+			if (interfaces[x].measured_value > -100) {
+				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %.2f)",rawtime, interfaces[x].id, interfaces[x].measured_value);
+				DB_Query(buff);
+			} else {
+				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, null)",rawtime, interfaces[x].id);
+				DB_Query(buff);
+			}
 		}
 	}
 
