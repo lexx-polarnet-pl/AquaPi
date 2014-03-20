@@ -1,6 +1,31 @@
 {include "header.tpl"}
 
+{literal}
 <script type="text/javascript">
+function f_initialize()
+{
+	//aktywowanie uzupelniania nazw w ponizszych polach
+	var lokalizacja		= document.getElementById('location_tmp');
+	var autocomplete	= new google.maps.places.Autocomplete(lokalizacja);
+	
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+		var place = autocomplete.getPlace();
+		document.getElementById('link').href		= 'http://api.openweathermap.org/data/2.5/weather?q='+ place.name +'&mode=html&units=metric';
+		document.getElementById('location').value	= place.name
+		if(place.name.length>2)
+			document.getElementById('linkdiv').style.display = '';
+		else
+			document.getElementById('linkdiv').style.display = 'none';
+	});
+}
+
+google.maps.event.addDomListener(window, 'load', f_initialize);
+</script>
+{/literal}
+
+
+<script type="text/javascript">
+
 function disableF5(e)
 {
 	return 0;
@@ -121,6 +146,17 @@ $(function() {
 	<input type="checkbox" name="simplify_graphs" value="1" {if $simplify_graphs eq 1}checked="checked"{/if}
 			onmouseover="return overlib('Uproszczone wykresy. Pokazuje tylko zmiany.');"
 			onmouseout="return nd();">
+	<hr>
+	<h3>Lokalizacja:</h3>
+	<input type="input" id="location_tmp" value="{$CONFIG.location}"
+			onmouseover="return overlib('W jakim mieście znajduje się system. Umożliwia wyświetlenie temperatury na wykresach.');"
+			onmouseout="return nd();" onkeydown="checklen()">
+	<input type="hidden" name="location" id="location" >
+		
+	<div id="linkdiv" style="display: none">
+		<a id="link" href="">sprawdź poprawność nazwy</a>
+	</div>
+		
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 
@@ -170,6 +206,13 @@ function showdivs()
 		document.getElementById(name).style.display		= 'inline-block';
 		document.getElementById('dashboard_'+name).style.display= '';
 	}
+}
+function checklen()
+{
+	len	= document.getElementById('location_tmp').value.length;
+	//console.log();
+	if(len<4)
+		document.getElementById('linkdiv').style.display = 'none';
 }
 </script>
 

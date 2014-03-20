@@ -20,7 +20,17 @@
  *
  */
  
-// Requires PHP 5.4 or higher 
+// Requires PHP 5.4 or higher
+//
+//	TODO:
+//
+//	CZUJNIKI WYŁĄCZONE NIE POJAWIAJA SIE W JAKIEJKOLWIEK FORMIE W UI I NIE 
+//	MOZNA ICH PRZEZ TO WŁĄCZYC - POPRAWIC.
+//
+//
+//
+
+
 
 include("init.php");
 $smarty->assign('title', 'Ustawienia');
@@ -46,8 +56,7 @@ if(array_key_exists('action', $_GET))
 //aktualizacja konfiguracji
 if($_POST)
 {
-	//new dBug($_POST['sensors'],'',true);
-	//die;
+	//new dBug($_POST['sensors'],'',true);die;
 	
 	//UPDATE DEVICES
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_1wire'],		'1wire'));
@@ -61,6 +70,7 @@ if($_POST)
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_start']), 			'night_start'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  			'night_stop'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 				'temp_night_corr'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['location'], 					'location'));
 	
 	
 	//1WIRE
@@ -84,9 +94,9 @@ if($_POST)
 		{
                         if(!$sensor['sensor_draw'])
                             $sensor['sensor_draw']=0;
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw)
-				     VALUES (?, ?, ?, ?, ?, ?)',
-				     array($interface_id, GetDeviceId('1wire'), 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw, interface_type)
+				     VALUES (?, ?, ?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('1wire'), 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw'], 1));
 		}
 		
 	}
@@ -130,9 +140,9 @@ if($_POST)
 		//jesli nie istnieje i jest podana nazwa dodaj dummy
 		elseif(strlen($dummy['dummy_name'])>1) 
 		{
-			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_conf)
-				     VALUES (?, ?, ?, ?, ?)',
-				     array($interface_id, GetDeviceId('dummy'), 'dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf']));
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_conf, interface_type)
+				     VALUES (?, ?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('dummy'), 'dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf'], 1));
 		}
 	}
 	
