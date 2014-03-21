@@ -5,25 +5,31 @@
 	{foreach from=$interfaces.system key=key item=sensor}
 	<tr>
 	    <td>
-		<input class="long" {if $sensor.interface_disabled eq 1}style="color:grey"{/if} name="system[{$sensor.interface_id}][sensor_name]" value="{$sensor.interface_name}"
+		<input class="long" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} name="system[{$sensor.interface_id}][sensor_name]" value="{$sensor.interface_name}"
 		    onmouseover="return overlib('Podaj nową nazwę czujnika. Minimum 2 znaki.');"
 		    onmouseout="return nd();">
 	    </td>
 	    <td>
-		<input class="medium" {if $sensor.interface_disabled eq 1}style="color:grey"{/if} type="text" name="system[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
+		<input class="medium" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} type="text" name="system[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
 		    value="{$sensor.interface_address}"
 		    onmouseover="return overlib('Wprowadź ręcznie adres czujnika');"
 		    onmouseout="return nd();">
 	    </td>
 	    <td>
 		<input type="checkbox" name="system[{$sensor.interface_id}][sensor_draw]" value="1" {if $sensor.interface_draw eq 1}checked="checked"{/if}
-		    onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
-		    onmouseout="return nd();">
+				{if $sensor.interface_disabled eq 1}onclick="return false" onmouseover="return overlib('Czujnik wyłaczony. Aktywuj go najpierw.');"
+				onmouseout="return nd();"{else}
+				onmouseover="return overlib('Pokazuj czujnik na wykresie.');"
+				onmouseout="return nd();"{/if}>
 	    </td>
 	    <td>
-		<input type="checkbox" name="system[{$sensor.interface_id}][sensor_disabled]" value="1" {if $sensor.interface_disabled eq 1}checked="checked"{/if}
-		    onmouseover="return overlib('Czujnik wyłączony.');"
-		    onmouseout="return nd();">
+		<input type="checkbox" name="system[{$sensor.interface_id}][sensor_disabled]" value="1" {if $sensor.interface_disabled eq 1}checked="checked"
+				onmouseover="return overlib('Czujnik wyłączony. Odznacz aby aktywować.');"
+				onmouseout="return nd();"
+				{else}
+				onmouseover="return overlib('Czujnik aktywny. Zaznacz aby wyłączyć.');"
+				onmouseout="return nd();"
+				{/if}>
 	    </td>
 
 	    <td>

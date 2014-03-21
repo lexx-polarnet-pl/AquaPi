@@ -138,7 +138,12 @@ $(function() {
 	korekcja dotyczy czujników:<BR>
 	{foreach from=$interfaces.1wire key=key item=sensor}
 		<input type="checkbox" name="sensors[{$sensor.interface_id}][sensor_nightcorr]" {if $sensor.interface_nightcorr eq 1}checked="checked"{/if}
-			value="1"> {$sensor.interface_name}<BR>
+			{if $sensor.interface_disabled eq 1}onclick="return false" onmouseover="return overlib('Czujnik wyłaczony. Aktywuj go w zakładce 1-wire.');"
+				onmouseout="return nd();"{/if} value="1">
+			<span {if $sensor.interface_disabled eq 1}style="color:grey"
+				onmouseover="return overlib('Czujnik wyłaczony. Aktywuj go najpierw w zakładce 1-wire.');"
+				onmouseout="return nd();"
+			{/if} >{$sensor.interface_name}</span><BR>
 	{/foreach}
 	<hr>
 	<h3>Wykresy:</h3>

@@ -201,38 +201,12 @@ foreach($icons as $icon)
 }
 $icons	= $result;
 
-//if(is_dir(ONEWIRE_DIR))
-//{
-//    $folder = dir(ONEWIRE_DIR);
-//    while($plik = $folder->read())
-//	if (substr($plik,0,3) == '28-')
-//		$sensors_fs[] = $plik;
-//    $folder->close();
-//}
 $wlist 		= xml2array(IPC_CommandWithReply("1wlist"));
 $sensors_fs	= $wlist['aquapi']['list']['item'];
 
 if(isset($sensors_fs))
 	$smarty->assign('sensors_fs', $sensors_fs);
 
-//else
-//{
-//	if($CONFIG['daemon']['location']=='local') //jesli demon jest lokalny to brak czujników jest błedem i wyłaczammy magistrale
-//	{
-//		$smarty->assign('sensors_fs', 'FALSE');
-//		foreach($devices as $index => $device)
-//		{
-//			if($device['device_name']=='1wire')
-//			{
-//			unset($devices[$index]);
-//			break;
-//			}
-//		}
-//	}
-//}
-//
-//$moj_xml = IPC_CommandWithReply("1wlist");
-//new dBug(xml2array($moj_xml));
 
 //new dBug($interfaces);
 $smarty->assign('new_interface_id',	$db->GetOne("select max(interface_id)+1 from interfaces"));

@@ -37,6 +37,14 @@
 	</tr>
 	{/foreach}
 	</table>
+	<div>
+		<p style="text-align: justify;"><img src="img/ark3.jpg" alt="ark3" style="float:right; margin:6px">
+		Przekaźniki RB po włączeniu urządzenia są w stanie logicznym 0 (off/wyłączone). Oznacza to, że pomiedzy 1 a 2 jest przerwa, a pomiędzy 2 i 3 jest zwarcie. Urządzenie podłaczone do pinów 1 i 2 będzie włączone kiedy przekaźnik będzie właczony i wyłączone kiedy przekaźnik jest wyłączony. Ten rodzaj połączenia reprezentuje typ wyjścia NO.<BR>
+		Natomiast urządzenie podłączone do pinów 2 i 3 zachowuje się odwrotnie. Właczenie przekaźnika powoduje wyłaczenie urządzenia i analogicznie wyłaczenie przekaźnika włącza urzadzenie. Ten rodzaj połączenia reprezentuje typ wyjścia NC.<br>
+		Używanie różnych typów wyjść może zabezpieczyć nas na wypadek awarii prądu lub restartu urządzenia. Wszystkie przekaźniki RB będą wtedy wyłączone i tylko od nas zależy czy w sytuacji kiedy nic nie steruje RB chcemy aby poszczególne urządzenia działały czy nie. W przypadku kiedy urządzenie jest wyłaczane raz dziennie na parę minut (np filtr podczas karmienia ryb) użycie typu NC pozwoli także na oszczedność prądu - przekaźnik pobiera prąd tylko przez parę minut kiedy filtr jest wyłączony.
+		</p>
+		
+	</div>
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 	{else}
 		<div class="red">Urządzenie wyłączone.</div>
