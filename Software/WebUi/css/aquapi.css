@@ -52,3 +52,5 @@
 
 .red		{ color: #FF0000; }
 .darkgrey	{ color: #DDDDDD; }
+
+.nobr	{ white-space:nowrap; }
