@@ -25,8 +25,8 @@ $aquapi_ver = "1.9-devel";
 
 // Wczytanie pliku z ustawieniami
 $CONFIG = parse_ini_file("/etc/aquapi.ini", true);
-if ($CONFIG['webui']['purge_logs']<7 or !isset($CONFIG['webui']['purge_logs']))
-    $CONFIG['webui']['purge_logs']=7;
+if ($CONFIG['webui']['purge_logs'] < 7 or !isset($CONFIG['webui']['purge_logs']))
+    $CONFIG['webui']['purge_logs'] = 7;
 
 // ustawienie odpowiedniej strefy czasowej
 date_default_timezone_set("Europe/Warsaw");
@@ -80,7 +80,7 @@ unset($tmp);
 
 // Wartości domyślne
 if (!isset($CONFIG['daemon']['bind_address'])) 	{ $CONFIG['daemon']['bind_address'] = "127.0.0.1"; }
-if (!isset($CONFIG['daemon']['bind_port'])) 	{ $CONFIG['daemon']['bind_port'] = 6580; }
+if (!isset($CONFIG['daemon']['bind_port'])) 	{ $CONFIG['daemon']['bind_port']    = 6580; }
 
 //init sesji
 require(LIB_DIR. 'session.class.php');
@@ -98,14 +98,14 @@ $detect = new Mobile_Detect;
 
 // definicja menu
 $my_menu	= array();
-$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r" );
-$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r" );
-$my_menu[]	= array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r" );
+$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
 if($CONFIG['plugins']['camera']==1)
-    $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r" );
-$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r" );
+    $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);
 
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
@@ -117,24 +117,28 @@ $cur_name	= '';
 
 foreach ($my_menu as &$pos) 
 {
-	if ($pos['url'] == $self) 
-	{
-		$cur_name = $pos['name'];
-		$pos['selected'] = true;
-		if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) 
-		{
-			// nie jesteś zalogowany
-			$SESSION -> save('old_url',$self);
-			$SESSION -> redirect('login.php');
-		}
-	}
+    if ($pos['url'] == $self) 
+    {
+            $cur_name = $pos['name'];
+            $pos['selected'] = true;
+            if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) 
+            {
+                    // nie jesteś zalogowany
+                    $SESSION -> save('old_url',$self);
+                    $SESSION -> redirect('login.php');
+            }
+    if ($pos['reload'] == 1)
+        $reloadtime = '<meta http-equiv="refresh" content="120" >';
+    }
 }
 
 //new dbug($CONFIG);
 
-$smarty->assign('my_menu', $my_menu);
+
+$smarty->assign('reloadtime',   $reloadtime);
+$smarty->assign('my_menu',  $my_menu);
 $smarty->assign('ismobile', $detect->isMobile());
 $smarty->assign('cur_name', $cur_name);
-$smarty->assign('CONFIG', $CONFIG);
+$smarty->assign('CONFIG',   $CONFIG);
 
 ?>

@@ -3,7 +3,7 @@
 <link href='http://fonts.googleapis.com/css?family=Capriola&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 <title>AquaPi - {$cur_name}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="refresh" content="120" > 
+{$reloadtime}
 <meta name="viewport" content="width=device-width">
 <link rel="stylesheet" type="text/css" href="css/aquapi.css" />
 <link rel="stylesheet" type="text/css" href="css/timepicker.css" />
