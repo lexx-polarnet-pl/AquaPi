@@ -1,15 +1,15 @@
 {include "header.tpl"}
 
-<div id="dashboard">
+<!--<div id="dashboard">
     <h3>Wyjścia:</h3>
     <div style="float:left;">
-        {include "index_outputs.tpl"}
+        include "index_outputs.tpl"
     </div>
-</div>
-
-{include "index_1wire.tpl"}
+</div>-->
 
 {include "index_aquainfo.tpl"}
+
+{include "index_1wire.tpl"}
 
 <div id="dashboard">
     <h3>Wyjścia:</h3>
