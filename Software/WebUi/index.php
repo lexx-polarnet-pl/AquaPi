@@ -76,10 +76,11 @@ $enabled 	= date("d.m.Y H:i",time() - $sysinfo['aquapi']['sysinfo']['uptime']);
 //$load 		= sys_getloadavg();
 //$cputemp	= exec("cat /sys/class/thermal/thermal_zone0/temp")/1000;
 $daemon_data 	= @simplexml_load_string(IPC_CommandWithReply("status"));
+$status 	= @xml2array(IPC_CommandWithReply("status"));
 $icons		= GetInterfacesIcons();
 
-//var_dump(IPC_CommandWithReply("sysinfo"));
-
+unset($status['aquapi']['devices']['device']['0_attr']);
+//new dbug($status);
 
 $smarty->assign('sysinfo', $sysinfo);
 $smarty->assign('enabled', $enabled);
@@ -91,6 +92,7 @@ $smarty->assign('sensor_master_temp', $sensor_master_temp);
 //$smarty->assign('load', $load);
 //$smarty->assign('cputemp', $cputemp);
 $smarty->assign('daemon_data', $daemon_data);
+$smarty->assign('status', $status);
 $smarty->assign('last5infologs', $last5infologs);
 $smarty->assign('last5warnlogs', $last5warnlogs);
 $smarty->assign('icons', $icons);
