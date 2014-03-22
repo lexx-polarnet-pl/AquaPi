@@ -31,6 +31,7 @@ $stats	= $db->GetAll('SELECT stat_date as E, stat_value as N
 if($_GET['simplify_graphs']==1)
     $stats  = RamerDouglasPeucker($stats, 0.1);
 
+if(isset($stats))
 foreach ($stats as $stat)
 {
     $dane .= '[' . $stat['E'] . '000,' . $stat['N'] . '],';
