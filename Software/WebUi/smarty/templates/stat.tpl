@@ -52,7 +52,7 @@ $(function() {
 			},
 			
 			title: {
-				text: 'Czujniki 1-wire'
+				text: 'Czujniki i przekaźniki'
 			},
 			yAxis : [{
 				title : {
