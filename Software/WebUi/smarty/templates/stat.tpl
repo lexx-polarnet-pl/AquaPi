@@ -14,7 +14,6 @@ $(function() {
 	interfaces	= [
 			{foreach from=$sensors.temps item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 0, 'spline', '°C', 1], {/foreach}
 			{foreach from=$sensors.ports item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 1, '', '', 0], {/foreach}
-			
 	];
 	{literal}
 	colors 		= Highcharts.getOptions().colors;
@@ -91,50 +90,15 @@ $(function() {
 			},
 			rangeSelector: {
 				buttons: [
-				{
-					type: 'day',
-					count: 1,
-					text: '1d'
-				},
-				{
-					type: 'day',
-					count: 3,
-					text: '3d'
-				},
-				{
-					type: 'week',
-					count: 1,
-					text: '1w'
-				},
-				{
-					type: 'week',
-					count: 2,
-					text: '2w'
-				},
-				{
-					type: 'month',
-					count: 1,
-					text: '1m'
-				},
-				{
-					type: 'month',
-					count: 3,
-					text: '3m'
-				},
-				{
-					type: 'month',
-					count: 6,
-					text: '6m'
-				},
-				{
-					type: 'year',
-					count: 1,
-					text: '1y'
-				},
-				{
-					type: 'all',
-					text: 'All'
-				}],
+				{type: 'day',	count: 1, text: '1d'},
+				{type: 'day',	count: 3, text: '3d'},
+				{type: 'week',	count: 1, text: '1w' },
+				{type: 'week',	count: 2, text: '2w' },
+				{type: 'month', count: 1, text: '1m' },
+				{type: 'month', count: 3, text: '3m' },
+				{type: 'month', count: 6, text: '6m' },
+				{type: 'year', 	count: 1, text: '1y' },
+				{type: 'all', 	text: 'All' }],
 				selected: 1
 			},
 			series: seriesOptions
