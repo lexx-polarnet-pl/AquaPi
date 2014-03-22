@@ -348,32 +348,54 @@ int main() {
 			
 			// timery załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
 			for(x = 0; x <= interfaces_count; x++) {
-				if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
-					// konieczna jest zmiana stanu wyjścia
-					interfaces[x].state = interfaces[x].new_state;
-					if (interfaces[x].conf == 0) {
-						ChangePortState(interfaces[x].address,interfaces[x].state);
-					} else {
-						ChangePortState(interfaces[x].address,1-interfaces[x].state);
+				//zacznij od sprawdzenia czy pracujemy w trybie auto
+				if (interfaces[x].override_value != -1) {
+					// tryb manualny
+					if (interfaces[x].state != interfaces[x].override_value) {
+						// konieczna jest zmiana stanu wyjścia
+						interfaces[x].state = interfaces[x].override_value;					
+						if (interfaces[x].conf == 0) {
+							ChangePortState(interfaces[x].address,interfaces[x].state);
+						} else {
+							ChangePortState(interfaces[x].address,1-interfaces[x].state);
+						}
+						if (interfaces[x].state == 1) {
+							sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
+						} else {
+							sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
+						}
+						Log(buff,E_INFO);	
+						sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+						DB_Query(buff);				
 					}
-					if (interfaces[x].state == 1) {
-						sprintf(buff,"Załączam %s",interfaces[x].name);
-					} else {
-						sprintf(buff,"Wyłączam %s",interfaces[x].name);
+				} else {
+					if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
+						// konieczna jest zmiana stanu wyjścia
+						interfaces[x].state = interfaces[x].new_state;
+						if (interfaces[x].conf == 0) {
+							ChangePortState(interfaces[x].address,interfaces[x].state);
+						} else {
+							ChangePortState(interfaces[x].address,1-interfaces[x].state);
+						}
+						if (interfaces[x].state == 1) {
+							sprintf(buff,"Załączam %s",interfaces[x].name);
+						} else {
+							sprintf(buff,"Wyłączam %s",interfaces[x].name);
+						}
+						Log(buff,E_INFO);	
+						sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+						DB_Query(buff);				
 					}
-					Log(buff,E_INFO);	
-					sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
-					DB_Query(buff);				
 				}
 			}		
 			
 			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {
 				Log("========== Zrzut interfaceów ==========",E_DEV);
-				Log("|Typ|Stan| Conf |KNoc|Wartos|Nazwa",E_DEV);
+				Log("|Typ|Stan| Conf |KNoc|OVal|OExp|Wartos|Nazwa",E_DEV);
 				Log("---------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].measured_value,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("========== Zrzut timerów ==========",E_DEV);				

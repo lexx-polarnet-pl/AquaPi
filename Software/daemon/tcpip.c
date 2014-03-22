@@ -58,6 +58,61 @@ void TCPCommandReload() {
 	ReadConf();
 }
 
+void TCPCommandUnknown() {
+	char buff[120];
+	Log("Otrzymałem nieznane polecenie przez TCP",E_INFO);
+	sprintf(buff,"Command unknown.\n");
+	fputs(buff,net);
+	fflush(net);
+	ReadConf();
+}
+
+void TCPCommandInterface(char *buf) {
+	char buff[120];
+	char *pcom;
+	int interface,x,myint,nstate;
+	Log("Otrzymałem polecenie interface",E_DEV);
+	
+	// numer interface jest od 17 bajtu
+	interface=atoi(buf+17);
+
+	// komenda jest za ostanim:
+	pcom=strrchr(buf,':')+1;
+
+	// szukamy co trzeba zmienić
+	myint = 0;
+	for(x = 0; x <= interfaces_count; x++) {
+		if ((interfaces[x].type == DEV_OUTPUT) && (interfaces[x].id == interface)){
+			myint = x;
+		}		
+	}
+	// szukamy nowego stanu
+	if (strncmp("on",pcom,2)==0) {
+		nstate = 1;
+	} else if (strncmp("off",pcom,3)==0) {
+		nstate = 0;
+	} else if (strncmp("auto",pcom,4)==0) {
+		nstate = -1;
+	} else {
+		nstate = -2;
+	}
+	
+	if (myint == 0 ) {
+		fputs("Wrong interface number\n",net);
+	} else if (nstate == -2) {
+		fputs("Wrong subcommand\n",net);
+	} else {
+		if (nstate == -1) {
+			sprintf(buff,"Tryb automatyczny dla %s",interfaces[myint].name);
+		} else {
+			sprintf(buff,"Tryb manualny dla %s",interfaces[myint].name);
+		}
+		Log(buff,E_INFO);
+		interfaces[myint].override_value = nstate;
+		fputs("Executed.\n",net);
+	}
+	fflush(net);	
+}
 
 void TCPCommandAbout() {
 	Log("Otrzymałem polecenie about",E_DEV);
@@ -256,23 +311,25 @@ void* TCPConnections (void* unused) {
 			if (strncmp("aquapi:reload",buf,13)==0) {
 				TCPCommandReload();
 				shutdown(sh2,SHUT_RDWR);
-			}
-			if (strncmp("aquapi:about",buf,12)==0) {
+			} else if (strncmp("aquapi:about",buf,12)==0) {
 				TCPCommandAbout();
 				shutdown(sh2,SHUT_RDWR);
-			}
-			if (strncmp("aquapi:status",buf,13)==0) {
+			} else if (strncmp("aquapi:status",buf,13)==0) {
 				TCPCommandStatus();
 				shutdown(sh2,SHUT_RDWR);
-			}
-			if (strncmp("aquapi:1wlist",buf,13)==0) {
+			} else if (strncmp("aquapi:1wlist",buf,13)==0) {
 				TCPCommand1wList();
 				shutdown(sh2,SHUT_RDWR);
-			}
-			if (strncmp("aquapi:sysinfo",buf,14)==0) {
+			} else if (strncmp("aquapi:sysinfo",buf,14)==0) {
 				TCPCommandSysinfo();
 				shutdown(sh2,SHUT_RDWR);
-			}			
+			} else if (strncmp("aquapi:interface:",buf,17)==0) {
+				TCPCommandInterface(buf);
+				shutdown(sh2,SHUT_RDWR);
+			} else {
+				TCPCommandUnknown();
+				shutdown(sh2,SHUT_RDWR);
+			}
 		}
 		fclose(net);
 		close(sh2);
