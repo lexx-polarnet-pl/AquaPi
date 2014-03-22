@@ -2,6 +2,13 @@
 <h3>Ustawienia sensorów temperatury:</h3>
 	{if $interfaces.1wire}
 	<table>
+	<tr>
+	    <td colspan="2"></td>
+	    <td><img src="img/chart_thumb.png" onmouseover="return overlib('Pokazuj czujnik na wykresie.');" onmouseout="return nd();"></td>
+	    <td><img src="img/crown_thumb.png" onmouseover="return overlib('Czujnik główny, wyświetla się na stronie głównej. może byc tylko jeden!');" onmouseout="return nd();"></td>
+	    <td><img src="img/off_thumb.png"   onmouseover="return overlib('Wyłączenie czujnika. Zaznacz aby wyłączyć.');" onmouseout="return nd();"></td>
+	    <td></td>
+	</tr>
 	{foreach from=$interfaces.1wire key=key item=sensor}
 	<tr>
 	    <td>

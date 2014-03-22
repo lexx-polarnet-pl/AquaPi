@@ -6,68 +6,134 @@
 {literal}
 <script>
 $(function() {
-	    var seriesOptions = [],
-	    yAxisOptions = [],
-	    seriesCounter = 0,
-	    names = [{/literal}{foreach from=$sensors item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}"], {/foreach}{literal}],
-	    colors = Highcharts.getOptions().colors;
+	var seriesOptions = [],
+	yAxisOptions 	= [],
+	seriesCounter 	= 0;
+	
+	{/literal}
+	interfaces	= [
+			{foreach from=$sensors.temps item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 0, 'spline'], {/foreach}
+			{foreach from=$sensors.ports item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 1, ''], {/foreach}
+			
+	];
+	{literal}
+	colors 		= Highcharts.getOptions().colors;
 
-	    $.each(names, function(i, name)
-	    {
-			$.getJSON('jsonp.php?interfaceid='+ name[0] +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
-			function(data) {
-				    seriesOptions[i] = {
-						name:	name[1],
-						id:	name[0],
-						type:	'spline',
-						//datagrouping: { enabled: false},
-						data:	data
-				    };
+	$.each(interfaces, function(i, name)
+	{
+		$.getJSON('jsonp.php?interfaceid='+ name[0] +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
+		function(data) {
+			seriesOptions[i] = {
+				name:	name[1],
+				id:	name[0],
+				type:	name[3],
+				yAxis: 	name[2],
+				data:	data
+			};
 			seriesCounter++;
 			
-			if (seriesCounter == names.length)
+			if (seriesCounter == interfaces.length)
 			{
 				createChart();
 			}
 		});
-	    });
+	});
 
-	function createChart() {
-
+	
+	function createChart(container)
+	{
 		$('#container').highcharts('StockChart', {
-				    chart: {
+				chart: {
 			},
-
+			
 			rangeSelector: {
-				    inputEnabled: $('#container').width() > 480,
-				    selected: 1
+				inputEnabled: $('#container').width() > 480,
+				selected: 1
 			},
-
+			
 			title: {
-				    text: 'Czujniki 1-wire'
+				text: 'Czujniki 1-wire'
 			},
-			yAxis : {
-				    title : {
-					    text : 'Temperatura [°C]'
-				    },
+			yAxis : [{
+				title : {
+					text : 'Temperatura [°C]'
+				},
+				height: 300,
+				lineWidth: 2
 			},
+				{
+				title: {
+					text: 'Stan'
+				},
+				top: 400,
+				height: 100,
+				offset: 0,
+				lineWidth: 2
+			}],
 			xAxis: {
-				    type: "datetime",
-				    ordinal: false,
+				type: "datetime",
+				ordinal: false,
 			},
 			legend: {
-				    enabled: true,
+				enabled: true,
 			},
 			tooltip: {
-				    valueDecimals: 1,
-				    valueSuffix: '°C',
-				    crosshairs: [true,true]
+				valueDecimals: 1,
+				valueSuffix: '°C',
+				crosshairs: [true,true]
 		        },
 			plotOptions: {
-				    line: {
-						//connectNulls: false,
-						//gapSize: 1
-				    }
+				line: {
+					//connectNulls: false,
+					//gapSize: 1
+				}
+			},
+			rangeSelector: {
+				buttons: [
+				{
+					type: 'day',
+					count: 1,
+					text: '1d'
+				},
+				{
+					type: 'day',
+					count: 3,
+					text: '3d'
+				},
+				{
+					type: 'week',
+					count: 1,
+					text: '1w'
+				},
+				{
+					type: 'week',
+					count: 2,
+					text: '2w'
+				},
+				{
+					type: 'month',
+					count: 1,
+					text: '1m'
+				},
+				{
+					type: 'month',
+					count: 3,
+					text: '3m'
+				},
+				{
+					type: 'month',
+					count: 6,
+					text: '6m'
+				},
+				{
+					type: 'year',
+					count: 1,
+					text: '1y'
+				},
+				{
+					type: 'all',
+					text: 'All'
+				}]
 			},
 			series: seriesOptions
 		});
@@ -82,13 +148,11 @@ $(function() {
 
 
 {/literal}
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-
-
-<a href="stat.php">Dzień</a>
-<a href="stat.php?limit=week">Tydzień</a>
-<a href="stat.php?limit=month">Miesiąc</a>
-<a href="stat.php?limit=no_limit">Bez limitu</a>
+<div id="container" style="height: 650px; min-width: 350px"></div>
+Zmień okres pobieranych danych na 
+<a href="stat.php?limit=month">1 miesiąc, </a>
+<a href="stat.php?limit=year">rok, </a>
+<a href="stat.php?limit=no_limit">bez limitu</a>
 
 
 {include "footer.tpl"}

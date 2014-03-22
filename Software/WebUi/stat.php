@@ -41,20 +41,25 @@ if(array_key_exists('limit', $_GET))
 	    $limit = 0;
 	    break;
 	default:
-	    $limit = time() - (1 * 24 * 60 * 60); //day
+	    $limit = time() - (7 * 24 * 60 * 60); //7 days
     }
 else
-    $limit = time() - (24 * 60 * 60);
+    $limit = time() - (7 * 24 * 60 * 60);
 
 //aktywne interfejsy    
-$draw	= array('1wire', 'system');
+$draw_t	= array('1wire', 'system');
+$draw_p	= array('gpio', 'relayboard');
+
+//new dBug(GetInterfaces());
 foreach(GetInterfaces() as $type => $sensors_tmp)
     foreach($sensors_tmp as $sensor)
     {
-	if (in_array($type, $draw) and $sensor['interface_draw']==1)
-	    $sensors[]=$sensor;
+	if (in_array($type, $draw_t) and $sensor['interface_draw']==1)
+	    $sensors['temps'][]	= $sensor;
+	if (in_array($type, $draw_p) and $sensor['interface_draw']==1)
+	    $sensors['ports'][]	= $sensor;
     }
-
+//new dBug($sensors);
 $smarty->assign('sensors', $sensors);
 $smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
 $smarty->assign('limit', $limit);

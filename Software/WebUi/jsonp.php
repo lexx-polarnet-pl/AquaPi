@@ -32,7 +32,9 @@ if($_GET['simplify_graphs']==1)
     $stats  = RamerDouglasPeucker($stats, 0.1);
 
 foreach ($stats as $stat)
+{
     $dane .= '[' . $stat['E'] . '000,' . $stat['N'] . '],';
+}
 
 $callback = (string)$_GET['callback'];
 

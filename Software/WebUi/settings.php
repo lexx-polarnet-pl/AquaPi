@@ -56,7 +56,7 @@ if(array_key_exists('action', $_GET))
 //aktualizacja konfiguracji
 if($_POST)
 {
-	//new dBug($_POST['sensors'],'',true);die;
+	//new dBug($_POST,'',true);die;
 	
 	//UPDATE DEVICES
 	$db->Execute('UPDATE devices SET device_disabled=? where device_name= ?', array($_POST['device_1wire'],		'1wire'));
@@ -84,16 +84,31 @@ if($_POST)
 			else
 				$sensor_master_set=1;
 			
-			$db->Execute('UPDATE interfaces
-					SET interface_name=?, interface_address=?, interface_corr=?, interface_nightcorr=?, interface_draw=?, interface_conf=?, interface_disabled=?
+			$db->Execute('UPDATE interfaces SET
+						interface_name=?,
+						interface_address=?,
+						interface_corr=?,
+						interface_nightcorr=?,
+						interface_draw=?,
+						interface_conf=?,
+						interface_disabled=?
 					WHERE interface_id=?', 
-					array($sensor['sensor_name'], 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_corr'], $sensor['sensor_nightcorr'], $sensor['sensor_draw'], $sensor['sensor_conf'], $sensor['sensor_disabled'], $interface_id ));
+					array(
+						$sensor['sensor_name'],
+						'rpi:1w:'.$sensor['sensor_address'],
+						$sensor['sensor_corr'],
+						$sensor['sensor_nightcorr'],
+						$sensor['sensor_draw'],
+						$sensor['sensor_conf'],
+						$sensor['sensor_disabled'],
+						$interface_id
+						));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
 		{
                         if(!$sensor['sensor_draw'])
-                            $sensor['sensor_draw']=0;
+                            $sensor['sensor_draw']	= 0;
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw, interface_type)
 				     VALUES (?, ?, ?, ?, ?, ?, ?)',
 				     array($interface_id, GetDeviceId('1wire'), 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw'], 1));
@@ -107,8 +122,8 @@ if($_POST)
 		//jesli nazwa na min 2 znaki i gpio już istnieje w tabeli sensors
 		if(strlen($gpio['gpio_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
-			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=? WHERE interface_id=?', 
-				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $interface_id ));
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=?,  interface_draw=? WHERE interface_id=?', 
+				array($gpio['gpio_name'], $gpio['gpio_address'], $gpio['gpio_icon'], $gpio['gpio_draw'], $interface_id ));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj gpio
 		elseif(strlen($gpio['gpio_name'])>1) 
@@ -123,8 +138,10 @@ if($_POST)
 	//RELAYBOARD
 	foreach($_POST['relays'] as $interface_id => $relay)
 	{
-		$db->Execute('UPDATE interfaces SET interface_conf=?, interface_name=?, interface_icon=? WHERE interface_id=?', 
-			array($relay['relay_conf'], $relay['relay_name'], $relay['relay_icon'], $interface_id ));
+		if(!$relay['sensor_draw'])
+                            $relay['sensor_draw']	= 0;
+		$db->Execute('UPDATE interfaces SET interface_conf=?, interface_name=?, interface_icon=?, interface_draw=? WHERE interface_id=?', 
+			array($relay['relay_conf'], $relay['relay_name'], $relay['relay_icon'], $relay['relay_draw'], $interface_id));
 		
 	}
 	

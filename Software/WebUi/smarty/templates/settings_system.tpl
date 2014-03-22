@@ -2,6 +2,12 @@
 <h3>Sensory systemowe:</h3>
 	{if $interfaces.system}
 	<table>
+	<tr>
+		<td colspan="2"></td>
+		<td><img src="img/chart_thumb.png" onmouseover="return overlib('Pokazuj czujnik na wykresie.');" onmouseout="return nd();"></td>
+		<td><img src="img/off_thumb.png"   onmouseover="return overlib('Wyłączenie czujnika. Zaznacz aby wyłączyć.');" onmouseout="return nd();"></td>
+		<td></td>
+	</tr>
 	{foreach from=$interfaces.system key=key item=sensor}
 	<tr>
 	    <td>
