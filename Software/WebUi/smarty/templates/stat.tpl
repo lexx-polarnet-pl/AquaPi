@@ -12,22 +12,27 @@ $(function() {
 	
 	{/literal}
 	interfaces	= [
-			{foreach from=$sensors.temps item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 0, 'spline'], {/foreach}
-			{foreach from=$sensors.ports item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 1, ''], {/foreach}
+			{foreach from=$sensors.temps item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 0, 'spline', '°C', 1], {/foreach}
+			{foreach from=$sensors.ports item=sensor}[{$sensor.interface_id},"{$sensor.interface_name}", 1, '', '', 0], {/foreach}
 			
 	];
 	{literal}
 	colors 		= Highcharts.getOptions().colors;
 
-	$.each(interfaces, function(i, name)
+	$.each(interfaces, function(i, interface_data)
 	{
-		$.getJSON('jsonp.php?interfaceid='+ name[0] +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
+		$.getJSON('jsonp.php?interfaceid='+ interface_data[0] +'{/literal}&limit={$limit}&simplify_graphs={$simplify_graphs}&callback{literal}=?',
 		function(data) {
 			seriesOptions[i] = {
-				name:	name[1],
-				id:	name[0],
-				type:	name[3],
-				yAxis: 	name[2],
+				name:	interface_data[1],
+				id:	interface_data[0],
+				type:	interface_data[3],
+				yAxis: 	interface_data[2],
+				tooltip: {
+					valueDecimals: interface_data[5],
+					valueSuffix: interface_data[4],
+					crosshairs: [true,true]
+				 },
 				data:	data
 			};
 			seriesCounter++;
@@ -77,11 +82,7 @@ $(function() {
 			legend: {
 				enabled: true,
 			},
-			tooltip: {
-				valueDecimals: 1,
-				valueSuffix: '°C',
-				crosshairs: [true,true]
-		        },
+			
 			plotOptions: {
 				line: {
 					//connectNulls: false,
@@ -133,7 +134,8 @@ $(function() {
 				{
 					type: 'all',
 					text: 'All'
-				}]
+				}],
+				selected: 1
 			},
 			series: seriesOptions
 		});
