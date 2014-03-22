@@ -14,7 +14,7 @@
     </tr>
 /foreach-->
 {foreach from=$status.aquapi.devices.device item="device"}
-	{if $device.type == 2 && strpos($device.address, "gpio") !== false}
+	{if $device.type == 2 && (strpos($device.address, "gpio") !== false || strpos($device.address, "dummy") !== false)}
 	<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
 		<td>{$device.name}</td>     
 		<td>	
