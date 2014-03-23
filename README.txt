@@ -1,7 +1,7 @@
 AquaPi
 ======
 
-Ten projekt ma na celu zbudowanie interfeacu (sprzętowego i oprogramowania)
+Ten projekt ma na celu zbudowanie interface'u (sprzętowego i oprogramowania)
 tak, aby zamienić Raspberry Pi w komputer sterujący akwarium.
 
 Wszystkie źródła są objęte licencją GPLv2.
