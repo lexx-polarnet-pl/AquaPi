@@ -65,9 +65,22 @@ jQuery(function($) {
 	/************** end: functions. **************/
 }); // jQuery End
 
-function SetMyPopup(Name,State) {
+function SetMyPopup(Name,id,State) {
 	var pole = document.getElementById('dev_name');
 	pole.innerHTML = Name;
 	var pole = document.getElementById('dev_state');
-	pole.innerHTML = State;	
+	pole.innerHTML = State;
+	document.getElementById('button_on').onclick = function () {
+		jx.load('interface_cmds.php?interface_id='+id+'&action=on',function(data){
+		    alert(data);
+		},'text','post');};
+	document.getElementById('button_off').onclick = function () {
+		jx.load('interface_cmds.php?interface_id='+id+'&action=off',function(data){
+		    alert(data);
+		},'text','post');};
+	document.getElementById('button_auto').onclick = function () {
+		jx.load('interface_cmds.php?interface_id='+id+'&action=auto',function(data){
+		    alert(data);
+		},'text','post');};
+	
 }

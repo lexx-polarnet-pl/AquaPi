@@ -15,6 +15,7 @@
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="js/popup.js"></script>
 <script type="text/javascript" src="js/aquapi.js"></script>
+<script type="text/javascript" src="js/jxs_compressed.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.6&libraries=places&sensor=false"></script>
 </head>
 <body>

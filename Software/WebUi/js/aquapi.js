@@ -7,3 +7,4 @@ function confirmLink(theLink, message)
 	}
 	return is_confirmed;
 }
+
