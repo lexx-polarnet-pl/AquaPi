@@ -49,7 +49,7 @@ float Get_Numeric_From_File(char *sensor_id) {
 	} else {
 		fgets(buff, 50, fp);
 		fclose (fp);	
-		return (float)atoi(buff)/1000;
+		return (float)atof(buff);
 	}
 }
 
@@ -174,9 +174,9 @@ void TCPCommandSysinfo() {
 	fputs("<system>\n",net);
 	sprintf(buff,"<rawtime>%ld</rawtime>\n", rawtime );
 	fputs(buff,net);
-	sprintf(buff,"<cpufreq>%f</cpufreq>\n",Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"));	
+	sprintf(buff,"<cpufreq>%f</cpufreq>\n",Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")/1000);	
 	fputs(buff,net);
-	sprintf(buff,"<cputemp>%f</cputemp>\n",Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp"));
+	sprintf(buff,"<cputemp>%f</cputemp>\n",Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000);
 	fputs(buff,net);
 	fputs("</system>\n",net);
 
