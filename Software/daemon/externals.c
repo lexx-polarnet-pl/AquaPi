@@ -143,13 +143,22 @@ double read_temp(char *sensor_id) {
 					// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
 					pos += 2;
 					temp = (double)atoi(pos)/1000;
-					return temp;
+					// sprawdź jeszcze czy temp to nie przypadkiem 85 stopni (czujnik nie dokończył inicjalizacji)
+					if (temp != 85) {
+						return temp;
+					} else {
+						sprintf(buff,"Nie zainicjowany sensor %s", sensor_id);
+						Log(buff,E_DEV);
+						return -100;
+					}
 				} else {
+					sprintf(buff,"Brak t= przy odczycie sensora %s", sensor_id);
+					Log(buff,E_DEV);				
 					return -100;
 				}
 			} else {
-				//sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
-				//Log(buff,E_WARN);
+				sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
+				Log(buff,E_DEV);
 				return -100;
 			}
 		}
