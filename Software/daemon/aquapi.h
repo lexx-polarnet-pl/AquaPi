@@ -62,7 +62,7 @@ void termination_handler(int signum);
 
 struct _interfaces {
 	int id;
-	char address[30];
+	char address[128];
 	char name[30];
 	int type;
 	int state;
