@@ -243,6 +243,57 @@ CREATE TABLE IF NOT EXISTS `timers` (
 
 -- --------------------------------------------------------
 
+
+--
+-- Struktura tabeli dla tabeli `unitassignments`
+--
+
+DROP TABLE IF EXISTS `unitassignments`;
+CREATE TABLE IF NOT EXISTS `unitassignments` (
+  `unitassignment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unitassignment_interfaceid` int(11) NOT NULL,
+  `unitassignment_unitid` int(11) NOT NULL,
+  PRIMARY KEY (`unitassignment_id`),
+  KEY `unitassignment_interfaceid` (`unitassignment_interfaceid`,`unitassignment_unitid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='tablica par interfejsów i jednostek' AUTO_INCREMENT=33 ;
+
+--
+-- Zrzut danych tabeli `unitassignments`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `units`
+--
+
+DROP TABLE IF EXISTS `units`;
+CREATE TABLE IF NOT EXISTS `units` (
+  `unit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(32) COLLATE utf8_polish_ci NOT NULL,
+  PRIMARY KEY (`unit_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='tablica jednostek' AUTO_INCREMENT=10 ;
+
+--
+-- Zrzut danych tabeli `units`
+--
+
+INSERT INTO `units` (`unit_id`, `unit_name`) VALUES
+(1, '°C'),
+(2, 'pH'),
+(3, 'hPa'),
+(4, 'm/s'),
+(5, 'mm'),
+(6, 's'),
+(7, 'm'),
+(8, 'h'),
+(9, '%');
+
+-- --------------------------------------------------------
+
+
+
 --
 -- Struktura widoku `stats_view`
 --
