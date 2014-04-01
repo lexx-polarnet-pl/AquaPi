@@ -7,10 +7,13 @@
     </div>
 </div>-->
 
+<!--Informacje o sterowniku-->
 {include "index_aquainfo.tpl"}
 
+<!--Sensory-->
 {include "index_1wire.tpl"}
 
+<!--Wyjścia-->
 <div id="dashboard">
     <h3>Wyjścia:</h3>
     <div style="width:49%; float:left;">
@@ -21,11 +24,13 @@
     </div>
 </div>
 
+<!--Komunikaty informacyjne z ostatnich 48h-->
 <div id="dashboard">
     <h3>Komunikaty informacyjne z ostatnich 48h:</h3>
     {include "index_logtable.tpl" logs = $last5infologs}
 </div>
 
+<!--Komunikaty błędów z ostatnich 48h-->
 <div id="dashboard">
     <h3>Komunikaty błędów z ostatnich 48h:</h3>
     {include "index_logtable.tpl" logs = $last5warnlogs}

@@ -82,21 +82,19 @@ $icons		= GetInterfacesIcons();
 unset($status['aquapi']['devices']['device']['0_attr']);
 //new dbug($status);
 
-$smarty->assign('sysinfo', $sysinfo);
-$smarty->assign('enabled', $enabled);
-$smarty->assign('time', date("H:i"));
-$smarty->assign('interfaces', $interfaces);
-$smarty->assign('sensor_master_temp', $sensor_master_temp);
-//$smarty->assign('uname_r', $uname_r);
-//$smarty->assign('uname_v', $uname_v);
-//$smarty->assign('load', $load);
-//$smarty->assign('cputemp', $cputemp);
-$smarty->assign('daemon_data', $daemon_data);
-$smarty->assign('status', $status);
-$smarty->assign('last5infologs', $last5infologs);
-$smarty->assign('last5warnlogs', $last5warnlogs);
-$smarty->assign('icons', $icons);
-//$smarty->assign('devices', $devices);
+$interfaceunits	= GetInterfaceUnits();
+
+$smarty->assign('sysinfo', 		$sysinfo);
+$smarty->assign('enabled', 		$enabled);
+$smarty->assign('time', 		date("H:i"));
+$smarty->assign('interfaces', 		$interfaces);
+$smarty->assign('interfaceunits', 	$interfaceunits);
+$smarty->assign('sensor_master_temp', 	$sensor_master_temp);
+$smarty->assign('daemon_data', 		$daemon_data);
+$smarty->assign('status', 		$status);
+$smarty->assign('last5infologs', 	$last5infologs);
+$smarty->assign('last5warnlogs', 	$last5warnlogs);
+$smarty->assign('icons', 		$icons);
 $smarty->display('index.tpl');
 
 ?>

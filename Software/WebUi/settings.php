@@ -21,15 +21,6 @@
  */
  
 // Requires PHP 5.4 or higher
-//
-//	TODO:
-//
-//	CZUJNIKI WYŁĄCZONE NIE POJAWIAJA SIE W JAKIEJKOLWIEK FORMIE W UI I NIE 
-//	MOZNA ICH PRZEZ TO WŁĄCZYC - POPRAWIC.
-//
-//
-//
-
 
 
 include("init.php");
@@ -103,6 +94,15 @@ if($_POST)
 						$sensor['sensor_disabled'],
 						$interface_id
 						));
+			
+			//jesli podano jednostke dla sensora zaktualizuj jesli nie to skasuj ew wpis
+			if($sensor['sensor_unit'])
+			{
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', array($sensor['sensor_unit'], $interface_id));
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($sensor['sensor_unit'], $interface_id));
+			}
+			else
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', array($sensor['sensor_unit'], $interface_id));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
 		elseif(strlen($sensor['sensor_name'])>1) 
@@ -112,7 +112,13 @@ if($_POST)
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw, interface_type)
 				     VALUES (?, ?, ?, ?, ?, ?, ?)',
 				     array($interface_id, GetDeviceId('1wire'), 'rpi:1w:'.$sensor['sensor_address'], $sensor['sensor_name'], $sensor['sensor_corr'], $sensor['sensor_draw'], 1));
+			
+			//jesli podano jednostke dla sensora dodaj wpis
+			if($sensor['sensor_unit'])
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($sensor['sensor_unit'], $interface_id));
 		}
+		
+		
 		
 	}
 	
@@ -153,6 +159,15 @@ if($_POST)
 		{
 			$db->Execute('UPDATE interfaces SET interface_name=?, interface_conf=? WHERE interface_id=?', 
 				array($dummy['dummy_name'], $dummy['dummy_conf'], $interface_id ));
+			
+			//jesli podano jednostke dla sensora zaktualizuj jesli nie to skasuj ew wpis
+			if($dummy['dummy_unit'])
+			{
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', array($dummy['dummy_unit'], $interface_id));
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($dummy['dummy_unit'], $interface_id));
+			}
+			else
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', array($dummy['dummy_unit'], $interface_id));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj dummy
 		elseif(strlen($dummy['dummy_name'])>1) 
@@ -160,28 +175,45 @@ if($_POST)
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_conf, interface_type)
 				     VALUES (?, ?, ?, ?, ?, ?)',
 				     array($interface_id, GetDeviceId('dummy'), 'dummy:'.$dummy['dummy_address'], $dummy['dummy_name'], $dummy['dummy_conf'], 1));
+			
+			//jesli podano jednostke dla sensora dodaj wpis
+			if($dummy['dummy_unit'])
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($dummy['dummy_unit'], $interface_id));
 		}
 	}
 	
 	//SYSTEM
-	foreach($_POST['system'] as $interface_id => $sensor)
+	foreach($_POST['system'] as $interface_id => $system)
 	{
 		//jesli nazwa na min 2 znaki i sensor już istnieje w tabeli sensors
-		if(strlen($sensor['sensor_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
+		if(strlen($system['system_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
 		{
 			$db->Execute('UPDATE interfaces
 					SET interface_name=?, interface_address=?, interface_corr=?, interface_nightcorr=?, interface_draw=?, interface_conf=?, interface_disabled=?
 					WHERE interface_id=?', 
-					array($sensor['sensor_name'], $sensor['sensor_address'], 0, 0, $sensor['sensor_draw'], 0, $sensor['sensor_disabled'], $interface_id ));
+					array($system['system_name'], $system['system_address'], 0, 0, $system['system_draw'], 0, $system['system_disabled'], $interface_id ));
+			
+			//jesli podano jednostke dla sensora zaktualizuj jesli nie to skasuj ew wpis
+			if($system['system_unit'])
+			{
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', 	array($system['system_unit'], $interface_id));
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', 	array($system['system_unit'], $interface_id));
+			}
+			else
+				$db->Execute('DELETE FROM unitassignments WHERE unitassignment_unitid=? AND unitassignment_interfaceid=?', 	array($system['system_unit'], $interface_id));
 		}
 		//jesli nie istnieje i jest podana nazwa dodaj czujnik
-		elseif(strlen($sensor['sensor_name'])>1) 
+		elseif(strlen($system['system_name'])>1) 
 		{
-                        if(!$sensor['sensor_draw'])
-                            $sensor['sensor_draw']=0;
+                        if(!$system['system_draw'])
+                            $system['system_draw']=0;
 			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw)
 				     VALUES (?, ?, ?, ?, ?, ?)',
-				     array($interface_id, GetDeviceId('system'), $sensor['sensor_address'], $sensor['sensor_name'], 0, $sensor['sensor_draw']));
+				     array($interface_id, GetDeviceId('system'), $system['system_address'], $system['system_name'], 0, $system['system_draw']));
+			
+			//jesli podano jednostke dla sensora dodaj wpis
+			if($system['system_unit'])
+				$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', 	array($system['system_unit'], $interface_id));
 		}
 		
 	}
@@ -193,6 +225,7 @@ if($_POST)
 
 $devices 	= GetDevices();
 $interfaces	= GetInterfaces();
+$units		= GetUnits();
 
 //wyłaczenie relayboard jesli nie jest aktywne w konfigu
 if($CONFIG['plugins']['relayboard']==0)
@@ -228,6 +261,7 @@ if(isset($sensors_fs))
 //new dBug($interfaces);
 $smarty->assign('new_interface_id',	$db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', 		$devices);
+$smarty->assign('units', 		$units);
 $smarty->assign('icons', 		$icons);
 $smarty->assign('interfaces', 		$interfaces);
 $smarty->assign('simplify_graphs', 	$CONFIG['simplify_graphs']);

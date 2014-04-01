@@ -58,10 +58,34 @@ function GetInterfaces()
 	
 	foreach($interfaces as $index => $interface)
 	{
-		$addressshort=explode(':',$interface['interface_address']);
-		$interface['interface_addressshort']=$addressshort[2];
-		$interface['interface_addressshortnext']=$addressshort[2]+1;
+		$addressshort				= explode(':',$interface['interface_address']);
+		if(isset($addressshort[2]))
+		{
+		    $interface['interface_addressshort']	= $addressshort[2];
+		    $interface['interface_addressshortnext']	= $addressshort[2]+1;
+		}
+		
+		$interface['interface_unit']=$db->GetRow('SELECT unit_id, unit_name
+							 FROM unitassignments, units
+							 WHERE unit_id = unitassignment_unitid AND unitassignment_interfaceid=?', array($interface['interface_id']));
+		
 		$tmp[$interface['device_name']][]=$interface;
+	}
+	return($tmp);
+}
+
+function GetInterfaceUnits()
+{
+	global $db;
+	$interfaces	= $db->GetAll('SELECT interface_id FROM interfaces i
+						WHERE interface_deleted=0 
+						ORDER BY interface_address ASC');
+	
+	foreach($interfaces as $index => $interface)
+	{
+	    $tmp[$interface['interface_id']]	= $db->GetRow('SELECT unit_id, unit_name
+							FROM unitassignments, units
+							WHERE unit_id = unitassignment_unitid AND unitassignment_interfaceid=?', array($interface['interface_id']));
 	}
 	return($tmp);
 }
@@ -73,7 +97,7 @@ function GetInterfacesIcons()
 	
 	foreach($interfaces as $index => $interface)
 	{
-		$tmp[$interface['interface_id']]=$interface['interface_icon'];
+		$tmp[$interface['interface_id']]	= $interface['interface_icon'];
 	}
 	return($tmp);
 }
@@ -84,6 +108,13 @@ function GetDevices()
 	return $db->GetAll('SELECT * FROM devices
 				WHERE device_id>0 AND device_deleted=0');
 }
+
+function GetUnits()
+{
+	global $db;
+	return $db->GetAll('SELECT * FROM units');
+}
+
 
 function GetDeviceId($name)
 {
