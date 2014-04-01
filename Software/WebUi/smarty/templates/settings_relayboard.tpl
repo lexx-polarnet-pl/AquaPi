@@ -14,7 +14,7 @@
 		<td>
 			<input class="long" name="relays[{$relay.interface_id}][relay_name]" value="{$relay.interface_name}"
 					onmouseover="return overlib('Podaj nową nazwę przekaźnika. Minimum 2 litery.');"
-					onmouseout="return nd();">
+					onmouseout="return nd();"><span style="font-size:xx-small;">(id:{$relay.interface_id})</span>
 		</td>
 		<td style="width: 75px; text-align: right;">
 		    <img src="img/{$relay.interface_icon}">

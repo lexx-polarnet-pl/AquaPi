@@ -10,7 +10,7 @@
 			<td>
 				<input class="long" name="dummies[{$dummy.interface_id}][dummy_name]" value="{$dummy.interface_name}"
 					    onmouseover="return overlib('Podaj nową nazwę gpio. Minimum 2 znaki.');"
-					    onmouseout="return nd();">
+					    onmouseout="return nd();"><span style="font-size:xx-small;">(id:{$dummy.interface_id})</span>
 			</td>
 			<td>
 				&nbsp;Wartość:

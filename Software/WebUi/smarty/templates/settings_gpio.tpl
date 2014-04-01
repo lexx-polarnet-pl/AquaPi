@@ -15,7 +15,7 @@
 			<td>
 				<input class="long" name="gpios[{$gpio.interface_id}][gpio_name]" value="{$gpio.interface_name}"
 					    onmouseover="return overlib('Podaj nową nazwę gpio. Minimum 2 znaki.');"
-					    onmouseout="return nd();">
+					    onmouseout="return nd();"><span style="font-size:xx-small;">(id:{$gpio.interface_id})</span>
 			</td>
 			<td>
 				&nbsp;Pin:

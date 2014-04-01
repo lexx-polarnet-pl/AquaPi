@@ -14,7 +14,7 @@
 	    <td>
 		<input class="long" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} name="sensors[{$sensor.interface_id}][sensor_name]" value="{$sensor.interface_name}"
 				onmouseover="return overlib('Podaj nową nazwę czujnika. Minimum 2 znaki.');"
-				onmouseout="return nd();">
+				onmouseout="return nd();"><span style="font-size:xx-small;">(id:{$sensor.interface_id})</span>
 	    </td>
 	    <td>
 		<select name="sensors[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]" {if $sensor.interface_disabled eq 1}disabled style="color:grey"{/if}

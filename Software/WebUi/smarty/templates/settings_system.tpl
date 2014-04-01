@@ -13,10 +13,10 @@
 	    <td>
 		<input class="long" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} name="system[{$sensor.interface_id}][sensor_name]" value="{$sensor.interface_name}"
 		    onmouseover="return overlib('Podaj nową nazwę czujnika. Minimum 2 znaki.');"
-		    onmouseout="return nd();">
+		    onmouseout="return nd();"><span style="font-size:xx-small;">(id:{$sensor.interface_id})</span>
 	    </td>
 	    <td>
-		<input class="medium" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} type="text" name="system[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
+		<input class="long" {if $sensor.interface_disabled eq 1}style="color:grey" readonly="readonly"{/if} type="text" name="system[{$sensor.interface_id}][sensor_address]" id="sensors[{$sensor.interface_id}][sensor_address]"
 		    value="{$sensor.interface_address}"
 		    onmouseover="return overlib('Wprowadź ręcznie adres czujnika');"
 		    onmouseout="return nd();">
@@ -53,7 +53,7 @@
 		    onmouseout="return nd();">
 	    </td>
 	    <td>
-		<input class="medium" type="text" name="system[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"
+		<input class="long" type="text" name="system[{$new_interface_id}][sensor_address]" id="sensors[{$new_interface_id}][sensor_address]"
 		    value="" onmouseover="return overlib('Wprowadź ręcznie adres nowego czujnika');"
 		    onmouseout="return nd();">
 	    </td>
