@@ -52,6 +52,45 @@ INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_de
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `gpios`
+--
+
+DROP TABLE IF EXISTS `gpios`;
+CREATE TABLE IF NOT EXISTS `gpios` (
+  `gpio_id` int(11) NOT NULL AUTO_INCREMENT,
+  `gpio_revision` tinyint(4) NOT NULL,
+  `gpio_pin` tinyint(4) NOT NULL,
+  `gpio_number` tinyint(4) NOT NULL,
+  PRIMARY KEY (`gpio_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='lista pinów gpio' AUTO_INCREMENT=17 ;
+
+--
+-- Zrzut danych tabeli `gpios`
+--
+
+INSERT INTO `gpios` (`gpio_id`, `gpio_revision`, `gpio_pin`, `gpio_number`) VALUES
+(1, 1, 7, 4),
+(2, 1, 11, 17),
+(3, 1, 13, 21),
+(4, 1, 15, 22),
+(5, 1, 12, 18),
+(6, 1, 16, 23),
+(7, 1, 18, 24),
+(8, 1, 22, 25),
+(9, 2, 7, 4),
+(10, 2, 11, 17),
+(11, 2, 13, 27),
+(12, 2, 15, 22),
+(13, 2, 12, 18),
+(14, 2, 16, 23),
+(15, 2, 18, 24),
+(16, 2, 22, 25);
+
+-- --------------------------------------------------------
+
+
+
+--
 -- Struktura tabeli dla tabeli `interfaces`
 --
 -- Tworzenie: 18 Mar 2014, 10:08
