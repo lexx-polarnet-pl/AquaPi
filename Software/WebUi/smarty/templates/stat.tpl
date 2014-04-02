@@ -27,6 +27,7 @@ $(function() {
 				id:	interface_data[0],
 				type:	interface_data[3],
 				yAxis: 	interface_data[2],
+				connectNulls: false, 
 				tooltip: {
 					valueDecimals: interface_data[5],
 					valueSuffix: interface_data[4],
@@ -80,13 +81,6 @@ $(function() {
 			},
 			legend: {
 				enabled: true,
-			},
-			
-			plotOptions: {
-				line: {
-					//connectNulls: false,
-					//gapSize: 1
-				}
 			},
 			rangeSelector: {
 				buttons: [

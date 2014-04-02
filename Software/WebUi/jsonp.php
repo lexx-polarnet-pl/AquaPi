@@ -34,6 +34,8 @@ if($_GET['simplify_graphs']==1)
 if(isset($stats))
 foreach ($stats as $stat)
 {
+    if($stat['N']==NULL)
+	$stat['N']	= 'null';
     $dane .= '[' . $stat['E'] . '000,' . $stat['N'] . '],';
 }
 
