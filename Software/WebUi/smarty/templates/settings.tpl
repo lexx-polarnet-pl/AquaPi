@@ -156,7 +156,7 @@ $(function() {
 	<input type="input" id="location_tmp" value="{$CONFIG.location}"
 			onmouseover="return overlib('W jakim mieście znajduje się system. Umożliwia wyświetlenie temperatury na wykresach.');"
 			onmouseout="return nd();" onkeydown="checklen()">
-	<input type="hidden" name="location" id="location" >
+	<input type="hidden" name="location" id="location" value="{$CONFIG.location}">
 		
 	<div id="linkdiv" style="display: none">
 		<a id="link" href="">sprawdź poprawność nazwy</a>
