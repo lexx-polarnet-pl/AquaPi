@@ -6,13 +6,13 @@ $weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5
 
 if(isset($argv['1']))
 {
-    $file = '/tmp/gdansk.temp';
+    $file = '/tmp/city.temp';
     file_put_contents($file, $weather->main->temp);
 
-    $file = '/tmp/gdansk.pressure';
+    $file = '/tmp/city.pressure';
     file_put_contents($file, $weather->main->pressure);
 
-    $file = '/tmp/gdansk.humidity';
+    $file = '/tmp/city.humidity';
     file_put_contents($file, $weather->main->humidity);
 }
 

@@ -25,6 +25,7 @@ include("init.php");
 $count  = 30;
 $start  = 0;
 $period = $CONFIG['webui']['purge_logs'] * 24 * 60 * 60; //30 dni
+$db->Execute('DELETE FROM logs WHERE log_date<?', array(time() - $period));
 
 if(isset($_GET['offset']))
 {
@@ -36,7 +37,6 @@ $r      = $db->GetOne('select count(*) from logs;');
 $pages  = ceil($r/$count);
 
 $logs   = $db->GetAll('SELECT * FROM logs ORDER BY log_date DESC LIMIT ?, ?', array($start, $end));
-$db->Execute('DELETE FROM logs WHERE log_date<?', array(time() - $period));
 
 $smarty->assign('title', 'Zdarzenia systemowe');
 $smarty->assign('logs', $logs);
