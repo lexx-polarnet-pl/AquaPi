@@ -88,7 +88,7 @@
 				<option value="1">></option>
 				<option value="2"><</option>
 			</select>
-			<input class="vshort" type="text" name="value" id="value" value="26" /><small><small>(&plusmn;{$CONFIG.hysteresis})</small></small>&deg;C
+			<input class="vshort" type="text" name="value" id="value" value="26" />
 			<input type="hidden" name="type" id="type" value="2" />
 		</td>
 	</tr>	
@@ -167,7 +167,7 @@
 		{/foreach}
 		{foreach from=$timers.1wire item="entry"}
 		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-			    <td>Jeśli czujnik "{$entry.timer_interfaceifname}" wskazał {if $entry.timer_direction eq 1}>{else}<{/if} {$entry.timer_value}<small><small>(&plusmn;{$CONFIG.hysteresis})</small></small>&deg;C,</td>
+			    <td>Jeśli czujnik "{$entry.timer_interfaceifname}" wskazał {if $entry.timer_direction eq 1}>{else}<{/if} {$entry.timer_value}</td>
 			    <td>{if $entry.timer_action eq 1}włącz{else}wyłącz{/if}</td>
 			    <td>{$entry.timer_interfacethenname}</td>
 			    <td align="center">{if $entry.timer_days.1 eq 1}x{/if}</td>
