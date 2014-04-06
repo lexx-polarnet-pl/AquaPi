@@ -106,11 +106,11 @@ function GetMasterInterfaceId()
 {
 	global $db;
 	return $db->GetOne('SELECT interface_id FROM interfaces i, devices d
-						WHERE i.interface_deviceid=d.device_id
-						AND interface_deleted=0 
-						AND device_id>0 AND device_deleted=0 AND device_disabled=0 
-						AND interface_conf=? AND device_name=?
-						ORDER BY interface_address ASC', array(1, '1wire'));
+				WHERE i.interface_deviceid=d.device_id
+				AND interface_deleted=0 
+				AND device_id>0 AND device_deleted=0 AND device_disabled=0 
+				AND interface_conf=? AND device_name=?
+				ORDER BY interface_address ASC', array(1, '1wire'));
 	
 
 }
@@ -233,7 +233,7 @@ function AddTimer($timer)
 	global $db;
 	//new dBug($timer);
 	//czasowy
-	if($timer['type']==1)
+	if($timer['type']==1 or $timer['type']==3)
 	{
 		$db->Execute('INSERT INTO timers
 					(timer_type,
@@ -252,7 +252,7 @@ function AddTimer($timer)
 					$timer['days'],
 				));
 	}
-	elseif($timer['type']==2)
+	elseif($timer['type']==2  or $timer['type']==4)
 	{
 		$db->Execute('INSERT INTO timers
 					(timer_type,
