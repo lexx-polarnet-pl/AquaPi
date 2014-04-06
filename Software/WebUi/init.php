@@ -32,7 +32,7 @@ if ($CONFIG['webui']['purge_logs'] < 3 or !isset($CONFIG['webui']['purge_logs'])
 date_default_timezone_set("Europe/Warsaw");
 date_default_timezone_set('UTC');
 
-define('MAIN_DIR', getcwd().'/');
+define('MAIN_DIR', $CONFIG['webui']['directory'].'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
 define('IMG_DIR', MAIN_DIR.'img/');
 define('MODULES_DIR', MAIN_DIR.'modules/');

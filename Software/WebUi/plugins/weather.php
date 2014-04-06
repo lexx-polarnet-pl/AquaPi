@@ -1,7 +1,13 @@
 #!/usr/bin/php
 <?php
-$city		= 'Gda%C5%84sk';
-$weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$city.'&units=metric'));
+$CONFIG 	= parse_ini_file("/etc/aquapi.ini", true);
+require($CONFIG['webui']['directory'].'/init.php');
+
+
+//print_r($CONFIG);die;
+
+//$city		= 'Gda%C5%84sk';
+$weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$CONFIG['location'].'&units=metric'));
 
 
 if(isset($argv['1']))
