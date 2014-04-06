@@ -81,7 +81,7 @@ $icons		= GetInterfacesIcons();
 
 unset($status['aquapi']['devices']['device']['0_attr']);
 //new dbug($status);
-
+//new dbug($interfaces);
 $interfaceunits	= GetInterfaceUnits();
 
 $smarty->assign('sysinfo', 		$sysinfo);
@@ -89,6 +89,7 @@ $smarty->assign('enabled', 		$enabled);
 $smarty->assign('time', 		date("H:i"));
 $smarty->assign('interfaces', 		$interfaces);
 $smarty->assign('interfaceunits', 	$interfaceunits);
+$smarty->assign('masterinterfaceid', 	GetMasterInterfaceId());
 $smarty->assign('sensor_master_temp', 	$sensor_master_temp);
 $smarty->assign('daemon_data', 		$daemon_data);
 $smarty->assign('status', 		$status);

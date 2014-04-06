@@ -102,6 +102,19 @@ function GetInterfacesIcons()
 	return($tmp);
 }
 
+function GetMasterInterfaceId()
+{
+	global $db;
+	return $db->GetOne('SELECT interface_id FROM interfaces i, devices d
+						WHERE i.interface_deviceid=d.device_id
+						AND interface_deleted=0 
+						AND device_id>0 AND device_deleted=0 AND device_disabled=0 
+						AND interface_conf=? AND device_name=?
+						ORDER BY interface_address ASC', array(1, '1wire'));
+	
+
+}
+
 function GetDevices()
 {
 	global $db;
