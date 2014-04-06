@@ -6,12 +6,12 @@ require($CONFIG['webui']['directory'].'/init.php');
 
 //print_r($CONFIG);die;
 
-//$city		= 'Gda%C5%84sk';
-$weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$CONFIG['location'].'&units=metric'));
-
-
-if(isset($argv['1']))
+if(isset($CONFIG['location']))
 {
+
+    $weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$CONFIG['location'].'&units=metric'));
+
+
     $file = '/tmp/city.temp';
     file_put_contents($file, $weather->main->temp);
 
