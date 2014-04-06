@@ -25,7 +25,11 @@ $aquapi_ver = "1.9-devel";
 
 // Wczytanie pliku z ustawieniami
 $CONFIG = parse_ini_file("/etc/aquapi.ini", true);
-if ($CONFIG['webui']['purge_logs'] < 3 or !isset($CONFIG['webui']['purge_logs']))
+
+if (!isset($CONFIG['webui']['purge_logs']))
+    $CONFIG['webui']['purge_logs'] = 3;
+
+if ($CONFIG['webui']['purge_logs'] < 3)
     $CONFIG['webui']['purge_logs'] = 3;
 
 // ustawienie odpowiedniej strefy czasowej
@@ -47,7 +51,7 @@ if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
 if(!is_readable('/dev/vchiq') and file_exists('/dev/vchiq'))
-	die('Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.');
+	echo 'Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.';
 	
 //if(!is_writable(IMG_DIR))
 //        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
