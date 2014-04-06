@@ -141,6 +141,24 @@ if($_POST)
 		
 	}
 
+	//PWM
+	foreach($_POST['pwms'] as $interface_id => $pwm)
+	{
+		//jesli nazwa na min 2 znaki i pwm już istnieje w tabeli sensors
+		if(strlen($pwm['pwm_name'])>1 and $db->GetOne('SELECT 1 FROM interfaces WHERE interface_id=?', array($interface_id))=="1") 
+		{
+			$db->Execute('UPDATE interfaces SET interface_name=?, interface_address=?, interface_icon=?,  interface_draw=? WHERE interface_id=?', 
+				array($pwm['pwm_name'], $pwm['pwm_address'], $pwm['pwm_icon'], $pwm['pwm_draw'], $interface_id ));
+		}
+		//jesli nie istnieje i jest podana nazwa dodaj pwm
+		elseif(strlen($pwm['pwm_name'])>1) 
+		{
+			$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_icon)
+				     VALUES (?, ?, ?, ?, ?)',
+				     array($interface_id, GetDeviceId('pwm'), $pwm['pwm_address'], $pwm['pwm_name'], 'device.png'));
+		}
+	}
+	
 	//RELAYBOARD
 	foreach($_POST['relays'] as $interface_id => $relay)
 	{
