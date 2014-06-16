@@ -100,7 +100,7 @@ function AddNote($note)
 function DeleteNote($note)
 {
 	global $db;
-	$db->Execute('DELETE FROM notes WHERE note_id=?',
+	$db->Execute('UPDATE notes SET note_deleted=1 WHERE note_id=?',
 			array(
 				$note['id'],
 			));
