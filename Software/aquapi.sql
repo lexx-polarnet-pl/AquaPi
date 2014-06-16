@@ -291,9 +291,20 @@ INSERT INTO `units` (`unit_id`, `unit_name`) VALUES
 (8, 'h'),
 (9, '%');
 
+
+--
+-- Table structure for table `notes`
+--
+
+CREATE TABLE IF NOT EXISTS `notes` (
+  `note_id` int(11) NOT NULL AUTO_INCREMENT,
+  `note_title` varchar(128) COLLATE utf8_polish_ci DEFAULT NULL,
+  `note_content` text COLLATE utf8_polish_ci NOT NULL,
+  `note_deleted` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`note_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1;
+
 -- --------------------------------------------------------
-
-
 
 --
 -- Struktura widoku `stats_view`
