@@ -20,32 +20,28 @@
  *
  */
 
-class Session {
+include("init.php");
 
-        function Session()
-        {
-                session_start();
-        }
+//new dBug($_GET);
+$smarty->assign('title', 'Notatki');
 
-        function save($variable, $content)
-        {
-                $_SESSION[$variable] = $content;
-        }
-
-        function restore($variable, &$content)
-        {
-                if(isset($_SESSION[$variable]))
-                        $content = $_SESSION[$variable];
-                else
-                        $content = NULL;
-        }
-
-        function redirect($location)
-        {
-                header('Location: '.$location);
-                die;
-        }
-
+if ($_GET['action'] == 'add')
+{
+	AddNote($_POST);
+	$SESSION->redirect('notes.php');
 }
 
+if ($_GET['action'] == 'delete')
+{
+	DeleteNote($_GET);
+	$SESSION->redirect('notes.php');
+}
+
+$notes         = GetNotes();
+
+
+//new dBug($notes);
+
+$smarty->assign('notes', $notes);
+$smarty->display('notes.tpl');
 ?>

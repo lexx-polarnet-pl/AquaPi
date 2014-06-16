@@ -52,7 +52,12 @@ if(!is_writable(SMARTY_COMPILE_DIR))
 
 if(!is_readable('/dev/vchiq') and file_exists('/dev/vchiq'))
 	die('Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.');
-	
+
+if (!ini_get('short_open_tag'))
+{
+	$inipath = php_ini_loaded_file();
+	die('Can\'t use some of php files. Change "<i>short_open_tag</i>" to "<B>On</B>" in your php.ini ('.$inipath.').');
+}
 //if(!is_writable(IMG_DIR))
 //        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
 	
@@ -107,6 +112,7 @@ $my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers
 $my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Notatki", 		"icon" => "notes.png", 		"url" => "notes.php",	"acl" => "r"    , "reload" => 1);
 if($CONFIG['plugins']['camera']==1)
     $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);

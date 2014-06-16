@@ -17,6 +17,7 @@
 <script type="text/javascript" src="js/aquapi.js"></script>
 <script type="text/javascript" src="js/jxs_compressed.js"></script>
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.6&libraries=places&sensor=false"></script>
+<link  href="http://fonts.googleapis.com/css?family=Reenie+Beanie:regular" rel="stylesheet" type="text/css"> 
 </head>
 <body>
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>

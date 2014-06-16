@@ -10,16 +10,20 @@ if(isset($CONFIG['location']))
 {
 
     $weather	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$CONFIG['location'].'&units=metric'));
+    $weather2	= json_decode(file_get_contents('http://api.openweathermap.org/data/2.5/weather?q='.$CONFIG['location'].'&units=metric'));
 
 
     $file = '/tmp/city.temp';
-    file_put_contents($file, $weather->main->temp);
+    if($weather->main->temp == $weather2->main->temp)
+	file_put_contents($file, $weather->main->temp);
 
     $file = '/tmp/city.pressure';
-    file_put_contents($file, $weather->main->pressure);
+    if($weather->main->pressure == $weather2->main->pressure)
+	file_put_contents($file, $weather->main->pressure);
 
     $file = '/tmp/city.humidity';
-    file_put_contents($file, $weather->main->humidity);
+    if($weather->main->humidity == $weather2->main->humidity)
+	    file_put_contents($file, $weather->main->humidity);
 }
 
 

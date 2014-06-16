@@ -1,4 +1,4 @@
-<?
+<?php
 function array_msort($array, $cols)
 {
     $colarr = array();
@@ -54,11 +54,11 @@ function GetInterfaces()
 						WHERE i.interface_deviceid=d.device_id
 						AND interface_deleted=0 
 						AND device_id>0 AND device_deleted=0 AND device_disabled=0
-						ORDER BY interface_address ASC');
+						ORDER BY interface_id ASC');
 	
 	foreach($interfaces as $index => $interface)
 	{
-		$addressshort				= explode(':',$interface['interface_address']);
+		$addressshort				= explode(':', $interface['interface_address']);
 		if(isset($addressshort[2]))
 		{
 		    $interface['interface_addressshort']	= $addressshort[2];
@@ -72,6 +72,38 @@ function GetInterfaces()
 		$tmp[$interface['device_name']][]=$interface;
 	}
 	return($tmp);
+}
+
+function GetNotes()
+{
+	global $db;
+	$notes	= $db->GetAll('SELECT * FROM notes n
+					WHERE note_deleted=0
+					ORDER BY note_id ASC');
+	
+	return($notes);
+}
+
+function AddNote($note)
+{
+	global $db;
+	$db->Execute('INSERT INTO notes
+				(note_title,
+				 note_content)
+			VALUES (?,?)',
+			array(
+				$note['title'],
+				$note['content'],
+			));
+}
+
+function DeleteNote($note)
+{
+	global $db;
+	$db->Execute('DELETE FROM notes WHERE note_id=?',
+			array(
+				$note['id'],
+			));
 }
 
 function GetInterfaceUnits()
