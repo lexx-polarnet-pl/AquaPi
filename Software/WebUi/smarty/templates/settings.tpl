@@ -161,7 +161,11 @@ $(function() {
 	<div id="linkdiv" style="display: none">
 		<a id="link" href="">sprawdź poprawność nazwy</a>
 	</div>
-		
+	<hr>
+	<h3>Kalendarz:</h3>
+	<input type="input" id="calendar_id" value="{$CONFIG.calendar_id}" style="width:400px;"
+			onmouseover="return overlib('Identyfikator kalendarza.');"
+			onmouseout="return nd();" >
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 

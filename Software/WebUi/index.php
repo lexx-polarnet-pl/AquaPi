@@ -19,7 +19,7 @@
  * USA.
  *
  */
- 
+
 include("init.php");
 
 // spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
