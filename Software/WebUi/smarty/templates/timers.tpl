@@ -272,7 +272,7 @@
 		<!--ZDARZENIA CZASOWE-->
 		{foreach from=$timers.time item="entry"}
 		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-			    <td>O godzinie {if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|date_format:"%H:%M:%S"}{/if} </td>
+			    <td>O godzinie {if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if} </td>
 			    <td>{if $entry.timer_action eq 1}włącz{else}wyłącz{/if}</td>
 			    <td>{$entry.timer_interfacethenname}</td>
 			    <td align="center">{if $entry.timer_days.1 eq 1}x{/if}</td>
@@ -314,7 +314,7 @@
 		<!--ZDARZENIA CZASOWE PWM-->
 		{foreach from=$timers.timepwm item="entry"}
 		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-			    <td>O godzinie {if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|date_format:"%H:%M:%S"}{/if} </td>
+			    <td>O godzinie {if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if} </td>
 			    <td>{$entry.timer_action}%</td>
 			    <td>{$entry.timer_interfacethenname}</td>
 			    <td align="center">{if $entry.timer_days.1 eq 1}x{/if}</td>
