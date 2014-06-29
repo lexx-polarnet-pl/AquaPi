@@ -163,9 +163,9 @@ $(function() {
 	</div>
 	<hr>
 	<h3>Kalendarz:</h3>
-	<input type="input" id="calendar_id" name="calendar_id" value="{$CONFIG.calendar_id}" style="width:400px;"
-			onmouseover="return overlib('Identyfikator kalendarza.');"
-			onmouseout="return nd();" >
+	<input type="input" id="calendar_days" name="calendar_days" value="{$CONFIG.calendar_days}" style="width:100px;"
+		onmouseover="return overlib('Z jakiego okresu pokazywać nadchodzące wydarzenia?');"
+		onmouseout="return nd();" >
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 

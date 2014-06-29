@@ -69,6 +69,8 @@ $last5warnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_da
 $sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
 //new dbug($sysinfo);
 
+$events 	= $db->GetAll('SELECT * FROM calendar_occurrences o, calendar_events e WHERE e.eid = o.eid AND DATE_ADD( CURDATE( ) , INTERVAL ? DAY ) >= start_ts', array($CONFIG['calendar_days']));
+
 $uptime 	= exec("cat /proc/uptime | awk '{ print $1 }'");
 $enabled 	= date("d.m.Y H:i",time() - $sysinfo['aquapi']['sysinfo']['uptime']);
 //$uname_r 	= php_uname("r");
@@ -96,6 +98,7 @@ $smarty->assign('status', 		$status);
 $smarty->assign('last5infologs', 	$last5infologs);
 $smarty->assign('last5warnlogs', 	$last5warnlogs);
 $smarty->assign('icons', 		$icons);
+$smarty->assign('events', 		$events);
 $smarty->display('index.tpl');
 
 ?>
