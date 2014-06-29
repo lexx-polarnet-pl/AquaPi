@@ -1,6 +1,6 @@
 <div id="dashboard_gpio" style="display: none">
 	<h3>GPIO przyjazne nazwy wyjść:</h3>
-	{if $interfaces.gpio}
+	{if $devices_status.gpio eq 0}
 	<table>
 		<tr>
 			<td colspan="6"></td>

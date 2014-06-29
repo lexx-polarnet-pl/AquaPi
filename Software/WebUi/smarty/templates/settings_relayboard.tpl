@@ -1,6 +1,6 @@
 <div id="dashboard_relayboard" style="display: none">
 	<h3>Relayboard:</h3>
-	{if $interfaces.relayboard}
+	{if $devices_status.relayboard eq 0}
 	<table>
 	<tr>
 		<td colspan="5"></td>

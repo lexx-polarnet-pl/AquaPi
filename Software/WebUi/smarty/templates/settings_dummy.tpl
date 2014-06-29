@@ -1,6 +1,6 @@
 <div id="dashboard_dummy" style="display: none">
 	<h3>Czujniki statyczne:</h3>
-	{if $interfaces.dummy}
+	{if $devices_status.dummy eq 0}
 	<table>
 		{foreach from=$interfaces.dummy key=key item=dummy}
 		<tr>

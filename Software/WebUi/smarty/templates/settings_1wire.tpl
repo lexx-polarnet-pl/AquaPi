@@ -1,6 +1,6 @@
 <div id="dashboard_1wire" style="display: none">
 <h3>Ustawienia sensorów temperatury:</h3>
-	{if $interfaces.1wire}
+	{if $devices_status.1wire eq 0}
 	<table>
 	<tr>
 	    <td colspan="3"></td>

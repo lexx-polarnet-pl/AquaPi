@@ -245,6 +245,12 @@ $devices 	= GetDevices();
 $interfaces	= GetInterfaces();
 $units		= GetUnits();
 
+foreach($devices as $index => $device)
+{
+	$tmp[$device['device_name']]	= $device['device_disabled'];
+}
+$devices_status	= $tmp;
+
 //wyłaczenie relayboard jesli nie jest aktywne w konfigu
 if($CONFIG['plugins']['relayboard']==0)
 {
@@ -277,8 +283,10 @@ if(isset($sensors_fs))
 
 
 //new dBug($interfaces);
+//new dBug($devices_status);
 $smarty->assign('new_interface_id',	$db->GetOne("select max(interface_id)+1 from interfaces"));
 $smarty->assign('devices', 		$devices);
+$smarty->assign('devices_status', 	$devices_status);
 $smarty->assign('units', 		$units);
 $smarty->assign('icons', 		$icons);
 $smarty->assign('interfaces', 		$interfaces);

@@ -1,6 +1,6 @@
 <div id="dashboard_system" style="display: none">
 <h3>Sensory systemowe:</h3>
-	{if $interfaces.system}
+	{if $devices_status.system eq 0}
 	<table>
 	<tr>
 		<td colspan="3"></td>

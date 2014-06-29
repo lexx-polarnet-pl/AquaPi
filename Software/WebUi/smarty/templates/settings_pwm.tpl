@@ -1,6 +1,7 @@
 <div id="dashboard_pwm" style="display: none">
 	<h3>PWM:</h3>
-	{if $interfaces.pwm}
+	{if $devices_status.pwm eq 0}
+
 	<table>
 		<tr>
 			<td colspan="7"></td>
