@@ -183,7 +183,7 @@ INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(5, 
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(23, 'demon_last_activity', '1394977489');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(28, 'simplify_graphs', '0');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(29, 'max_daemon_inactivity', '180');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(30, 'db_version', '20140318');
+INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(30, 'db_version', '20140629');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(31, 'location', 'Gdańsk');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(32, 'calendar_days', '14');
 -- --------------------------------------------------------
