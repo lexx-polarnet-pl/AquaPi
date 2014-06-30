@@ -36,6 +36,12 @@
     {include "index_logtable.tpl" logs = $last5warnlogs}
 </div>
 
+<!--Wydarzenia z nadchodzących X dni-->
+<div id="dashboard">
+    <h3>Wydarzenia z nadchodzących {$CONFIG.calendar_days} dni:</h3>
+    {include "index_calendar.tpl"}
+</div>
+
 
 
 

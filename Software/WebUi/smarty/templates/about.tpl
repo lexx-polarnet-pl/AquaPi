@@ -5,8 +5,8 @@ Pełen tekst licencji można znaleźć <a href="http://www.gnu.org/licenses/old-
 <br/>
 Autorami są:
 <ul>
-    <li><a href="http://lexx.polarnet.pl/">Marcin 'Lexx' Król</a></li>
-    <li><a href="http://www.czarniak.org">Jarosław 'Sir_Yaro' Czarniak</a></li>
+	<li><a href="http://lexx.polarnet.pl/">Marcin 'Lexx' Król</a></li>
+	<li><a href="http://www.czarniak.org">Jarosław 'Sir_Yaro' Czarniak</a></li>
 </ul>
 <br/>
 Pliki projektu można znaleźć w repezytorium GitHub pod adresem <a href="https://github.com/lexx-polarnet-pl/AquaPi">https://github.com/lexx-polarnet-pl/AquaPi</a><br/>
@@ -15,18 +15,19 @@ Inspiracją dla projektu był już nie rozwijany <a href="https://github.com/mus
 <br/>
 Interfejs web zawiera elementy pochodzące od Google (licencjonowane inaczej niż GPL) tj:<br/>
 <ul>
-    <li style="text-decoration: line-through;">Google Chart Tools</li>
-    <li>Capriola Web Font</li>
+	<li style="text-decoration: line-through;">Google Chart Tools</li>
+	<li>Capriola Web Font</li>
 </ul>
 Pozostałe elementy wchodzące w skład sterownika to:
 <ul>
-    <li>Biblioteka wiring Pi</li>
-    <li>Biblioteka inih</li>
-    <li>Smarty</li>
-    <li>jquery</li>
-    <li>ikonki Crystal project</li>
+	<li>Biblioteka wiring Pi</li>
+	<li>Biblioteka inih</li>
+	<li>Smarty</li>
+	<li>jquery</li>
+	<li>PHP-Calendar</li>
+	<li>ikonki Crystal project</li>
 	<li>PHP Mobile Detect</li>
-    <li>oraz oczywiście Raspbian </li>
+	<li>oraz oczywiście Raspbian </li>
 </ul>
 
 {include "footer.tpl"}

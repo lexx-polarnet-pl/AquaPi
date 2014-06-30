@@ -62,7 +62,7 @@ if($_POST)
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(TimeToUnixTime($_POST['night_stop']),  			'night_stop'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['temp_night_corr'], 				'temp_night_corr'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['location'], 					'location'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['calendar_id'], 					'calendar_id'));
+	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(intval($_POST['calendar_days']),			'calendar_days'));
 	
 	//1WIRE
 	foreach($_POST['sensors'] as $interface_id => $sensor)

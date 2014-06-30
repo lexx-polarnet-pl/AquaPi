@@ -183,8 +183,9 @@ INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(5, 
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(23, 'demon_last_activity', '1394977489');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(28, 'simplify_graphs', '0');
 INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(29, 'max_daemon_inactivity', '180');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(30, 'db_version', '20140318');
-
+INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(30, 'db_version', '20140629');
+INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(31, 'location', 'Gdańsk');
+INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(32, 'calendar_days', '14');
 -- --------------------------------------------------------
 
 --
@@ -305,6 +306,188 @@ CREATE TABLE IF NOT EXISTS `notes` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
+
+
+--
+-- Struktura tabeli dla tabeli `calendar_calendars`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_calendars` (
+  `cid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `hours_24` tinyint(1) NOT NULL DEFAULT '0',
+  `date_format` tinyint(1) NOT NULL DEFAULT '0',
+  `week_start` tinyint(1) NOT NULL DEFAULT '0',
+  `subject_max` smallint(5) unsigned NOT NULL DEFAULT '50',
+  `events_max` tinyint(4) unsigned NOT NULL DEFAULT '8',
+  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PHP-Calendar',
+  `anon_permission` tinyint(1) NOT NULL DEFAULT '1',
+  `timezone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `theme` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`cid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+--
+-- Zrzut danych tabeli `calendar_calendars`
+--
+
+INSERT INTO `calendar_calendars` (`cid`, `hours_24`, `date_format`, `week_start`, `subject_max`, `events_max`, `title`, `anon_permission`, `timezone`, `language`, `theme`) VALUES
+(1, 1, 1, 1, 50, 8, 'Kalendarz', 3, 'Europe/Warsaw', 'pl_PL', 'hot-sneaks');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_categories` (
+  `catid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` int(11) unsigned NOT NULL,
+  `gid` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `text_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bg_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`catid`),
+  KEY `cid` (`cid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_events`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_events` (
+  `eid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `cid` int(11) unsigned NOT NULL,
+  `owner` int(11) unsigned NOT NULL DEFAULT '0',
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `readonly` tinyint(1) NOT NULL DEFAULT '0',
+  `catid` int(11) unsigned DEFAULT NULL,
+  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `mtime` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`eid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_groups` (
+  `gid` int(11) NOT NULL AUTO_INCREMENT,
+  `cid` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`gid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_logins`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_logins` (
+  `uid` int(11) unsigned NOT NULL,
+  `series` char(43) COLLATE utf8_unicode_ci NOT NULL,
+  `token` char(43) COLLATE utf8_unicode_ci NOT NULL,
+  `atime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`uid`,`series`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_occurrences`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_occurrences` (
+  `oid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `eid` int(11) unsigned NOT NULL,
+  `start_date` date DEFAULT NULL,
+  `end_date` date DEFAULT NULL,
+  `start_ts` timestamp NULL DEFAULT NULL,
+  `end_ts` timestamp NULL DEFAULT NULL,
+  `time_type` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`oid`),
+  KEY `eid` (`eid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_permissions`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_permissions` (
+  `cid` int(11) unsigned NOT NULL,
+  `uid` int(11) unsigned NOT NULL,
+  `read` tinyint(1) NOT NULL,
+  `write` tinyint(1) NOT NULL,
+  `readonly` tinyint(1) NOT NULL,
+  `modify` tinyint(1) NOT NULL,
+  `admin` tinyint(1) NOT NULL,
+  UNIQUE KEY `cid` (`cid`,`uid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_users`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_users` (
+  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `admin` tinyint(4) NOT NULL DEFAULT '0',
+  `password_editable` tinyint(1) NOT NULL DEFAULT '1',
+  `timezone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `gid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`uid`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+--
+-- Zrzut danych tabeli `calendar_users`
+--
+
+INSERT INTO `calendar_users` (`uid`, `username`, `password`, `admin`, `password_editable`, `timezone`, `language`, `gid`) VALUES
+(1, 'aquapi', '3d65f08b5a0c07eee69230c186261428', 1, 1, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_user_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_user_groups` (
+  `gid` int(11) DEFAULT NULL,
+  `uid` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `calendar_version`
+--
+
+CREATE TABLE IF NOT EXISTS `calendar_version` (
+  `version` smallint(5) unsigned NOT NULL DEFAULT '1'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Zrzut danych tabeli `calendar_version`
+--
+
+INSERT INTO `calendar_version` (`version`) VALUES
+(1);
+
+
+
 
 --
 -- Struktura widoku `stats_view`

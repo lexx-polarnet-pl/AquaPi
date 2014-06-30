@@ -40,6 +40,7 @@ define('MAIN_DIR', $CONFIG['webui']['directory'].'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
 define('IMG_DIR', MAIN_DIR.'img/');
 define('MODULES_DIR', MAIN_DIR.'modules/');
+define('PLUGINS_DIR', MAIN_DIR.'plugins/');
 define('ONEWIRE_DIR','/sys/bus/w1/devices');
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c/');
 
@@ -104,6 +105,9 @@ require(LIB_DIR.'ipc.php');
 //mobile detect
 require(LIB_DIR.'Mobile_Detect.php');
 $detect = new Mobile_Detect;
+
+//calendar
+require(PLUGINS_DIR.'calendar/includes/embed_setup.php');
 
 // definicja menu
 $my_menu	= array();
