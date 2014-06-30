@@ -72,6 +72,7 @@ struct _interfaces {
 	double measured_value;
 	int override_value;
 	int override_expire;
+	int was_error_last_time;
 	double conf;
 	int nightcorr;
 } interfaces[100];

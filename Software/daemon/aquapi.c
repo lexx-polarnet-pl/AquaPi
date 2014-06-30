@@ -142,9 +142,11 @@ void ReadConf() {
 			interfaces[x].new_state = -1;
 			interfaces[x].override_value = -1;
 			interfaces[x].override_expire = -1;
+			interfaces[x].was_error_last_time = -1;
 		}
 		if (interfaces[x].type == DEV_INPUT) {
 			interfaces[x].measured_value = -200;
+			interfaces[x].was_error_last_time = -1;
 		}		
 	}
 
@@ -290,7 +292,8 @@ int main() {
 			if (seconds_since_midnight % config.temp_freq == 0) {
 				for(x = 0; x <= interfaces_count; x++) {
 					if (interfaces[x].type == DEV_INPUT) {
-						interfaces[x].measured_value = ReadTempFromSensor(interfaces[x].address, interfaces[x].correction);
+						//interfaces[x].measured_value = ReadTempFromSensor(interfaces[x].address, interfaces[x].correction);
+						interfaces[x].measured_value = GetDataFromInput(x);
 					}
 				}
 			}
@@ -391,17 +394,17 @@ int main() {
 			
 			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {
-				Log("========== Zrzut interfaceów ==========",E_DEV);
-				Log("|Typ|Stan| Conf |KNoc|OVal|OExp|Wartos|Nazwa",E_DEV);
-				Log("---------------------------------------",E_DEV);
+				Log("============ Zrzut interfaceów ============",E_DEV);
+				Log("|Typ|Stan| Conf |KNoc|OVal|OExp|Wartos|Bł|Nazwa",E_DEV);
+				Log("------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
-				Log("========== Zrzut timerów ==========",E_DEV);				
+				Log("============ Zrzut timerów ============",E_DEV);				
 				sprintf(buff,"Liczba timerów: %i",timers_count+1);
 				Log(buff,E_DEV);	
-				Log("========== Koniec zrzutu ==========",E_DEV);
+				Log("============ Koniec zrzutu ============",E_DEV);
 			}
 
 			if (seconds_since_midnight % config.stat_freq == 0) {

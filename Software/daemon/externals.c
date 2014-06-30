@@ -28,7 +28,7 @@
 #include <syslog.h>
 #include <wiringPi.h>
 #include <rb.h>
-
+#include "inputs.c"
 
 int wiringPiSetupFin;
 
@@ -100,99 +100,6 @@ void ChangePortState (char *port,int state) {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
-}
-
-double read_temp(char *sensor_id) {
-	FILE *fp;
-	char sensor_path[200]; 
-	char buff[200];
-	char line[80];
-	char line2[80];
-	char *pos;
-	double temp;
-	
-	if (strncmp(sensor_id,INPUT_DUMMY_PREFIX,strlen(INPUT_DUMMY_PREFIX))==0) {
-		// dummy sensor
-		return config.dummy_temp_sensor_val;
-	} else if (strncmp(sensor_id,INPUT_SYSTEM_CPUTEMP,strlen(INPUT_SYSTEM_CPUTEMP))==0) {
-		// rpi:system:cputemp sensor
-		return Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000;	
-	} else if (strncmp(sensor_id,INPUT_SYSTEM_TXTFILE,strlen(INPUT_SYSTEM_TXTFILE))==0) {
-		// rpi:system:txtfile sensor
-		return Get_Numeric_From_File(strrchr(sensor_id,':')+1);			
-	} else if (strncmp(sensor_id,INPUT_RPI_1W_PREFIX,strlen(INPUT_RPI_1W_PREFIX))==0) {
-		sensor_id=strrchr(sensor_id,':')+1;		
-		sprintf(sensor_path,"/sys/bus/w1/devices/%s/w1_slave",sensor_id);
-		
-		fp = fopen (sensor_path, "r");
-		if( fp == NULL ) {
-			sprintf(buff,"Błąd dostępu do %s: %s", sensor_path, strerror(errno));
-			Log(buff,E_CRIT);
-			return -100;
-		} else {
-			// otwarty plik z danymi sensora, trzeba odczytac
-			fgets(line, 80, fp);
-			fgets(line2, 80, fp);
-			fclose (fp);
-			// poszukajmy YES w stringu (weryfikacja CRC ok)
-			pos = strstr(line,"YES");
-			if (pos != NULL) {
-				// teraz mamy dane o temperaturze
-				pos = strstr(line2,"t=");
-				if (pos != NULL) {
-					// przesuwamy wzkaznik o 2, na poczatek informacji o temperaturze
-					pos += 2;
-					temp = (double)atoi(pos)/1000;
-					// sprawdź jeszcze czy temp to nie przypadkiem 85 stopni (czujnik nie dokończył inicjalizacji)
-					if (temp != 85) {
-						return temp;
-					} else {
-						sprintf(buff,"Nie zainicjowany sensor %s", sensor_id);
-						Log(buff,E_DEV);
-						return -100;
-					}
-				} else {
-					sprintf(buff,"Brak t= przy odczycie sensora %s", sensor_id);
-					Log(buff,E_DEV);				
-					return -100;
-				}
-			} else {
-				sprintf(buff,"Błąd CRC przy odczycie sensora %s", sensor_id);
-				Log(buff,E_DEV);
-				return -100;
-			}
-		}
-	} else {
-		sprintf(buff,"Nie obsługiwane wejście: %s",sensor_id);
-		Log(buff,E_WARN);
-		return -100;
-	}
-}
-
-double ReadTempFromSensor(char *temp_sensor, double temp_sensor_corr) {
-	int fail_count;
-	double temp_act = -200;
-	char buff[200];
-	
-	fail_count = 0;
-			
-	do {
-		temp_act = read_temp(temp_sensor);
-		if (temp_act < -100) {
-			fail_count++;
-		}
-	} while (temp_act<-100 && fail_count <3);
-			
-	if (temp_act == -202) {
-		sprintf(buff,"Błędy CRC przy odczycie sensora %s", temp_sensor);
-		Log(buff,E_WARN);				
-	}
-	
-	if (temp_act < -100) {
-		Log("Błąd odczytu sensora temperatury",E_CRIT);
-	}
-	
-	return temp_act+temp_sensor_corr;
 }
 
 void SetPortAsOutput (char *port) {
