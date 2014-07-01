@@ -69,7 +69,13 @@ $last5warnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_da
 $sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
 //new dbug($sysinfo);
 
-$events 	= $db->GetAll('SELECT * FROM calendar_occurrences o, calendar_events e WHERE e.eid = o.eid AND DATE_ADD( CURDATE( ) , INTERVAL ? DAY ) >= start_ts', array($CONFIG['calendar_days']));
+$events 	= $db->GetAll('SELECT * , datediff( start_ts, CURDATE( ) ) AS days
+				FROM calendar_occurrences o, calendar_events e
+				WHERE e.eid = o.eid
+					AND DATE_ADD( CURDATE() , INTERVAL ? DAY ) >= start_ts
+				ORDER BY start_ts', 
+			array($CONFIG['calendar_days']));
+//new dbug($events);
 
 $uptime 	= exec("cat /proc/uptime | awk '{ print $1 }'");
 $enabled 	= date("d.m.Y H:i",time() - $sysinfo['aquapi']['sysinfo']['uptime']);

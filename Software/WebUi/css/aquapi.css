@@ -51,6 +51,20 @@
 .italic         { font-style: italic; }
 
 .red		{ color: #FF0000; }
+.red2		{ color: #780000; }
+.red3		{ color: #3A0000; }
+
+.blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to { visibility: hidden; }
+}
+@-webkit-keyframes blink {
+  to { visibility: hidden; }
+}
+
 .darkgrey	{ color: #DDDDDD; }
 
 .nobr	{ white-space:nowrap; }
