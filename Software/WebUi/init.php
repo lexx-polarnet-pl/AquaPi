@@ -61,7 +61,7 @@ if (!ini_get('short_open_tag'))
 }
 //if(!is_writable(IMG_DIR))
 //        die('Can\'t write to directory <B>'.IMG_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".IMG_DIR.'</PRE>This helps me to work. Thanks.');
-	
+
 //graficzny debug
 require(LIB_DIR.'dBug.php');
 
@@ -85,11 +85,8 @@ require(LIB_DIR.'upgradedb.php');
 
 //uzupełnienie konfigu o dane z bazy
 $configs=$db->GetAll('SELECT setting_key, setting_value FROM settings');
-foreach($configs as $config)
-    $tmp[$config['setting_key']]=$config['setting_value'];
-
-$CONFIG		= array_merge($CONFIG, $tmp);
-unset($tmp);
+foreach($configs as $config_opt)
+    $CONFIG[$config_opt['setting_key']]=$config_opt['setting_value'];
 
 // Wartości domyślne
 if (!isset($CONFIG['daemon']['bind_address'])) 	{ $CONFIG['daemon']['bind_address'] = "127.0.0.1"; }
@@ -110,7 +107,8 @@ require(LIB_DIR.'Mobile_Detect.php');
 $detect = new Mobile_Detect;
 
 //calendar
-require(PLUGINS_DIR.'calendar/includes/embed_setup.php');
+if($CONFIG['plugins']['calendar']==1)
+    require(PLUGINS_DIR.'calendar/includes/embed_setup.php');
 
 // definicja menu
 $my_menu	= array();
@@ -118,9 +116,11 @@ $my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "hom
 $my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Statystyka", 	"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Notatki", 		"icon" => "notes.png", 		"url" => "notes.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Kalendarz", 		"icon" => "calendar.png", 	"url" => "calendar.php","acl" => "r"    , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
+if($CONFIG['plugins']['notes']==1)
+    $my_menu[]	= array ("selected" => false,	"name" => "Notatki", 		"icon" => "notes.png", 		"url" => "notes.php",	"acl" => "r"    , "reload" => 0);
+if($CONFIG['plugins']['calendar']==1)
+    $my_menu[]	= array ("selected" => false,	"name" => "Kalendarz", 		"icon" => "calendar.png", 	"url" => "calendar.php","acl" => "r"    , "reload" => 0);
 if($CONFIG['plugins']['camera']==1)
     $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);

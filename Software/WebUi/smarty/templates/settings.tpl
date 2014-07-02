@@ -161,11 +161,13 @@ $(function() {
 	<div id="linkdiv" style="display: none">
 		<a id="link" href="">sprawdź poprawność nazwy</a>
 	</div>
+	{if $CONFIG.plugins.calendar eq 1}
 	<hr>
 	<h3>Kalendarz:</h3>
 	<input type="input" id="calendar_days" name="calendar_days" value="{$CONFIG.calendar_days}" style="width:100px;"
 		onmouseover="return overlib('Z jakiego okresu pokazywać nadchodzące wydarzenia?');"
 		onmouseout="return nd();" >
+	{/if}
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">
 </div>
 
