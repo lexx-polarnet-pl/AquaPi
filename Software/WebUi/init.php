@@ -80,6 +80,9 @@ $smarty->assign('aquapi_ver',$aquapi_ver);
 require(LIB_DIR. 'database.class.php');
 $db		= new Database($CONFIG['database']['host'], $CONFIG['database']['user'], $CONFIG['database']['password'], $CONFIG['database']['database']);
 
+// upgrade bazy danych
+require(LIB_DIR.'upgradedb.php');
+
 //uzupełnienie konfigu o dane z bazy
 $configs=$db->GetAll('SELECT setting_key, setting_value FROM settings');
 foreach($configs as $config)
