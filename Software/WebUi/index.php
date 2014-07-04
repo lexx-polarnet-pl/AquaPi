@@ -72,6 +72,7 @@ $sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
 $events 	= $db->GetAll('SELECT * , datediff( start_ts, CURDATE( ) ) AS days
 				FROM calendar_occurrences o, calendar_events e
 				WHERE e.eid = o.eid
+					AND o.done=0
 					AND DATE_ADD( CURDATE() , INTERVAL ? DAY ) >= start_ts
 				ORDER BY start_ts', 
 			array($CONFIG['calendar_days']));
