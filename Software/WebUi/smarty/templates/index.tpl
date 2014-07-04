@@ -36,12 +36,13 @@
     {include "index_logtable.tpl" logs = $last5warnlogs}
 </div>
 
+{if $CONFIG['plugins']['calendar'] == 1}
 <!--Wydarzenia z nadchodzących X dni-->
 <div id="dashboard">
     <h3>Wydarzenia z nadchodzących {$CONFIG.calendar_days} dni:</h3>
     {include "index_calendar.tpl"}
 </div>
-
+{/if}
 
 
 
