@@ -28,30 +28,18 @@
 #include <dirent.h>
 #include <sys/utsname.h>
 #include <sys/sysinfo.h>
-
+#include "common.c"
+#include <rb.h>
 #define BUF_SIZE 255
 #define QUERY_SIZE 1
 
 char buf[BUF_SIZE];
 FILE * net;
+pthread_t id; // ID naszego wątku
 
 char *XMLHead = "<?xml version=\"1.0\"?>\n"
 				"<aquapi>\n";
 char *XMLFoot = "</aquapi>\n";
-
-float Get_Numeric_From_File(char *sensor_id) {
-    FILE *fp;
-	char buff[50];
-
-	fp = fopen (sensor_id, "r");
-	if( fp == NULL ) {
-		return -100;
-	} else {
-		fgets(buff, 50, fp);
-		fclose (fp);	
-		return (float)atof(buff);
-	}
-}
 
 void TCPCommandReload() {
 	Log("Otrzymałem polecenie odświerzenia konfiguracji",E_INFO);
@@ -267,6 +255,139 @@ void TCPCommand1wList() {
 	fflush(net);
 }
 
+void TCPCommandDeviceList() {
+	Log("Otrzymałem polecenie devicelist",E_DEV);
+	char buff[400];
+	DIR * d;
+	char * ds18b20_dir_name = "/sys/bus/w1/devices/";
+	char * RelayBoard_dir_name = "/dev/";
+	char device_path[50];	
+	int x,piRev;
+	
+	fputs(XMLHead,net);
+	fputs("<reply type=\"devicelist\"/>\n",net);
+	// przedstaw się ładnie
+	fputs("<daemon>\n",net);
+	sprintf(buff,"<pid>%i</pid>\n",getpid());
+	fputs(buff,net);
+	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
+	fputs(buff,net);
+	fputs("</daemon>\n",net);
+	fputs("<devicelist>\n",net);
+	
+	// sprawdź czy jestem na Raspberry i jeśli jestem, opowiedz że mamy GPIO
+	piRev = piBoardRev_noOops();
+	if (piRev > 0) {
+		for(x = 0; x <= 7; x++) {
+			fputs("<device type=\"gpio\">\n",net);			
+			sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,x);
+			fputs(buff,net);
+			fputs("\t<input>no</input>\n",net);
+			fputs("\t<output>yes</output>\n",net);
+			if (x == 1) { // tylko ten port obsługuj PWM (podobno)
+				fputs("\t<pwm>yes</pwm>\n",net);
+			}
+			fputs("</device>\n",net);	
+		}	
+	}
+	
+	// opowiedz co tam widać z ds18b20
+	d = opendir (ds18b20_dir_name);
+	if (! d) {
+		// nie można otworzyć katalogu
+	} else {
+		while (1) {
+			struct dirent * entry;
+			entry = readdir (d);
+			if (! entry) {
+				break;
+			}
+			// pokazujemy to co zaczyna się od 28-
+			if (!strncmp("28-",entry->d_name,3)) {
+				fputs("<device type=\"ds18b20\">\n",net);			
+				sprintf(buff,"\t<address>%s%s</address>\n",INPUT_RPI_1W_PREFIX,entry->d_name);
+				fputs(buff,net);
+				fputs("\t<input>yes</input>\n",net);
+				fputs("\t<output>no</output>\n",net);
+				fputs("</device>\n",net);
+			}
+		}
+		closedir(d);
+
+	}
+	
+	// opowiedz co tam widać z RelayBoard
+	d = opendir (RelayBoard_dir_name);
+	if (! d) {
+		// nie można otworzyć katalogu
+	} else {
+		while (1) {
+			struct dirent * entry;
+			entry = readdir (d);
+			if (! entry) {
+				break;
+			}
+			// pokazujemy to co zaczyna się od ttyUSB
+			if (!strncmp("ttyUSB",entry->d_name,6)) {
+				//sprawdź czy to jest RelayBoard
+				sprintf (device_path,"/dev/%s",entry->d_name);
+				if (!RelayBoardPortInit(device_path)) {
+					for(x = 0; x <= 7; x++) {
+						fputs("<device type=\"RelayBoard\">\n",net);			
+						sprintf(buff,"\t<address>%s%s:%i</address>\n",PORT_RELBRD_PREFIX,entry->d_name,x);
+						fputs(buff,net);
+						fputs("\t<input>no</input>\n",net);
+						fputs("\t<output>yes</output>\n",net);
+						fputs("</device>\n",net);
+					}
+				}
+			}
+		}
+		closedir(d);
+
+	}
+
+	// odpowiedz że mamy dummy outputs
+	for(x = 1; x <= 10; x++) {
+		fputs("<device type=\"dummy\">\n",net);			
+		sprintf(buff,"\t<address>%s%i</address>\n",PORT_DUMMY_PREFIX,x);
+		fputs(buff,net);
+		fputs("\t<input>no</input>\n",net);
+		fputs("\t<output>yes</output>\n",net);
+		fputs("</device>\n",net);	
+	}
+	// odpowiedz że mamy dummy inputs
+	for(x = 11; x <= 20; x++) {
+		fputs("<device type=\"dummy\">\n",net);			
+		sprintf(buff,"\t<address>%s%i</address>\n",INPUT_DUMMY_PREFIX,x);
+		fputs(buff,net);
+		fputs("\t<input>yes</input>\n",net);
+		fputs("\t<output>no</output>\n",net);
+		fputs("</device>\n",net);	
+	}
+
+	if (piRev > 0) {
+		fputs("<device type=\"system_cpu_temp\">\n",net);			
+		sprintf(buff,"\t<address>%s</address>\n",INPUT_SYSTEM_CPUTEMP);
+		fputs(buff,net);
+		fputs("\t<input>yes</input>\n",net);
+		fputs("\t<output>no</output>\n",net);
+		fputs("</device>\n",net);	
+	}
+	
+	fputs("<device type=\"system_txtfile\">\n",net);			
+	sprintf(buff,"\t<address>%s</address>\n",INPUT_SYSTEM_TXTFILE);
+	fputs(buff,net);
+	fputs("\t<input>yes</input>\n",net);
+	fputs("\t<output>no</output>\n",net);
+	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
+	fputs("</device>\n",net);	
+		
+	fputs("</devicelist>\n",net);
+	fputs(XMLFoot,net);
+	fflush(net);
+}
+
 void* TCPConnections (void* unused) {
 	char buff[200];
 	// gniazdo ...
@@ -326,6 +447,9 @@ void* TCPConnections (void* unused) {
 			} else if (strncmp("aquapi:interface:",buf,17)==0) {
 				TCPCommandInterface(buf);
 				shutdown(sh2,SHUT_RDWR);
+			} else if (strncmp("aquapi:devicelist",buf,17)==0) {
+				TCPCommandDeviceList();
+				shutdown(sh2,SHUT_RDWR);
 			} else {
 				TCPCommandUnknown();
 				shutdown(sh2,SHUT_RDWR);
@@ -339,7 +463,6 @@ void* TCPConnections (void* unused) {
 }
 
 int InitTCP () {
-	pthread_t id; // ID naszego wątku
 	// Tworzymy nowy wątek, nie przekazujemy atrybutów ani agrumentów funkcji.
 	pthread_create (&id, NULL, &TCPConnections, NULL);
 	return 0;
