@@ -31,6 +31,7 @@
 #include "inputs.c"
 
 int wiringPiSetupFin;
+int RaspiBoardVer;
 
 int ChangePortStateRelBrd (char *port,int state) {
 	char buff[200];
@@ -92,7 +93,7 @@ void ChangePortState (char *port,int state) {
 	char buff[200];
 	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
 		ChangePortStateDummy(port,state);
-	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) {
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && RaspiBoardVer > 0) {
 		ChangePortStateGpio(port,state);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		ChangePortStateRelBrd (port,state);
@@ -107,7 +108,7 @@ void SetPortAsOutput (char *port) {
 	
 	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
 		// Dla portów dummy nie rób nic
-	} else if (strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) {
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && RaspiBoardVer > 0) {
 		if (wiringPiSetupFin == 0) {
 			wiringPiSetupFin = 1;
 			wiringPiSetup ();
@@ -127,6 +128,7 @@ void SetPortAsOutput (char *port) {
 int SetupPorts() {
 	int x;
 	wiringPiSetupFin = 0;
+	RaspiBoardVer = piBoardRev_noOops();
 	for(x = 0; x <= interfaces_count; x++) {
 		if (interfaces[x].type == DEV_OUTPUT) {
 			SetPortAsOutput(interfaces[x].address);
