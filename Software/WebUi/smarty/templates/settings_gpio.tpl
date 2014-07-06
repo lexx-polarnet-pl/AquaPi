@@ -39,7 +39,7 @@
 				</select> 
 			</td>
 			<td>
-				<input type="checkbox" name="gpios[{$gpio.interface_id}][sensor_draw]" value="1" {if $gpio.interface_draw eq 1}checked="checked"{/if}
+				<input type="checkbox" name="gpios[{$gpio.interface_id}][gpio_draw]" value="1" {if $gpio.interface_draw eq 1}checked="checked"{/if}
 					{if $gpio.interface_disabled eq 1}onclick="return false" onmouseover="return overlib('Przekaźnik wyłaczony. Aktywuj go najpierw.');"
 					onmouseout="return nd();"{else}
 					onmouseover="return overlib('Pokazuj przekaźnik na wykresie.');"

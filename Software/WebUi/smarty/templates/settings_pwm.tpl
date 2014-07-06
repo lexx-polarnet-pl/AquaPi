@@ -39,7 +39,7 @@
 				</select> 
 			</td>
 			<td>
-<!--				<input type="checkbox" name="pwms[{$pwm.interface_id}][sensor_draw]" value="1" {if $pwm.interface_draw eq 1}checked="checked"{/if}
+<!--				<input type="checkbox" name="pwms[{$pwm.interface_id}][pwm_draw]" value="1" {if $pwm.interface_draw eq 1}checked="checked"{/if}
 					{if $pwm.interface_disabled eq 1}onclick="return false" onmouseover="return overlib('Przekaźnik wyłaczony. Aktywuj go najpierw.');"
 					onmouseout="return nd();"{else}
 					onmouseover="return overlib('Pokazuj przekaźnik na wykresie.');"
