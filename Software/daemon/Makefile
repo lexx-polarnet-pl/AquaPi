@@ -1,5 +1,5 @@
 #DEBUG	= -g -O0
-DEBUG	= -O3
+DEBUG	= -O
 CC	= gcc
 INCLUDE	= -I/usr/local/include -I/usr/include/mysql -I./RelayBoard
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe -lpthread
