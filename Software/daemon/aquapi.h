@@ -116,4 +116,5 @@ struct _specials {
 	int is_night;
 	int night_ns;
 	double temp_night_corr;
+	int refresh_conf;	
 } specials;

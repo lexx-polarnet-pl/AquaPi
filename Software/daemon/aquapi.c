@@ -252,16 +252,19 @@ int main() {
 	signal(SIGINT, termination_handler);
 	signal(SIGTERM, termination_handler);
 	
+	specials.refresh_conf = 1;
+	
 	for (;;) {	
 		// ustalenie timerów i ustalenie czy jest dzien czy noc
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
-		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę
-		if (seconds_since_midnight != last_sec_run) {
+		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę, lub czy nie otrzymałeś komendy z zewnątrz na którą trzeba zareagować
+		if (seconds_since_midnight != last_sec_run || specials.refresh_conf == 1) {
 			// nie sprawdzałeś, to sprawdzaj
 			last_sec_run = seconds_since_midnight;
+			specials.refresh_conf = 0;
 
 			// obsługa dnia i nocy
 			if (specials.night_start < specials.night_stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia

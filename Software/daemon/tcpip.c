@@ -97,6 +97,7 @@ void TCPCommandInterface(char *buf) {
 		}
 		Log(buff,E_INFO);
 		interfaces[myint].override_value = nstate;
+		specials.refresh_conf = 1;
 		fputs("Executed.\n",net);
 	}
 	fflush(net);	
