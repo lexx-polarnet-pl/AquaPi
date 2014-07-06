@@ -43,7 +43,7 @@
 	    <td>PID demona:</td><td>{if $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->pid}{/if}</td>
 	</tr>
 	<tr>
-	    <td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date}{/if}</td>
+	    <td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date|date_format:"%Y/%m/%d&nbsp;%H:%M"}{/if}</td>
 	</tr>
     </table>
 </div>
