@@ -1,8 +1,10 @@
 /Software/WebUi/smarty/templates_c/*
 /Software/WebUi/img/unused/*
 /Software/ncclient/*
+/Software/daemon/test*
 /Software/aquapi-backup.sql
 /Hardware/*/*.b*
 /Hardware/*/*.s*
 /.komodotools/
 /*.komodoproject
+/Doc/xml/db_struct_dump.php
