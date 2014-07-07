@@ -16,12 +16,7 @@
 <!--Wyjścia-->
 <div id="dashboard">
     <h3>Wyjścia:</h3>
-    <div style="width:49%; float:left;">
-        {include "index_gpio.tpl"}
-    </div>
-    <div style="width:49%; float:left;">
-	{include "index_relayboard.tpl"}
-    </div>
+	{include "index_outputs.tpl"}
 </div>
 
 <!--Komunikaty informacyjne z ostatnich 48h-->
