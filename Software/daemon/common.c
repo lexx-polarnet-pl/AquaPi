@@ -18,7 +18,7 @@ float Get_Numeric_From_File(char *sensor_id) {
 	} else {
 		fgets(buff, 50, fp);
 		fclose (fp);	
-		return (float)atoi(buff)/1000;
+		return (float)atoi(buff);
 	}
 }
 
