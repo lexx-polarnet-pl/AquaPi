@@ -6,7 +6,7 @@
 		<td>{$device.name}</td>     
 		<td>	
 			<a href="#" class="topopup" onclick="SetMyPopup('{$device.name}','{$device.id}','{if $device.state == -1}Nieokreślony{elseif $device.state == 1}Włączony{else}Wyłączony{/if}');">
-				<div id="{if $device.state == -1}device{elseif $device.state == 1}device-on{else}device-off{/if}"
+				<div id="device{if $device.override_value == -1}-auto{/if}{if $device.state == 1}-on{elseif $device.state == 0}-off{/if}"
 					title="{if $device.state == -1}Nieokreślony{elseif $device.state == 1}Włączony{else}Wyłączony{/if}">
 					{if $icons[{$device.id}]}
 							<img src="img/{$icons[{$device.id}]}">
