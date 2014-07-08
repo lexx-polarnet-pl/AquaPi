@@ -110,7 +110,7 @@ int ReadPortStateRelBrd (char *port) {
 int ReadPortStateGpio(char *port) {
 	// numer GPIO jest za ostatnim :
 	port=strrchr(port,':')+1;
-	return digitalRead (atoi(port));;
+	return 1 - digitalRead (atoi(port));
 }
 
 int ChangePortStateGpio(char *port,int state) {
