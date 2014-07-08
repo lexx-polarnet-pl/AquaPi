@@ -118,3 +118,7 @@ struct _specials {
 	double temp_night_corr;
 	int refresh_conf;	
 } specials;
+
+
+int wiringPiSetupFin;
+int RaspiBoardVer;
