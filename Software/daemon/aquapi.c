@@ -189,9 +189,56 @@ void ReadConf() {
 	SetupPorts();
 }
 
+void ProcessPortStates() {
+	int x;
+	char buff[200];
+	time_t rawtime;
+	time ( &rawtime );
+
+	for(x = 0; x <= interfaces_count; x++) {
+		//zacznij od sprawdzenia czy pracujemy w trybie auto
+		if (interfaces[x].override_value != -1) {
+			// tryb manualny
+			if (interfaces[x].state != interfaces[x].override_value) {
+				// konieczna jest zmiana stanu wyjścia
+				interfaces[x].state = interfaces[x].override_value;					
+				if (interfaces[x].conf == 0) {
+					ChangePortState(interfaces[x].address,interfaces[x].state);
+				} else {
+					ChangePortState(interfaces[x].address,1-interfaces[x].state);
+				}
+				if (interfaces[x].state == 1) {
+					sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
+				} else {
+					sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
+				}
+				Log(buff,E_INFO);	
+				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+				DB_Query(buff);				
+			}
+		} else {
+			if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
+				// konieczna jest zmiana stanu wyjścia
+				interfaces[x].state = interfaces[x].new_state;
+				if (interfaces[x].conf == 0) {
+					ChangePortState(interfaces[x].address,interfaces[x].state);
+				} else {
+					ChangePortState(interfaces[x].address,1-interfaces[x].state);
+				}
+				if (interfaces[x].state == 1) {
+					sprintf(buff,"Załączam %s",interfaces[x].name);
+				} else {
+					sprintf(buff,"Wyłączam %s",interfaces[x].name);
+				}
+				Log(buff,E_INFO);	
+				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+				DB_Query(buff);				
+			}
+		}
+	}	
+}
 
 int main() {
-
 	char buff[200];
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -252,8 +299,6 @@ int main() {
 	signal(SIGINT, termination_handler);
 	signal(SIGTERM, termination_handler);
 	
-	specials.refresh_conf = 1;
-	
 	for (;;) {	
 		// ustalenie timerów i ustalenie czy jest dzien czy noc
 		time ( &rawtime );
@@ -261,10 +306,9 @@ int main() {
 		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
 		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę, lub czy nie otrzymałeś komendy z zewnątrz na którą trzeba zareagować
-		if (seconds_since_midnight != last_sec_run || specials.refresh_conf == 1) {
+		if (seconds_since_midnight != last_sec_run) {
 			// nie sprawdzałeś, to sprawdzaj
 			last_sec_run = seconds_since_midnight;
-			specials.refresh_conf = 0;
 
 			// obsługa dnia i nocy
 			if (specials.night_start < specials.night_stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
@@ -312,7 +356,7 @@ int main() {
 					}
 				}
 			}
-			
+				
 			// przebieg 2 to przebieg dla dnia bierzącego
 			for (x=0; x <= timers_count; x++) {
 				if (strncmp(timers[x].days+timeinfo->tm_wday,"1",1)  == 0) { // kontrola dnia tygodnia
@@ -353,47 +397,7 @@ int main() {
 			}	
 			
 			// timery załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
-			for(x = 0; x <= interfaces_count; x++) {
-				//zacznij od sprawdzenia czy pracujemy w trybie auto
-				if (interfaces[x].override_value != -1) {
-					// tryb manualny
-					if (interfaces[x].state != interfaces[x].override_value) {
-						// konieczna jest zmiana stanu wyjścia
-						interfaces[x].state = interfaces[x].override_value;					
-						if (interfaces[x].conf == 0) {
-							ChangePortState(interfaces[x].address,interfaces[x].state);
-						} else {
-							ChangePortState(interfaces[x].address,1-interfaces[x].state);
-						}
-						if (interfaces[x].state == 1) {
-							sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
-						} else {
-							sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
-						}
-						Log(buff,E_INFO);	
-						sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
-						DB_Query(buff);				
-					}
-				} else {
-					if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
-						// konieczna jest zmiana stanu wyjścia
-						interfaces[x].state = interfaces[x].new_state;
-						if (interfaces[x].conf == 0) {
-							ChangePortState(interfaces[x].address,interfaces[x].state);
-						} else {
-							ChangePortState(interfaces[x].address,1-interfaces[x].state);
-						}
-						if (interfaces[x].state == 1) {
-							sprintf(buff,"Załączam %s",interfaces[x].name);
-						} else {
-							sprintf(buff,"Wyłączam %s",interfaces[x].name);
-						}
-						Log(buff,E_INFO);	
-						sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
-						DB_Query(buff);				
-					}
-				}
-			}		
+			ProcessPortStates();
 			
 			// informacje devel
 			if (seconds_since_midnight % config.devel_freq == 0) {

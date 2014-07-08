@@ -60,6 +60,8 @@ void ReadConf();
 
 void termination_handler(int signum);
 
+void ProcessPortStates();
+
 struct _interfaces {
 	int id;
 	char address[128];
@@ -115,8 +117,7 @@ struct _specials {
 	int night_stop;
 	int is_night;
 	int night_ns;
-	double temp_night_corr;
-	int refresh_conf;	
+	double temp_night_corr;	
 } specials;
 
 

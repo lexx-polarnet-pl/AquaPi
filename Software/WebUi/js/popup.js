@@ -72,14 +72,14 @@ function SetMyPopup(Name,id,State) {
 	pole.innerHTML = State;
 	document.getElementById('button_on').onclick = function () {
 		jx.load('interface_cmds.php?interface_id='+id+'&action=on',null,'text','post');
-		setTimeout(function() {location.reload();},100);
+		location.reload();
 	};
 	document.getElementById('button_off').onclick = function () {
 		jx.load('interface_cmds.php?interface_id='+id+'&action=off',null,'text','post');
-		setTimeout(function() {location.reload();},100);
+		location.reload();
 	};		
 	document.getElementById('button_auto').onclick = function () {
 		jx.load('interface_cmds.php?interface_id='+id+'&action=auto',null,'text','post');
-		setTimeout(function() {location.reload();},100);
+		location.reload();
 	};		
 }
