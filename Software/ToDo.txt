@@ -1,8 +1,0 @@
-Rzeczy do zrobienia/poprawienia w daemonie
-
-- wykrywanie awarii grzałki
-- komunikaty głosowe
-- alarmowanie o przekroczeniu stanów przy sensorach
-- obsługa PWM w UI i w demonie
-- dwustronna komunikacja z RelayBoard i GPIO (czyli też odczyt stanów, nie tylko zapis)
-- dla dummy sensorów brać wartość z bazy, nie z INI
