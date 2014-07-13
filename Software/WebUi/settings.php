@@ -281,6 +281,14 @@ $sensors_fs	= $wlist['aquapi']['list']['item'];
 if(isset($sensors_fs))
 	$smarty->assign('sensors_fs', $sensors_fs);
 
+// niech daemon powie jakie urządzena widzi
+$device_list 	= @simplexml_load_string(IPC_CommandWithReply("devicelist"));
+foreach ($device_list->devicelist->device as $value) {
+	// sprawdź teraz czy te urządzenia nie są już skonfigurowane
+	if ($db->GetOne("SELECT interface_id FROM interfaces WHERE interface_address ='?'",array($value->address)) > 0) {
+		$value->addChild('configured', 'yes');
+	}
+}
 
 //new dBug($interfaces);
 //new dBug($devices_status);
@@ -292,6 +300,7 @@ $smarty->assign('icons', 		$icons);
 $smarty->assign('interfaces', 		$interfaces);
 $smarty->assign('simplify_graphs', 	$CONFIG['simplify_graphs']);
 $smarty->assign('title', 		'Ustawienia');
+$smarty->assign('device_list',	$device_list);
 $smarty->display('settings.tpl');
 ?>
 

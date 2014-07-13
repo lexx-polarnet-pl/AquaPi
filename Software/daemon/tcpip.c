@@ -288,6 +288,8 @@ void TCPCommandDeviceList() {
 			if (x == 1) { // tylko ten port obsługuj PWM (podobno)
 				fputs("\t<pwm>yes</pwm>\n",net);
 			}
+			sprintf(buff,"\t<description>Pin GPIO numer %i</description>\n",x);
+			fputs(buff,net);		
 			fputs("</device>\n",net);	
 		}	
 	}
@@ -310,6 +312,8 @@ void TCPCommandDeviceList() {
 				fputs(buff,net);
 				fputs("\t<input>yes</input>\n",net);
 				fputs("\t<output>no</output>\n",net);
+				sprintf(buff,"\t<description>Czujnik DS18B20 adres %s</description>\n",entry->d_name);
+				fputs(buff,net);					
 				fputs("</device>\n",net);
 			}
 		}
@@ -339,6 +343,8 @@ void TCPCommandDeviceList() {
 						fputs(buff,net);
 						fputs("\t<input>no</input>\n",net);
 						fputs("\t<output>yes</output>\n",net);
+						sprintf(buff,"\t<description>Przekaźnik %i karty RelayBoard wpiętej do %s</description>\n",x,entry->d_name);
+						fputs(buff,net);							
 						fputs("</device>\n",net);
 					}
 				}
@@ -348,22 +354,15 @@ void TCPCommandDeviceList() {
 
 	}
 
-	// odpowiedz że mamy dummy outputs
-	for(x = 1; x <= 10; x++) {
+	// odpowiedz że mamy dummy 
+	for(x = 0; x <= 10; x++) {
 		fputs("<device type=\"dummy\">\n",net);			
 		sprintf(buff,"\t<address>%s%i</address>\n",PORT_DUMMY_PREFIX,x);
 		fputs(buff,net);
-		fputs("\t<input>no</input>\n",net);
-		fputs("\t<output>yes</output>\n",net);
-		fputs("</device>\n",net);	
-	}
-	// odpowiedz że mamy dummy inputs
-	for(x = 11; x <= 20; x++) {
-		fputs("<device type=\"dummy\">\n",net);			
-		sprintf(buff,"\t<address>%s%i</address>\n",INPUT_DUMMY_PREFIX,x);
-		fputs(buff,net);
 		fputs("\t<input>yes</input>\n",net);
-		fputs("\t<output>no</output>\n",net);
+		fputs("\t<output>yes</output>\n",net);
+		sprintf(buff,"\t<description>Port DUMMY numer %i</description>\n",x);
+		fputs(buff,net);				
 		fputs("</device>\n",net);	
 	}
 
@@ -373,6 +372,7 @@ void TCPCommandDeviceList() {
 		fputs(buff,net);
 		fputs("\t<input>yes</input>\n",net);
 		fputs("\t<output>no</output>\n",net);
+		fputs("\t<description>Temperatura procesora</description>\n",net);
 		fputs("</device>\n",net);	
 	}
 	
@@ -382,6 +382,7 @@ void TCPCommandDeviceList() {
 	fputs("\t<input>yes</input>\n",net);
 	fputs("\t<output>no</output>\n",net);
 	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
+	fputs("\t<description>Odczyt z pliku tekstowego</description>\n",net);	
 	fputs("</device>\n",net);	
 		
 	fputs("</devicelist>\n",net);
