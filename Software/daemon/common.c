@@ -95,3 +95,15 @@ int piBoardRev_noOops (void)
 
   return boardRev ;
 }
+
+int file_exists(char* filename)
+{
+
+   FILE * fp;
+   fp = fopen(filename, "r");
+   if(fp != NULL)
+   return 1;
+   else
+    return 0;
+
+}

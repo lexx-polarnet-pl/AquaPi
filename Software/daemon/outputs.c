@@ -51,11 +51,16 @@ int ChangePortStateRelBrd (char *port,int state) {
 		// i przesuń wskaźnik o 1
 		pch++;
 		sprintf (device_path,"/dev/%s",pch);
+		if (!file_exists(device_path)) {
+			sprintf(buff,"Urządzenie %s nie istnieje.",device_path);
+			Log(buff,E_CRIT);
+			return -1;
+		}
 		if (RelayBoardPortInit(device_path)) {
 			sprintf(buff,"Karta RelayBoard na porcie %s nie odpowiada.",device_path);
 			Log(buff,E_CRIT);
 			//exit(-1);
-			ret = -1;
+			return -1;
 		}
 		if (state == 0) {
 			RelayBoardOff(ADRESS,przekaznik-1);
@@ -90,15 +95,20 @@ int ReadPortStateRelBrd (char *port) {
 		// i przesuń wskaźnik o 1
 		pch++;
 		sprintf (device_path,"/dev/%s",pch);
+		if (!file_exists(device_path)) {
+			sprintf(buff,"Urządzenie %s nie istnieje.",device_path);
+			Log(buff,E_CRIT);
+			return -1;
+		}		
 		if (RelayBoardPortInit(device_path)) {
 			sprintf(buff,"Karta RelayBoard na porcie %s nie odpowiada.",device_path);
 			Log(buff,E_CRIT);
 			//exit(-1);
-			ret = -1;
+			return -1;
 		}
 		uint8_t errorValue,value;
 		if ((errorValue = RelayBoardGet(ADRESS,&value))) {
-			ret = -1;
+			return -1;
 		} else {
 			ret = value;
 		}
