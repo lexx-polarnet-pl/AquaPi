@@ -125,7 +125,7 @@ function GetInterfaceUnits()
 function GetInterfacesIcons()
 {
 	global $db;
-	$interfaces	= $db->GetAll('SELECT interface_id,interface_icon FROM interfaces WHERE interface_type=2');
+	$interfaces	= $db->GetAll('SELECT interface_id,interface_icon FROM interfaces');
 	
 	foreach($interfaces as $index => $interface)
 	{

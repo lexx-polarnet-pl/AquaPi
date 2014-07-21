@@ -229,24 +229,6 @@ function checklen()
 
 </form>
 
-<!-- demo jak wyświetlić wszystkie jeszcze nie ustawione wejścia i wyjścia -->
-wejścia
-<select name="inputs" id="inputs">
-{foreach from=$device_list->devicelist->device item="device"}
-	{if ($device->input == 'yes') && !($device->configured == 'yes')}
-		<option value="{$device->address}">{$device->description}</option>
-	{/if}
-{/foreach}
-</select>
-
-wyjścia
-<select name="outputs" id="outputs">
-{foreach from=$device_list->devicelist->device item="device"}
-	{if ($device->output == 'yes') && !($device->configured == 'yes')}
-		<option value="{$device->address}">{$device->description}</option>
-	{/if}
-{/foreach}
-</select>
-<!-- koniec dema -->
+{include "input_selector.tpl"}
 
 {include "footer.tpl"}
