@@ -51,32 +51,31 @@ function load()
 }
 </script>
 <form action="settings.php?action=add_input" method="post">
-Przyjazna nazwa:<input name="InputFriendlyName"><br/>
-Adres sprzętowy:
-<select name="InputAddressSelector" id="InputAddressSelector" onchange="ChangeInput()">
+<table>
+<tr><td>Przyjazna nazwa</td><td><input name="InputFriendlyName" style="width:200px"></td></tr>
+<tr><td>Adres sprzętowy</td><td>
+<select name="InputAddressSelector" id="InputAddressSelector" onchange="ChangeInput()" style="width:200px">
 {foreach from=$device_list->devicelist->device item="device"}
 	{if ($device->input == 'yes') && !($device->configured == 'yes')}
 		<option value="{$device->address}">{$device->description}</option>
 	{/if}
 {/foreach}
-</select><br/>
-<div id="FullyEditable2">
-Dodatkowy adres
-<input name="FullyEditable" id="FullyEditable"><br/>
-</div>
-Ikona
-<img src="img/alert.png" id="icon-prev"><select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()">
+</select></td></tr>
+<tr><td>Dodatkowy adres</td><td><input name="FullyEditable" id="FullyEditable" style="width:200px"><br/></td></tr>
+<tr><td>Ikona<img src="img/alert.png" id="icon-prev"style="float:right"></td><td>
+<select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()" style="width:200px">
 	{foreach $icons item=icon}
 	<option class="imagebacked" style="background-image:url(img/{$icon});">{$icon}</option>
 	{/foreach}
-</select> 
-<br/>Jednostka
-<select name="InputUom">
+</select></td></tr>
+<tr><td>Jednostka</td><td>
+<select name="InputUom" style="width:200px">
 	<option value="none">Brak</option>
 	{foreach from=$units item=unit}
 	<option value="{$unit.unit_id}">{$unit.unit_name}</option>
 	{/foreach}
-</select>
+</select></td></tr>
+</table>
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
 </div>

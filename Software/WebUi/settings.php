@@ -43,21 +43,20 @@ if(array_key_exists('action', $_GET))
 	}
 	elseif($_GET['action'] == "add_input")
 	{
-		echo "<pre>";
-		var_dump($_POST);
 		$input_address = $_POST['InputAddressSelector'];
+		if ($_POST['FullyEditable']) {
+			$input_address = $input_address.":".$_POST['FullyEditable'];
+		}
 		$db->Execute('INSERT INTO interfaces(interface_id, interface_deviceid, interface_address, interface_name, interface_corr, interface_draw, interface_type, interface_icon)
 				     VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 				     array(0, 0, $input_address, $_POST['InputFriendlyName'], 0, 1, 1, $_POST['InputIconSelector']));
 		$interface_id = $db->GetOne('select interface_id from interfaces where interface_address = ? order by interface_id desc limit 1;',array($input_address));
-		var_dump($interface_id);
 		if($_POST['InputUom'] != 'none')	{
 			echo "tutaj";
 			$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($_POST['InputUom'], $interface_id));
 		}
 		ReloadDaemonConfig();
 		$SESSION->redirect("settings.php");
-		//die();
 	}	
 }
 
@@ -303,8 +302,9 @@ if(isset($sensors_fs))
 $device_list 	= @simplexml_load_string(IPC_CommandWithReply("devicelist"));
 foreach ($device_list->devicelist->device as $value) {
 	// sprawdź teraz czy te urządzenia nie są już skonfigurowane
-	if ($db->GetOne("SELECT interface_id FROM interfaces WHERE interface_address ='?' AND interface_deleted <> 1",array($value->address)) > 0) {
+	if (($db->GetOne("SELECT interface_id FROM interfaces WHERE interface_address ='?' AND interface_deleted <> 1",array($value->address)) > 0) && ($value->fully_editable_address !='yes')) {
 		$value->addChild('configured', 'yes');
+
 	}
 }
 
