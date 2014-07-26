@@ -27,10 +27,10 @@
 #include <time.h>
 #include <syslog.h>
 #include <wiringPi.h>
+#include <wiringPiI2C.h>
 #include <rb.h>
 #include "inputs.c"
 #include "outputs.c"
-
 
 void SetPortAsOutput (char *port) {
 	char buff[200];
@@ -47,6 +47,8 @@ void SetPortAsOutput (char *port) {
 		pinMode (atoi(port), OUTPUT);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		// Relay Board - tu nie ma co robić
+	} else if (strncmp(port,PORT_RPI_I2C_PCF8574_PREFIX,strlen(PORT_RPI_I2C_PCF8574_PREFIX))==0) {
+		// i2c expander - tu też nie ma co robić		
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);

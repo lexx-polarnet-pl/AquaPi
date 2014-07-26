@@ -28,6 +28,7 @@ const char *build_time = __TIME__;  // czas kompilacji
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
+const char *PORT_RPI_I2C_PCF8574_PREFIX = "rpi:i2c:pcf8574:";
 
 //prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";

@@ -139,6 +139,43 @@ int ChangePortStateDummy(char *port,int state) {
 	Log(buff,E_DEV);
 	return(0);
 }
+
+int ChangePortStateI2C_PCF8574(char *port,int state) {
+	int fd;
+	char bit_fld,n;
+	fd = wiringPiI2CSetup(0x20);
+	n = atoi(strrchr(port,':')+1);
+	bit_fld = wiringPiI2CRead(fd);
+	if (state == 0) {
+		bit_fld &= ~(1 << n);
+		wiringPiI2CWrite (fd, bit_fld);
+	} else {
+		bit_fld |= (1 << n);
+		wiringPiI2CWrite (fd, bit_fld);
+	}
+	char buff[200];
+	sprintf(buff,"Port %s Stan: %i",port,state);
+	Log(buff,E_DEV);
+	return(0);
+}
+
+int ReadPortStateI2C_PCF8574(char *port) {
+	int fd;
+	char bit_fld,n;
+	fd = wiringPiI2CSetup(0x20);
+	n = atoi(strrchr(port,':')+1);
+	bit_fld = wiringPiI2CRead(fd);
+	if ((bit_fld & (1 << n)) == 0) {
+		return 0;
+	} else {
+		return 1;
+	}
+	//return bit_fld & (1 << n);
+	// numer GPIO jest za ostatnim :
+	//port=strrchr(port,':')+1;
+	//return digitalRead (atoi(port));
+}
+
 void ChangePortState (char *port,int state) {
 	char buff[200];
 	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
@@ -147,6 +184,8 @@ void ChangePortState (char *port,int state) {
 		ChangePortStateGpio(port,state);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		ChangePortStateRelBrd (port,state);
+	} else if (strncmp(port,PORT_RPI_I2C_PCF8574_PREFIX,strlen(PORT_RPI_I2C_PCF8574_PREFIX))==0) {
+		ChangePortStateI2C_PCF8574 (port,state);		
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -163,6 +202,8 @@ int ReadPortState (char *port) {
 		RetVal = ReadPortStateGpio(port);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		RetVal = ReadPortStateRelBrd(port);
+	} else if (strncmp(port,PORT_RPI_I2C_PCF8574_PREFIX,strlen(PORT_RPI_I2C_PCF8574_PREFIX))==0) {
+		RetVal = ReadPortStateI2C_PCF8574(port);		
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);

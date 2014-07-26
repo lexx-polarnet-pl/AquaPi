@@ -292,6 +292,17 @@ void TCPCommandDeviceList() {
 			fputs(buff,net);		
 			fputs("</device>\n",net);	
 		}	
+		// sprawdź też i2c
+		for(x = 0; x <= 7; x++) {
+			fputs("<device type=\"i2c_PCF8574\">\n",net);			
+			sprintf(buff,"\t<address>%s32:%i</address>\n",PORT_RPI_I2C_PCF8574_PREFIX,x);
+			fputs(buff,net);
+			fputs("\t<input>no</input>\n",net);
+			fputs("\t<output>yes</output>\n",net);
+			sprintf(buff,"\t<description>Ekspander i2c, pin numer %i</description>\n",x);
+			fputs(buff,net);		
+			fputs("</device>\n",net);	
+		}	
 	}
 	
 	// opowiedz co tam widać z ds18b20
