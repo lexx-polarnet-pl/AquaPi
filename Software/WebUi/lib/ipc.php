@@ -26,15 +26,7 @@ $port	= $CONFIG['daemon']['bind_port'];
 
 
 function IPC_Command($command) {
-	global $host,$port;
-	$fp = @fsockopen($host, $port, $errno, $errstr, 2);
-	if (!$fp) {
-		//echo "$errstr ($errno)<br />\n";
-		$ret = -1;
-	} else {
-		fwrite($fp, "aquapi:".$command."\n");
-		fclose($fp);
-	}
+	IPC_CommandWithReply($command);
 }
 
 function IPC_CommandWithReply($command) {
