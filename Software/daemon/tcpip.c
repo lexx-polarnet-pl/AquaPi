@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <sys/utsname.h>
 #include <sys/sysinfo.h>
+#include <libxml/parser.h>
 #include "common.c"
 #include <rb.h>
 #define BUF_SIZE 255
@@ -37,6 +38,12 @@ char buf[BUF_SIZE];
 FILE * net;
 pthread_t id; // ID naszego wątku
 
+// zmienne do obsługi XMLa
+xmlNodePtr root_node,node,node2;
+xmlDocPtr doc;
+xmlChar *xmlbuff;
+int xml_buffersize;
+	
 char *XMLHead = "<?xml version=\"1.0\"?>\n"
 				"<aquapi>\n";
 char *XMLFoot = "</aquapi>\n";
@@ -134,43 +141,56 @@ void TCPCommandSysinfo() {
 	Log("Otrzymałem polecenie sysinfo",E_DEV);
 	char buff[400];
 
-	fputs(XMLHead,net);
-	fputs("<reply type=\"sysinfo\"/>\n",net);
-	fputs("<uname>\n",net);
-	sprintf(buff,"<sysname>%s</sysname>\n",uts.sysname);
-	fputs(buff,net);
-	sprintf(buff,"<nodename>%s</nodename>\n",uts.nodename);
-	fputs(buff,net);
-	sprintf(buff,"<release>%s</release>\n",uts.release);
-	fputs(buff,net);
-	sprintf(buff,"<version>%s</version>\n",uts.version);
-	fputs(buff,net);
-	fputs("</uname>\n",net);
+	// Tworzymy nowego XMLa
+    doc = xmlNewDoc(BAD_CAST "1.0");
+    root_node = xmlNewNode(NULL, BAD_CAST "aquapi");
+    xmlDocSetRootElement(doc, root_node);
 
-	fputs("<sysinfo>\n",net);
-	sprintf(buff,"<load><av1m>%f</av1m><av5m>%f</av5m><av15m>%f</av15m></load>\n",sys.loads[0]/65536.0,sys.loads[1]/65536.0,sys.loads[2]/65536.0);
-	fputs(buff,net);
-	sprintf(buff,"<totalram>%llu</totalram>\n",sys.totalram *(unsigned long long)sys.mem_unit);
-	fputs(buff,net);
-	sprintf(buff,"<freeram>%llu</freeram>\n",sys.freeram *(unsigned long long)sys.mem_unit);
-	fputs(buff,net);
-	sprintf(buff,"<uptime>%lu</uptime>\n",sys.uptime);
-	fputs(buff,net);
-	sprintf(buff,"<procs>%d</procs>\n",sys.procs);
-	fputs(buff,net);	
-	fputs("</sysinfo>\n",net);
+	// typ odpowiedzi
+	node = xmlNewChild(root_node, NULL, BAD_CAST "reply", NULL);
+	xmlNewProp(node, BAD_CAST "type", BAD_CAST "sysinfo");
+	
+	// uname
+	node = xmlNewChild(root_node, NULL, BAD_CAST "uname", NULL);
+	xmlNewChild(node, NULL, BAD_CAST "sysname", BAD_CAST uts.sysname);
+	xmlNewChild(node, NULL, BAD_CAST "nodename", BAD_CAST uts.nodename);
+	xmlNewChild(node, NULL, BAD_CAST "release", BAD_CAST uts.release);
+	xmlNewChild(node, NULL, BAD_CAST "version", BAD_CAST uts.version);
 
-	fputs("<system>\n",net);
-	sprintf(buff,"<rawtime>%ld</rawtime>\n", rawtime );
-	fputs(buff,net);
-	sprintf(buff,"<cpufreq>%f</cpufreq>\n",Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")/1000);	
-	fputs(buff,net);
-	sprintf(buff,"<cputemp>%f</cputemp>\n",Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000);
-	fputs(buff,net);
-	fputs("</system>\n",net);
+	// sysinfo
+	node = xmlNewChild(root_node, NULL, BAD_CAST "sysinfo", NULL);
+	node2 = xmlNewChild(node, NULL, BAD_CAST "load", NULL);
+	sprintf(buff, "%f", sys.loads[0]/65536.0);
+	xmlNewChild(node2, NULL, BAD_CAST "av1m", BAD_CAST buff);
+	sprintf(buff, "%f", sys.loads[1]/65536.0);
+	xmlNewChild(node2, NULL, BAD_CAST "av5m", BAD_CAST buff);
+	sprintf(buff, "%f", sys.loads[2]/65536.0);
+	xmlNewChild(node2, NULL, BAD_CAST "av15m", BAD_CAST buff);
+	sprintf(buff, "%llu", sys.totalram *(unsigned long long)sys.mem_unit);
+	xmlNewChild(node, NULL, BAD_CAST "totalram", BAD_CAST buff);
+	sprintf(buff, "%llu", sys.freeram *(unsigned long long)sys.mem_unit);
+	xmlNewChild(node, NULL, BAD_CAST "freeram", BAD_CAST buff);
+	sprintf(buff, "%lu", sys.uptime);
+	xmlNewChild(node, NULL, BAD_CAST "uptime", BAD_CAST buff);
+	sprintf(buff, "%d", sys.procs);
+	xmlNewChild(node, NULL, BAD_CAST "procs", BAD_CAST buff);
+	
+	// system
+	node = xmlNewChild(root_node, NULL, BAD_CAST "system", NULL);
+	sprintf(buff, "%ld", rawtime );
+	xmlNewChild(node, NULL, BAD_CAST "rawtime", BAD_CAST buff);
+	sprintf(buff, "%f", Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")/1000);
+	xmlNewChild(node, NULL, BAD_CAST "cpufreq", BAD_CAST buff);
+	sprintf(buff, "%f", Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000);
+	xmlNewChild(node, NULL, BAD_CAST "cputemp", BAD_CAST buff);
 
-	fputs(XMLFoot,net);
+	// wyślij 
+	xmlDocDumpFormatMemory(doc, &xmlbuff, &xml_buffersize, 1);
+	fputs( (char *) xmlbuff,net);
 	fflush(net);
+	// posprzątaj
+    xmlFree(xmlbuff);
+    xmlFreeDoc(doc);	
 }
 
 void TCPCommandStatus() {

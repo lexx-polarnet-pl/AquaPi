@@ -19,7 +19,7 @@
 <screen>
 <prompt>root@raspberrypi:~# </prompt><userinput>apt-get update</userinput> 
 <prompt>root@raspberrypi:~# </prompt><userinput>apt-get upgrade</userinput> 
-<prompt>root@raspberrypi:~# </prompt><userinput>apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql git</userinput> 
+<prompt>root@raspberrypi:~# </prompt><userinput>apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql git libxml2-dev</userinput> 
 </screen>	
 		<warning><title>Uwaga</title><para>Przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql. To hasło przyda się później, więc zapamiętaj jakie to hasło.</para></warning>	  
 		</sect2>
