@@ -6,7 +6,7 @@ function ChangeInput()
 {
 	var devices = new Array();
 	{foreach from=$device_list->devicelist->device item="device"}
-	devices.push(Array('{$device->address}','{$device->description}','{$device->fully_editable_address}'));
+	devices.push(Array('{$device->address}','{$device->description}','{$device->fully_editable_address}', '{$device->prompt}'));
 	{/foreach}
 
 	var length = devices.length;
@@ -19,22 +19,20 @@ function ChangeInput()
 		if (item[0] == e) 
 		{
 			if (item[2] == 'yes') FullyEditableVisible = true;
+			document.getElementById('FullyEditablePrompt').innerHTML = item[3];
 		}
 	}
 
 	if (FullyEditableVisible) 
 	{
-		//document.getElementById('FullyEditable').style.display		= 'block';
-		//document.getElementById('FullyEditable').
-		//document.getElementById('FullyEditable').value = "";
 		document.getElementById('FullyEditable').disabled = false;
 	}
 	else
 	{
-		//document.getElementById('FullyEditable').style.display		= 'none';
 		document.getElementById('FullyEditable').value = "";
 		document.getElementById('FullyEditable').disabled = true;
 	}
+	
 }
 function ChangeIcon()
 {
@@ -61,7 +59,7 @@ function load()
 	{/if}
 {/foreach}
 </select></td></tr>
-<tr><td>Dodatkowy adres</td><td><input name="FullyEditable" id="FullyEditable" style="width:200px"><br/></td></tr>
+<tr><td><span id="FullyEditablePrompt">Dodatkowy adres</span></td><td><input name="FullyEditable" id="FullyEditable" style="width:200px"><br/></td></tr>
 <tr><td>Ikona<img src="img/alert.png" id="icon-prev"style="float:right"></td><td>
 <select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()" style="width:200px">
 	{foreach $icons item=icon}
