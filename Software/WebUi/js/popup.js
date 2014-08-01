@@ -70,16 +70,7 @@ function SetMyPopup(Name,id,State) {
 	pole.innerHTML = Name;
 	var pole = document.getElementById('dev_state');
 	pole.innerHTML = State;
-	document.getElementById('button_on').onclick = function () {
-		jx.load('interface_cmds.php?interface_id='+id+'&action=on',null,'text','post');
-		location.reload();
-	};
-	document.getElementById('button_off').onclick = function () {
-		jx.load('interface_cmds.php?interface_id='+id+'&action=off',null,'text','post');
-		location.reload();
-	};		
-	document.getElementById('button_auto').onclick = function () {
-		jx.load('interface_cmds.php?interface_id='+id+'&action=auto',null,'text','post');
-		location.reload();
-	};		
+	document.getElementById('button_on').href = 'interface_cmds.php?interface_id='+id+'&action=on';
+	document.getElementById('button_off').href = 'interface_cmds.php?interface_id='+id+'&action=off';
+	document.getElementById('button_auto').href = 'interface_cmds.php?interface_id='+id+'&action=auto';
 }
