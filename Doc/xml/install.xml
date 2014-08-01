@@ -24,8 +24,10 @@
 		<warning><title>Uwaga</title><para>Przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql. To hasło przyda się później, więc zapamiętaj jakie to hasło.</para></warning>	  
 		</sect2>
 		<sect2 id="install-standard-3">
-          <title>Włącz obsługę 1-wire (obsługa sensora temperatury).</title>
+          <title>Włącz obsługę 1-wire i i2c (obsługa sensorów temperatury oraz urządzeń i2c).</title>
 		  <para>Włączenie obsługi 1-wire polega na dodaniu do /etc/modules wpisów w1-gpio i w1-therm</para>
+		  <para>Włączenie obsługi i2c polega na dodaniu do /etc/modules wpisów i2c-bcm2708 i i2c-dev</para>
+		  <tip><title>Podpowiedź</title><para>Obsługa i2c jest wymagana jeśli chcesz korzystać z ekspanderów I2C takich jak PCF8574 bądź Sparky's Widgets MinipH</para></tip>
 		  <screen><prompt>root@raspberrypi:~# </prompt><userinput>nano /etc/modules</userinput></screen>
 		  <programlisting># /etc/modules: kernel modules to load at boot time.
 #
@@ -34,9 +36,12 @@
 # Parameters can be specified after the module name.
 
 snd-bcm2835
+#obsługa 1-wire
 w1-gpio
-w1-therm</programlisting>
-
+w1-therm
+#obsługa i2c
+i2c-bcm2708
+i2c-dev</programlisting>
 		</sect2>		
 		<sect2 id="install-standard-4">
           <title>Skonfiguruj serwer www i php</title>
