@@ -293,7 +293,7 @@ void TCPCommandDeviceList() {
 		}	
 		// sprawdź też i2c
 		for (i = 0; i < 4; i++) {
-			if (hardware.i2c_PCF8574[i] != -1) {
+			if (hardware.i2c_PCF8574[i].state != -1) {
 				for(x = 0; x <= 7; x++) {
 					fputs("<device type=\"gpio\">\n",net);			
 					sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,PCF8574_BASE_PIN+i*8+x);
@@ -306,6 +306,15 @@ void TCPCommandDeviceList() {
 				}
 			}
 		}
+		if (hardware.i2c_MinipH.state != -1) {
+			fputs("<device type=\"MinipH\">\n",net);			
+			sprintf(buff,"\t<address>%s</address>\n",INPUT_RPI_I2C_MINIPH_PREFIX);
+			fputs(buff,net);
+			fputs("\t<input>yes</input>\n",net);
+			fputs("\t<output>no</output>\n",net);
+			fputs("\t<description>MinipH - mostek pomiarowy pH</description>\n",net);
+			fputs("</device>\n",net);	
+		}		
 	}
 	
 	// opowiedz co tam widać z ds18b20

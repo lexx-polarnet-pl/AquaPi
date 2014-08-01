@@ -59,11 +59,10 @@ void calcpH(int raw)
 }
 
 double read_i2c_miniph(void) {
-	int fd,val_can;
+	int val_can;
 	reset_Params();
 	calcpHSlope ();
-    fd = wiringPiI2CSetup(0x4d); 
-    val_can = wiringPiI2CReadReg16( fd, 0 );
+    val_can = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
 	val_can = val_can>>8|((val_can<<8)&0xffff);
 	calcpH(val_can);
 	return pH;

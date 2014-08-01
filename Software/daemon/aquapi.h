@@ -122,13 +122,19 @@ struct _specials {
 	double temp_night_corr;	
 } specials;
 
-
+struct I2CDEV {
+	int fd;
+	int state;
+};
 
 struct _hardware {
 	int RaspiBoardVer;
-	int i2c_PCF8574[3];
+	struct I2CDEV i2c_PCF8574[4];
+	struct I2CDEV i2c_MinipH;
 } hardware;
 
-// stałe związane z PCF8574 (i2c expander)
+
+// stałe związane z i2c
 const int PCF8574_BASE_ADDR = 0x20;	// od tego adresu i2c zaczynamy szukać PCF8574
 const int PCF8574_BASE_PIN = 64;	// od tego numeru zaczynamy rejestrować piny w WiringPi
+const int MINIPH_ADDR = 0x4D;

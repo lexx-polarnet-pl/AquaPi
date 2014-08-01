@@ -52,31 +52,30 @@ void SetPortAsOutput (char *port) {
 }
 
 void ScanI2CBus() {
-	int i,fd;
+	int i;
 	char buff[200];
 	// najpierw szukamy expanderów i2c na pcf8574
 	for (i = 0; i < 4; i++) {	// zakładamy 4 ekspandery max
-		fd = wiringPiI2CSetup (PCF8574_BASE_ADDR+i);
+		hardware.i2c_PCF8574[i].fd = wiringPiI2CSetup (PCF8574_BASE_ADDR+i);
 		// nie ma innego (?) sposobu na potwierdzenie czy urządzenie istnieje niż próba zapisu
-		hardware.i2c_PCF8574[i] = wiringPiI2CWrite (fd, wiringPiI2CRead(fd)); 
-		if (hardware.i2c_PCF8574[i] != -1) {
+		hardware.i2c_PCF8574[i].state = wiringPiI2CWrite (hardware.i2c_PCF8574[i].fd, wiringPiI2CRead(hardware.i2c_PCF8574[i].fd)); 
+		if (hardware.i2c_PCF8574[i].state != -1) {
 			sprintf(buff,"Wykryty osprzęt: Expander pcf8574 o adresie %#x",PCF8574_BASE_ADDR+i);
 			Log(buff,E_DEV);
 			// dodatkowe porty trzeba zarejestrować
 			pcf8574Setup (PCF8574_BASE_PIN+i*8,PCF8574_BASE_ADDR+i) ;
 		}
+		
+	}
+	//sprawdzamy czy jest obecne MinipH
+	hardware.i2c_MinipH.fd = wiringPiI2CSetup(MINIPH_ADDR);
+	hardware.i2c_MinipH.state = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
+	if (hardware.i2c_MinipH.state != -1) {
+		Log("Wykryty osprzęt: Mostek pomiarowy MinipH",E_DEV);
 	}
 }
 int SetupPorts() {
 	int x;
-	char buff[200];
-	hardware.RaspiBoardVer = piBoardRev_noOops();
-	if (hardware.RaspiBoardVer > 0) {
-		sprintf(buff,"Wykryty osprzęt: Raspberry Pi rewizja: %i",hardware.RaspiBoardVer);
-		Log(buff,E_DEV);
-		wiringPiSetup();
-		ScanI2CBus();
-	}	
 	for(x = 0; x <= interfaces_count; x++) {
 		if (interfaces[x].type == DEV_OUTPUT) {
 			SetPortAsOutput(interfaces[x].address);
@@ -91,4 +90,16 @@ int SetupPorts() {
 		//SetPortAsOutput(outputs[j].output_port);
 	//}
 	return 0;
+}
+
+void HardwareDetect() {
+	char buff[200];
+	hardware.RaspiBoardVer = piBoardRev_noOops();
+	if (hardware.RaspiBoardVer > 0) {
+		sprintf(buff,"Wykryty osprzęt: Raspberry Pi rewizja: %i",hardware.RaspiBoardVer);
+		Log(buff,E_DEV);
+		wiringPiSetup();
+		ScanI2CBus();
+	}	
+
 }

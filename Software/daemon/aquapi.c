@@ -271,7 +271,9 @@ int main() {
 	Log("Daemon uruchomiony",E_WARN);
 	sprintf(buff,"Kompilacja daemona: %s %s",build_date,build_time);
 	Log(buff,E_DEV);
-
+	
+	HardwareDetect();
+	
 	ReadConf();
 
 	if ( !config.dontfork ) {
