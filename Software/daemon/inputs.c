@@ -19,7 +19,7 @@
  *
  */
  
-
+#include "miniph.c"
 
 double read_1w_ds18b20(char *sensor_id) {
 	FILE *fp;
@@ -96,6 +96,9 @@ double GetDataFromInput(int sensor_id) {
 			// rpi:system:txtfile sensor
 			Sensor1WAddress=strrchr(SensorAddress,':')+1;	
 			ret_val = read_1w_ds18b20(Sensor1WAddress);
+		} else if (strncmp(SensorAddress,INPUT_RPI_I2C_MINIPH_PREFIX,strlen(INPUT_RPI_I2C_MINIPH_PREFIX))==0) {
+			// Sensor pH
+			ret_val = read_i2c_miniph();
 		} else {
 			//sprintf(buff,"Nie obsługiwane wejście: %s",SensorAddress);
 			//Log(buff,E_WARN);

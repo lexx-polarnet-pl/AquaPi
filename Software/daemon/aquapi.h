@@ -28,11 +28,12 @@ const char *build_time = __TIME__;  // czas kompilacji
 const char *PORT_RELBRD_PREFIX = "relbrd:";
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
-const char *PORT_RPI_I2C_PCF8574_PREFIX = "rpi:i2c:pcf8574:";
 
 //prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
+const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
+
 //sensory systemowe
 const char *INPUT_SYSTEM_CPUTEMP = "rpi:system:cputemp";
 const char *INPUT_SYSTEM_TXTFILE = "rpi:system:txtfile";
@@ -122,5 +123,12 @@ struct _specials {
 } specials;
 
 
-int wiringPiSetupFin;
-int RaspiBoardVer;
+
+struct _hardware {
+	int RaspiBoardVer;
+	int i2c_PCF8574[3];
+} hardware;
+
+// stałe związane z PCF8574 (i2c expander)
+const int PCF8574_BASE_ADDR = 0x20;	// od tego adresu i2c zaczynamy szukać PCF8574
+const int PCF8574_BASE_PIN = 64;	// od tego numeru zaczynamy rejestrować piny w WiringPi

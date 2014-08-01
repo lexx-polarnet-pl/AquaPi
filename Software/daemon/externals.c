@@ -28,6 +28,7 @@
 #include <syslog.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
+#include <pcf8574.h>
 #include <rb.h>
 #include "inputs.c"
 #include "outputs.c"
@@ -37,18 +38,12 @@ void SetPortAsOutput (char *port) {
 	
 	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
 		// Dla portów dummy nie rób nic
-	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && RaspiBoardVer > 0) {
-		if (wiringPiSetupFin == 0) {
-			wiringPiSetupFin = 1;
-			wiringPiSetup ();
-		}
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
 		// numer GPIO jest za ostatnim :
 		port=strrchr(port,':')+1;
 		pinMode (atoi(port), OUTPUT);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		// Relay Board - tu nie ma co robić
-	} else if (strncmp(port,PORT_RPI_I2C_PCF8574_PREFIX,strlen(PORT_RPI_I2C_PCF8574_PREFIX))==0) {
-		// i2c expander - tu też nie ma co robić		
 	} else {
 		sprintf(buff,"Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -56,10 +51,32 @@ void SetPortAsOutput (char *port) {
 	}
 }
 
+void ScanI2CBus() {
+	int i,fd;
+	char buff[200];
+	// najpierw szukamy expanderów i2c na pcf8574
+	for (i = 0; i < 4; i++) {	// zakładamy 4 ekspandery max
+		fd = wiringPiI2CSetup (PCF8574_BASE_ADDR+i);
+		// nie ma innego (?) sposobu na potwierdzenie czy urządzenie istnieje niż próba zapisu
+		hardware.i2c_PCF8574[i] = wiringPiI2CWrite (fd, wiringPiI2CRead(fd)); 
+		if (hardware.i2c_PCF8574[i] != -1) {
+			sprintf(buff,"Wykryty osprzęt: Expander pcf8574 o adresie %#x",PCF8574_BASE_ADDR+i);
+			Log(buff,E_DEV);
+			// dodatkowe porty trzeba zarejestrować
+			pcf8574Setup (PCF8574_BASE_PIN+i*8,PCF8574_BASE_ADDR+i) ;
+		}
+	}
+}
 int SetupPorts() {
 	int x;
-	wiringPiSetupFin = 0;
-	RaspiBoardVer = piBoardRev_noOops();
+	char buff[200];
+	hardware.RaspiBoardVer = piBoardRev_noOops();
+	if (hardware.RaspiBoardVer > 0) {
+		sprintf(buff,"Wykryty osprzęt: Raspberry Pi rewizja: %i",hardware.RaspiBoardVer);
+		Log(buff,E_DEV);
+		wiringPiSetup();
+		ScanI2CBus();
+	}	
 	for(x = 0; x <= interfaces_count; x++) {
 		if (interfaces[x].type == DEV_OUTPUT) {
 			SetPortAsOutput(interfaces[x].address);

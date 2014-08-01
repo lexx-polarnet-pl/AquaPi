@@ -263,7 +263,7 @@ void TCPCommandDeviceList() {
 	char * ds18b20_dir_name = "/sys/bus/w1/devices/";
 	char * RelayBoard_dir_name = "/dev/";
 	char device_path[50];	
-	int x,piRev;
+	int x,i;
 	
 	fputs(XMLHead,net);
 	fputs("<reply type=\"devicelist\"/>\n",net);
@@ -277,8 +277,7 @@ void TCPCommandDeviceList() {
 	fputs("<devicelist>\n",net);
 	
 	// sprawdź czy jestem na Raspberry i jeśli jestem, opowiedz że mamy GPIO
-	piRev = piBoardRev_noOops();
-	if (piRev > 0) {
+	if (hardware.RaspiBoardVer > 0) {
 		for(x = 0; x <= 7; x++) {
 			fputs("<device type=\"gpio\">\n",net);			
 			sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,x);
@@ -293,16 +292,20 @@ void TCPCommandDeviceList() {
 			fputs("</device>\n",net);	
 		}	
 		// sprawdź też i2c
-		for(x = 0; x <= 7; x++) {
-			fputs("<device type=\"i2c_PCF8574\">\n",net);			
-			sprintf(buff,"\t<address>%s32:%i</address>\n",PORT_RPI_I2C_PCF8574_PREFIX,x);
-			fputs(buff,net);
-			fputs("\t<input>no</input>\n",net);
-			fputs("\t<output>yes</output>\n",net);
-			sprintf(buff,"\t<description>Ekspander i2c, pin numer %i</description>\n",x);
-			fputs(buff,net);		
-			fputs("</device>\n",net);	
-		}	
+		for (i = 0; i < 4; i++) {
+			if (hardware.i2c_PCF8574[i] != -1) {
+				for(x = 0; x <= 7; x++) {
+					fputs("<device type=\"gpio\">\n",net);			
+					sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,PCF8574_BASE_PIN+i*8+x);
+					fputs(buff,net);
+					fputs("\t<input>no</input>\n",net);
+					fputs("\t<output>yes</output>\n",net);
+					sprintf(buff,"\t<description>PCF8574 adres %#x, pin numer %i</description>\n",PCF8574_BASE_ADDR+i,x);
+					fputs(buff,net);		
+					fputs("</device>\n",net);	
+				}
+			}
+		}
 	}
 	
 	// opowiedz co tam widać z ds18b20
@@ -366,18 +369,17 @@ void TCPCommandDeviceList() {
 	}
 
 	// odpowiedz że mamy dummy 
-	for(x = 0; x <= 10; x++) {
-		fputs("<device type=\"dummy\">\n",net);			
-		sprintf(buff,"\t<address>%s%i</address>\n",PORT_DUMMY_PREFIX,x);
-		fputs(buff,net);
-		fputs("\t<input>yes</input>\n",net);
-		fputs("\t<output>yes</output>\n",net);
-		sprintf(buff,"\t<description>Port DUMMY numer %i</description>\n",x);
-		fputs(buff,net);				
-		fputs("</device>\n",net);	
-	}
+	fputs("<device type=\"dummy\">\n",net);			
+	sprintf(buff,"\t<address>%s</address>\n",PORT_DUMMY_PREFIX);
+	fputs(buff,net);
+	fputs("\t<input>yes</input>\n",net);
+	fputs("\t<output>yes</output>\n",net);
+	fputs("\t<description>Port DUMMY</description>\n",net);				
+	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
+	fputs("\t<prompt>Numer portu DUMMY</prompt>\n",net);
+	fputs("</device>\n",net);	
 
-	if (piRev > 0) {
+	if (hardware.RaspiBoardVer > 0) {
 		fputs("<device type=\"system_cpu_temp\">\n",net);			
 		sprintf(buff,"\t<address>%s</address>\n",INPUT_SYSTEM_CPUTEMP);
 		fputs(buff,net);
@@ -394,6 +396,7 @@ void TCPCommandDeviceList() {
 	fputs("\t<output>no</output>\n",net);
 	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
 	fputs("\t<description>Odczyt z pliku tekstowego</description>\n",net);	
+	fputs("\t<prompt>Nazwa pliku tekstowego</prompt>\n",net);
 	fputs("</device>\n",net);	
 		
 	fputs("</devicelist>\n",net);
