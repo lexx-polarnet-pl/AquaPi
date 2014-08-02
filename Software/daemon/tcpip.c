@@ -43,15 +43,9 @@ xmlNodePtr xml_root_node;
 xmlDocPtr xml_doc;
 xmlChar *xml_buff;
 
-	
-char *XMLHead = "<?xml version=\"1.0\"?>\n"
-				"<aquapi>\n";
-char *XMLFoot = "</aquapi>\n";
-
 void XMLCreateReply(char *reply_type) {
 	xmlNodePtr node;
 
-	
 	// Tworzymy nowego XMLa
     xml_doc = xmlNewDoc(BAD_CAST "1.0");
     xml_root_node = xmlNewNode(NULL, BAD_CAST "aquapi");
