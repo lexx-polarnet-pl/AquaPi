@@ -39,14 +39,69 @@ FILE * net;
 pthread_t id; // ID naszego wątku
 
 // zmienne do obsługi XMLa
-xmlNodePtr root_node,node,node2;
-xmlDocPtr doc;
-xmlChar *xmlbuff;
-int xml_buffersize;
+xmlNodePtr xml_root_node;
+xmlDocPtr xml_doc;
+xmlChar *xml_buff;
+
 	
 char *XMLHead = "<?xml version=\"1.0\"?>\n"
 				"<aquapi>\n";
 char *XMLFoot = "</aquapi>\n";
+
+void XMLCreateReply(char *reply_type) {
+	xmlNodePtr node;
+
+	
+	// Tworzymy nowego XMLa
+    xml_doc = xmlNewDoc(BAD_CAST "1.0");
+    xml_root_node = xmlNewNode(NULL, BAD_CAST "aquapi");
+    xmlDocSetRootElement(xml_doc, xml_root_node);
+
+	// typ odpowiedzi
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "reply", NULL);
+	xmlNewProp(node, BAD_CAST "type", BAD_CAST reply_type);
+}
+
+void XMLSendReply() {
+	int xml_buffersize;
+	
+	// wyślij 
+	xmlDocDumpFormatMemory(xml_doc, &xml_buff, &xml_buffersize, 1);
+	fputs( (char *) xml_buff,net);
+	fflush(net);
+	// posprzątaj
+    xmlFree(xml_buff);
+    xmlFreeDoc(xml_doc);
+}
+
+void XMLCreateDaemonEntry() {
+	xmlNodePtr node;
+	char buff[120];
+	// przedstaw się ładnie
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "daemon", NULL);
+	sprintf(buff, "%i", getpid());	
+	xmlNewChild(node, NULL, BAD_CAST "pid", BAD_CAST buff);
+	sprintf(buff, "%s %s", build_date,build_time);	
+	xmlNewChild(node, NULL, BAD_CAST "compilation_date", BAD_CAST buff);
+}
+
+
+void XMLCreateDeviceEntry(xmlNodePtr master_node, char *type, const char *address, char *input, char *output, char *pwm, char *description, char *fea, char *prompt) {
+	xmlNodePtr node;
+	
+	node = xmlNewChild(master_node, NULL, BAD_CAST "device", NULL);
+	xmlNewProp(node, BAD_CAST "type", BAD_CAST type);		
+	xmlNewChild(node, NULL, BAD_CAST "address", BAD_CAST address);
+	xmlNewChild(node, NULL, BAD_CAST "input", BAD_CAST input);
+	xmlNewChild(node, NULL, BAD_CAST "output", BAD_CAST output);
+	xmlNewChild(node, NULL, BAD_CAST "pwm", BAD_CAST pwm);
+	xmlNewChild(node, NULL, BAD_CAST "description", BAD_CAST description);
+	
+	if (fea != NULL) {
+		xmlNewChild(node, NULL, BAD_CAST "fully_editable_address", BAD_CAST fea);
+		xmlNewChild(node, NULL, BAD_CAST "prompt", BAD_CAST prompt);
+	}
+}
 
 void TCPCommandReload() {
 	Log("Otrzymałem polecenie odświerzenia konfiguracji",E_INFO);
@@ -112,28 +167,17 @@ void TCPCommandInterface(char *buf) {
 
 void TCPCommandAbout() {
 	Log("Otrzymałem polecenie about",E_DEV);
-	char buff[120];
-
-	sprintf(buff,"aquapi>about>beginning of reply.\n");
-	fputs(buff,net);
-	sprintf(buff,"aquapi>about>Hello, My name is AquaPi\n");
-	fputs(buff,net);
-	sprintf(buff,"aquapi>about>and I am aquarium computer daemon.\n");
-	fputs(buff,net);
-	sprintf(buff,"aquapi>about>PID:%i\n",getpid());
-	fputs(buff,net);
-	sprintf(buff,"aquapi>about>compilation: %s %s\n",build_date,build_time);
-	fputs(buff,net);
-	sprintf(buff,"aquapi>about>end of reply.\n");
-	fputs(buff,net);
-	fflush(net);
+	XMLCreateReply("about");
+	xmlNewChild(xml_root_node, NULL, BAD_CAST "about", BAD_CAST "Hello, My name is AquaPi and I am aquarium computer daemon.");
+	XMLSendReply();	
 }
 
 void TCPCommandSysinfo() {
 	struct utsname  uts;
 	struct sysinfo  sys;
 	time_t rawtime;
-
+	xmlNodePtr node,node2;
+	
 	uname(&uts);
 	sysinfo(&sys);
 	time(&rawtime);
@@ -141,24 +185,17 @@ void TCPCommandSysinfo() {
 	Log("Otrzymałem polecenie sysinfo",E_DEV);
 	char buff[400];
 
-	// Tworzymy nowego XMLa
-    doc = xmlNewDoc(BAD_CAST "1.0");
-    root_node = xmlNewNode(NULL, BAD_CAST "aquapi");
-    xmlDocSetRootElement(doc, root_node);
-
-	// typ odpowiedzi
-	node = xmlNewChild(root_node, NULL, BAD_CAST "reply", NULL);
-	xmlNewProp(node, BAD_CAST "type", BAD_CAST "sysinfo");
+	XMLCreateReply("sysinfo");
 	
 	// uname
-	node = xmlNewChild(root_node, NULL, BAD_CAST "uname", NULL);
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "uname", NULL);
 	xmlNewChild(node, NULL, BAD_CAST "sysname", BAD_CAST uts.sysname);
 	xmlNewChild(node, NULL, BAD_CAST "nodename", BAD_CAST uts.nodename);
 	xmlNewChild(node, NULL, BAD_CAST "release", BAD_CAST uts.release);
 	xmlNewChild(node, NULL, BAD_CAST "version", BAD_CAST uts.version);
 
 	// sysinfo
-	node = xmlNewChild(root_node, NULL, BAD_CAST "sysinfo", NULL);
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "sysinfo", NULL);
 	node2 = xmlNewChild(node, NULL, BAD_CAST "load", NULL);
 	sprintf(buff, "%f", sys.loads[0]/65536.0);
 	xmlNewChild(node2, NULL, BAD_CAST "av1m", BAD_CAST buff);
@@ -176,7 +213,7 @@ void TCPCommandSysinfo() {
 	xmlNewChild(node, NULL, BAD_CAST "procs", BAD_CAST buff);
 	
 	// system
-	node = xmlNewChild(root_node, NULL, BAD_CAST "system", NULL);
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "system", NULL);
 	sprintf(buff, "%ld", rawtime );
 	xmlNewChild(node, NULL, BAD_CAST "rawtime", BAD_CAST buff);
 	sprintf(buff, "%f", Get_Numeric_From_File("/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq")/1000);
@@ -184,45 +221,40 @@ void TCPCommandSysinfo() {
 	sprintf(buff, "%f", Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000);
 	xmlNewChild(node, NULL, BAD_CAST "cputemp", BAD_CAST buff);
 
-	// wyślij 
-	xmlDocDumpFormatMemory(doc, &xmlbuff, &xml_buffersize, 1);
-	fputs( (char *) xmlbuff,net);
-	fflush(net);
-	// posprzątaj
-    xmlFree(xmlbuff);
-    xmlFreeDoc(doc);	
+	XMLSendReply();
 }
 
 void TCPCommandStatus() {
 	Log("Otrzymałem polecenie status",E_DEV);
 	char buff[400];
 	int x;
-
-	fputs(XMLHead,net);
-	sprintf(buff,"<reply type=\"status\"/>\n");
-	fputs(buff,net);
-	// przedstaw się ładnie
-	sprintf(buff,"<daemon>\n");
-	fputs(buff,net);
-	sprintf(buff,"<pid>%i</pid>\n",getpid());
-	fputs(buff,net);
-	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
-	fputs(buff,net);
-	sprintf(buff,"</daemon>\n");
-	fputs(buff,net);
+	xmlNodePtr node,node2;
+	
+	XMLCreateReply("status");
+	
+	XMLCreateDaemonEntry();
+	
 	// opowiedz co tam panie słychać w urządzonkach
-	sprintf(buff,"<devices>\n");
-	fputs(buff,net);
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "devices", NULL);
 
 	for(x = 0; x <= interfaces_count; x++) {
-		sprintf(buff,"<device id=\"%i\"><address>%s</address><name>%s</name><type>%i</type><state>%i</state><id>%i</id><measured_value>%f</measured_value><override_value>%i</override_value></device>\n",interfaces[x].id,interfaces[x].address,interfaces[x].name,interfaces[x].type,interfaces[x].state,interfaces[x].id,interfaces[x].measured_value,interfaces[x].override_value);
-		fputs(buff,net);
+		node2 = xmlNewChild(node, NULL, BAD_CAST "device", NULL);
+		sprintf(buff, "%i", interfaces[x].id);
+		xmlNewProp(node2, BAD_CAST "id", BAD_CAST buff);	
+		xmlNewChild(node2, NULL, BAD_CAST "id", BAD_CAST buff);
+		xmlNewChild(node2, NULL, BAD_CAST "address", BAD_CAST interfaces[x].address);
+		xmlNewChild(node2, NULL, BAD_CAST "name", BAD_CAST interfaces[x].name);
+		sprintf(buff, "%i", interfaces[x].type);
+		xmlNewChild(node2, NULL, BAD_CAST "type", BAD_CAST buff);
+		sprintf(buff, "%i", interfaces[x].state);
+		xmlNewChild(node2, NULL, BAD_CAST "state", BAD_CAST buff);
+		sprintf(buff, "%f", interfaces[x].measured_value);
+		xmlNewChild(node2, NULL, BAD_CAST "measured_value", BAD_CAST buff);
+		sprintf(buff, "%i", interfaces[x].override_value);
+		xmlNewChild(node2, NULL, BAD_CAST "override_value", BAD_CAST buff);		
 	}
-
-	sprintf(buff,"</devices>\n");
-	fputs(buff,net);
-	fputs(XMLFoot,net);
-	fflush(net);
+	
+	XMLSendReply();	
 }
 
 void TCPCommand1wList() {
@@ -230,30 +262,23 @@ void TCPCommand1wList() {
 	char buff[400];
 	DIR * d;
 	char * dir_name = "/sys/bus/w1/devices/";
-
-	fputs(XMLHead,net);
-	sprintf(buff,"<reply type=\"1wlist\"/>\n");
-	fputs(buff,net);
-	// przedstaw się ładnie
-	sprintf(buff,"<daemon>\n");
-	fputs(buff,net);
-	sprintf(buff,"<pid>%i</pid>\n",getpid());
-	fputs(buff,net);
-	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
-	fputs(buff,net);
-	sprintf(buff,"</daemon>\n");
-	fputs(buff,net);
+	xmlNodePtr node,node2;
+	
+	XMLCreateReply("1wlist");
+	XMLCreateDaemonEntry();
+	
 	// opowiedz co tam widać w 1-wire
 
 	d = opendir (dir_name);
 	if (! d) {
-		sprintf(buff,"<reply status=\"error\"/>\n");
-		fputs(buff,net);
-		sprintf(buff,"<error id=%i>Nie umiem otworzyć katalogu '%s': %s</error>\n",errno,dir_name, strerror (errno));
-		fputs(buff,net);
+		node = xmlNewChild(xml_root_node, NULL, BAD_CAST "reply", NULL);
+		xmlNewProp(node, BAD_CAST "status", BAD_CAST "error");
+		sprintf(buff,"Nie umiem otworzyć katalogu '%s': %s",dir_name, strerror (errno));
+		node2 = xmlNewChild(node, NULL, BAD_CAST "error", BAD_CAST buff);
+		sprintf(buff,"%i",errno);
+		xmlNewProp(node2, BAD_CAST "id", BAD_CAST buff);
 	} else {
-		sprintf(buff,"<list>\n");
-		fputs(buff,net);
+		node = xmlNewChild(xml_root_node, NULL, BAD_CAST "list", NULL);
 
 		while (1) {
 			struct dirent * entry;
@@ -264,76 +289,53 @@ void TCPCommand1wList() {
 			}
 			if (!strncmp("28-",entry->d_name,3)) {
 				// pokazujemy to co zaczyna się od 28-
-				sprintf(buff,"\t<item>%s</item>\n",entry->d_name);
-				fputs(buff,net);
+				xmlNewChild(node, NULL, BAD_CAST "item", BAD_CAST entry->d_name);
 			}
 		}
 		closedir(d);
-		sprintf(buff,"</list>\n");
-		fputs(buff,net);
 	}
-	fputs(XMLFoot,net);
-	fflush(net);
+	XMLSendReply();	
 }
 
 void TCPCommandDeviceList() {
-	Log("Otrzymałem polecenie devicelist",E_DEV);
-	char buff[400];
+	char address[200];
+	char description[400];
 	DIR * d;
 	char * ds18b20_dir_name = "/sys/bus/w1/devices/";
 	char * RelayBoard_dir_name = "/dev/";
 	char device_path[50];	
 	int x,i;
-	
-	fputs(XMLHead,net);
-	fputs("<reply type=\"devicelist\"/>\n",net);
-	// przedstaw się ładnie
-	fputs("<daemon>\n",net);
-	sprintf(buff,"<pid>%i</pid>\n",getpid());
-	fputs(buff,net);
-	sprintf(buff,"<compilation_date>%s %s</compilation_date>\n",build_date,build_time);
-	fputs(buff,net);
-	fputs("</daemon>\n",net);
-	fputs("<devicelist>\n",net);
+	xmlNodePtr node;
+
+	Log("Otrzymałem polecenie devicelist",E_DEV);	
+	XMLCreateReply("devicelist");
+	XMLCreateDaemonEntry();
+
+	node = xmlNewChild(xml_root_node, NULL, BAD_CAST "devicelist", NULL);
 	
 	// sprawdź czy jestem na Raspberry i jeśli jestem, opowiedz że mamy GPIO
 	if (hardware.RaspiBoardVer > 0) {
-		for(x = 0; x <= 7; x++) {
-			fputs("<device type=\"gpio\">\n",net);			
-			sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,x);
-			fputs(buff,net);
-			fputs("\t<input>no</input>\n",net);
-			fputs("\t<output>yes</output>\n",net);
+		for(x = 0; x <= 6; x++) {
+			sprintf(address, "%s%i", PORT_RPI_GPIO_PREFIX,x);
+			sprintf(description, "Pin GPIO numer %i", x);
 			if (x == 1) { // tylko ten port obsługuj PWM (podobno)
-				fputs("\t<pwm>yes</pwm>\n",net);
+				XMLCreateDeviceEntry(node,"gpio",address,"no","yes","yes",description, NULL, NULL);
+			} else {
+				XMLCreateDeviceEntry(node,"gpio",address,"no","yes","no",description, NULL, NULL);
 			}
-			sprintf(buff,"\t<description>Pin GPIO numer %i</description>\n",x);
-			fputs(buff,net);		
-			fputs("</device>\n",net);	
 		}	
 		// sprawdź też i2c
 		for (i = 0; i < 4; i++) {
 			if (hardware.i2c_PCF8574[i].state != -1) {
 				for(x = 0; x <= 7; x++) {
-					fputs("<device type=\"gpio\">\n",net);			
-					sprintf(buff,"\t<address>%s%i</address>\n",PORT_RPI_GPIO_PREFIX,PCF8574_BASE_PIN+i*8+x);
-					fputs(buff,net);
-					fputs("\t<input>no</input>\n",net);
-					fputs("\t<output>yes</output>\n",net);
-					sprintf(buff,"\t<description>PCF8574 adres %#x, pin numer %i</description>\n",PCF8574_BASE_ADDR+i,x);
-					fputs(buff,net);		
-					fputs("</device>\n",net);	
+					sprintf(address,"%s%i",PORT_RPI_GPIO_PREFIX,PCF8574_BASE_PIN+i*8+x);
+					sprintf(description,"PCF8574 adres %#x, pin numer %in",PCF8574_BASE_ADDR+i,x);
+					XMLCreateDeviceEntry(node,"gpio",address,"no","yes","no",description, NULL, NULL);
 				}
 			}
 		}
 		if (hardware.i2c_MinipH.state != -1) {
-			fputs("<device type=\"MinipH\">\n",net);			
-			sprintf(buff,"\t<address>%s</address>\n",INPUT_RPI_I2C_MINIPH_PREFIX);
-			fputs(buff,net);
-			fputs("\t<input>yes</input>\n",net);
-			fputs("\t<output>no</output>\n",net);
-			fputs("\t<description>MinipH - mostek pomiarowy pH</description>\n",net);
-			fputs("</device>\n",net);	
+			XMLCreateDeviceEntry(node,"MinipH",INPUT_RPI_I2C_MINIPH_PREFIX,"yes","no","no","MinipH - mostek pomiarowy pH", NULL, NULL);
 		}		
 	}
 	
@@ -350,18 +352,12 @@ void TCPCommandDeviceList() {
 			}
 			// pokazujemy to co zaczyna się od 28-
 			if (!strncmp("28-",entry->d_name,3)) {
-				fputs("<device type=\"ds18b20\">\n",net);			
-				sprintf(buff,"\t<address>%s%s</address>\n",INPUT_RPI_1W_PREFIX,entry->d_name);
-				fputs(buff,net);
-				fputs("\t<input>yes</input>\n",net);
-				fputs("\t<output>no</output>\n",net);
-				sprintf(buff,"\t<description>Czujnik DS18B20 adres %s</description>\n",entry->d_name);
-				fputs(buff,net);					
-				fputs("</device>\n",net);
+				sprintf(address,"%s%s",INPUT_RPI_1W_PREFIX,entry->d_name);
+				sprintf(description,"Czujnik DS18B20 adres %s",entry->d_name);			
+				XMLCreateDeviceEntry(node,"ds18b20",address,"yes","no","no",description, NULL, NULL);
 			}
 		}
 		closedir(d);
-
 	}
 	
 	// opowiedz co tam widać z RelayBoard
@@ -381,56 +377,25 @@ void TCPCommandDeviceList() {
 				sprintf (device_path,"/dev/%s",entry->d_name);
 				if (!RelayBoardPortInit(device_path)) {
 					for(x = 0; x <= 7; x++) {
-						fputs("<device type=\"RelayBoard\">\n",net);			
-						sprintf(buff,"\t<address>%s%s:%i</address>\n",PORT_RELBRD_PREFIX,entry->d_name,x);
-						fputs(buff,net);
-						fputs("\t<input>no</input>\n",net);
-						fputs("\t<output>yes</output>\n",net);
-						sprintf(buff,"\t<description>Przekaźnik %i karty RelayBoard wpiętej do %s</description>\n",x,entry->d_name);
-						fputs(buff,net);							
-						fputs("</device>\n",net);
+						sprintf(address,"%s%s:%i",PORT_RELBRD_PREFIX,entry->d_name,x);
+						sprintf(description,"Przekaźnik %i karty RelayBoard wpiętej do %s",x,entry->d_name);
+						XMLCreateDeviceEntry(node,"RelayBoard",address,"no","yes","no",description, NULL, NULL);
 					}
 				}
 			}
 		}
 		closedir(d);
-
 	}
 
-	// odpowiedz że mamy dummy 
-	fputs("<device type=\"dummy\">\n",net);			
-	sprintf(buff,"\t<address>%s</address>\n",PORT_DUMMY_PREFIX);
-	fputs(buff,net);
-	fputs("\t<input>yes</input>\n",net);
-	fputs("\t<output>yes</output>\n",net);
-	fputs("\t<description>Port DUMMY</description>\n",net);				
-	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
-	fputs("\t<prompt>Numer portu DUMMY</prompt>\n",net);
-	fputs("</device>\n",net);	
+	XMLCreateDeviceEntry(node,"dummy",PORT_DUMMY_PREFIX,"yes","yes","no","Port DUMMY","yes","Numer portu DUMMY");
 
 	if (hardware.RaspiBoardVer > 0) {
-		fputs("<device type=\"system_cpu_temp\">\n",net);			
-		sprintf(buff,"\t<address>%s</address>\n",INPUT_SYSTEM_CPUTEMP);
-		fputs(buff,net);
-		fputs("\t<input>yes</input>\n",net);
-		fputs("\t<output>no</output>\n",net);
-		fputs("\t<description>Temperatura procesora</description>\n",net);
-		fputs("</device>\n",net);	
+		XMLCreateDeviceEntry(node,"system_cpu_temp",INPUT_SYSTEM_CPUTEMP,"yes","no","no","Temperatura procesora", NULL, NULL);
 	}
 	
-	fputs("<device type=\"system_txtfile\">\n",net);			
-	sprintf(buff,"\t<address>%s</address>\n",INPUT_SYSTEM_TXTFILE);
-	fputs(buff,net);
-	fputs("\t<input>yes</input>\n",net);
-	fputs("\t<output>no</output>\n",net);
-	fputs("\t<fully_editable_address>yes</fully_editable_address>\n",net);
-	fputs("\t<description>Odczyt z pliku tekstowego</description>\n",net);	
-	fputs("\t<prompt>Nazwa pliku tekstowego</prompt>\n",net);
-	fputs("</device>\n",net);	
-		
-	fputs("</devicelist>\n",net);
-	fputs(XMLFoot,net);
-	fflush(net);
+	XMLCreateDeviceEntry(node,"system_txtfile",INPUT_SYSTEM_TXTFILE,"yes","no","no","Odczyt z pliku tekstowego","yes","Nazwa pliku tekstowego");
+	
+	XMLSendReply();	
 }
 
 void* TCPConnections (void* unused) {
