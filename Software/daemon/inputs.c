@@ -20,6 +20,7 @@
  */
  
 #include "miniph.c"
+#include <wiringPi.h>
 
 double read_1w_ds18b20(char *sensor_id) {
 	FILE *fp;
@@ -93,12 +94,14 @@ double GetDataFromInput(int sensor_id) {
 			// rpi:system:txtfile sensor
 			ret_val = Get_Numeric_From_File(strrchr(SensorAddress,':')+1);			
 		} else if (strncmp(SensorAddress,INPUT_RPI_1W_PREFIX,strlen(INPUT_RPI_1W_PREFIX))==0) {
-			// rpi:system:txtfile sensor
+			// rpi:1w:
 			Sensor1WAddress=strrchr(SensorAddress,':')+1;	
 			ret_val = read_1w_ds18b20(Sensor1WAddress);
 		} else if (strncmp(SensorAddress,INPUT_RPI_I2C_MINIPH_PREFIX,strlen(INPUT_RPI_I2C_MINIPH_PREFIX))==0) {
 			// Sensor pH
 			ret_val = read_i2c_miniph();
+		} else if ((strncmp(SensorAddress,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+			ret_val = digitalRead(atoi(strrchr(SensorAddress,':')+1));
 		} else {
 			//sprintf(buff,"Nie obsługiwane wejście: %s",SensorAddress);
 			//Log(buff,E_WARN);

@@ -51,6 +51,14 @@ void SetPortAsOutput (char *port) {
 	}
 }
 
+void SetPortAsInput (char *port) {
+	if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+		// numer GPIO jest za ostatnim :
+		port=strrchr(port,':')+1;
+		pinMode (atoi(port), INPUT);
+	}
+}
+
 void ScanI2CBus() {
 	int i;
 	char buff[200];
@@ -84,6 +92,9 @@ int SetupPorts() {
 			} else {
 				interfaces[x].state = 1 - ReadPortState(interfaces[x].address);
 			}			
+		}
+		if (interfaces[x].type == DEV_INPUT) {
+			SetPortAsInput(interfaces[x].address);
 		}
 	}	
 	//for(j = 0; j <= outputs_count; j++) {
