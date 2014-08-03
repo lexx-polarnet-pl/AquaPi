@@ -313,9 +313,9 @@ void TCPCommandDeviceList() {
 			sprintf(address, "%s%i", PORT_RPI_GPIO_PREFIX,x);
 			sprintf(description, "Pin GPIO numer %i", x);
 			if (x == 1) { // tylko ten port obsługuj PWM (podobno)
-				XMLCreateDeviceEntry(node,"gpio",address,"no","yes","yes",description, NULL, NULL);
+				XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","yes",description, NULL, NULL);
 			} else {
-				XMLCreateDeviceEntry(node,"gpio",address,"no","yes","no",description, NULL, NULL);
+				XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","no",description, NULL, NULL);
 			}
 		}	
 		// sprawdź też i2c
@@ -324,7 +324,7 @@ void TCPCommandDeviceList() {
 				for(x = 0; x <= 7; x++) {
 					sprintf(address,"%s%i",PORT_RPI_GPIO_PREFIX,PCF8574_BASE_PIN+i*8+x);
 					sprintf(description,"PCF8574 adres %#x, pin numer %in",PCF8574_BASE_ADDR+i,x);
-					XMLCreateDeviceEntry(node,"gpio",address,"no","yes","no",description, NULL, NULL);
+					XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","no",description, NULL, NULL);
 				}
 			}
 		}
