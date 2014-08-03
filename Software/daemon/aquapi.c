@@ -251,7 +251,7 @@ int main() {
 	// defaults
 	config.dontfork 	= 0;
 	config.dummy_temp_sensor_val = -100;
-	config.temp_freq 	= 10;		// co ile sekund kontrolować temp
+	config.inputs_freq 	= 1;		// co ile sekund kontrolować wejścia
 	config.devel_freq 	= 30;		// co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600;		// co ile sekund zapisywac co się dzieje w bazie
 	config.reload_freq  	= -1;		// co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
@@ -337,11 +337,10 @@ int main() {
 				}
 			}
 
-			// obsługa temperatury
-			if (seconds_since_midnight % config.temp_freq == 0) {
+			// obsługa wejść
+			if (seconds_since_midnight % config.inputs_freq == 0) {
 				for(x = 0; x <= interfaces_count; x++) {
 					if (interfaces[x].type == DEV_INPUT) {
-						//interfaces[x].measured_value = ReadTempFromSensor(interfaces[x].address, interfaces[x].correction);
 						interfaces[x].measured_value = GetDataFromInput(x);
 					}
 				}

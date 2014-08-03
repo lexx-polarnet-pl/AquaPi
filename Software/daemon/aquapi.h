@@ -104,7 +104,7 @@ typedef struct
 	char* db_database;
 	int dontfork;
 	int stat_freq;
-	int temp_freq;
+	int inputs_freq;
 	int devel_freq;
 	int reload_freq;
 	int bind_port;

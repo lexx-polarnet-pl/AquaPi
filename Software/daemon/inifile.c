@@ -37,8 +37,8 @@ static int handler(void* user, const char* section, const char* name, const char
         pconfig->db_database = strdup(value);
     } else if (MATCH("daemon", "dontfork")) {
         pconfig->dontfork = atoi(value);
-    } else if (MATCH("daemon", "temp_freq")) {
-        pconfig->temp_freq = atoi(value);
+    } else if (MATCH("daemon", "inputs_freq")) {
+        pconfig->inputs_freq = atoi(value);
     } else if (MATCH("daemon", "stat_freq")) {
         pconfig->stat_freq = atoi(value);
     } else if (MATCH("daemon", "devel_freq")) {
