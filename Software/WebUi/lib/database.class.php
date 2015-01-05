@@ -33,7 +33,16 @@ class Database {
 //
 //	FUNKCJE
 //
+	public function &GetErrors() {
+		return $this->errors;
+		var_dump($this->errors);
+		die;
+	}
 
+	public function SetDebug($debug = true) {
+		$this->debug = $debug;
+	}
+	
 	function Database($dbhost, $dbuser, $dbpasswd, $dbname) {
 		$this->_dblink = mysql_connect($dbhost, $dbuser, $dbpasswd);
 		if (!$this->_dblink) {

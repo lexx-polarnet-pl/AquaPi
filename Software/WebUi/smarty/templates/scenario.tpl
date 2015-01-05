@@ -96,7 +96,7 @@ function dropin(ev) {
 		}
 	}
 	
-	var new_id = 'input' + String(parseInt(ev.target.id.substring(5).valueOf())+1 );
+	var new_id = 'input_' + String(parseInt(ev.target.id.substring(6).valueOf())+1 );
 	// dodaj nowy pusty box
 	if (!document.getElementById(new_id)) {
 		var newDiv = document.createElement("div");
@@ -109,11 +109,12 @@ function dropin(ev) {
 	}	
 }
 </script>
-<form action="post.php" method="post">
-<input name = "ScenarioID" value = "new" type = "hidden">
+<form action="scenarios.php" method="post">
+<input name = "ScenarioID" value = "{$id}" type = "hidden">
+<input name = "ScenarioName">
 	
 <div id="inputs" style='background-color: rgb(220,220,220); margin:5px; '><span style='right:0px; float:right; z-index: -1; overflow: hidden;'>Sygnały wejściowe</span><div 
-id="input1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='modern_box b2x1'>Przeciągnij tutaj...</div></div>
+id="input_1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='modern_box b2x1'>Przeciągnij tutaj...</div></div>
 <div id="logical" style='background-color: rgb(220,220,220); margin:5px;'><span style='right:0px; float:right; z-index: -1; overflow: hidden;'>Funkcja łącząca</span>
 <input type="radio" name="scenario_logic" value="AND" checked>AND
 <input type="radio" name="scenario_logic" value="OR">OR
@@ -129,7 +130,7 @@ id="input1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='modern
 <span style="visibility: hidden;">
 <div class='modern_box b2x1'>Tester selektora
 <div id="template_selector_on_off">
-	<select name="state" style='width:100%'>
+	<select name="value" style='width:100%'>
 		<option value='0'>Wyłączone</option>
 		<option value='1'>Załączone</option>
 	</select>

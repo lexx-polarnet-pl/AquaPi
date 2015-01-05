@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 {$reloadtime}
 <meta name="viewport" content="width=device-width">
-<link rel="stylesheet" type="text/css" href="css/aquapi.css" />
+<link rel="stylesheet" type="text/css" href="css/aquapi_flat.css" />
 <link rel="stylesheet" type="text/css" href="css/timepicker.css" />
 <link rel="stylesheet" type="text/css" href="css/popup.css" />
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png" />

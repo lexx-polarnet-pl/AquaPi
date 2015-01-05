@@ -114,6 +114,7 @@ if($CONFIG['plugins']['calendar']==1)
 $my_menu	= array();
 $my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Scenariusze", 	"icon" => "timers.png", 	"url" => "scenarios.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
@@ -158,5 +159,8 @@ $smarty->assign('my_menu',  $my_menu);
 $smarty->assign('ismobile', $detect->isMobile());
 $smarty->assign('cur_name', $cur_name);
 $smarty->assign('CONFIG',   $CONFIG);
-
+//$layout['dberrors'] = $db->GetErrors();
+//var_dump($db->GetErrors());
+//$smarty->assignByRef('layout', $layout);
+$smarty->assignByRef('dberrors', $db->GetErrors());
 ?>
