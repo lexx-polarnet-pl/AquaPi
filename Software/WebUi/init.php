@@ -102,6 +102,10 @@ require(LIB_DIR.'functions.php');
 //IPC
 require(LIB_DIR.'ipc.php');
 
+//Stałe dzielone między WebUI i daemona
+require(LIB_DIR.'globals.php');
+$smarty->assign('globals',  $globals);
+
 //mobile detect
 require(LIB_DIR.'Mobile_Detect.php');
 $detect = new Mobile_Detect;

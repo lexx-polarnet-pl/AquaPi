@@ -15,7 +15,20 @@ body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-
 .b1x1 {	width:100px; height: 100px; }
 .b2x1 {	width:208px; height: 100px; }
 
+.dberrors {
+    position: fixed;
+	width: 80%;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+	background-color: #AAAAAA;
+	border-width: 1px; 
+	border-style: dotted;
+	padding: 5px;
+}
 
+.alert { color: red; }
   
   table {font-family: 'Capriola', sans-serif; font-size: 16px;}
   div.current {border-style: solid; margin: 5px; width:400px;}

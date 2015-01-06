@@ -116,10 +116,9 @@ function dropin(ev) {
 <div id="inputs" style='background-color: rgb(220,220,220); margin:5px; '><span style='right:0px; float:right; z-index: -1; overflow: hidden;'>Sygnały wejściowe</span><div 
 id="input_1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='modern_box b2x1'>Przeciągnij tutaj...</div></div>
 <div id="logical" style='background-color: rgb(220,220,220); margin:5px;'><span style='right:0px; float:right; z-index: -1; overflow: hidden;'>Funkcja łącząca</span>
-<input type="radio" name="scenario_logic" value="AND" checked>AND
-<input type="radio" name="scenario_logic" value="OR">OR
-<input type="radio" name="scenario_logic" value="NOT">NOT
-<input type="radio" name="scenario_logic" value="XOR">XOR
+<input type="radio" name="scenario_logic" value="{$globals.logic_and}" checked>AND
+<input type="radio" name="scenario_logic" value="{$globals.logic_or}">OR
+<input type="radio" name="scenario_logic" value="{$globals.logic_not}">NOT
 </div>
 <div id="outputs" style='background-color: rgb(220,220,220); margin:5px;'><span style='right:0px; float:right; z-index: -1; overflow: hidden;'>Wyjście</span>
 <div id="output" ondrop="drop(event)" ondragover="allowDropOut(event)" class='modern_box b2x1'>Przeciągnij tutaj...</div>
@@ -131,16 +130,16 @@ id="input_1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='moder
 <div class='modern_box b2x1'>Tester selektora
 <div id="template_selector_on_off">
 	<select name="value" style='width:100%'>
-		<option value='0'>Wyłączone</option>
-		<option value='1'>Załączone</option>
+		<option value='{$globals.interface_off}'>Wyłączone</option>
+		<option value='{$globals.interface_on}'>Załączone</option>
 	</select>
 </div>
 </div>
 <div class='modern_box b2x1'>Tester selektora czasu
 <div id="template_selector_time">
 	<select name="direction" style='width:40px'>
-		<option value='&lt;'>&lt;</option>
-		<option value='&gt;'>&gt;</option>
+		<option value='{$globals.direction_less}'>&lt;</option>
+		<option value='{$globals.direction_greater}'>&gt;</option>
 	</select> 
 	<input name = "hour" type='text' style='width:40px'>:
 	<input name = "min"  type='text' style='width:40px'>:
@@ -163,8 +162,8 @@ id="input_1" ondrop="dropin(event)" ondragover="allowDropIn(event)" class='moder
 <div class='modern_box b2x1'>Tester selektora
 <div id="template_selector_default_input">
 	<select name="direction" style='width:40px'>
-		<option value='&lt;'>&lt;</option>
-		<option value='&gt;'>&gt;</option>
+		<option value='{$globals.direction_less}'>&lt;</option>
+		<option value='{$globals.direction_greater}'>&gt;</option>
 	</select> 
 	<input name='value'></div>
 </div>
