@@ -140,6 +140,22 @@ int ChangePortStateDummy(char *port,int state) {
 	return(0);
 }
 
+int ChangePortStateTxtFile(char *port,int state) {
+	//char buff[200];
+	// nazwa pliku jest za ostatnim :
+	port=strrchr(port,':')+1;
+    FILE *f;
+    f = fopen(port, "a");
+
+    fprintf(f, "%i\n", state);
+    fclose(f);
+	
+	//char buff[200];
+	//sprintf(buff,"Port %s Stan: %i",port,state);
+	//Log(buff,E_DEV);
+	return(0);
+}
+
 void ChangePortState (char *port,int state) {
 	char buff[200];
 	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
@@ -148,8 +164,10 @@ void ChangePortState (char *port,int state) {
 		ChangePortStateGpio(port,state);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		ChangePortStateRelBrd (port,state);
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
+		ChangePortStateTxtFile(port,state);
 	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
+		sprintf(buff,"CPS: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
 }
@@ -164,8 +182,10 @@ int ReadPortState (char *port) {
 		RetVal = ReadPortStateGpio(port);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		RetVal = ReadPortStateRelBrd(port);
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
+		RetVal = 0;
 	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
+		sprintf(buff,"RPS: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
 	return RetVal;

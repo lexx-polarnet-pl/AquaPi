@@ -18,6 +18,21 @@
 		</td>
 	</tr>
 	{/if}
+	{if $device.type == 3}
+	<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
+		<td>{$device.name}</td>     
+		<td>	
+			<div title="PWM:{$device.state}%">
+				{if $icons[{$device.id}]}
+						<img src="img/{$icons[{$device.id}]}">
+				{else}
+						<img src="img/device.png">
+				{/if}
+				{$device.state}%
+			</div>
+		</td>
+	</tr>
+	{/if}	
 {/foreach}
 </table>
 

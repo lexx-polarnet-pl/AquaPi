@@ -87,10 +87,10 @@ double GetDataFromInput(int sensor_id) {
 		if (strncmp(SensorAddress,INPUT_DUMMY_PREFIX,strlen(INPUT_DUMMY_PREFIX))==0) {
 			// dummy sensor
 			ret_val = interfaces[sensor_id].conf;
-		} else if (strncmp(SensorAddress,INPUT_SYSTEM_CPUTEMP,strlen(INPUT_SYSTEM_CPUTEMP))==0) {
+		/*} else if (strncmp(SensorAddress,INPUT_SYSTEM_CPUTEMP,strlen(INPUT_SYSTEM_CPUTEMP))==0) { - wywalamy
 			// rpi:system:cputemp sensor
-			ret_val = Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000;	
-		} else if (strncmp(SensorAddress,INPUT_SYSTEM_TXTFILE,strlen(INPUT_SYSTEM_TXTFILE))==0) {
+			ret_val = Get_Numeric_From_File("/sys/class/thermal/thermal_zone0/temp")/1000;	*/ 
+		} else if (strncmp(SensorAddress,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
 			// rpi:system:txtfile sensor
 			ret_val = Get_Numeric_From_File(strrchr(SensorAddress,':')+1);			
 		} else if (strncmp(SensorAddress,INPUT_RPI_1W_PREFIX,strlen(INPUT_RPI_1W_PREFIX))==0) {

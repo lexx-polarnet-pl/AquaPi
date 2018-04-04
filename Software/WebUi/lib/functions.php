@@ -50,28 +50,15 @@ function myFlush()
 function GetInterfaces()
 {
 	global $db;
-	$interfaces	= $db->GetAll('SELECT * FROM interfaces i, devices d
-						WHERE i.interface_deviceid=d.device_id
-						AND interface_deleted=0 
-						AND device_id>0 AND device_deleted=0 AND device_disabled=0
-						ORDER BY interface_id ASC');
-	
-	foreach($interfaces as $index => $interface)
-	{
-		$addressshort				= explode(':', $interface['interface_address']);
-		if(isset($addressshort[2]))
-		{
-		    $interface['interface_addressshort']	= $addressshort[2];
-		    $interface['interface_addressshortnext']	= $addressshort[2]+1;
-		}
-		
-		$interface['interface_unit']=$db->GetRow('SELECT unit_id, unit_name
-							 FROM unitassignments, units
-							 WHERE unit_id = unitassignment_unitid AND unitassignment_interfaceid=?', array($interface['interface_id']));
-		
-		$tmp[$interface['device_name']][]=$interface;
-	}
-	return($tmp);
+	$interfaces	= $db->GetAll('SELECT * FROM interfaces WHERE interface_deleted=0 ORDER BY interface_id ASC');
+	return($interfaces);
+}
+
+function GetSignals()
+{
+	global $db;
+	$signals	= $db->GetAll('SELECT * FROM signals WHERE signal_deleted=0 ORDER BY signal_id ASC');
+	return($signals);
 }
 
 function GetNotes()

@@ -24,10 +24,13 @@
 const char *build_date = __DATE__;  // data kompilacji
 const char *build_time = __TIME__;  // czas kompilacji
 
-//prefiksy portów wyjściowych
-const char *PORT_RELBRD_PREFIX = "relbrd:";
+//prefiksy portów wej/wyj
+const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wsparcia
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
+const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
+const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
+const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 
 //prefiksy portów wejściowych
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
@@ -35,8 +38,8 @@ const char *INPUT_DUMMY_PREFIX = "dummy:";
 const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
 
 //sensory systemowe
-const char *INPUT_SYSTEM_CPUTEMP = "rpi:system:cputemp";
-const char *INPUT_SYSTEM_TXTFILE = "rpi:system:txtfile";
+//const char *INPUT_SYSTEM_CPUTEMP = "rpi:system:cputemp";
+//const char *INPUT_SYSTEM_TXTFILE = "rpi:system:txtfile";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
@@ -47,6 +50,7 @@ const int E_SQL  = 3;
 // typ urządzenia
 const int DEV_INPUT = 1;
 const int DEV_OUTPUT = 2;
+const int DEV_OUTPUT_PWM = 3;
 
 // typ triggera
 const int TRIGGER_TIME = 1;
@@ -120,6 +124,7 @@ struct _specials {
 	int is_night;
 	int night_ns;
 	double temp_night_corr;	
+	int seconds_since_midnight;
 } specials;
 
 struct I2CDEV {

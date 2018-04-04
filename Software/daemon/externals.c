@@ -44,8 +44,10 @@ void SetPortAsOutput (char *port) {
 		pinMode (atoi(port), OUTPUT);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		// Relay Board - tu nie ma co robić
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
+		// Pliku tekstowego nie trzeba konfigurować jako wyjścia
 	} else {
-		sprintf(buff,"Nie obsługiwany port: %s",port);
+		sprintf(buff,"SPAO: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 		// nie obsługiwany port
 	}
@@ -62,6 +64,7 @@ void SetPortAsInput (char *port) {
 void ScanI2CBus() {
 	int i;
 	char buff[200];
+
 	// najpierw szukamy expanderów i2c na pcf8574
 	for (i = 0; i < 4; i++) {	// zakładamy 4 ekspandery max
 		hardware.i2c_PCF8574[i].fd = wiringPiI2CSetup (PCF8574_BASE_ADDR+i);
@@ -73,7 +76,6 @@ void ScanI2CBus() {
 			// dodatkowe porty trzeba zarejestrować
 			pcf8574Setup (PCF8574_BASE_PIN+i*8,PCF8574_BASE_ADDR+i) ;
 		}
-		
 	}
 	//sprawdzamy czy jest obecne MinipH
 	hardware.i2c_MinipH.fd = wiringPiI2CSetup(MINIPH_ADDR);

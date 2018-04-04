@@ -296,8 +296,8 @@ void TCPCommandDeviceList() {
 	char description[400];
 	DIR * d;
 	char * ds18b20_dir_name = "/sys/bus/w1/devices/";
-	char * RelayBoard_dir_name = "/dev/";
-	char device_path[50];	
+	//char * RelayBoard_dir_name = "/dev/";
+	//char device_path[50];	
 	int x,i;
 	xmlNodePtr node;
 
@@ -353,7 +353,7 @@ void TCPCommandDeviceList() {
 		}
 		closedir(d);
 	}
-	
+	/*
 	// opowiedz co tam widać z RelayBoard
 	d = opendir (RelayBoard_dir_name);
 	if (! d) {
@@ -379,15 +379,15 @@ void TCPCommandDeviceList() {
 			}
 		}
 		closedir(d);
-	}
+	}*/
 
-	XMLCreateDeviceEntry(node,"dummy",PORT_DUMMY_PREFIX,"yes","yes","no","Port DUMMY","yes","Numer portu DUMMY");
+	XMLCreateDeviceEntry(node,"dummy",PORT_DUMMY_PREFIX,"yes","yes","no","Port DUMMY","yes","Opis portu DUMMY");
 
-	if (hardware.RaspiBoardVer > 0) {
-		XMLCreateDeviceEntry(node,"system_cpu_temp",INPUT_SYSTEM_CPUTEMP,"yes","no","no","Temperatura procesora", NULL, NULL);
-	}
+	//if (hardware.RaspiBoardVer > 0) {
+	//	XMLCreateDeviceEntry(node,"system_cpu_temp",INPUT_SYSTEM_CPUTEMP,"yes","no","no","Temperatura procesora", NULL, NULL);
+	//}
 	
-	XMLCreateDeviceEntry(node,"system_txtfile",INPUT_SYSTEM_TXTFILE,"yes","no","no","Odczyt z pliku tekstowego","yes","Nazwa pliku tekstowego");
+	XMLCreateDeviceEntry(node,"system_txtfile",PORT_TEXT_FILE_PREFIX,"yes","yes","yes","Plik tekstowy","yes","Ścieżka do pliku");
 	
 	XMLSendReply();	
 }

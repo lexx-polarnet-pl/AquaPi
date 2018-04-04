@@ -32,6 +32,7 @@
 #include "database.c"
 #include "externals.c"
 #include "inifile.c"
+#include "light.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -99,7 +100,6 @@ void StoreTempStat() {
 			}
 		}
 	}
-
 }
 
 void ReadConf() {
@@ -113,7 +113,7 @@ void ReadConf() {
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = -1;
-	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf,interface_nightcorr FROM interfaces i, devices d WHERE device_id = interface_deviceid AND interface_disabled = 0 AND interface_deleted = 0 AND device_disabled=0 AND device_deleted=0");
+	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf,interface_nightcorr FROM interfaces WHERE interface_deleted = 0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -137,7 +137,7 @@ void ReadConf() {
 	
 	// domyślnie wyjścia na stan nieustalony
 	for(x = 0; x <= interfaces_count; x++) {
-		if (interfaces[x].type == DEV_OUTPUT) {
+		if (interfaces[x].type == DEV_OUTPUT || interfaces[x].type == DEV_OUTPUT_PWM) {
 			interfaces[x].state = -1;
 			interfaces[x].new_state = -1;
 			interfaces[x].override_value = -1;
@@ -182,8 +182,9 @@ void ReadConf() {
 	DB_GetSetting("temp_night_corr",buff);
 	specials.temp_night_corr = atof(buff);
 	// wymuś stan nieustalony
-	specials.is_night = -1;
+	//specials.is_night = -1;
 
+	ModLight_ReadSettings();
 	Log("Konfiguracja odczytana",E_DEV);
 
 	SetupPorts();
@@ -225,11 +226,14 @@ void ProcessPortStates() {
 				} else {
 					ChangePortState(interfaces[x].address,1-interfaces[x].state);
 				}
-				if (interfaces[x].state == 1) {
+				if (interfaces[x].state == 1 && interfaces[x].type == DEV_OUTPUT) {
 					sprintf(buff,"Załączam %s",interfaces[x].name);
 				} else {
 					sprintf(buff,"Wyłączam %s",interfaces[x].name);
 				}
+				if (interfaces[x].type == DEV_OUTPUT_PWM) {
+					sprintf(buff,"Ustawiam PWM na %i%% dla wyjścia %s",interfaces[x].state,interfaces[x].name);
+				} 
 				Log(buff,E_INFO);	
 				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
 				DB_Query(buff);				
@@ -245,7 +249,7 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 	int fval = 0;
-	int x,y,z,seconds_since_midnight,last_sec_run = 0;
+	int x,y,z,last_sec_run = 0;
 	double corr_val;
 
 	// defaults
@@ -305,22 +309,23 @@ int main() {
 		// ustalenie timerów i ustalenie czy jest dzien czy noc
 		time ( &rawtime );
 		timeinfo = localtime ( &rawtime );
-		seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
+		specials.seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
 
 		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę, lub czy nie otrzymałeś komendy z zewnątrz na którą trzeba zareagować
-		if (seconds_since_midnight != last_sec_run) {
+		if (specials.seconds_since_midnight != last_sec_run) {
 			// nie sprawdzałeś, to sprawdzaj
-			last_sec_run = seconds_since_midnight;
+			last_sec_run = specials.seconds_since_midnight;
 
+			/*
 			// obsługa dnia i nocy
 			if (specials.night_start < specials.night_stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
-				if ((seconds_since_midnight >= specials.night_start) && (seconds_since_midnight < specials.night_stop)) {
+				if ((specials.seconds_since_midnight >= specials.night_start) && (specials.seconds_since_midnight < specials.night_stop)) {
 					specials.night_ns = 1;
 				} else {
 					specials.night_ns = 0;
 				}
 			} else { // przypadek kiedy zdarzenie przechodzi przez północ
-				if ((seconds_since_midnight < specials.night_start) && (seconds_since_midnight >= specials.night_stop)) {
+				if ((specials.seconds_since_midnight < specials.night_start) && (specials.seconds_since_midnight >= specials.night_stop)) {
 					specials.night_ns = 0;
 				} else {
 					specials.night_ns = 1;
@@ -336,9 +341,10 @@ int main() {
 					Log("Przechodzę w tryb noc",E_INFO);
 				}
 			}
-
+			*/
+			
 			// obsługa wejść
-			if (seconds_since_midnight % config.inputs_freq == 0) {
+			if (specials.seconds_since_midnight % config.inputs_freq == 0) {
 				for(x = 0; x <= interfaces_count; x++) {
 					if (interfaces[x].type == DEV_INPUT) {
 						interfaces[x].measured_value = GetDataFromInput(x);
@@ -363,7 +369,7 @@ int main() {
 				if (strncmp(timers[x].days+timeinfo->tm_wday,"1",1)  == 0) { // kontrola dnia tygodnia
 					for (y=0; y <= interfaces_count; y++) {
 						// teraz trzeba wziąść pod uwagę jeszcze czas
-						if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= seconds_since_midnight)) {
+						if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= specials.seconds_since_midnight)) {
 							if (timers[x].interfaceidthen == interfaces[y].id) {
 								interfaces[y].new_state = timers[x].action;
 							}
@@ -401,28 +407,32 @@ int main() {
 			ProcessPortStates();
 			
 			// informacje devel
-			if (seconds_since_midnight % config.devel_freq == 0) {
-				Log("============ Zrzut interfaceów ============",E_DEV);
-				Log("|Typ|Stan| Conf |KNoc|OVal|OExp|Wartos|Bł|Nazwa",E_DEV);
-				Log("------------------------------------------",E_DEV);
+			if (specials.seconds_since_midnight % config.devel_freq == 0) {
+				Log("======================== Zrzut interfaceów ========================",E_DEV);
+				Log("|Typ|Stan|NSta| Conf |KNoc|OVal|OExp|Wartos|Bł|Nazwa",E_DEV);
+				Log("-------------------------------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
-				Log("============ Zrzut timerów ============",E_DEV);				
+				Log("======================== Zrzut timerów ============================",E_DEV);				
 				sprintf(buff,"Liczba timerów: %i",timers_count+1);
 				Log(buff,E_DEV);	
-				Log("============ Koniec zrzutu ============",E_DEV);
+				Log("======================== Koniec zrzutu ============================",E_DEV);
+				//ModLight_Debug();
 			}
 
-			if (seconds_since_midnight % config.stat_freq == 0) {
+			if (specials.seconds_since_midnight % config.stat_freq == 0) {
 				StoreTempStat();
 			}
 
-			if ((seconds_since_midnight % config.reload_freq == 0) && (config.reload_freq != -1)) {
+			if ((specials.seconds_since_midnight % config.reload_freq == 0) && (config.reload_freq != -1)) {
 				Log("Automatyczne odświerzenie konfiguracji",E_DEV);
 				ReadConf();
 			}
+			
+			// Załatw ustawienia oświetlenia
+			ModLight_Process();
 			
 		}
 		usleep(100000);

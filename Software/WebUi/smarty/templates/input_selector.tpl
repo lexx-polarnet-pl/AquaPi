@@ -78,16 +78,4 @@ function load()
 </form>
 </div>
 
-<div id="dashboard">
-wyjścia
-<select name="outputs" id="outputs">
-{foreach from=$device_list->devicelist->device item="device"}
-	{if ($device->output == 'yes') && !($device->configured == 'yes')}
-		<option value="{$device->address}">{$device->description}</option>
-	{/if}
-{/foreach}
-</select>
-
-
-</div>
 <!-- koniec dema -->
