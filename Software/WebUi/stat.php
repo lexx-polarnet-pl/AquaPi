@@ -23,45 +23,30 @@
 include("init.php");
 
 $smarty->assign('title', 'Statystyki');
+/*switch ($_GET['limit']) {
+    case 'week':
+		$limit = time() - (7 * 24 * 60 * 60);
+        break;
+    case 'month':
+		$limit = time() - (31 * 7 * 24 * 60 * 60);
+        break;
+    case 'no_limit':
+		$limit = 0;
+        break;
+    default:
+		$limit = time() - (24 * 60 * 60);
+}
+//if(isset($_GET['limit']))$limit = $_GET['limit'];*/
+
+$interfaces = GetInterfaces();
+foreach($interfaces as $interface => $interface_data) {
+	$interfaces[$interface]['interface_stat'] = $db->GetAll('select stat_date,stat_value from stats where stat_interfaceid = ?',array($interface_data['interface_id']));
+}
 
 
-if(array_key_exists('limit', $_GET))
-    switch ($_GET['limit'])
-    {
-	case 'year':
-	    $limit = time() - (365 * 24 * 60 * 60);
-	    break;
-	case 'month':
-	    $limit = time() - (31 * 24 * 60 * 60);
-	    break;
-	case 'week':
-	    $limit = time() - (7 * 24 * 60 * 60);
-	    break;
-	case 'no_limit':
-	    $limit = 0;
-	    break;
-	default:
-	    $limit = time() - (7 * 24 * 60 * 60); //7 days
-    }
-else
-    $limit = time() - (7 * 24 * 60 * 60);
 
-//aktywne interfejsy    
-$draw_t	= array('1wire', 'system');
-$draw_p	= array('gpio', 'relayboard');
-
-//new dBug(GetInterfaces());
-foreach(GetInterfaces() as $type => $sensors_tmp)
-    foreach($sensors_tmp as $sensor)
-    {
-	if (in_array($type, $draw_t) and $sensor['interface_draw']==1)
-	    $sensors['temps'][]	= $sensor;
-	if (in_array($type, $draw_p) and $sensor['interface_draw']==1)
-	    $sensors['ports'][]	= $sensor;
-    }
-//new dBug($sensors);
-$smarty->assign('sensors', $sensors);
-$smarty->assign('simplify_graphs', $CONFIG['simplify_graphs']);
-$smarty->assign('limit', $limit);
+$smarty->assign('interfaces', $interfaces);
 $smarty->display('stat.tpl');
+
+//new dBug($interfaces);
 ?>
