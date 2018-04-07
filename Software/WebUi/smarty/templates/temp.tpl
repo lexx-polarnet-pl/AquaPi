@@ -77,28 +77,28 @@ $(function() {
 <div id="dashboard">
 <form action="temp.php" method="post">
 <table>
-<tr><td>Tmax</td><td><input type="text" readonly id="TMAX" name="TMAX" value ="{$CONFIG.temp_tmax}&deg;C"></td><td style="width:200px"><div id="SLIDE_TMAX"></div></td></tr>
-<tr><td>Hc</td><td><input type="text" readonly id="HC" name="HC" value ="{$CONFIG.temp_hc}&deg;C"></td><td><div id="SLIDE_HC"></div></td></tr>
-<tr><td>Tmin</td><td><input type="text" readonly id="TMIN" name="TMIN" value ="{$CONFIG.temp_tmin}&deg;C"></td><td><div id="SLIDE_TMIN"></div></td></tr>
-<tr><td>Hg</td><td><input type="text" readonly id="HG" name="HG" value ="{$CONFIG.temp_hg}&deg;C"></td><td><div id="SLIDE_HG"></div></td></tr>
-<tr><td>Ncor</td><td><input type="text" readonly id="NCOR" name="NCOR" value ="{$CONFIG.temp_ncor}&deg;C"></td><td><div id="SLIDE_NCOR"></div></td></tr>
-<tr><td>Tmaxal</td><td><input type="text" readonly id="TMAXAL" name="TMAXAL" value ="{$CONFIG.temp_tmaxal}&deg;C"></td><td><div id="SLIDE_TMAXAL"></div></td></tr>
-<tr><td>Tminal</td><td><input type="text" readonly id="TMINAL" name="TMINAL" value ="{$CONFIG.temp_tminal}&deg;C"></td><td><div id="SLIDE_TMINAL"></div></td></tr>
-<tr><td>Grzałka</td><td colspan=2><select name="interface_heat">
+<tr><td>Tmax</td><td><input type="text" class="temp_input" readonly id="TMAX" name="TMAX" value ="{$CONFIG.temp_tmax}&deg;C"></td><td><div id="SLIDE_TMAX" class="temp_slider"></div></td></tr>
+<tr><td>Hc</td><td><input type="text" class="temp_input" readonly id="HC" name="HC" value ="{$CONFIG.temp_hc}&deg;C"></td><td><div id="SLIDE_HC" class="temp_slider"></div></td></tr>
+<tr><td>Tmin</td><td><input type="text" class="temp_input" readonly id="TMIN" name="TMIN" value ="{$CONFIG.temp_tmin}&deg;C"></td><td><div id="SLIDE_TMIN" class="temp_slider"></div></td></tr>
+<tr><td>Hg</td><td><input type="text" class="temp_input" readonly id="HG" name="HG" value ="{$CONFIG.temp_hg}&deg;C"></td><td><div id="SLIDE_HG" class="temp_slider"></div></td></tr>
+<tr><td>Ncor</td><td><input type="text" class="temp_input" readonly id="NCOR" name="NCOR" value ="{$CONFIG.temp_ncor}&deg;C"></td><td><div id="SLIDE_NCOR" class="temp_slider"></div></td></tr>
+<tr><td>Tmaxal</td><td><input type="text" class="temp_input" readonly id="TMAXAL" name="TMAXAL" value ="{$CONFIG.temp_tmaxal}&deg;C"></td><td><div id="SLIDE_TMAXAL" class="temp_slider"></div></td></tr>
+<tr><td>Tminal</td><td><input type="text" class="temp_input" readonly id="TMINAL" name="TMINAL" value ="{$CONFIG.temp_tminal}&deg;C"></td><td><div id="SLIDE_TMINAL" class="temp_slider"></div></td></tr>
+<tr><td>Grzałka</td><td colspan=2><select name="interface_heat" class="temp_input_long">
 {foreach from=$interfaces item="interface"}
 	{if $interface.interface_type==2}
 		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_heat} selected{/if}>{$interface.interface_name}</option>
 	{/if}
 {/foreach}
 </select></td></tr>
-<tr><td>Chłodzenie</td><td colspan=2><select name="interface_cool">
+<tr><td>Chłodzenie</td><td colspan=2><select name="interface_cool" class="temp_input_long">
 {foreach from=$interfaces item="interface"}
 	{if $interface.interface_type==2}
 		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_cool} selected{/if}>{$interface.interface_name}</option>
 	{/if}
 {/foreach}
 </select></td></tr>
-<tr><td>Czujnik temperaturty</td><td colspan=2><select name="interface_sensor">
+<tr><td>Czujnik temperaturty</td><td colspan=2><select name="interface_sensor" class="temp_input_long">
 {foreach from=$interfaces item="interface"}
 	{if $interface.interface_type==1}
 		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_sensor} selected{/if}>{$interface.interface_name}</option>

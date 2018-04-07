@@ -24,6 +24,10 @@
   h1,h2,h3 {margin-top:2px; margin-bottom:2px;}
   #temp {font-size: 24px; color: #000090}
   #time {font-size: 24px; color: #000090}
+  input.temp_input {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 70px; background-color: #EEEEEE}
+  select.temp_input_long {float:left; text-align:left; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 300px; }
+  div.temp_slider {width:200px; margin-left:15px; margin-right:10px;}
+	
   input.temp_select {float:right; text-align:right; font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; margin-right: 10px}
   input.time_select {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px}
   select, input.rest {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px}
@@ -34,7 +38,7 @@
   input.medium {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 200px; background-color: #EEEEEE}
   input.short {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 100px; background-color: #EEEEEE}
   input.vshort {font-family: 'Capriola', sans-serif; font-size: 16px; color: #000090; width: 50px; background-color: #EEEEEE}
-  div.temp_select {width:100%; margin:5px;}
+
   h2.error {color: red; }
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
