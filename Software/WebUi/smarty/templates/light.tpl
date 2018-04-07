@@ -66,21 +66,23 @@ $(function() {
 
 <div id="dashboard">
 <form action="light.php" method="post">
-PWM1:<input type="text" readonly id="PWM1" name="PWM1" value ="{$CONFIG.light_pwm1|replace:'%':''}%">
-<div id="SLIDE_PWM1" style="margin:10px;"></div>	
-PWM2:<input type="text" readonly id="PWM2" name="PWM2" value ="{$CONFIG.light_pwm2|replace:'%':''}%">
-<div id="SLIDE_PWM2" style="margin:10px;"></div>	
-T1:<input type="text" name="T1" id="T1" value ="{$CONFIG.light_t1|utcdate_format:"%H:%M"}"><br>
-T2:<input type="text" name="T2" id="T2" value ="{$CONFIG.light_t2|utcdate_format:"%H:%M"}"><br>
-TL:<input type="text" name="TL" id="TL" value ="{$CONFIG.light_tl|utcdate_format:"%H:%M:%S"}"><br>
-Wyjście <select name="interface">
+<table>
+<tr><td>PWM1:</td><td><input type="text" readonly id="PWM1" name="PWM1" value ="{$CONFIG.light_pwm1|replace:'%':''}%"></td></tr>
+<tr><td colspan=2><div id="SLIDE_PWM1" style="margin:10px;"></div></td></tr>
+<tr><td>PWM2:</td><td><input type="text" readonly id="PWM2" name="PWM2" value ="{$CONFIG.light_pwm2|replace:'%':''}%"></td></tr>
+<tr><td colspan=2><div id="SLIDE_PWM2" style="margin:10px;"></div></div></td></tr>
+<tr><td>T1:</td><td><input type="text" name="T1" id="T1" value ="{$CONFIG.light_t1|utcdate_format:"%H:%M"}"></td></tr>
+<tr><td>T2:</td><td><input type="text" name="T2" id="T2" value ="{$CONFIG.light_t2|utcdate_format:"%H:%M"}"></td></tr>
+<tr><td>TL:</td><td><input type="text" name="TL" id="TL" value ="{$CONFIG.light_tl|utcdate_format:"%H:%M:%S"}"></td></tr>
+<tr><td>Wyjście </td><td><select name="interface">
 {foreach from=$interfaces item="interface"}
 	{if $interface.interface_type==3}
 		<!-- {if $interface.interface_icon}<img src="img/{$interface.interface_icon}">{/if} -->
 		<option value="{$interface.interface_id}">{$interface.interface_name}</option>
 	{/if}
 {/foreach}
-</select>
+</select></td></tr>
+</table>
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
 

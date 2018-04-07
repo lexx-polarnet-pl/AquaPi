@@ -23,7 +23,7 @@
 include("init.php");
 
 $smarty->assign('title', 'Statystyki');
-/*switch ($_GET['limit']) {
+switch ($_GET['limit']) {
     case 'week':
 		$limit = time() - (7 * 24 * 60 * 60);
         break;
@@ -36,11 +36,11 @@ $smarty->assign('title', 'Statystyki');
     default:
 		$limit = time() - (24 * 60 * 60);
 }
-//if(isset($_GET['limit']))$limit = $_GET['limit'];*/
+//if(isset($_GET['limit']))$limit = $_GET['limit'];
 
 $interfaces = GetInterfaces();
 foreach($interfaces as $interface => $interface_data) {
-	$interfaces[$interface]['interface_stat'] = $db->GetAll('select stat_date,stat_value from stats where stat_interfaceid = ?',array($interface_data['interface_id']));
+	$interfaces[$interface]['interface_stat'] = $db->GetAll('select stat_date,stat_value from stats where stat_interfaceid = ? and stat_date > ?',array($interface_data['interface_id'],$limit));
 }
 
 

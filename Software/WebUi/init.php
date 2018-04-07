@@ -112,20 +112,21 @@ if($CONFIG['plugins']['calendar']==1)
 
 // definicja menu
 $my_menu	= array();
-$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "home.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "heart.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
 //$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
 //$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",		"icon" => "input_device.png", 	"url" => "ioconf.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "light.png", 	"url" => "light.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "logs2.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "graph.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",		"icon" => "plugin.png", 	"url" => "ioconf.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "brightness.png", 	"url" => "light.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "weather.png", 	"url" => "temp.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "caution.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "trends.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
 if($CONFIG['plugins']['notes']==1)
     $my_menu[]	= array ("selected" => false,	"name" => "Notatki", 		"icon" => "notes.png", 		"url" => "notes.php",	"acl" => "r"    , "reload" => 0);
 if($CONFIG['plugins']['calendar']==1)
     $my_menu[]	= array ("selected" => false,	"name" => "Kalendarz", 		"icon" => "calendar.png", 	"url" => "calendar.php","acl" => "r"    , "reload" => 0);
 if($CONFIG['plugins']['camera']==1)
     $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "about.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "news.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);
 
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
