@@ -107,3 +107,24 @@ int file_exists(char* filename)
     return 0;
 
 }
+
+double GetValFromInterface(int interfaceId) {
+	int y;
+	double sensor_val;
+	sensor_val = -9999;
+	for (y=0; y <= interfaces_count; y++) {
+		if (interfaceId  == interfaces[y].id) {
+			sensor_val = interfaces[y].measured_value;
+		}
+	}		
+	return sensor_val;
+}
+
+void SetInterfaceNewVal(int interfaceId, int value) {
+	int y;
+	for (y=0; y <= interfaces_count; y++) {
+		if (interfaceId  == interfaces[y].id) {
+			interfaces[y].new_state = value;
+		}
+	}		
+}

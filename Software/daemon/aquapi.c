@@ -33,6 +33,7 @@
 #include "externals.c"
 #include "inifile.c"
 #include "light.c"
+#include "temperature.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -185,6 +186,8 @@ void ReadConf() {
 	//specials.is_night = -1;
 
 	ModLight_ReadSettings();
+	ModTemperature_ReadSettings();
+	
 	Log("Konfiguracja odczytana",E_DEV);
 
 	SetupPorts();
@@ -420,6 +423,7 @@ int main() {
 				Log(buff,E_DEV);	
 				Log("======================== Koniec zrzutu ============================",E_DEV);
 				//ModLight_Debug();
+				ModTemperature_Debug();
 			}
 
 			if (specials.seconds_since_midnight % config.stat_freq == 0) {
@@ -433,6 +437,7 @@ int main() {
 			
 			// Załatw ustawienia oświetlenia
 			ModLight_Process();
+			ModTemperature_Process();
 			
 		}
 		usleep(100000);
