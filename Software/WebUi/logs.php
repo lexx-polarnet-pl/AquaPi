@@ -22,7 +22,7 @@
 
 include("init.php");
 
-$count  = 30;
+$count  = 100;
 $start  = 0;
 $period = $CONFIG['webui']['purge_logs'] * 24 * 60 * 60; //30 dni
 $db->Execute('DELETE FROM logs WHERE log_date<?', array(time() - $period));
