@@ -23,6 +23,9 @@
 include("init.php");
 $smarty->assign('title', 'Konfiguracja wejść/wyjść');
 
+if($_POST) {
+	new dBug($_POST,'',true);die;
+}
 //kasowanie urzadzen i interfejsów
 if(array_key_exists('action', $_GET))
 {

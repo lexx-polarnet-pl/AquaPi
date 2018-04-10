@@ -1,13 +1,15 @@
 {include "header.tpl"}
 <div id="dashboard">
 <h3>Skonfigurowane urządzenia</h3>
+<form action="ioconf.php" method="post">
 <table style="width:100%">
-<tr bgcolor="#aaaaaa"><th></th><th>Nazwa</th><th>Adres</th><th>Tryb</th><th></th></tr>
+<tr bgcolor="#aaaaaa"><th></th><th>Nazwa</th><th>Adres</th><th>Kolor</th><th>Tryb</th><th></th></tr>
 {foreach from=$devices item="device"}
 	<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
 		<td>{if $device.interface_icon}<img src="img/{$device.interface_icon}">{/if}</td>
 		<td>{$device.interface_name}</td> 
 		<td>{$device.interface_address}</td>
+		<td><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]"></td>		
 		<td>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</td>
 		<td>
 			<a href="?action=delete&device_id={$device.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" title="Usunięcie urządzenia">
@@ -17,6 +19,8 @@
 	</tr>
 {/foreach}
 </table>
+<INPUT TYPE="image" SRC="img/submit.png" align="right">
+</form>
 </div>
 
 <div id="dashboard">
@@ -107,6 +111,7 @@ function load()
 	<option value="3" id="IOOutPWM">Wyjście PWM</option>
 </select>
 </td></tr>
+<tr><td>Kolor</td><td><input type="color" name="htmlcolor"></td></tr>
 </table>
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
