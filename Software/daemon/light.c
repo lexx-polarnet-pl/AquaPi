@@ -25,8 +25,7 @@ struct _light {
 	int t1;
 	int t2;
 	int tl;
-	int pwm_act;
-	int pwm_new;
+	int pwm;
 	int interface_id;
 } light;
 
@@ -54,29 +53,23 @@ void ModLight_Process() {
 	if ((specials.seconds_since_midnight >= light.t1) && (specials.seconds_since_midnight < light.t2)) { // teraz jest dzień, więc sprawdzamy czy słońce wschodzi, czy zachodzi
 		specials.night_ns = 0;
 		if ((specials.seconds_since_midnight >= light.t1) && (specials.seconds_since_midnight < (light.t1 + light.tl))) { // wschód słońca
-			// PWMA = PWM1 + (x - T1) / TL * (PWM2 - PWM1)
-			//Log("Jestem wewnątrz pętli wschód słońca",E_DEV);
-			light.pwm_new = light.pwm1 + (float)(specials.seconds_since_midnight - light.t1) / (float)light.tl * (light.pwm2 - light.pwm1);
+			light.pwm = light.pwm1 + (float)(specials.seconds_since_midnight - light.t1) / (float)light.tl * (light.pwm2 - light.pwm1);
 		} else if ((specials.seconds_since_midnight >= (light.t2 - + light.tl)) && (specials.seconds_since_midnight < light.t2)) { //zachód słońca
-			// PWMA = PWM1 + (T2 - x) / TL * (PWM2 - PWM1)
-			//Log("Jestem wewnątrz pętli zachód słońca",E_DEV);
-			light.pwm_new = light.pwm1 + (float)(light.t2 - specials.seconds_since_midnight) / (float)light.tl * (light.pwm2 - light.pwm1);
+			light.pwm = light.pwm1 + (float)(light.t2 - specials.seconds_since_midnight) / (float)light.tl * (light.pwm2 - light.pwm1);
 		} else {
-			light.pwm_new = light.pwm2;
+			light.pwm = light.pwm2;
 		}
 	} else {
 		specials.night_ns = 1;
-		light.pwm_new = 0; // w nocy PWM na zero
+		light.pwm = 0; // w nocy PWM na zero
 	}	
-	// jeśli nowa wartość PWM jest inna niż stara, to ją zmieńmy
-	if (light.pwm_new != light.pwm_act) {
-		light.pwm_act = light.pwm_new;
-		for (y=0; y <= interfaces_count; y++) {
-			if (light.interface_id  == interfaces[y].id) {
-				interfaces[y].new_state = light.pwm_act;
-			}
-		}	
-	}
+	// przypiszmy warotość PWM do interfejsu
+	for (y=0; y <= interfaces_count; y++) {
+		if (light.interface_id  == interfaces[y].id) {
+			interfaces[y].new_state = light.pwm;
+		}
+	}	
+
 	// zmiana trybu dzień - noc
 	if (specials.night_ns != specials.is_night) {
 		specials.is_night = specials.night_ns;
@@ -104,7 +97,7 @@ void ModLight_Debug() { // informacje devel
 	Log(buff,E_DEV);
 	sprintf(buff,"PWM2: %3i%%",light.pwm2);
 	Log(buff,E_DEV);
-	sprintf(buff,"PWM ACT: %3i%%",light.pwm_act);
+	sprintf(buff,"PWM ACT: %3i%%",light.pwm);
 	Log(buff,E_DEV);
 	/*tm_info = gmtime((const time_t *)&light.tl);
 	strftime(buff, 26, "TL:  %H:%M:%S", tm_info);
