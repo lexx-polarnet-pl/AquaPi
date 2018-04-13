@@ -279,14 +279,10 @@ if($CONFIG['plugins']['relayboard']==0)
 	$devices	= array_values($devices);
 }
 
-$icons 		= scandir('img');
+$icons 		= scandir('img/devices');
 foreach($icons as $icon)
 {
-	if($icon === '.' or $icon === '..'
-		or $icon=='device.png'
-		or pathinfo('img/'.$icon, PATHINFO_EXTENSION)!='png'
-		or getimagesize('img/'.$icon)[0]>26
-		)
+	if($icon === '.' or $icon === '..')
 			{continue;}
 	$result[] = $icon;
 }

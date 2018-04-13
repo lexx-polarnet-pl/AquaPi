@@ -24,9 +24,14 @@ include("init.php");
 $smarty->assign('title', 'Konfiguracja wejść/wyjść');
 
 if($_POST) {
-	new dBug($_POST,'',true);die;
+	//new dBug($_POST,'',true);die;
+	foreach ($_POST['interfaces'] as $key => $interface) {
+		$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$key));
+			//var_dump($interface);
+	}
+	ReloadDaemonConfig();
 }
-//kasowanie urzadzen i interfejsów
+// dodawanie i kasowanie urządzeń
 if(array_key_exists('action', $_GET))
 {
 	if ($_GET['action'] == "delete" and $_GET['device_id']>0)
@@ -37,7 +42,6 @@ if(array_key_exists('action', $_GET))
 	}
 	elseif($_GET['action'] == "add")
 	{
-		//var_dump($_POST);
 		$input_address = $_POST['InputAddressSelector'];
 		if ($_POST['FullyEditable']) {
 			$input_address = $input_address.$_POST['FullyEditable'];
@@ -45,24 +49,15 @@ if(array_key_exists('action', $_GET))
 		$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_type, interface_icon)
 				     VALUES (?, ?, ?, ?, ?)',
 				     array(0, $input_address, $_POST['InputFriendlyName'], $_POST["InputModeSelector"], $_POST['InputIconSelector']));
-		//$interface_id = $db->GetOne('select interface_id from interfaces where interface_address = ? order by interface_id desc limit 1;',array($input_address));
-		//if($_POST['InputUom'] != 'none')	{
-		//	echo "tutaj";
-		//	$db->Execute('INSERT INTO unitassignments(unitassignment_unitid, unitassignment_interfaceid) VALUES(?, ?)', array($_POST['InputUom'], $interface_id));
-		//} */
 		ReloadDaemonConfig();
 		//$SESSION->redirect("ioconf.php");
 	}	
 }
 
-$icons 		= scandir('img');
+$icons 		= scandir('img/devices');
 foreach($icons as $icon)
 {
-	if($icon === '.' or $icon === '..'
-		or $icon=='device.png'
-		or pathinfo('img/'.$icon, PATHINFO_EXTENSION)!='png'
-		or getimagesize('img/'.$icon)[0]>26
-		)
+	if($icon === '.' or $icon === '..')
 			{continue;}
 	$result[] = $icon;
 }

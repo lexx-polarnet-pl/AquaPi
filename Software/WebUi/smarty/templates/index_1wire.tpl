@@ -7,7 +7,7 @@
 		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
 			<td>
 				{if isset($icons[{$device.id}])}
-						<img src="img/{$icons[{$device.id}]}">
+						<img src="img/devices/{$icons[{$device.id}]}">
 				{else}
 						<img src="img/sensor.png">
 				{/if}

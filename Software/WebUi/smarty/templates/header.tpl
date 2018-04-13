@@ -11,9 +11,10 @@
 <link rel="stylesheet" type="text/css" href="css/joint.css" />
 <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png" />
 <link href="css/smoothness/jquery-ui-1.9.0.custom.css" rel="stylesheet">
-<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
-<script type="text/javascript" src="js/jquery-ui-1.9.0.custom.js"></script>
+<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui.js"></script> 
 <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="js/jquery.ddslick.min.js"></script>
 <script type="text/javascript" src="js/popup.js"></script>
 <script type="text/javascript" src="js/aquapi.js"></script>
 <script type="text/javascript" src="js/jxs_compressed.js"></script>

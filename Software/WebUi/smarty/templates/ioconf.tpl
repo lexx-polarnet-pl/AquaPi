@@ -3,11 +3,18 @@
 <h3>Skonfigurowane urządzenia</h3>
 <form action="ioconf.php" method="post">
 <table style="width:100%">
-<tr bgcolor="#aaaaaa"><th></th><th>Nazwa</th><th>Adres</th><th>Kolor</th><th>Tryb</th><th></th></tr>
+<tr bgcolor="#aaaaaa"><th>Ikonka</th><th>Nazwa</th><th>Adres</th><th>Kolor</th><th>Tryb</th><th></th></tr>
 {foreach from=$devices item="device"}
 	<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td>{if $device.interface_icon}<img src="img/{$device.interface_icon}">{/if}</td>
-		<td>{$device.interface_name}</td> 
+		<td>
+		<input name="interfaces[{$device.interface_id}][img]" class="IconInputId{$device.interface_id}" value="" type="hidden"></input>
+		<select id="IconSelectorId{$device.interface_id}">
+			{foreach $icons item=icon}
+			<option data-imagesrc="img/devices/{$icon}"{if $icon==$device.interface_icon} selected{/if}>{$icon}</option>
+			{/foreach}
+		</select>		
+		</td>
+		<td><input name="interfaces[{$device.interface_id}][name]" value="{$device.interface_name}"></input></td> 
 		<td>{$device.interface_address}</td>
 		<td><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]"></td>		
 		<td>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</td>
@@ -17,6 +24,16 @@
 			</a>
 		</td>
 	</tr>
+<script>
+$('#IconSelectorId{$device.interface_id}').ddslick({
+	width:250,
+	height:300,
+	imagePosition:"left",
+	onSelected: function(data) {
+		$('.IconInputId{$device.interface_id}').attr('value', data.selectedData.value);
+	}	
+});
+</script>	
 {/foreach}
 </table>
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
@@ -74,7 +91,7 @@ function ChangeInput()
 function ChangeIcon()
 {
 	var icon = document.getElementById("InputIconSelector").value;
-	document.getElementById("icon-prev").setAttribute("src","img/" + icon);
+	document.getElementById("icon-prev").setAttribute("src","img/devices/" + icon);
 
 }
 window.onload = load;
@@ -101,7 +118,7 @@ function load()
 <tr><td>Ikona<img src="img/alert.png" id="icon-prev"style="float:right"></td><td>
 <select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()" style="width:200px">
 	{foreach $icons item=icon}
-	<option class="imagebacked" style="background-image:url(img/{$icon});">{$icon}</option>
+	<option class="imagebacked">{$icon}</option>
 	{/foreach}
 </select></td></tr>
 <tr><td>Ustaw jako</td><td>
