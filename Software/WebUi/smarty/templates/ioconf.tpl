@@ -20,7 +20,7 @@
 		<td>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</td>
 		<td>
 			<a href="?action=delete&device_id={$device.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" title="Usunięcie urządzenia">
-				<img align="right" src="img/off.png">
+				<img align="right" src="img/delete.png">
 			</a>
 		</td>
 	</tr>
