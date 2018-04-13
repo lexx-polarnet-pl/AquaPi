@@ -25,8 +25,8 @@ var scatterChart = new Chart(ctx, {
 {foreach from=$interfaces item="entry"}{if $entry.interface_type == 1}
 	{
 		label: '{$entry.interface_name}',
-		borderColor: "#e8c3b9",
-		backgroundColor: "#8e5ea2",
+		borderColor: "#{$entry.interface_htmlcolor}",
+		backgroundColor: "#{$entry.interface_htmlcolor}",
 		fill: false,
 		steppedLine: true,
 		data: [
@@ -65,8 +65,8 @@ var scatterChart = new Chart(ctx, {
 {foreach from=$interfaces item="entry"}{if $entry.interface_type == 2 or $entry.interface_type == 3}
 	{
 		label: '{$entry.interface_name}',
-		borderColor: "#e8c3b9",
-		backgroundColor: "#8e5ea2",
+		borderColor: "#{$entry.interface_htmlcolor}",
+		backgroundColor: "#{$entry.interface_htmlcolor}",
 		fill: false,
 		steppedLine: true,
 		data: [
