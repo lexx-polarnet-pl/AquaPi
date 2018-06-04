@@ -39,7 +39,7 @@ if ($_GET['action'] == 'add')
 			 ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
 			 ($_POST['d5']?$_POST['d5']:'0') . ($_POST['d6']?$_POST['d6']:'0') . 
 			 ($_POST['d7']?$_POST['d7']:'0');
-	$timer['interfaceidif'] = $_POST['interfaceidif'];
+	//$timer['interfaceidif'] = $_POST['interfaceidif'];
 	$timer['value'] = $_POST['value'];
 	//new dBug($timer);die;
 	AddTimer($timer);
@@ -59,23 +59,7 @@ $timers['time']     = $db->GetAll('SELECT *,
 				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
 				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
 				FROM timers t
-				WHERE timer_type=1');
-$timers['1wire']    = $db->GetAll('SELECT *,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
-				FROM timers t
-				WHERE timer_type=2');
-$timers['timepwm']     = $db->GetAll('SELECT *,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
-				FROM timers t
-				WHERE timer_type=3');
-$timers['1wirepwm']    = $db->GetAll('SELECT *,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname
-				FROM timers t
-				WHERE timer_type=4');
-
+				WHERE timer_type=1 ORDER BY timer_interfacethenname, timer_timeif');
 
 //new dBug($timers);
 //new dBug($interfaces,"",true);

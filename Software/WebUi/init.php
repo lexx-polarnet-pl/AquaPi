@@ -113,7 +113,7 @@ if($CONFIG['plugins']['calendar']==1)
 // definicja menu
 $my_menu	= array();
 $my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "heart.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
-//$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "timers.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "hourglass.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
 //$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",		"icon" => "plugin.png", 	"url" => "ioconf.php","acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "brightness.png", 	"url" => "light.php","acl" => "rw"   , "reload" => 0);
