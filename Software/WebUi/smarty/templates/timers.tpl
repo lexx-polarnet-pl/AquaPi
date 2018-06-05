@@ -14,8 +14,8 @@
 			minuteText: "Minuta",
 			secondText: "Sekunda"
 		});
-		
-		$('#timeifpwm').timepicker({
+{foreach from=$timers.time item="entry"}
+		$('#timers_{$entry.timer_id}').timepicker({
 			timeFormat: "hh:mm:ss",
 			showSecond: true,
 			currentText: "Teraz",
@@ -26,18 +26,7 @@
 			minuteText: "Minuta",
 			secondText: "Sekunda"
 		});
-		
-		$('#ev_stop').timepicker({
-			timeFormat: "hh:mm:ss",
-			showSecond: true,
-			currentText: "Teraz",
-			closeText: "Wybierz",
-			timeOnlyTitle: "Wybierz czas",
-			timeText: "Czas",
-			hourText: "Godzina",
-			minuteText: "Minuta",
-			secondText: "Sekunda"
-		});		
+{/foreach}	
 	});
 </script>
 
@@ -62,7 +51,7 @@
 		<!--ZDARZENIA CZASOWE-->
 		{foreach from=$timers.time item="entry"}
 		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-			    <td>{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if} </td>
+				<td><input class="timers_{$entry.timer_id}" type="text" name="timers_{$entry.timer_id}" id="timers_{$entry.timer_id}" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
 			    <td><div id="timer_action_{$entry.timer_id}"></div></td>
 			    <td>{$entry.timer_interfacethenname}</td>
 			    <td align="center"><input type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
@@ -79,6 +68,8 @@
 			Theme: 'Swipe',
 			OnText: "Załącz",
 			OffText: "Wyłącz",
+			OnValue: 1,
+			OffValue: 0,				
 			ToggleState:{if $entry.timer_action eq 1}true{else}false{/if}
 		});
 		</script>
@@ -106,20 +97,50 @@
 			O godzinie
 			<input class="time_select" type="text" name="timeif" id="timeif" value="00:00:00" />
 			<input type="hidden" name="type" id="type" value="1" />
-			<select class="short" name="action" id="action">
-				<option value="-1">wybierz</option>
-				<option value="1">załącz</option>
-				<option value="0">wyłącz</option>
-			</select>
+			<input type="hidden" name="action" id="action" class="action" value="0"/>
+			<div id="actionsw" name="actionsw"></div>
+			<script>
+			$('#actionsw').btnSwitch({
+				Theme: 'Swipe',
+				OnText: "Załącz",
+				OffText: "Wyłącz",
+				OnCallback: function(data) {
+					$('.action').attr('value', '1');
+				},	
+				OffCallback: function(data) {
+					$('.action').attr('value', '0');
+				},	
+				OnValue: '1',
+				OffValue: '0',
+				HiddenInputId: true		
+			});
+			</script>			
 			wyjście
-			<select name="interfaceidthen" id="interfaceidthen" >
+			<!-- <select name="interfaceidthen" id="interfaceidthen" >
 				<option value="-1">wybierz</option>
 				{foreach from=$interfaces item="interface"}
 					{if $interface.interface_type==2}
 						<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_cool} selected{/if}>{$interface.interface_name}</option>
 					{/if}
 				{/foreach}
-			</select>
+				</select>
+			-->	
+				<input type="hidden" name="interfaceidthen" class="interfaceidthen">
+				<select id="DeviceSelector">
+				{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
+				<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.light_interface==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+				{/if}{/foreach}
+				</select>	
+			<script>
+			$('#DeviceSelector').ddslick({
+				width:200,
+				height:300,
+				imagePosition:"left",
+				onSelected: function(data) {
+					$('.interfaceidthen').attr('value', data.selectedData.value);
+				}	
+			});
+			</script>	
 			<br/>
 
 	<INPUT TYPE="image" SRC="img/submit.png" align="right">

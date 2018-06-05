@@ -84,31 +84,53 @@ $(function() {
 <tr><td>Ncor</td><td><input type="text" class="temp_input" readonly id="NCOR" name="NCOR" value ="{$CONFIG.temp_ncor}&deg;C"></td><td><div id="SLIDE_NCOR" class="temp_slider"></div></td></tr>
 <tr><td>Tmaxal</td><td><input type="text" class="temp_input" readonly id="TMAXAL" name="TMAXAL" value ="{$CONFIG.temp_tmaxal}&deg;C"></td><td><div id="SLIDE_TMAXAL" class="temp_slider"></div></td></tr>
 <tr><td>Tminal</td><td><input type="text" class="temp_input" readonly id="TMINAL" name="TMINAL" value ="{$CONFIG.temp_tminal}&deg;C"></td><td><div id="SLIDE_TMINAL" class="temp_slider"></div></td></tr>
-<tr><td>Grzałka</td><td colspan=2><select name="interface_heat" class="temp_input_long">
-{foreach from=$interfaces item="interface"}
-	{if $interface.interface_type==2}
-		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_heat} selected{/if}>{$interface.interface_name}</option>
-	{/if}
-{/foreach}
+<input name="interface_heat" type="hidden" class="interface_heat">
+<input name="interface_cool" type="hidden" class="interface_cool">
+<input name="interface_sensor" type="hidden" class="interface_sensor">
+<tr><td>Grzałka</td><td colspan=2><select id="DeviceSelector1">
+{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
+<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.temp_interface_heat==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+{/if}{/foreach}
+</select></td></tr>	
+<tr><td>Chłodzenie</td><td colspan=2><select id="DeviceSelector2">
+{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
+<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.temp_interface_cool==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+{/if}{/foreach}
 </select></td></tr>
-<tr><td>Chłodzenie</td><td colspan=2><select name="interface_cool" class="temp_input_long">
-{foreach from=$interfaces item="interface"}
-	{if $interface.interface_type==2}
-		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_cool} selected{/if}>{$interface.interface_name}</option>
-	{/if}
-{/foreach}
-</select></td></tr>
-<tr><td>Czujnik temperaturty</td><td colspan=2><select name="interface_sensor" class="temp_input_long">
-{foreach from=$interfaces item="interface"}
-	{if $interface.interface_type==1}
-		<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_sensor} selected{/if}>{$interface.interface_name}</option>
-	{/if}
-{/foreach}
+<tr><td>Czujnik temperaturty</td><td colspan=2><select id="DeviceSelector3">
+{foreach from=$interfaces item="interface"}{if $interface.interface_type==1}
+<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.temp_interface_sensor==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+{/if}{/foreach}
 </select></td></tr>
 </table>
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
-
+<script>
+$('#DeviceSelector1').ddslick({
+	width:300,
+	height:300,
+	imagePosition:"left",
+	onSelected: function(data) {
+		$('.interface_heat').attr('value', data.selectedData.value);
+	}	
+});
+$('#DeviceSelector2').ddslick({
+	width:300,
+	height:300,
+	imagePosition:"left",
+	onSelected: function(data) {
+		$('.interface_cool').attr('value', data.selectedData.value);
+	}	
+});
+$('#DeviceSelector3').ddslick({
+	width:300,
+	height:300,
+	imagePosition:"left",
+	onSelected: function(data) {
+		$('.interface_sensor').attr('value', data.selectedData.value);
+	}	
+});
+</script>	
 </div>
 <div id="dashboard">
 <img src="img/temp.svg" align="right"></img>

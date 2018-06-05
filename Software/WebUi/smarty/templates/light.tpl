@@ -74,15 +74,25 @@ $(function() {
 <tr><td>T1:</td><td><input type="text" name="T1" id="T1" value ="{$CONFIG.light_t1|utcdate_format:"%H:%M"}"></td></tr>
 <tr><td>T2:</td><td><input type="text" name="T2" id="T2" value ="{$CONFIG.light_t2|utcdate_format:"%H:%M"}"></td></tr>
 <tr><td>TL:</td><td><input type="text" name="TL" id="TL" value ="{$CONFIG.light_tl|utcdate_format:"%H:%M:%S"}"></td></tr>
-<tr><td>Wyjście </td><td><select name="interface">
-{foreach from=$interfaces item="interface"}
-	{if $interface.interface_type==3}
-		<!-- {if $interface.interface_icon}<img src="img/{$interface.interface_icon}">{/if} -->
-		<option value="{$interface.interface_id}">{$interface.interface_name}</option>
-	{/if}
-{/foreach}
-</select></td></tr>
+<tr><td>Wyjście </td><td>
+<input type="hidden" name="interface" class="interface">
+<select id="DeviceSelector">
+{foreach from=$interfaces item="interface"}{if $interface.interface_type==3}
+<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.light_interface==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+{/if}{/foreach}
+</select>	
+</td></tr>
 </table>
+<script>
+$('#DeviceSelector').ddslick({
+	width:200,
+	height:300,
+	imagePosition:"left",
+	onSelected: function(data) {
+		$('.interface').attr('value', data.selectedData.value);
+	}	
+});
+</script>	
 <INPUT TYPE="image" SRC="img/submit.png" align="right">
 </form>
 

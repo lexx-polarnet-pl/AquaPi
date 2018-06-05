@@ -36,7 +36,7 @@ if($_POST) {
 }
 
 $interfaces = GetInterfaces();
-
+//new dBug($interfaces,'',true);
 $smarty->assign('title', 'Konfiguracja oświetlenia');
 $smarty->assign('interfaces', $interfaces);
 //new dBug($CONFIG,'',true);
