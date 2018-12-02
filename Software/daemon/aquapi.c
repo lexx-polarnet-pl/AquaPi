@@ -224,17 +224,24 @@ void ProcessPortStates() {
 			if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
 				// konieczna jest zmiana stanu wyjścia
 				interfaces[x].state = interfaces[x].new_state;
-				if (interfaces[x].conf == 0) {
-					ChangePortState(interfaces[x].address,interfaces[x].state);
-				} else {
-					ChangePortState(interfaces[x].address,1-interfaces[x].state);
-				}
-				if (interfaces[x].state == 1 && interfaces[x].type == DEV_OUTPUT) {
-					sprintf(buff,"Załączam %s",interfaces[x].name);
-				} else {
-					sprintf(buff,"Wyłączam %s",interfaces[x].name);
+				if (interfaces[x].type == DEV_OUTPUT) {
+					if (interfaces[x].conf == 0) {
+						ChangePortState(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortState(interfaces[x].address,1-interfaces[x].state);
+					}
+					if (interfaces[x].state == 1) {
+						sprintf(buff,"Załączam %s",interfaces[x].name);
+					} else {
+						sprintf(buff,"Wyłączam %s",interfaces[x].name);
+					}
 				}
 				if (interfaces[x].type == DEV_OUTPUT_PWM) {
+					if (interfaces[x].conf == 0) {
+						ChangePortStatePWM(interfaces[x].address,interfaces[x].state*10);
+					} else {
+						ChangePortStatePWM(interfaces[x].address,1000-interfaces[x].state*10);
+					}
 					sprintf(buff,"Ustawiam PWM na %i%% dla wyjścia %s",interfaces[x].state,interfaces[x].name);
 				} 
 				Log(buff,E_INFO);	

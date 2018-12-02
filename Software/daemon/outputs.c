@@ -172,6 +172,17 @@ void ChangePortState (char *port,int state) {
 	}
 }
 
+void ChangePortStatePWM (char *port,int state) {
+	char buff[200];
+	if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+		// numer GPIO jest za ostatnim :
+		port=strrchr(port,':')+1;
+		pwmWrite(atoi(port),state);
+	} else {
+		sprintf(buff,"CPSP: Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+	}
+}
 int ReadPortState (char *port) {
 	char buff[200];
 	int RetVal = -1;
