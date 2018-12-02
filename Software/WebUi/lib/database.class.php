@@ -35,13 +35,9 @@ class Database {
 //
 
 	function Database($dbhost, $dbuser, $dbpasswd, $dbname) {
-		$this->_dblink = mysql_connect($dbhost, $dbuser, $dbpasswd);
+		$this->_dblink = mysqli_connect($dbhost, $dbuser, $dbpasswd, $dbname);
 		if (!$this->_dblink) {
-			die('Brak polaczenia z baza: ' . mysql_error());
-		}		
-		$this->_dbselected = mysql_select_db($dbname);
-		if (!$this->_dbselected) {
-			die ('Nie mozna wybrać bazy: ' . mysql_error());
+			die('Brak polaczenia z baza: ' . mysqli_error());
 		}		
 		$this->Execute("SET NAMES utf8;");
 	}
@@ -105,7 +101,7 @@ class Database {
 	{
 		$this->_query = $query;
 
-		if($this->_result = @mysql_query($query, $this->_dblink))
+		if($this->_result = mysqli_query($this->_dblink, $query))
 			$this->_error = FALSE;
 		else
 			$this->_error = TRUE;
@@ -167,7 +163,7 @@ class Database {
 	function _driver_fetchrow_num()
 	{
 		if(! $this->_error)
-			return mysql_fetch_array($this->_result, MYSQL_NUM);
+			return mysqli_fetch_array($this->_result, MYSQLI_NUM);
 		else
 			return FALSE;
 	}
@@ -175,7 +171,7 @@ class Database {
 	function _driver_affected_rows()
 	{
 		if(! $this->_error)
-			return mysql_affected_rows();
+			return mysqli_affected_rows($this->_dblink);
 		else
 			return FALSE;
 	}
@@ -183,17 +179,17 @@ class Database {
 	function _driver_geterror()
 	{
 		if($this->_dblink)
-			return mysql_error($this->_dblink);
+			return mysqli_error($this->_dblink);
 		elseif($this->_query)
 			return 'We\'re not connected!';
 		else
-			return mysql_error();
+			return mysqli_error();
 	}
 
 	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
-			return mysql_fetch_array($result ? $result : $this->_result, MYSQL_ASSOC);
+			return mysqli_fetch_array($result ? $result : $this->_result, MYSQL_ASSOC);
 		else
 			return FALSE;
 	}

@@ -12,14 +12,14 @@
 		<sect2 id="install-standard-1">
           <title>Ściągnij i zainstaluj najnowszą wersję rapsbiana.</title>
 		  <tip><title>Podpowiedź</title><para>Instrukcję instalacji Raspbiana znajdziesz na stronie poświęconej Raspbery Pi.</para></tip>
-		  <warning><title>Uwaga</title><para>Na karcie 2GB raczej się nie zmieścisz. Powinieneś mieć min 4GB kartę i powinieneś wykonać extend filesystem.</para></warning>	  
+		  <!-- <warning><title>Uwaga</title><para>Na karcie 2GB raczej się nie zmieścisz. Powinieneś mieć min 4GB kartę i powinieneś wykonać extend filesystem.</para></warning>	-->  
 		</sect2>
 		<sect2 id="install-standard-2">
           <title>Zaktualizuj system, i zainstaluj potrzebne pakiety.</title>
 <screen>
 <prompt>root@raspberrypi:~# </prompt><userinput>apt-get update</userinput> 
 <prompt>root@raspberrypi:~# </prompt><userinput>apt-get upgrade</userinput> 
-<prompt>root@raspberrypi:~# </prompt><userinput>apt-get install mysql-server mysql-client libmysqlclient-dev lighttpd php5-cgi php5-mysql git libxml2-dev</userinput> 
+<prompt>root@raspberrypi:~# </prompt><userinput>apt-get install mysql-server mysql-client lighttpd php-cgi php-mysql git libxml2-dev default-libmysqlclient-dev</userinput> 
 </screen>	
 		<warning><title>Uwaga</title><para>Przy instalacji mysql-server system poprosi o nadanie hasła dla administratora mysql. To hasło przyda się później, więc zapamiętaj jakie to hasło.</para></warning>	  
 		</sect2>
@@ -45,25 +45,9 @@ i2c-dev</programlisting>
 		</sect2>		
 		<sect2 id="install-standard-4">
           <title>Skonfiguruj serwer www i php</title>
-		  <para>Aby włączyć obsługę php5 w lighttpd musisz zmodyfikować dwa pliki, /etc/php5/cgi/php.ini i /etc/lighttpd/lighttpd.conf. 
-			Najpierw otwórz /etc/php5/cgi/php.ini i dodaj linię cgi.fix_pathinfo = 1 na samym końcu pliku:</para>
-			<screen><prompt>root@raspberrypi:~# </prompt><userinput>nano /etc/php5/cgi/php.ini</userinput></screen>
-			<programlisting>cgi.fix_pathinfo = 1</programlisting>
-			<para>Teraz otwórz /etc/lighttpd/lighttpd.conf i dodaj "mod_fastcgi", do sekcji server.modules : </para>
-			<screen><prompt>root@raspberrypi:~# </prompt><userinput>nano /etc/lighttpd/lighttpd.conf</userinput></screen>
-<programlisting>server.modules = (
-	"mod_access",
-	"mod_alias",
-	"mod_compress",
-	"mod_redirect",
-	"mod_fastcgi",
-#       "mod_rewrite",
-)</programlisting>
-			<para>A następnie na końcu pliku dodaj następującą sekcję:</para>
-<programlisting>fastcgi.server = ( ".php" => ((
-                     "bin-path" => "/usr/bin/php5-cgi",
-                     "socket" => "/tmp/php.socket"
-                 )))</programlisting>
+		  <para>sudo lighttpd-enable-mod fastcgi
+sudo lighttpd-enable-mod fastcgi-php</para>
+
 		</sect2>
 		<sect2 id="install-standard-5">
           <title>Zresetuj Pi.</title>
