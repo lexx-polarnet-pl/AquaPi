@@ -133,6 +133,16 @@ int ChangePortStateGpio(char *port,int state) {
 	return 0;
 }
 
+int ChangePortStatePWMGpio(char *port,int state) {
+	char buff[200];
+	// numer GPIO jest za ostatnim :
+	port=strrchr(port,':')+1;
+	pwmWrite(atoi(port),state*1024/100);
+	sprintf(buff,"Port GPIO %i Stan PWM: %i%%",atoi(port),state);
+	Log(buff,E_DEV);
+	return 0;
+}
+
 int ChangePortStateDummy(char *port,int state) {
 	char buff[200];
 	sprintf(buff,"Port %s Stan: %i",port,state);
@@ -141,18 +151,20 @@ int ChangePortStateDummy(char *port,int state) {
 }
 
 int ChangePortStateTxtFile(char *port,int state) {
-	//char buff[200];
-	// nazwa pliku jest za ostatnim :
 	port=strrchr(port,':')+1;
     FILE *f;
     f = fopen(port, "a");
-
     fprintf(f, "%i\n", state);
     fclose(f);
-	
-	//char buff[200];
-	//sprintf(buff,"Port %s Stan: %i",port,state);
-	//Log(buff,E_DEV);
+	return(0);
+}
+
+int ChangePortStatePWMTxtFile(char *port,int state) {
+	port=strrchr(port,':')+1;
+    FILE *f;
+    f = fopen(port, "a");
+    fprintf(f, "PWM:%i%%\n", state);
+    fclose(f);
 	return(0);
 }
 
@@ -174,10 +186,12 @@ void ChangePortState (char *port,int state) {
 
 void ChangePortStatePWM (char *port,int state) {
 	char buff[200];
-	if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
-		// numer GPIO jest za ostatnim :
-		port=strrchr(port,':')+1;
-		pwmWrite(atoi(port),state);
+	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
+		ChangePortStateDummy(port,state);	
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+		ChangePortStatePWMGpio(port,state);
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
+		ChangePortStatePWMTxtFile(port,state);
 	} else {
 		sprintf(buff,"CPSP: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);

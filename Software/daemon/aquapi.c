@@ -238,9 +238,9 @@ void ProcessPortStates() {
 				}
 				if (interfaces[x].type == DEV_OUTPUT_PWM) {
 					if (interfaces[x].conf == 0) {
-						ChangePortStatePWM(interfaces[x].address,interfaces[x].state*1024/100);
+						ChangePortStatePWM(interfaces[x].address,interfaces[x].state);
 					} else {
-						ChangePortStatePWM(interfaces[x].address,1024-interfaces[x].state*1024/100);
+						ChangePortStatePWM(interfaces[x].address,100-interfaces[x].state);
 					}
 					sprintf(buff,"Ustawiam PWM na %i%% dla wyjścia %s",interfaces[x].state,interfaces[x].name);
 				} 
