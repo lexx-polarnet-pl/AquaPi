@@ -53,6 +53,24 @@ void SetPortAsOutput (char *port) {
 	}
 }
 
+void SetPortAsPwmOutput (char *port) {
+	char buff[200];
+	
+	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
+		// Dla portów dummy nie rób nic
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+		// numer GPIO jest za ostatnim :
+		port=strrchr(port,':')+1;
+		pinMode (atoi(port), PWM_OUTPUT);
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
+		// Pliku tekstowego nie trzeba konfigurować jako wyjścia
+	} else {
+		sprintf(buff,"SPAPO: Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+		// nie obsługiwany port
+	}
+}
+
 void SetPortAsInput (char *port) {
 	if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
 		// numer GPIO jest za ostatnim :
@@ -94,6 +112,14 @@ int SetupPorts() {
 			} else {
 				interfaces[x].state = 1 - ReadPortState(interfaces[x].address);
 			}			
+		}
+		if (interfaces[x].type == DEV_OUTPUT_PWM) {
+			SetPortAsPwmOutput(interfaces[x].address);
+			//if (interfaces[x].conf == 0) {
+			//	interfaces[x].state = ReadPortState(interfaces[x].address);
+			//} else {
+			//	interfaces[x].state = 1 - ReadPortState(interfaces[x].address);
+			//}			
 		}
 		if (interfaces[x].type == DEV_INPUT) {
 			SetPortAsInput(interfaces[x].address);
