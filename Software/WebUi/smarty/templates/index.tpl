@@ -1,61 +1,91 @@
 {include "header.tpl"}
 
-<!--<div id="dashboard">
-    <h3>Wyjścia:</h3>
-    <div style="float:left;">
-        include "index_outputs.tpl"
-    </div>
-</div>-->
+<!-- czy daemon działa -->
+{if $daemon_data->daemon->pid == null}
+            <div class="col-sm-12">
+                <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                    <span class="badge badge-pill badge-danger">Uwaga</span> Brak komunikacji z daemonem. Część informacji nie jest dostępna.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+{/if}
+			
+<!-- sensory -->
+	{foreach from=$status.aquapi.devices.device item="device"}
+	    {if $device.type == 1}	
+			<div class="col-lg-3 col-md-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="stat-widget-one">
+							<div class="stat-icon dib">
+							    <span class="stat-icon dib btn bg-transparent">
+									<img src="img/devices/{$icons[{$device.id}]}">
+								</span>
+							</div>
+							<div class="stat-content dib">
+								<div class="stat-text">{$device.name}</div>
+								<div class="stat-digit">{$device.measured_value|string_format:"%.1f"} {if isset($interfaceunits.{$device.id}.unit_name)}{$interfaceunits.{$device.id}.unit_name}{/if}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
+	{/foreach}
+<!-- wyjścia -->
+	{foreach from=$status.aquapi.devices.device item="device"}
+	    {if $device.type == 2 || $device.type == 3}	
+			<div class="col-lg-3 col-md-6">
+				<div class="card">
+					<div class="card-body">
+						<div class="stat-widget-one">
+							<div class="stat-icon dib">
+							    <button class="stat-icon dib btn bg-transparent" type="button" id="dropdownMenuButton{$device.id}" data-toggle="dropdown">
+									<img src="img/devices/{$icons[{$device.id}]}">
+								</button>
+								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton{$device.id}">
+									<div class="dropdown-menu-content">
+										{if $device.type == 2}
+										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=on">Załącz</a>
+										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=off">Wyłącz</a>
+										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=auto">Przejdź w tryb automatyczny</a>
+										{else}
+										<a class="dropdown-item" href="#">Dla wyjść PWM na razie pusto...</a>
+										{/if}
+									</div>
+								</div>
+							</div>
+							<div class="stat-content dib">
+								<div class="stat-text">{$device.name}</div>
+								{if $device.type == 2}
+								<div class="stat-digit">{if $device.state == -1}<span class="badge badge-warning">Nieokreślony</span>{elseif $device.state == 1}<span class="badge badge-success">Włączony</span>{else}<span class="badge badge-danger">Wyłączony</span>{/if}</div>
+								{else}
+								<div class="stat-digit">{if $device.state == -1}<span class="badge badge-warning">Nieokreślony</span>{else}<span class="badge badge-info">PWM:{$device.state}%</span>{/if}</div>
+								{/if}
+								<div class="stat-text">{if $device.override_value == -1}<span class="badge badge-secondary">Tryb automatyczny</span>{else}<span class="badge badge-primary">Tryb ręczny</span>{/if}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
+	{/foreach}
+
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+<!--Komunikaty informacyjne z ostatnich 48h-->
+{include "index_logtable.tpl" logs = $last5infologs title="Komunikaty informacyjne z ostatnich 48h"}
+
+<!--Komunikaty błędów z ostatnich 48h-->
+{include "index_logtable.tpl" logs = $last5warnlogs title="Komunikaty błędów z ostatnich 48h"}
+                </div>
+            </div><!-- .animated -->
+        </div><!-- .content -->
 
 <!--Informacje o sterowniku-->
 {include "index_aquainfo.tpl"}
-
-<!--Sensory-->
-{include "index_1wire.tpl"}
-
-<!--Wyjścia-->
-<div id="dashboard">
-    <h3>Wyjścia:</h3>
-	{include "index_outputs.tpl"}
-</div>
-
-<!--Komunikaty informacyjne z ostatnich 48h-->
-<div id="dashboard">
-    <h3>Komunikaty informacyjne z ostatnich 48h:</h3>
-    {include "index_logtable.tpl" logs = $last5infologs}
-</div>
-
-<!--Komunikaty błędów z ostatnich 48h-->
-<div id="dashboard">
-    <h3>Komunikaty błędów z ostatnich 48h:</h3>
-    {include "index_logtable.tpl" logs = $last5warnlogs}
-</div>
-
-{if $CONFIG['plugins']['calendar'] == 1}
-<!--Wydarzenia z nadchodzących X dni-->
-<div id="dashboard">
-    <h3>Wydarzenia z nadchodzących {$CONFIG.calendar_days} dni:</h3>
-    {include "index_calendar.tpl"}
-</div>
-{/if}
-
-
-
-<div id="toPopup"> 
-	<div class="close"></div>
-	<span class="ecs_tooltip">Naciśnij ESC<span class="arrow"></span></span>
-	<div id="popup_content"> <!--your content start-->
-		<h3><span id="dev_name">Undefined</span></h3>
-		<p>Stan: <span id="dev_state">Undefined</span><br/>
-		Tryb: Automatyczny<br/></br>
-		Zmień tryb:<br/>
-		<a id="button_on"   href="#" onclick=""><img src="img/device_on.png" title="Załącz w trybie ręcznym"></a>
-		<a id="button_off"  href="#" onclick=""><img src="img/device_off.png" title="Wyłącz w trybie ręcznym"></a>
-		<a id="button_auto" href="#" onclick=""><img src="img/device_auto.png" title="Przejdź w tryb automatyczny"></a></p>			
-	</div> 
-</div>
-
-<div class="loader"></div>
-<div id="backgroundPopup"></div>
-
+		
 {include "footer.tpl"}

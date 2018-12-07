@@ -1,24 +1,27 @@
-<table style="width:100%">
-<tr bgcolor="#aaaaaa"><th>Czas</th><th></th><th>Opis</th></tr>
-{foreach from=$logs item="entry"}
-    <tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-		<td style="width:1%">{$entry.log_date|date_format:"%e.%m.%y&nbsp;%H:%M:%S"}</td>        
-		<td style="width:1%">
-			{if $entry.log_level == 0}
-				<img src="img/notice.png">
-			{elseif $entry.log_level == 1}
-				<img src="img/alert.png">
-			{elseif $entry.log_level == 2}
-				<img src="img/critical.png">
-			{else}
-				{$entry.log_level}
-			{/if}
-		</td>        
-		<td>{$entry.log_value}</td>
-    </tr>
-    {foreachelse}
-      <tr bgcolor="#cccccc">
-        <td colspan="3">Brak wpisów</td>
-      </tr>
-{/foreach}
-</table>
+
+
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">{$title}</strong>
+                            </div>
+                            <div class="card-body">
+								{foreach from=$logs item="entry"}
+								{if $entry.log_level == 0}<div class="alert alert-info" role="alert">
+								{elseif $entry.log_level == 1}<div class="alert alert-warning" role="alert">
+								{elseif $entry.log_level == 2}<div class="alert alert-danger" role="alert">
+								{else}
+								{/if}
+									{$entry.log_date|date_format:"%e.%m.%Y&nbsp;%H:%M:%S"}
+									{if $entry.log_level == 0}<span class="badge badge-pill badge-info">Informacja</span>
+									{elseif $entry.log_level == 1}<span class="badge badge-pill badge-warning">Ostrzeżenie</span>
+									{elseif $entry.log_level == 2}<span class="badge badge-pill badge-danger">Błąd krytyczny</span>
+									{else}
+									{/if}									
+									{$entry.log_value}
+								</div>
+							{/foreach}			
+							</div>
+                        </div>
+                    </div>										
+

@@ -51,9 +51,6 @@ if(!is_dir(SMARTY_COMPILE_DIR))
 if(!is_writable(SMARTY_COMPILE_DIR))
         die('Can\'t write to directory <B>'.SMARTY_COMPILE_DIR.'</B>. Run: <BR><PRE>chown '.posix_geteuid().':'.posix_getegid().' '.SMARTY_COMPILE_DIR."\nchmod 755 ".SMARTY_COMPILE_DIR.'</PRE>This helps me to work. Thanks.');
 
-if(!is_readable('/dev/vchiq') and file_exists('/dev/vchiq'))
-	die('Can\'t read camera. Run: <BR><PRE>usermod -a -G video www-data</PRE>This helps me to work. Thanks.');
-
 //if (!ini_get('short_open_tag'))
 //{
 //	$inipath = php_ini_loaded_file();
@@ -102,31 +99,16 @@ require(LIB_DIR.'functions.php');
 //IPC
 require(LIB_DIR.'ipc.php');
 
-//mobile detect
-require(LIB_DIR.'Mobile_Detect.php');
-$detect = new Mobile_Detect;
-
-//calendar
-if($CONFIG['plugins']['calendar']==1)
-    require(PLUGINS_DIR.'calendar/includes/embed_setup.php');
-
 // definicja menu
 $my_menu	= array();
-$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "heart.png", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "hourglass.png", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
-//$my_menu[]	= array ("selected" => false,	"name" => "Ustawienia",		"icon" => "settings.png", 	"url" => "settings.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",		"icon" => "plugin.png", 	"url" => "ioconf.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "brightness.png", 	"url" => "light.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "weather.png", 	"url" => "temp.php","acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "caution.png", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "trends.png", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
-if($CONFIG['plugins']['notes']==1)
-    $my_menu[]	= array ("selected" => false,	"name" => "Notatki", 		"icon" => "notes.png", 		"url" => "notes.php",	"acl" => "r"    , "reload" => 0);
-if($CONFIG['plugins']['calendar']==1)
-    $my_menu[]	= array ("selected" => false,	"name" => "Kalendarz", 		"icon" => "calendar.png", 	"url" => "calendar.php","acl" => "r"    , "reload" => 0);
-if($CONFIG['plugins']['camera']==1)
-    $my_menu[]	= array ("selected" => false,	"name" => "Kamera", 		"icon" => "camera.png", 	"url" => "camera.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "news.png", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 		"icon" => "fa-dashboard", 		"url" => "index.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Timery", 		"icon" => "fa-clock-o", 	"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",		"icon" => "fa-gears", 	"url" => "ioconf.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 	"url" => "light.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 	"url" => "temp.php","acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 		"icon" => "fa-exclamation-triangle", 		"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 		"icon" => "fa-bar-chart-o", 		"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",	"icon" => "fa-heart", 		"url" => "about.php",	"acl" => "r"    , "reload" => 0);
 
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
@@ -148,9 +130,7 @@ foreach ($my_menu as &$pos)
                     $SESSION -> save('old_url',$self);
                     $SESSION -> redirect('login.php');
             }
-    if ($pos['reload'] == 1)
-        $reloadtime = '<meta http-equiv="refresh" content="120" >';
-    }
+	}
 }
 
 //new dbug($CONFIG);
@@ -158,7 +138,6 @@ foreach ($my_menu as &$pos)
 
 $smarty->assign('reloadtime',   $reloadtime);
 $smarty->assign('my_menu',  $my_menu);
-$smarty->assign('ismobile', $detect->isMobile());
 $smarty->assign('cur_name', $cur_name);
 $smarty->assign('CONFIG',   $CONFIG);
 

@@ -1,22 +1,10 @@
-<div id="{if $daemon_data->daemon->pid == null}dashboard_red{else}dashboard{/if}">
-    <table>
-	<tr>
-	    <td>
-	        <img src ="img/welcome_logo.png" style="float:left;"><BR>
-	    </td>
-	</tr>
-	<tr>
-	
-	<h3>Informacje o sterowniku:</h3>
-	<div style="float:right;font-size:600%">
-	{foreach from=$status.aquapi.devices.device item="device"}
-	    {if $device.type == 1 && $device.id == $masterinterfaceid}
-		{$device.measured_value|string_format:"%.1f"} {if isset($interfaceunits.{$device.id}.unit_name)}{$interfaceunits.{$device.id}.unit_name}{/if}
-	    {/if}
-	{/foreach}
+                    <div class="col-lg-6">
+						<section class="card">
+							<div class="card-header">
+								<strong class="card-title" v-if="headerText">Informacje o sterowniku</strong>
+							</div>							
+							<div class="card-body card-block">
 
-	</div>
-	</tr>
     <table>
 	<tr>
 	    <td>Czas</td><td>{$time}</td>
@@ -46,4 +34,8 @@
 	    <td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date|date_format:"%Y/%m/%d&nbsp;%H:%M"}{/if}</td>
 	</tr>
     </table>
-</div>
+
+
+							</div>
+						</section>
+					</div>							

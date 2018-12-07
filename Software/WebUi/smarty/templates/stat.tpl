@@ -1,19 +1,57 @@
 {include "header.tpl"}
 
 
-<a href="stat.php">Dzień</a>
-<a href="stat.php?limit=week">Tydzień</a>
-<a href="stat.php?limit=month">Miesiąc</a>
-<a href="stat.php?limit=no_limit">Bez limitu</a>
+
 
 <script src="js/moment.min.js"></script>
 <script src="js/Chart.min.js"></script>
-<div class="chart-container" style="position: relative;">
-    <canvas id="Chart1"></canvas>
-</div>
-<div class="chart-container" style="position: relative;">
-    <canvas id="Chart2"></canvas>
-</div>
+
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+						<section class="card">
+							<div class="card-header">
+								<strong class="card-title" v-if="headerText">Wejścia</strong>
+							</div>							
+							<div class="card-body card-block">
+								<div class="chart-container" style="position: relative;">
+									<canvas id="Chart1"></canvas>
+								</div>
+							</div>
+							<div class="card-footer">
+								<strong class="card-title" v-if="headerText">Limit: 
+									<a href="stat.php">Dzień</a> 
+									<a href="stat.php?limit=week">Tydzień</a> 
+									<a href="stat.php?limit=month">Miesiąc</a> 
+									<a href="stat.php?limit=no_limit">Bez limitu</a> 
+								</strong>
+							</div>									
+						</section>
+
+						<section class="card">
+							<div class="card-header">
+								<strong class="card-title" v-if="headerText">Wyjścia</strong>
+							</div>							
+							<div class="card-body card-block">
+								<div class="chart-container" style="position: relative;">
+									<canvas id="Chart2"></canvas>
+								</div>
+							</div>
+							<div class="card-footer">
+								<strong class="card-title" v-if="headerText">Limit: 
+									<a href="stat.php">Dzień</a> 
+									<a href="stat.php?limit=week">Tydzień</a> 
+									<a href="stat.php?limit=month">Miesiąc</a> 
+									<a href="stat.php?limit=no_limit">Bez limitu</a> 
+								</strong>
+							</div>									
+						</section>
+
+					</div>
+				</div>
+			</div>
+		</div>
 
 <script>
 var ctx = document.getElementById("Chart1").getContext('2d');
@@ -41,7 +79,7 @@ var scatterChart = new Chart(ctx, {
     },
 options: {
     title: {
-        display:true,
+        display:false,
         text: 'Wejścia'
     },
 	scales: {
@@ -81,7 +119,7 @@ var scatterChart = new Chart(ctx, {
     },
 options: {
     title: {
-        display:true,
+        display:false,
         text: 'Wyjścia'
     },
 	scales: {

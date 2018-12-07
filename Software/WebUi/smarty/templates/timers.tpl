@@ -1,150 +1,144 @@
 {include "header.tpl"}
-
 <script>
-	$(function() {
-		
-		$('#timeif').timepicker({
-			timeFormat: "hh:mm:ss",
-			showSecond: true,
-			currentText: "Teraz",
-			closeText: "Wybierz",
-			timeOnlyTitle: "Wybierz czas",
-			timeText: "Czas",
-			hourText: "Godzina",
-			minuteText: "Minuta",
-			secondText: "Sekunda"
-		});
-{foreach from=$timers.time item="entry"}
-		$('#timers_{$entry.timer_id}').timepicker({
-			timeFormat: "hh:mm:ss",
-			showSecond: true,
-			currentText: "Teraz",
-			closeText: "Wybierz",
-			timeOnlyTitle: "Wybierz czas",
-			timeText: "Czas",
-			hourText: "Godzina",
-			minuteText: "Minuta",
-			secondText: "Sekunda"
-		});
-{/foreach}	
-	});
+function confirmLink(theLink, message)
+{
+	var is_confirmed = confirm(message);
+
+	if (is_confirmed) {
+		theLink.href += '&is_sure=1';
+	}
+	return is_confirmed;
+}
+
 </script>
 
 <!--LISTA TIMERÓW-->
-<div id="dashboard">
-	<h3>Lista zdarzeń</h3>
-	<table style="width:100%">
-		<tr bgcolor="#aaaaaa">
-			<th>Godzina
-			<th>Akcja</th>
-			<th>Wyjście</th>
-			<th>Pn</th>
-			<th>Wt</th>
-			<th>Śr</th>
-			<th>Cz</th>
-			<th>Pt</th>
-			<th>So</th>
-			<th>Nd</th>
-			<th>&nbsp;</th>
-		</tr>
-		
-		<!--ZDARZENIA CZASOWE-->
-		{foreach from=$timers.time item="entry"}
-		<tr bgcolor="{cycle values="#cccccc,#dddddd"}">
-				<td><input class="timers_{$entry.timer_id}" type="text" name="timers_{$entry.timer_id}" id="timers_{$entry.timer_id}" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
-			    <td><div id="timer_action_{$entry.timer_id}"></div></td>
-			    <td>{$entry.timer_interfacethenname}</td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.2 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.3 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.4 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.5 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.6 eq 1} checked{/if}></td>
-			    <td align="center"><input type="checkbox"{if $entry.timer_days.0 eq 1} checked{/if}></td>
-			    <td align="center"><a href="timers.php?action=delete&timerid={$entry.timer_id}"><img src="img/delete.png" title="Skasuj pozycję"></a></td>        
-		</tr>
-		<script>
-		$('#timer_action_{$entry.timer_id}').btnSwitch({
-			Theme: 'Swipe',
-			OnText: "Załącz",
-			OffText: "Wyłącz",
-			OnValue: 1,
-			OffValue: 0,				
-			ToggleState:{if $entry.timer_action eq 1}true{else}false{/if}
-		});
-		</script>
-		{foreachelse}
-		<tr bgcolor="#cccccc">
-			<td colspan="12">Brak zdefiniowanych zdarzeń czasowych</td>
-		</tr>
-		{/foreach}
-	</table>
-</div>
+
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+						<form action="timers.php" method="post" class="form-horizontal">
+							<section class="card">
+                                <div class="card-header">
+                                    <strong class="card-title" v-if="headerText">Lista zdarzeń czasowych</strong>
+                                </div>							
+								<div>
+									<table id="bootstrap-data-table-export" class="table">
+										<thead>
+											<tr>
+												<th>Godzina</th>
+												<th>Akcja</th>
+												<th>Wyjście</th>
+												<th>Pn</th>
+												<th>Wt</th>
+												<th>Śr</th>
+												<th>Cz</th>
+												<th>Pt</th>
+												<th>So</th>
+												<th>Nd</th>
+												<th>&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody>
+										{foreach from=$timers.time item="entry"}
+											<tr>
+												<td><input class="form-control" step="1" type="time" name="timers_{$entry.timer_id}" id="timers_{$entry.timer_id}" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
+												<td>
+													<!-- <input name="interfaces[{$device.interface_id}][img]" class="IconInputId{$device.interface_id}" value="" type="hidden"></input> -->
+													<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
+														<option value="1" {if $entry.timer_action eq 1}selected{/if}>Załącz</option>
+														<option value="0" {if $entry.timer_action eq 0}selected{/if}>Wyłącz</option>
+													</select>	
+												</td>
+												<td>{$entry.timer_interfacethenname}</td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.2 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.3 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.4 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.5 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.6 eq 1} checked{/if}></td>
+												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.0 eq 1} checked{/if}></td>												
+												<td>
+													<a href="?action=delete&timerid={$entry.timer_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm">
+														<i class="fa fa-times"></i> Usuń
+													</a>
+												</td>
+											</tr>
+										{/foreach}
+										</tbody>
+									</table>
+								</div>
+								<div class="card-footer">
+									<button type="submit" class="btn btn-primary btn-sm">
+										<i class="fa fa-save"></i> Zapisz
+									</button>
+									<button type="reset" class="btn btn-danger btn-sm">
+										<i class="fa fa-ban"></i> Reset
+									</button>									
+								</div>								
+							</section>
+						</form>
+                    </div>
+				</div>
+			</div>
+		</div>
+	
 
 <!--ZDARZENIA CZASOWE-->
-<div id="dashboard">
-<h3>Dodaj nowe zdarzenie</h3>
-<form action="timers.php?action=add" method="post">
-			W dni tygodnia:
-			<input type="checkbox" name="d2" value="1" checked="checked"/>Pn
-			<input type="checkbox" name="d3" value="1" checked="checked"/>Wt
-			<input type="checkbox" name="d4" value="1" checked="checked"/>Śr
-			<input type="checkbox" name="d5" value="1" checked="checked"/>Cz
-			<input type="checkbox" name="d6" value="1" checked="checked"/>Pt
-			<input type="checkbox" name="d7" value="1" checked="checked"/>So
-			<input type="checkbox" name="d1" value="1" checked="checked"/>Nd
-			<br/>	
-			O godzinie
-			<input class="time_select" type="text" name="timeif" id="timeif" value="00:00:00" />
-			<input type="hidden" name="type" id="type" value="1" />
-			<input type="hidden" name="action" id="action" class="action" value="0"/>
-			<div id="actionsw" name="actionsw"></div>
-			<script>
-			$('#actionsw').btnSwitch({
-				Theme: 'Swipe',
-				OnText: "Załącz",
-				OffText: "Wyłącz",
-				OnCallback: function(data) {
-					$('.action').attr('value', '1');
-				},	
-				OffCallback: function(data) {
-					$('.action').attr('value', '0');
-				},	
-				OnValue: '1',
-				OffValue: '0',
-				HiddenInputId: true		
-			});
-			</script>			
-			wyjście
-			<!-- <select name="interfaceidthen" id="interfaceidthen" >
-				<option value="-1">wybierz</option>
-				{foreach from=$interfaces item="interface"}
-					{if $interface.interface_type==2}
-						<option value="{$interface.interface_id}"{if $interface.interface_id == $CONFIG.temp_interface_cool} selected{/if}>{$interface.interface_name}</option>
-					{/if}
-				{/foreach}
-				</select>
-			-->	
-				<input type="hidden" name="interfaceidthen" class="interfaceidthen">
-				<select id="DeviceSelector">
-				{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
-				<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.light_interface==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
-				{/if}{/foreach}
-				</select>	
-			<script>
-			$('#DeviceSelector').ddslick({
-				width:200,
-				height:300,
-				imagePosition:"left",
-				onSelected: function(data) {
-					$('.interfaceidthen').attr('value', data.selectedData.value);
-				}	
-			});
-			</script>	
-			<br/>
 
-	<INPUT TYPE="image" SRC="img/submit.png" align="right">
-</form>
-</div>
+        <div class="content mt-3">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-lg-12">
+						<form action="timers.php?action=add" method="post" class="form-horizontal">
+							<section class="card">
+                                <div class="card-header">
+                                    <strong class="card-title" v-if="headerText">Dodaj nowe zdarzenie</strong>
+                                </div>							
+								<div class="card-body card-block">
+									<div class="row form-group">
+										<div class="col-3">W dni tygodnia:</div>
+										<div class="col-1"><input type="checkbox" name="d2" value="1" checked="checked"/>Pn</div>
+										<div class="col-1"><input type="checkbox" name="d3" value="1" checked="checked"/>Wt</div>
+										<div class="col-1"><input type="checkbox" name="d4" value="1" checked="checked"/>Śr</div>
+										<div class="col-1"><input type="checkbox" name="d5" value="1" checked="checked"/>Cz</div>
+										<div class="col-1"><input type="checkbox" name="d6" value="1" checked="checked"/>Pt</div>
+										<div class="col-1"><input type="checkbox" name="d7" value="1" checked="checked"/>So</div>
+										<div class="col-1"><input type="checkbox" name="d1" value="1" checked="checked"/>Nd</div>
+									</div>
+									<div class="row form-group">
+										<div class="col-2">O godzinie</div>
+										<div class="col-2"><input class="form-control" step="1" type="time" name="timeif" id="timeif" required></div>
+										<div class="col-2">
+											<select name="action" id="action" class="form-control">
+												<option value="1" selected>Załącz</option>
+												<option value="0">Wyłącz</option>
+											</select>	
+										</div>
+										<div class="col-2">wyjście</div>
+										<div class="col-2">
+											<select id="DeviceSelector" class="form-control">
+											{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
+												<option value="{$interface.interface_id}">{$interface.interface_name}</option>
+											{/if}{/foreach}
+											</select>										
+										</div>
+									</div>
+								</div>
+								<div class="card-footer">
+									<button type="submit" class="btn btn-primary btn-sm">
+										<i class="fa fa-save"></i> Zapisz
+									</button>
+								</div>								
+							</section>
+						</form>
+                    </div>
+				</div>
+			</div>
+		</div>
+	
+
+
 
 {include "footer.tpl"}
