@@ -23,7 +23,7 @@
 include("init.php");
 
 $smarty->assign('title', 'Statystyki');
-switch ($_GET['limit']) {
+switch (@$_GET['limit']) {
     case 'week':
 		$limit = time() - (7 * 24 * 60 * 60);
         break;

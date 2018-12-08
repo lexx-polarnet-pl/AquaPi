@@ -19,6 +19,11 @@
  * USA.
  *
  */
+ 
+// robimy dobie debug
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // wersja AquaPi
 $aquapi_ver = "1.9-devel";
@@ -135,8 +140,6 @@ foreach ($my_menu as &$pos)
 
 //new dbug($CONFIG);
 
-
-$smarty->assign('reloadtime',   $reloadtime);
 $smarty->assign('my_menu',  $my_menu);
 $smarty->assign('cur_name', $cur_name);
 $smarty->assign('CONFIG',   $CONFIG);

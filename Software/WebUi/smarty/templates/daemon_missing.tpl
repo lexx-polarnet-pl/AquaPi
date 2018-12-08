@@ -1,7 +1,15 @@
 {include "header.tpl"}
 
-<div id="dashboard" style="">
-<img src="img/dead_fish.png" style="display: block; margin-left: auto; margin-right: auto;"></img>
-<h3>Błąd krytyczny - brak komunikacji z daemonem</h3>
-</div>
+
+
+            <div class="col-sm-12">
+                <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                    <span class="badge badge-pill badge-danger">Uwaga</span> Brak komunikacji z daemonem. Część informacji nie jest dostępna.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+
+
 {include "footer.tpl"}

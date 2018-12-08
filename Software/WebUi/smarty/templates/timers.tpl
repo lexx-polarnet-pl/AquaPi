@@ -18,7 +18,7 @@ function confirmLink(theLink, message)
             <div class="animated fadeIn">
                 <div class="row">
                     <div class="col-lg-12">
-						<form action="timers.php" method="post" class="form-horizontal">
+						<form action="timers.php?action=update" method="post" class="form-horizontal">
 							<section class="card">
                                 <div class="card-header">
                                     <strong class="card-title" v-if="headerText">Lista zdarzeń czasowych</strong>
@@ -43,22 +43,21 @@ function confirmLink(theLink, message)
 										<tbody>
 										{foreach from=$timers.time item="entry"}
 											<tr>
-												<td><input class="form-control" step="1" type="time" name="timers_{$entry.timer_id}" id="timers_{$entry.timer_id}" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
+												<td><input class="form-control" step="1" type="time" name="timers[{$entry.timer_id}][timeif]" id="timers[{$entry.timer_id}][timeif]" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
 												<td>
-													<!-- <input name="interfaces[{$device.interface_id}][img]" class="IconInputId{$device.interface_id}" value="" type="hidden"></input> -->
-													<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
+													<select name="timers[{$entry.timer_id}][action]" id="timers[{$entry.timer_id}][action]" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
 														<option value="1" {if $entry.timer_action eq 1}selected{/if}>Załącz</option>
 														<option value="0" {if $entry.timer_action eq 0}selected{/if}>Wyłącz</option>
 													</select>	
 												</td>
 												<td>{$entry.timer_interfacethenname}</td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.2 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.3 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.4 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.5 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.6 eq 1} checked{/if}></td>
-												<td><input class="form-check-input" type="checkbox"{if $entry.timer_days.0 eq 1} checked{/if}></td>												
+												<td><input id="timers[{$entry.timer_id}][d2]" name="timers[{$entry.timer_id}][d2]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d3]" name="timers[{$entry.timer_id}][d3]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.2 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d4]" name="timers[{$entry.timer_id}][d4]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.3 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d5]" name="timers[{$entry.timer_id}][d5]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.4 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d6]" name="timers[{$entry.timer_id}][d6]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.5 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d7]" name="timers[{$entry.timer_id}][d7]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.6 eq 1} checked{/if}></td>
+												<td><input id="timers[{$entry.timer_id}][d1]" name="timers[{$entry.timer_id}][d1]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.0 eq 1} checked{/if}></td>												
 												<td>
 													<a href="?action=delete&timerid={$entry.timer_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm">
 														<i class="fa fa-times"></i> Usuń
@@ -118,7 +117,7 @@ function confirmLink(theLink, message)
 										</div>
 										<div class="col-2">wyjście</div>
 										<div class="col-2">
-											<select id="DeviceSelector" class="form-control">
+											<select id="interfaceidthen" name="interfaceidthen" class="form-control">
 											{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
 												<option value="{$interface.interface_id}">{$interface.interface_name}</option>
 											{/if}{/foreach}

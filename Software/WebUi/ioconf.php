@@ -65,6 +65,7 @@ $icons	= $result;
 
 // niech daemon powie jakie urządzena widzi
 $device_list 	= @simplexml_load_string(IPC_CommandWithReply("devicelist"));
+
 foreach ($device_list->devicelist->device as $value) {
 	// sprawdź teraz czy te urządzenia nie są już skonfigurowane
 	if (($db->GetOne("SELECT interface_id FROM interfaces WHERE interface_address ='?' AND interface_deleted <> 1",array($value->address)) > 0) && ($value->fully_editable_address !='yes')) {

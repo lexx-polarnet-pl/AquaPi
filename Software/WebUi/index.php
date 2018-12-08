@@ -22,6 +22,8 @@
 
 include("init.php");
 
+$smarty->assign('title', 'Dashboard');
+
 // spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
 // $limit jest na razie nie brany pod uwage! Trzeba później dopisać!
 //$limit 		= time() - (15 * 60);
@@ -30,8 +32,7 @@ $limit48h 	= time() - (60 * 60 * 48);
 
 
 $interfaces	= GetInterfaces();
-if (!is_null($interfaces['1wire'])) 
-{
+if (isset($interfaces['1wire'])) 
 	foreach($interfaces['1wire'] as $index => $sensor)
 	{
 		$interfaces['1wire'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? AND stat_date > ? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id'], $limit15m));
@@ -40,24 +41,19 @@ if (!is_null($interfaces['1wire']))
 			$sensor_master_temp = $interfaces['1wire'][$index]['interface_temperature']['stat_value'];
 		}
 	}
-}
 
-if(isset($interfaces['gpio']))
+
+if (isset($interfaces['gpio']))
     foreach($interfaces['gpio'] as $index => $gpio)
     {
     	$interfaces['gpio'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($gpio['interface_id']));
     }
 
-foreach($interfaces['relayboard'] as $index => $relay)
-{
-	$interfaces['relayboard'][$index]['interface_state']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($relay['interface_id']));
-	$interfaces['relayboard'][$index]['interface_state']['stat_value'] = (int)$interfaces['relayboard'][$index]['interface_state']['stat_value'] ^ (int)$interfaces['relayboard'][$index]['interface_conf'];
-}
-
-foreach($interfaces['dummy'] as $index => $sensor)
-{
-	$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
-}
+if (isset($interfaces['dummy']))
+	foreach($interfaces['dummy'] as $index => $sensor)
+	{
+		$interfaces['dummy'][$index]['interface_temperature']=$db->GetRow('SELECT * FROM stats_view WHERE stat_interfaceid=? ORDER BY stat_date DESC LIMIT 0,1', array($sensor['interface_id']));
+	}
 
 //new dBug($interfaces	, "", true);
 //new dBug($CONFIG, "", true);
@@ -99,7 +95,6 @@ $smarty->assign('time', 		date("H:i"));
 $smarty->assign('interfaces', 		$interfaces);
 $smarty->assign('interfaceunits', 	$interfaceunits);
 $smarty->assign('masterinterfaceid', 	GetMasterInterfaceId());
-$smarty->assign('sensor_master_temp', 	$sensor_master_temp);
 $smarty->assign('daemon_data', 		$daemon_data);
 $smarty->assign('status', 		$status);
 $smarty->assign('last5infologs', 	$last5infologs);

@@ -24,14 +24,9 @@ include("init.php");
 
 $smarty->assign('title', 'Timery');
 
-if ($_GET['action'] == 'add')
+if (@$_GET['action'] == 'add')
 {
-	$timer['type']	= $_POST['type'];
-	if ($_POST['direction'] != '') 
-		$timer['direction']=$_POST['direction'];
-	else
-		$timer['direction']=0;
-	
+	$timer['type']	= 1;
 	$timer['timeif'] = TimeToUnixTime($_POST['timeif']);
 	$timer['action'] = $_POST['action'];
 	$timer['interfaceidthen'] = $_POST['interfaceidthen'];
@@ -39,19 +34,27 @@ if ($_GET['action'] == 'add')
 			 ($_POST['d3']?$_POST['d3']:'0') . ($_POST['d4']?$_POST['d4']:'0') .
 			 ($_POST['d5']?$_POST['d5']:'0') . ($_POST['d6']?$_POST['d6']:'0') . 
 			 ($_POST['d7']?$_POST['d7']:'0');
-	//$timer['interfaceidif'] = $_POST['interfaceidif'];
-	$timer['value'] = $_POST['value'];
-	//new dBug($timer);die;
+
 	AddTimer($timer);
 	ReloadDaemonConfig();
 	$SESSION->redirect('timers.php');
 }
 
-if ($_GET['action'] == 'delete')
+if (@$_GET['action'] == 'delete')
 {
 	$timerid = $_GET['timerid'];
 	$db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
 	ReloadDaemonConfig();
+	$SESSION->redirect('timers.php');
+}
+
+if (@$_GET['action'] == 'update')
+{
+	//new dBug($_POST,"",true);
+	//$timerid = $_GET['timerid'];
+	//$db->Execute("DELETE FROM timers WHERE timer_id = ?", array($timerid));
+	//ReloadDaemonConfig();
+	//$SESSION->redirect('timers.php');
 }
 
 $interfaces         = GetInterfaces();
@@ -61,10 +64,10 @@ $timers['time']     = $db->GetAll('SELECT *,
 				FROM timers t
 				WHERE timer_type=1 ORDER BY timer_interfacethenname, timer_timeif');
 
-//new dBug($timers);
 //new dBug($interfaces,"",true);
 
 $smarty->assign('timers', $timers);
 $smarty->assign('interfaces', $interfaces);
 $smarty->display('timers.tpl');
+
 ?>

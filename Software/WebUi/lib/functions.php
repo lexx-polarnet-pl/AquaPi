@@ -250,48 +250,20 @@ function RamerDouglasPeucker($pointList, $epsilon)
 function AddTimer($timer)
 {
 	global $db;
-	//new dBug($timer);
-	//czasowy
-	if($timer['type']==1 or $timer['type']==3)
-	{
-		$db->Execute('INSERT INTO timers
-					(timer_type,
-					timer_timeif,
-					timer_direction,
-					timer_action,
-					timer_interfaceidthen,
-					timer_days )
-				VALUES (?,?,?,?,?,?)',
-				array(
-					$timer['type'],
-					$timer['timeif'],
-					$timer['direction'],
-					$timer['action'],
-					$timer['interfaceidthen'],
-					$timer['days'],
-				));
-	}
-	elseif($timer['type']==2  or $timer['type']==4)
-	{
-		$db->Execute('INSERT INTO timers
-					(timer_type,
-					timer_interfaceidif,
-					timer_direction,
-					timer_value,
-					timer_action,
-					timer_interfaceidthen,
-					timer_days )
-				VALUES (?,?,?,?,?,?,?)',
-				array(
-					$timer['type'],
-					$timer['interfaceidif'],
-					$timer['direction'],
-					$timer['value'],
-					$timer['action'],
-					$timer['interfaceidthen'],
-					$timer['days'],
-				));
-	}
+	$db->Execute('INSERT INTO timers
+				(timer_type,
+				timer_timeif,
+				timer_action,
+				timer_interfaceidthen,
+				timer_days )
+			VALUES (?,?,?,?,?)',
+			array(
+				$timer['type'],
+				$timer['timeif'],
+				$timer['action'],
+				$timer['interfaceidthen'],
+				$timer['days']
+			));
 }
 
 function TimeToUnixTime($time)
