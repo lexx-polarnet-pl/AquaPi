@@ -128,7 +128,7 @@ class Database {
 				$query .= $queryelement;
 			}
 		}
-		//echo $query."<BR>";
+		//echo $query." <BR>\n";
 		return $query;
 	}
 

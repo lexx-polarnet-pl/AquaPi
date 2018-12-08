@@ -22,7 +22,7 @@
  
 include("init.php");
 
-if (($_POST['login'] == $CONFIG['webui']['login']) && ($_POST['password'] == $CONFIG['webui']['password'])) {
+if ((@$_POST['login'] == $CONFIG['webui']['login']) && (@$_POST['password'] == $CONFIG['webui']['password'])) {
 	$SESSION -> restore('old_url',$old_url);
 	$SESSION -> save('logged_in',true);
 	if ($old_url != null) {

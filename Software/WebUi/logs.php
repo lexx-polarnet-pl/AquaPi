@@ -22,6 +22,9 @@
 
 include("init.php");
 
+// zapisz kiedy ostatni raz były przeczytane komunikaty błędów
+$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(time(),'log_read_time'));
+
 $count  = 100;
 $start  = 0;
 $period = $CONFIG['webui']['purge_logs'] * 24 * 60 * 60; //30 dni

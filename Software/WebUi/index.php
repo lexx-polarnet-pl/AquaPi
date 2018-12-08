@@ -24,13 +24,6 @@ include("init.php");
 
 $smarty->assign('title', 'Dashboard');
 
-// spróbuj wyłapać najświeższy wynik przyjmując limit 15 min. Jak nie ma, takiego to znaczy że nie rejestrujemy.
-// $limit jest na razie nie brany pod uwage! Trzeba później dopisać!
-//$limit 		= time() - (15 * 60);
-$limit15m	= time() - (15 * 60);
-$limit48h 	= time() - (60 * 60 * 48);
-
-
 $interfaces	= GetInterfaces();
 if (isset($interfaces['1wire'])) 
 	foreach($interfaces['1wire'] as $index => $sensor)
@@ -57,10 +50,6 @@ if (isset($interfaces['dummy']))
 
 //new dBug($interfaces	, "", true);
 //new dBug($CONFIG, "", true);
-
-
-$last5infologs 	= $db->GetAll('select * from logs where log_level = 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
-$last5warnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_date > ? order by log_date desc limit 0,5;', array($limit48h));
 
 $sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
 //new dbug($sysinfo);
@@ -97,8 +86,6 @@ $smarty->assign('interfaceunits', 	$interfaceunits);
 $smarty->assign('masterinterfaceid', 	GetMasterInterfaceId());
 $smarty->assign('daemon_data', 		$daemon_data);
 $smarty->assign('status', 		$status);
-$smarty->assign('last5infologs', 	$last5infologs);
-$smarty->assign('last5warnlogs', 	$last5warnlogs);
 $smarty->assign('icons', 		$icons);
 $smarty->assign('events', 		$events);
 $smarty->display('index.tpl');

@@ -73,18 +73,6 @@
 		{/if}
 	{/foreach}
 
-        <div class="content mt-3">
-            <div class="animated fadeIn">
-                <div class="row">
-<!--Komunikaty informacyjne z ostatnich 48h-->
-{include "index_logtable.tpl" logs = $last5infologs title="Komunikaty informacyjne z ostatnich 48h"}
-
-<!--Komunikaty błędów z ostatnich 48h-->
-{include "index_logtable.tpl" logs = $last5warnlogs title="Komunikaty błędów z ostatnich 48h"}
-                </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
-
 <!--Informacje o sterowniku-->
 {include "index_aquainfo.tpl"}
 		

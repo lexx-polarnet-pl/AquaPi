@@ -23,14 +23,6 @@
 include("init.php");
 $smarty->assign('title', 'Konfiguracja wejść/wyjść');
 
-if($_POST) {
-	//new dBug($_POST,'',true);die;
-	foreach ($_POST['interfaces'] as $key => $interface) {
-		$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$key));
-			//var_dump($interface);
-	}
-	ReloadDaemonConfig();
-}
 // dodawanie i kasowanie urządzeń
 if(array_key_exists('action', $_GET))
 {
@@ -43,15 +35,26 @@ if(array_key_exists('action', $_GET))
 	elseif($_GET['action'] == "add")
 	{
 		$input_address = $_POST['InputAddressSelector'];
+		if (isset($_POST['InputConf'])) { $conf=1; } else { $conf=0; }
 		if ($_POST['FullyEditable']) {
 			$input_address = $input_address.$_POST['FullyEditable'];
 		}
-		$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_type, interface_icon)
-				     VALUES (?, ?, ?, ?, ?)',
-				     array(0, $input_address, $_POST['InputFriendlyName'], $_POST["InputModeSelector"], $_POST['InputIconSelector']));
+		$db->Execute('INSERT INTO interfaces(interface_id, interface_address, interface_name, interface_type, interface_icon, interface_htmlcolor, interface_conf)
+				     VALUES (?, ?, ?, ?, ?, ?, ?)',
+				     array(0, $input_address, $_POST['InputFriendlyName'], $_POST["InputModeSelector"], $_POST['InputIconSelector'], substr($_POST['htmlcolor'],1), $conf));
 		ReloadDaemonConfig();
 		//$SESSION->redirect("ioconf.php");
 	}	
+} else {
+	if($_POST) {
+		//new dBug($_POST,'',true);die;
+		foreach ($_POST['interfaces'] as $key => $interface) {
+			if (isset($interface['conf'])) { $conf=1; } else { $conf=0; }
+			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$key));
+				//var_dump($interface);
+		}
+		ReloadDaemonConfig();
+	}
 }
 
 $icons 		= scandir('img/devices');

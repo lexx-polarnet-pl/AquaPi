@@ -30,6 +30,7 @@ function confirmLink(theLink, message)
 												<th>Adres</th>
 												<th>Kolor</th>
 												<th>Tryb</th>
+												<th>Negacja</th>
 												<th>&nbsp;</th>
 											</tr>
 										</thead>
@@ -49,6 +50,7 @@ function confirmLink(theLink, message)
 												<td>{$device.interface_address}</td>
 												<td><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]" class="form-control"></td>
 												<td>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</td>
+												<td><input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}></td>
 												<td>
 													<a href="?action=delete&device_id={$device.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm">
 														<i class="fa fa-times"></i> Usuń
@@ -174,7 +176,7 @@ function load()
 									</div>
 									<div class="row form-group">
 										<div class="col-2"><label for="InputModeSelector" class=" form-control-label">Ustaw jako</label></div>
-										<div class="col-4">
+										<div class="col-2">
 											<select name="InputModeSelector" id="InputModeSelector" onchange="ChangeInput()" class="form-control">
 												<option value="1" id="IOIn">Wejście</option>
 												<option value="2" id="IOOut">Wyjście binarne</option>
@@ -184,6 +186,12 @@ function load()
 										<div class="col-2"><label for="htmlcolor" class=" form-control-label">Kolor</label></div>
 										<div class="col-4"><input type="color" id="htmlcolor" name="htmlcolor" class="form-control"></div>						
 									</div>
+									<div class="row form-group">
+										<div class="col-2"><label for="InputConf" class=" form-control-label">Zaneguj wyjście</label></div>
+										<div class="col-2">
+											<input type="checkbox" name="InputConf" class="form-check-input">
+										</div>
+									</div>									
 								</div>
 								<div class="card-footer">
 									<button type="submit" class="btn btn-primary btn-sm">
