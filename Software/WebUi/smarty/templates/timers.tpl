@@ -50,7 +50,7 @@ function confirmLink(theLink, message)
 														<option value="0" {if $entry.timer_action eq 0}selected{/if}>Wyłącz</option>
 													</select>	
 												</td>
-												<td>{$entry.timer_interfacethenname}</td>
+												<td><img src="img/devices/{$entry.timer_interfacethenicon}"> {$entry.timer_interfacethenname}</td>
 												<td><input id="timers[{$entry.timer_id}][d2]" name="timers[{$entry.timer_id}][d2]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.1 eq 1} checked{/if}></td>
 												<td><input id="timers[{$entry.timer_id}][d3]" name="timers[{$entry.timer_id}][d3]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.2 eq 1} checked{/if}></td>
 												<td><input id="timers[{$entry.timer_id}][d4]" name="timers[{$entry.timer_id}][d4]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.3 eq 1} checked{/if}></td>
