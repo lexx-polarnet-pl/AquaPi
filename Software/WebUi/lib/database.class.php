@@ -189,7 +189,7 @@ class Database {
 	function _driver_fetchrow_assoc($result = NULL)
 	{
 		if(! $this->_error)
-			return mysqli_fetch_array($result ? $result : $this->_result, MYSQL_ASSOC);
+			return mysqli_fetch_array($result ? $result : $this->_result, MYSQLI_ASSOC);
 		else
 			return FALSE;
 	}
