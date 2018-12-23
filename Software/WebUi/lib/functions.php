@@ -96,15 +96,11 @@ function DeleteNote($note)
 function GetInterfaceUnits()
 {
 	global $db;
-	$interfaces	= $db->GetAll('SELECT interface_id FROM interfaces i
-						WHERE interface_deleted=0 
-						ORDER BY interface_address ASC');
-	
+	$interfaces	= $db->GetAll('SELECT interfaces.interface_id, units.unit_name AS interface_unit FROM interfaces, units WHERE interfaces.interface_uom = units.unit_id AND interface_deleted=0 ORDER BY interface_id ASC');
+
 	foreach($interfaces as $index => $interface)
 	{
-	    $tmp[$interface['interface_id']]	= $db->GetRow('SELECT unit_id, unit_name
-							FROM unitassignments, units
-							WHERE unit_id = unitassignment_unitid AND unitassignment_interfaceid=?', array($interface['interface_id']));
+		$tmp[$interface['interface_id']]	= $interface['interface_unit'];
 	}
 	return($tmp);
 }

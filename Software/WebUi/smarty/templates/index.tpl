@@ -26,7 +26,7 @@
 							</div>
 							<div class="stat-content dib">
 								<div class="stat-text">{$device.name}</div>
-								<div class="stat-digit">{$device.measured_value|string_format:"%.1f"} {if isset($interfaceunits.{$device.id}.unit_name)}{$interfaceunits.{$device.id}.unit_name}{/if}</div>
+								<div class="stat-digit">{$device.measured_value|string_format:"%.1f"} {$interfaceunits[{$device.id}]}</div>
 							</div>
 						</div>
 					</div>

@@ -74,8 +74,6 @@ $status 	= @xml2array(IPC_CommandWithReply("status"));
 $icons		= GetInterfacesIcons();
 
 unset($status['aquapi']['devices']['device']['0_attr']);
-//new dbug($status);
-//new dbug($interfaces);
 $interfaceunits	= GetInterfaceUnits();
 
 $smarty->assign('sysinfo', 		$sysinfo);

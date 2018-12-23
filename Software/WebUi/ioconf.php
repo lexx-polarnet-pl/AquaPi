@@ -50,7 +50,7 @@ if(array_key_exists('action', $_GET))
 		//new dBug($_POST,'',true);die;
 		foreach ($_POST['interfaces'] as $key => $interface) {
 			if (isset($interface['conf'])) { $conf=1; } else { $conf=0; }
-			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$key));
+			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ?, interface_uom = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$interface['uom'],$key));
 				//var_dump($interface);
 		}
 		ReloadDaemonConfig();
@@ -78,10 +78,12 @@ foreach ($device_list->devicelist->device as $value) {
 }
 
 $interfaces = GetInterfaces();
+$uom = GetUnits();
 
 $smarty->assign('icons', 		$icons);
 $smarty->assign('device_list',	$device_list);
-$smarty->assign('devices',	$interfaces);
+$smarty->assign('devices',		$interfaces);
+$smarty->assign('uom',			$uom);
 
 if ($device_list == false) {
 	$smarty->display('daemon_missing.tpl');

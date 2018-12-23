@@ -11,56 +11,76 @@ function confirmLink(theLink, message)
 }
 
 </script>
-
         <div class="content mt-3">
             <div class="animated fadeIn">
-                <div class="row">
-                    <div class="col-lg-12">
-						<form action="ioconf.php" method="post" class="form-horizontal">
-							<section class="card">
+				<form action="ioconf.php" method="post" class="form-horizontal">				
+					<div class="row">
+						<div class="col-lg-12">
+                            <div class="card">
                                 <div class="card-header">
                                     <strong class="card-title" v-if="headerText">Skonfigurowane urządzenia</strong>
-                                </div>							
-								<div>
-									<table id="bootstrap-data-table-export" class="table">
-										<thead>
-											<tr>
-												<th colspan=2>Ikona</th>
-												<th>Nazwa</th>
-												<th>Adres</th>
-												<th>Kolor</th>
-												<th>Tryb</th>
-												<th>Negacja</th>
-												<th>&nbsp;</th>
-											</tr>
-										</thead>
-										<tbody>
-										{foreach from=$devices item="device"}
-											<tr>
-												<td><img src="img/devices/{$device.interface_icon}" id="icon-prev-{$device.interface_id}"></td>
-												<td>
-													<!-- <input name="interfaces[{$device.interface_id}][img]" class="IconInputId{$device.interface_id}" value="" type="hidden"></input> -->
-													<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
-														{foreach $icons item=icon}
-														<option data-imagesrc="img/devices/{$icon}"{if $icon==$device.interface_icon} selected{/if}>{$icon}</option>
-														{/foreach}
-													</select>	
-												</td>
-												<td><input name="interfaces[{$device.interface_id}][name]" value="{$device.interface_name}" class="form-control"></input></td>
-												<td>{$device.interface_address}</td>
-												<td><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]" class="form-control"></td>
-												<td>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</td>
-												<td><input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}></td>
-												<td>
-													<a href="?action=delete&device_id={$device.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm">
-														<i class="fa fa-times"></i> Usuń
-													</a>
-												</td>
-											</tr>
-										{/foreach}
-										</tbody>
-									</table>
-								</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="default-tab">
+                                        <nav>
+                                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+											{foreach name=devs from=$devices item="device"}
+                                                <a class="nav-item nav-link{if $smarty.foreach.devs.first} active{/if}" id="nav-contact-tab" data-toggle="tab" href="#nav-{$device.interface_id}" role="tab" aria-controls="nav-{$device.interface_id}" aria-selected="{if $smarty.foreach.devs.first}true{else}false{/if}"><img src="img/devices/{$device.interface_icon}"> {$device.interface_name}</a>
+											{/foreach}	
+                                            </div>
+                                        </nav>
+                                        <div class="tab-content pl-3 pt-2" id="nav-tabContent">
+											{foreach name=devs from=$devices item="device"}
+                                            <div class="tab-pane fade{if $smarty.foreach.devs.first} show active{/if}" id="nav-{$device.interface_id}" role="tabpanel" aria-labelledby="nav-{$device.interface_id}">
+												<div class="row form-group">
+													<div class="col-2"><label for="InputFriendlyName" class=" form-control-label">Przyjazna nazwa</label></div>
+													<div class="col-4"><input name="interfaces[{$device.interface_id}][name]" value="{$device.interface_name}" class="form-control"></input></div>
+													<div class="col-2"><label for="InputAddressSelector" class=" form-control-label">Adres sprzętowy</label></div>
+													<div class="col-4">{$device.interface_address}</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-2"><label for="InputIconSelector" class=" form-control-label">Ikona</label></div>
+													<div class="col-1"><img src="img/devices/{$device.interface_icon}" id="icon-prev-{$device.interface_id}"></div>
+													<div class="col-3">
+														<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
+															{foreach $icons item=icon}
+															<option data-imagesrc="img/devices/{$icon}"{if $icon==$device.interface_icon} selected{/if}>{$icon}</option>
+															{/foreach}
+														</select>	
+													</div>	
+													<div class="col-2"><label for="InputModeSelector" class=" form-control-label">Ustaw jako</label></div>
+													<div class="col-2">{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-2"><label for="htmlcolor" class=" form-control-label">Kolor</label></div>
+													<div class="col-2"><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]" class="form-control"></div>		
+													<div class="col-2"><label for="InputConf" class=" form-control-label">Zaneguj wyjście</label></div>
+													<div class="col-2"><input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}></div>
+													<div class="col-2"><label for="uom" class=" form-control-label">Jednostka</label></div>
+													<div class="col-2">
+														<!-- <input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}> -->
+														
+														<select name="interfaces[{$device.interface_id}][uom]" class="form-control">
+															{foreach $uom item=uoms}
+															<option value="{$uoms.unit_id}"{if $uoms.unit_id==$device.interface_uom} selected{/if}>{$uoms.unit_name}</option>
+															{/foreach}
+														</select>															
+														
+													</div>
+												</div>
+												<div class="row form-group">
+													<div class="col-12">
+														<a href="?action=delete&device_id={$device.interface_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm float-right">
+															<i class="fa fa-times"></i> Usuń {$device.interface_name}
+														</a>
+													</div>
+												</div>
+                                            </div>
+											{/foreach}	
+                                        </div>
+
+                                    </div>
+                                </div>
 								<div class="card-footer">
 									<button type="submit" class="btn btn-primary btn-sm">
 										<i class="fa fa-save"></i> Zapisz
@@ -68,14 +88,14 @@ function confirmLink(theLink, message)
 									<button type="reset" class="btn btn-danger btn-sm">
 										<i class="fa fa-ban"></i> Reset
 									</button>									
-								</div>								
-							</section>
-						</form>
-                    </div>
-				</div>
+								</div>										
+                            </div>
+                        </div>
+					</div>
+				</form>	
 			</div>
 		</div>
-								
+			
         <div class="content mt-3">
             <div class="animated fadeIn">
                 <div class="row">
