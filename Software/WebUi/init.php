@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2014 AquaPi Developers
+ * Copyright (C) 2012-2019 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -108,12 +108,15 @@ require(LIB_DIR.'ipc.php');
 $my_menu	= array();
 $my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 			"icon" => "fa-dashboard", 				"url" => "index.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Timery", 			"icon" => "fa-clock-o", 				"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 					"url" => "light.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 				"url" => "temp.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 					"url" => "about.php",	"acl" => "r"    , "reload" => 0);
+if (($CONFIG['webui']['security'] == "all") || ($CONFIG['webui']['security'] == "setup")) {
+	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",		"icon" => "fa-sign-out", 					"url" => "logout.php",	"acl" => "r"    , "reload" => 0);
+}
 
 
 $self = explode('/', $_SERVER["PHP_SELF"]);

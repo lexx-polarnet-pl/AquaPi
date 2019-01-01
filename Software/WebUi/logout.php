@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2014 AquaPi Developers
+ * Copyright (C) 2012-2019 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -19,39 +19,10 @@
  * USA.
  *
  */
+ 
+include("init.php");
 
-class Session {
-
-        function Session()
-        {
-                session_start();
-        }
-
-        function save($variable, $content)
-        {
-                $_SESSION[$variable] = $content;
-        }
-
-        function restore($variable, &$content)
-        {
-                if(isset($_SESSION[$variable]))
-                        $content = $_SESSION[$variable];
-                else
-                        $content = NULL;
-        }
-
-        function redirect($location)
-        {
-                header('Location: '.$location);
-                die;
-        }
-		
-		function clear_all_data()
-		{
-			session_unset(); 
-			session_destroy();
-		}
-
-}
-
+$SESSION -> clear_all_data();
+$SESSION -> redirect("index.php");
 ?>
+
