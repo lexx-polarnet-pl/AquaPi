@@ -11,11 +11,10 @@
                 </div>
             </div>
 {/if}
-			
+			<div class="card-columns px-md-3">			
 <!-- sensory -->
-	{foreach from=$status.aquapi.devices.device item="device"}
-	    {if $device.type == 1}	
-			<div class="col-lg-3 col-md-6">
+{foreach from=$status.aquapi.devices.device item="device"}
+{if $device.type == 1}	
 				<div class="card">
 					<div class="card-body">
 						<div class="stat-widget-one">
@@ -31,13 +30,11 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		{/if}
-	{/foreach}
+{/if}
+{/foreach}
 <!-- wyjścia -->
-	{foreach from=$status.aquapi.devices.device item="device"}
-	    {if $device.type == 2 || $device.type == 3}	
-			<div class="col-lg-3 col-md-6">
+{foreach from=$status.aquapi.devices.device item="device"}
+{if $device.type == 2 || $device.type == 3}	
 				<div class="card">
 					<div class="card-body">
 						<div class="stat-widget-one">
@@ -69,11 +66,10 @@
 						</div>
 					</div>
 				</div>
-			</div>
-		{/if}
-	{/foreach}
+{/if}
+{/foreach}
 
 <!--Informacje o sterowniku-->
 {include "index_aquainfo.tpl"}
-		
+</div>		
 {include "footer.tpl"}

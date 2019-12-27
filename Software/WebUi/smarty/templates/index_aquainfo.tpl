@@ -1,5 +1,5 @@
-                    <div class="col-lg-6">
-						<section class="card">
+
+						<div class="card">
 							<div class="card-header">
 								<strong class="card-title" v-if="headerText">Informacje o sterowniku</strong>
 							</div>							
@@ -37,5 +37,5 @@
 
 
 							</div>
-						</section>
-					</div>							
+						</div>
+					
