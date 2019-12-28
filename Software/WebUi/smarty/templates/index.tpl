@@ -93,7 +93,7 @@ function AjaxProcess(xml) {
   for (i = 0; i <x.length; i++) {
 	dev_id = x[i].getElementsByTagName("id")[0].childNodes[0].nodeValue;
 	dev_type = parseInt(x[i].getElementsByTagName("type")[0].childNodes[0].nodeValue);
-	dev_measured_value = parseInt(x[i].getElementsByTagName("measured_value")[0].childNodes[0].nodeValue);
+	dev_measured_value = parseFloat(x[i].getElementsByTagName("measured_value")[0].childNodes[0].nodeValue);
 	dev_state = x[i].getElementsByTagName("state")[0].childNodes[0].nodeValue;
 	dev_override_value = parseInt(x[i].getElementsByTagName("override_value")[0].childNodes[0].nodeValue);
 	if (dev_type == 1) { // sensory
@@ -144,9 +144,9 @@ function checkTime(i) {
   };  // add zero in front of numbers < 10
   return i;
 }
-// odświerzaj dane na stronie co 5 sekund
+// odświerzaj dane na stronie co 1 sekunde
 window.onload = function() {            
-    setInterval("AjaxRefresh()",5000)
+    setInterval("AjaxRefresh()",1000)
 }
 </script>	
 
