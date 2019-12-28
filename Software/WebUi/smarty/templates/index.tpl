@@ -144,7 +144,7 @@ function checkTime(i) {
   };  // add zero in front of numbers < 10
   return i;
 }
-// odświerzaj dane na stronie co 1 sekunde
+// odświerzaj dane na stronie co 1 sekune
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)
 }
