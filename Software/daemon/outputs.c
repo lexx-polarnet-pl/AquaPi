@@ -160,12 +160,19 @@ int ChangePortStateTxtFile(char *port,int state) {
 }
 
 int ChangePortStatePWMTxtFile(char *port,int state) {
+	char buff[200];
 	port=strrchr(port,':')+1;
     FILE *f;
     f = fopen(port, "a");
-    fprintf(f, "PWM:%i%%\n", state);
-    fclose(f);
-	return(0);
+	if (f == NULL) {
+		sprintf(buff,"Nie udało się otworzyć pliku %s w trybie do zapisu.",port);
+		Log(buff,E_WARN);	
+		return(-1);
+    } else {
+		fprintf(f, "PWM:%i%%\n", state);
+		fclose(f);
+		return(0);
+	}
 }
 
 void ChangePortState (char *port,int state) {
