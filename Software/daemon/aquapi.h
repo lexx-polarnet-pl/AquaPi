@@ -78,6 +78,7 @@ struct _interfaces {
 	int draw;
 	double correction;
 	double measured_value;
+	double raw_measured_value;
 	int override_value;
 	int override_expire;
 	int was_error_last_time;

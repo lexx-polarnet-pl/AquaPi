@@ -244,6 +244,8 @@ void TCPCommandStatus() {
 		xmlNewChild(node2, NULL, BAD_CAST "state", BAD_CAST buff);
 		sprintf(buff, "%f", interfaces[x].measured_value);
 		xmlNewChild(node2, NULL, BAD_CAST "measured_value", BAD_CAST buff);
+		sprintf(buff, "%f", interfaces[x].raw_measured_value);
+		xmlNewChild(node2, NULL, BAD_CAST "raw_measured_value", BAD_CAST buff);		
 		sprintf(buff, "%i", interfaces[x].override_value);
 		xmlNewChild(node2, NULL, BAD_CAST "override_value", BAD_CAST buff);		
 	}

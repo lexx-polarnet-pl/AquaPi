@@ -1,5 +1,5 @@
 {include "header.tpl"}
-<div id="ajax">Ajax</div>
+
 <!-- czy daemon działa -->
 {if $daemon_data->daemon->pid == null}
             <div class="col-sm-12">
@@ -72,8 +72,8 @@
 <!--Informacje o sterowniku-->
 {include "index_aquainfo.tpl"}
 </div>	
-<!--Ajax - odświerzanie danych -->
 
+<!--Ajax - odświerzanie danych -->
 <script type="text/javascript">
 function AjaxRefresh() {
   var xhttp = new XMLHttpRequest();
@@ -123,27 +123,8 @@ function AjaxProcess(xml) {
 		}
 	};
   };
-  UpdateTime();
-  //document.getElementById("ajax").innerHTML = "Ajax test";
 }
 
-function UpdateTime() {
-  var today = new Date();
-  var h = today.getHours();
-  var m = today.getMinutes();
-  var s = today.getSeconds();
-  m = checkTime(m);
-  s = checkTime(s);
-  document.getElementById('ajax').innerHTML =
-  h + ":" + m + ":" + s;
-}
-
-function checkTime(i) {
-  if (i < 10) {
-	i = "0" + i
-  };  // add zero in front of numbers < 10
-  return i;
-}
 // odświerzaj dane na stronie co 1 sekune
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)

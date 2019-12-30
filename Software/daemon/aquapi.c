@@ -1,7 +1,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2014 AquaPi Developers
+ * Copyright (C) 2012-2019 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -34,6 +34,7 @@
 #include "inifile.c"
 #include "light.c"
 #include "temperature.c"
+#include "co2.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -187,6 +188,7 @@ void ReadConf() {
 
 	ModLight_ReadSettings();
 	ModTemperature_ReadSettings();
+	ModCo2_ReadSettings();
 	
 	Log("Konfiguracja odczytana",E_DEV);
 
@@ -326,38 +328,12 @@ int main() {
 			// nie sprawdzałeś, to sprawdzaj
 			last_sec_run = specials.seconds_since_midnight;
 
-			/*
-			// obsługa dnia i nocy
-			if (specials.night_start < specials.night_stop) { // przypadek kiedy zdarzenie zaczyna się i kończy tego samego dnia
-				if ((specials.seconds_since_midnight >= specials.night_start) && (specials.seconds_since_midnight < specials.night_stop)) {
-					specials.night_ns = 1;
-				} else {
-					specials.night_ns = 0;
-				}
-			} else { // przypadek kiedy zdarzenie przechodzi przez północ
-				if ((specials.seconds_since_midnight < specials.night_start) && (specials.seconds_since_midnight >= specials.night_stop)) {
-					specials.night_ns = 0;
-				} else {
-					specials.night_ns = 1;
-				}
-			}
-
-			// zmiana trybu dzień - noc
-			if (specials.night_ns != specials.is_night) {
-				specials.is_night = specials.night_ns;
-				if (specials.is_night == 0) {
-					Log("Przechodzę w tryb dzień",E_INFO);
-				} else {
-					Log("Przechodzę w tryb noc",E_INFO);
-				}
-			}
-			*/
-			
 			// obsługa wejść
 			if (specials.seconds_since_midnight % config.inputs_freq == 0) {
 				for(x = 0; x <= interfaces_count; x++) {
 					if (interfaces[x].type == DEV_INPUT) {
-						interfaces[x].measured_value = GetDataFromInput(x);
+						interfaces[x].raw_measured_value = GetDataFromInput(x);
+						interfaces[x].measured_value = interfaces[x].raw_measured_value;
 					}
 				}
 			}
@@ -413,16 +389,21 @@ int main() {
 				}
 			}	
 			
-			// timery załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
+			// Załatw ustawienia oświetlenia, temperatury i co2
+			ModLight_Process();
+			ModTemperature_Process();
+			ModCo2_Process();
+			
+			// wszystko załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
 			ProcessPortStates();
 			
 			// informacje devel
 			if (specials.seconds_since_midnight % config.devel_freq == 0) {
 				Log("======================== Zrzut interfaceów ========================",E_DEV);
-				Log("|Typ|Stan|NSta| Conf |KNoc|OVal|OExp|Wartos|Bł|Nazwa",E_DEV);
+				Log("|Typ|Stan|NSta| Conf |KNoc|OVal|OExp|Wartos|WarSur|Bł|Nazwa",E_DEV);
 				Log("-------------------------------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("======================== Zrzut timerów ============================",E_DEV);				
@@ -431,6 +412,7 @@ int main() {
 				Log("======================== Koniec zrzutu ============================",E_DEV);
 				//ModLight_Debug();
 				ModTemperature_Debug();
+				ModCo2_Debug();
 			}
 
 			if (specials.seconds_since_midnight % config.stat_freq == 0) {
@@ -441,10 +423,7 @@ int main() {
 				Log("Automatyczne odświerzenie konfiguracji",E_DEV);
 				ReadConf();
 			}
-			
-			// Załatw ustawienia oświetlenia
-			ModLight_Process();
-			ModTemperature_Process();
+
 			
 		}
 		usleep(100000);
