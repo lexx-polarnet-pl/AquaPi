@@ -1,4 +1,5 @@
 ﻿{include "header.tpl"}
+
 <!-- czy daemon działa -->
 {if $daemon_data->daemon->pid == null}
             <div class="col-sm-12">
@@ -25,10 +26,11 @@
 
 									<div class="row form-group">
 										<div class="col-6"><label for="PHPROBE" class="form-control-label">Wejście sondy</label></div>
-										<div class="col-6">
-											<select name="PHPROBE" id="PHPROBE" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.co2_probe==$interface.interface_id}<img id="IMG-PHPROBE" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="PHPROBE" id="PHPROBE" class="form-control" required onchange="imgchange('IMG-PHPROBE','PHPROBE')"> 
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==1}
-												<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.co2_probe==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+												<option value="{$interface.interface_id}" title="img/devices/{$interface.interface_icon}"{if $CONFIG.co2_probe==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}
 											</select>
 										</div>	
@@ -89,8 +91,9 @@
 
 									<div class="row form-group">
 										<div class="col-6"><label for="CO2EN" class=" form-control-label">Elektrozawór butli</label></div>
-										<div class="col-6">
-											<select name="CO2EN" id="CO2EN" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.co2_co2valve==$interface.interface_id}<img id="IMG-CO2EN" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="CO2EN" id="CO2EN" class="form-control" required onchange="imgchange('IMG-CO2EN','CO2EN')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
 												<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.co2_co2valve==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}
@@ -105,8 +108,9 @@
 									
 									<div class="row form-group">
 										<div class="col-6"><label for="O2EN" class=" form-control-label">Napowietrzacz</label></div>
-										<div class="col-6">
-											<select name="O2EN" id="O2EN" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.co2_o2valve==$interface.interface_id}<img id="IMG-O2EN" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="O2EN" id="O2EN" class="form-control" required onchange="imgchange('IMG-O2EN','O2EN')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
 												<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.co2_o2valve==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}
@@ -189,6 +193,16 @@ function AjaxProcess(xml) {
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)
 }
+
+function imgchange(imgid,selectid) {
+	var imglist = new Array();
+{foreach from=$interfaces item="interface"}
+	imglist[{$interface.interface_id}] = "img/devices/{$interface.interface_icon}"; 
+{/foreach}	
+	document.getElementById(imgid).src=imglist[document.getElementById(selectid).value]
+}
+
+
 </script>	
 
 {include "footer.tpl"}
