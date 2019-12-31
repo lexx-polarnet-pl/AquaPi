@@ -10,42 +10,42 @@
                                     <strong class="card-title" v-if="headerText">Ustawienia</strong>
                                 </div>							
 								<div class="card-body card-block">
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="TMAX" class=" form-control-label">Tmax</label></div>
 										<div class="col-4"><input type="number" id="TMAX" name="TMAX" class="form-control" value="{$CONFIG.temp_tmax}" required min=15 max=30 step=0.5></div>
 										<div class="col-2"><label for="TMAX" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="HC" class=" form-control-label">Hc</label></div>
 										<div class="col-4"><input type="number" id="HC" name="HC" class="form-control" value="{$CONFIG.temp_hc}" required min=0 max=5 step=0.1></div>
 										<div class="col-2"><label for="HC" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="TMIN" class=" form-control-label">Tmin</label></div>
 										<div class="col-4"><input type="number" id="TMIN" name="TMIN" class="form-control" value="{$CONFIG.temp_tmin}" required min=15 max=30 step=0.5></div>
 										<div class="col-2"><label for="TMIN" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="HG" class=" form-control-label">Hg</label></div>
 										<div class="col-4"><input type="number" id="HG" name="HG" class="form-control" value="{$CONFIG.temp_hg}" required min=0 max=5 step=0.1></div>
 										<div class="col-2"><label for="HG" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="NCOR" class=" form-control-label">Ncor</label></div>
 										<div class="col-4"><input type="number" id="NCOR" name="NCOR" class="form-control" value="{$CONFIG.temp_ncor}" required min=-5 max=0 step=0.1></div>
 										<div class="col-2"><label for="NCOR" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="TMAXAL" class=" form-control-label">Tmaxal</label></div>
 										<div class="col-4"><input type="number" id="TMAXAL" name="TMAXAL" class="form-control" value="{$CONFIG.temp_tmaxal}" required min=15 max=35 step=0.5></div>
 										<div class="col-2"><label for="TMAXAL" class=" form-control-label">&deg;C</label></div>
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="TMINAL" class=" form-control-label">Tminal</label></div>
 										<div class="col-4"><input type="number" id="TMINAL" name="TMINAL" class="form-control" value="{$CONFIG.temp_tminal}" required min=15 max=35 step=0.5></div>
 										<div class="col-2"><label for="TMINAL" class=" form-control-label">&deg;C</label></div>
 									</div>	
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="interface_heat" class=" form-control-label">Grzałka</label></div>
 										<div class="col-6 input-group">
 											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_heat==$interface.interface_id}<img id="img-interface_heat" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
@@ -56,7 +56,7 @@
 											</select>
 										</div>	
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="interface_cool" class=" form-control-label">Chłodzenie</label></div>
 										<div class="col-6 input-group">
 											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_cool==$interface.interface_id}<img id="img-interface_cool" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
@@ -67,7 +67,7 @@
 											</select>
 										</div>	
 									</div>
-									<div class="row">
+									<div class="row form-group">
 										<div class="col-6"><label for="interface_sensor" class=" form-control-label">Czujnik temperatury</label></div>
 										<div class="col-6 input-group">
 											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_sensor==$interface.interface_id}<img id="img-interface_sensor" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
