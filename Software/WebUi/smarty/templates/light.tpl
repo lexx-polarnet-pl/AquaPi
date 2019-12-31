@@ -34,8 +34,9 @@
 									</div>									
 									<div class="row form-group">
 										<div class="col-6"><label for="interface" class=" form-control-label">Wyjście</label></div>
-										<div class="col-6">
-											<select name="interface" id="interface" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.light_interface==$interface.interface_id}<img id="img-interface" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="interface" id="interface" class="form-control" required onchange="imgchange('img-interface','interface')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==3}
 												<option value="{$interface.interface_id}" data-imagesrc="img/devices/{$interface.interface_icon}"{if $CONFIG.light_interface==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}

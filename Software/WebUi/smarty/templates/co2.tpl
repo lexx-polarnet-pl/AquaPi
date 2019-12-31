@@ -193,16 +193,6 @@ function AjaxProcess(xml) {
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)
 }
-
-function imgchange(imgid,selectid) {
-	var imglist = new Array();
-{foreach from=$interfaces item="interface"}
-	imglist[{$interface.interface_id}] = "img/devices/{$interface.interface_icon}"; 
-{/foreach}	
-	document.getElementById(imgid).src=imglist[document.getElementById(selectid).value]
-}
-
-
 </script>	
 
 {include "footer.tpl"}

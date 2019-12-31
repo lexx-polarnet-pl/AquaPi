@@ -47,8 +47,9 @@
 									</div>	
 									<div class="row">
 										<div class="col-6"><label for="interface_heat" class=" form-control-label">Grzałka</label></div>
-										<div class="col-6">
-											<select name="interface_heat" id="interface_heat" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_heat==$interface.interface_id}<img id="img-interface_heat" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="interface_heat" id="interface_heat" class="form-control" required onchange="imgchange('img-interface_heat','interface_heat')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
 												<option value="{$interface.interface_id}" {if $CONFIG.temp_interface_heat==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}
@@ -57,8 +58,9 @@
 									</div>
 									<div class="row">
 										<div class="col-6"><label for="interface_cool" class=" form-control-label">Chłodzenie</label></div>
-										<div class="col-6">
-											<select name="interface_cool" id="interface_cool" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_cool==$interface.interface_id}<img id="img-interface_cool" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="interface_cool" id="interface_cool" class="form-control" required onchange="imgchange('img-interface_cool','interface_cool')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==2}
 												<option value="{$interface.interface_id}" {if $CONFIG.temp_interface_cool==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}
@@ -67,8 +69,9 @@
 									</div>
 									<div class="row">
 										<div class="col-6"><label for="interface_sensor" class=" form-control-label">Czujnik temperatury</label></div>
-										<div class="col-6">
-											<select name="interface_sensor" id="interface_sensor" class="form-control" required>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_sensor==$interface.interface_id}<img id="img-interface_sensor" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="interface_sensor" id="interface_sensor" class="form-control" required onchange="imgchange('img-interface_sensor','interface_sensor')">
 												{foreach from=$interfaces item="interface"}{if $interface.interface_type==1}
 												<option value="{$interface.interface_id}" {if $CONFIG.temp_interface_sensor==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
 												{/if}{/foreach}

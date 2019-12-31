@@ -82,6 +82,14 @@
                 normalizeFunction: 'polynomial'
             });
         })(jQuery);
+
+		function imgchange(imgid,selectid) { // zmiana ikony urządzenia w listach rozwijanych
+			var imglist = new Array();
+		{foreach from=$interfaces item="interface"}
+			imglist[{$interface.interface_id}] = "img/devices/{$interface.interface_icon}"; 
+		{/foreach}	
+			document.getElementById(imgid).src=imglist[document.getElementById(selectid).value]
+		}		
     </script>
 	
     <!-- Right Panel -->
@@ -93,7 +101,7 @@
 
             <div class="header-menu">
 
-                <div class="col-sm-12">
+                <div class="col-sm-4">
                     <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                     <div class="header-left">
 
@@ -119,6 +127,13 @@
                         </div>
                     </div>
                 </div>
+
+				<div class="col-sm-8">
+					<div class="float-right">
+						<h2>{$CONFIG.webui.motd}</h2>
+					</div>
+				</div>				
+				
             </div>
 
         </header><!-- /header -->
