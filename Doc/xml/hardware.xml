@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<chapter id="hardware">
+    <title>Warstwa sprzętowa</title>
+    <sect1 id="hardware-intro">
+		<title>Sprzęt współpracujący z AquaPi</title>
+		<para>AquaPi jest systemem otwartym, przez co (o ile znasz się nieco na programowaniu) można do niego podłączyć i używać większość sprzętu który jest w stanie współpracować
+		z Raspberry Pi. Jeśli jednak nie umiesz programować, i chciałbyś korzystać z rozwiązań gotowych, to pozostaje Ci używanie sprzętu który AquaPi obsługuje natywnie.</para>
+		<para>W następnych rozdziałach jest opisane jak podłączyć różny sprzęt do Raspberry Pi. Warto w tym miejscu zapamiętać jak wygląda rozkład pinów w RPI, aby później
+		wiedzieć o jakich pinach mowa gdy będą pokazane przykłady połączeń</para>
+		<figure>
+			<title>Pinologia Raspberry Pi</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="hardware/GPIO1.jpg" format="JPG"/>
+				</imageobject>
+			</mediaobject>
+			<caption>
+				<para>Opis wyjść trzech różnych wersji Raspberry Pi.</para>
+			</caption>				
+		</figure>	
+		<figure>
+			<title>Położenie pinów na RPI</title>
+			<mediaobject>
+				<imageobject>
+					<imagedata fileref="hardware/GPIO2.jpg" format="JPG"/>
+				</imageobject>
+			</mediaobject>
+			<caption>
+				<para>Rozmieszczenie pinów na Raspberry Pi 3 i zero. RPI w wersji 1 i 2 piny ułożone są podobnie, jednak sama listwa goldpin jest krótsza (do dyspozycji jest mniej 
+				pinów)</para>
+			</caption>				
+		</figure>	
+		<para>Można wyróżnić kilka rodzajów pinów. Piny zaznaczone na czarno i opisane jako GND to masa. Piny oznaczone na czerwono, to zasilanie. RPI dostarczaa dwa napięcia - 
+		5V i 3,3V. Kolejne porty opisane jako GPIO to tzw. General Purpose Input/Output, czyli uniwersalne porty wejścia/wyjścia. Część z nich może pełnić dodatkowo funkcję 
+		specjalistycznych interfaceów umożliwiając dołączenie różnych czujników lub też modułów rozszerzeń.</para>
+		<warning><title>Uwaga</title><para>Podpinanie czegokolwiek pod złącze RPI gdy jest zasilane może skutkować jego zniszczeniem. Tak samo jak zwieranie pinów 5V i 
+		3.3V lub jednego z nich do masy. Generalnie zwieranie ze sobą przypadkowych pinów to zawsze zły pomysł.</para></warning>		
+	</sect1>
+	<sect1 id="hardware-temp"> 
+		<title>Czujniki temperatury</title>
+		<sect2 id="DS18B20">
+			<title>DS18B20</title>		
+			<sect3 id="DS18B20-desc">
+				<title>Opis czujnika</title>
+				<para>DS18B20 to cyfrowy czujnik temperatury firmy Dallas. Wysyła dane o temperaturze wykorzystując do tego tylko jeden pin cyfrowy i specjalny protokół o nazwie 
+				1-Wire. 
+				Do tego samego pinu możesz podłączyć wiele czujników. Czujnik podaje sprzętowo temperaturę w stopniach Celsjusza.</para>
+				<tip><title>Podpowiedź</title><para>DS18B20 to jedyny natywnie obsługiwany czujnik temperatury. Jest on jednak tak popularny, że prawdopodobnie nie potrzebujesz
+				żadnego innego :-)</para></tip>			
+				<para>Parametry techniczne DS18B20:</para>
+				<itemizedlist>
+					<listitem><para>Czujnik można zasilać napięciem od 3 do 5,5 V</para></listitem>
+					<listitem><para>Czujnik może mierzyć temperatury od -55 do 125 °C</para></listitem>
+					<listitem><para>Czujnik ma cyfrową rozdzielczość od 9 do 12 bitów</para></listitem>
+					<listitem><para>Co się przekłada na rozdzielczość w stopniach od 0,5 do 0,0625 °C</para></listitem>
+					<listitem><para>Dokładność pomiaru to +/- 0,5 °C dla zakresu od -10 do 85 °C</para></listitem>
+					<listitem><para>Dokładność pomiaru to +/- 2 °C dla zakresu od -55 do 125 °C</para></listitem>		
+					<listitem><para>Dryf pomiaru +/- 0,2 °C</para></listitem>	
+				</itemizedlist>
+				<figure>
+					<title>DS18B20</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/DS18B20.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>DS18B20 prosto z fabryki.</para>
+					</caption>				
+				</figure>	
+				<figure>
+					<title>Wodoodporny DS18B20</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/DS18B20-wp.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>DS18B20 w wykonaniu wodoodpornym. Możesz zamówić czujnik w takim wykonaniu, co zaoszczędzi Ci pracy w lutowaniu, oraz zabezpieczaniu go przed 
+						wilgocią.</para>
+					</caption>				
+				</figure>			
+			</sect3>
+			<sect3 id="DS18B20-con">
+				<title>Podłączenie czujnika do Raspberry Pi</title>
+				<para>Podłączenie do RPI jest dość proste, jednak ważne jest, aby nie pomylić pinów. </para>
+				<figure>
+					<title>Pinologia DS18B20</title>				
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/DS18B20-pinout.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Oznaczenie wyjść DS18B20. Na czujniki wodoodporne musisz uważać, bo tutaj kolory nie są ustandaryzowane i może się zdarzyć że w Twoim egzemplarzu 
+						będą inne.</para>
+					</caption>
+				</figure>
+				<para>Pin masy (GND, Ground) podłączasz pod masę RPI. Pin zasilania (VCC, VDD) podłączasz pod 3,3V. Pin danych (Data, DQ) podłączasz pod GPIO 4 (pin 7). 
+				Dodatkowo, będziesz potrzebował rezystor podciągający 4,7k&ohm; wpięty pomiędzy zasilanie (3,3V), a magistralę danych (GPIO 4).</para>
+				<tip><title>Podpowiedź</title><para>GPIO 4 (pin 7) do pin który w RPI jest przeznaczony pod obsługę magistrali 1-wire. Wszystkie czujniki korzystające z tej 
+				magistrali będą podłączone podobnie jak DS18B20.</para></tip>
+				<figure>
+					<title>Podpięcie DS18B20 do Raspberry Pi</title>				
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/DS18B20-wire.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Przykładowe podłączenie czujnika do RPI, wraz z rezystorem podciągającym.</para>
+					</caption>
+				</figure>
+				<para>Na przykładzie powyżej są podłączone dwa czujniki. W rzeczywistości do RPI możesz podłączyć do 10 czujników DS18B20. Dodatkowe czujniki podłączasz identycznie 
+				jak	w powyższym przykładzie. Zwróć jednak uwagę, że całej magistrali jest tylko jeden rezystor podciągający.</para>
+			</sect3>	
+			<sect3 id="DS18B20-ui">
+				<title>Dodawanie czujnika w AquaPi</title>
+				<para>Dodanie czujnika w interfejsie użytkownika jest całkiem proste. Przejdź do menu <guimenu>Wejścia i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe 
+				wejście lub wyjście</guimenu> wybierz dodany czujnik, nadaj mu opis, wybierz kolor do wykresu i ikonkę.</para>
+				<figure>
+					<title>Dodawanie czujnika DS18B20</title>				
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/DS18B20-ui.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>Po skonfigurowaniu czujnika kliknij <guimenu>Zapisz</guimenu> aby czujnik mógł być używany w systemie. Czujnik powinien być teraz widoczny na dashboard, 
+				gdzie możesz na bieżąco obserwować jego wskazania.</para>
+				<tip><title>Podpowiedź</title><para>Podłączyłeś więcej czujników i nie potrafisz ich rozróżnić? Dodaj je wszystkie do AquaPi z tymczasowymi nazwami. Następnie spróbuj 
+				ogrzać je ręką, jednocześnie obserwując wskazania na dasboard. Po rozpoznaniu który czujnik jest który, zmień mu nazwę na bardziej odpowiednią.</para></tip>
+			</sect3>	
+		</sect2>
+     </sect1>
+	 
+	<sect1 id="hardware-out"> 
+		<title>Elementy wykonawcze (wyjścia)</title>
+		<para>Wszystkie porty GPIO mogą zostać ustawione jako wyjścia. Jeśli port GPIO zostanie ustawiony jako wyjście, to w momencie aktywowania go, na jego pinie pojawi się
+		napięcie 5V. W momencie gdy jest nieaktywny, jego potencjał wynosi 0V.</para>
+		<sect2 id="gpio-add-output">
+			<title>Dodawanie pinu GPIO jako wyjścia</title>
+			<para>Aby dodać pin GPIO jako wyjście, wejdź w menu <guimenu>Wejścia i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe 
+			wejście lub wyjście</guimenu> wybierz port GPIO, nadaj mu opis, wybierz kolor do wykresu i ikonkę urządzenia którym chciałbyś sterować.</para>
+			<figure>
+				<title>Konfigurowanie pinu GPIO jako wyjście</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/GPIO-OUT-ui.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>Po skonfigurowaniu portu GPIO kliknij <guimenu>Zapisz</guimenu> aby wyjście mogło być używane w systemie. Wyjście powinno być teraz widoczne na dashboard, 
+			gdzie możesz spróbować sterować nim ręcznie.</para>
+			<tip><title>Podpowiedź</title><para>Jeśli do portu podpiąłeś np. kartę przekaźnika, i otrzymujesz efekt odwrotny do zamierzonego (tzn. gdy AquaPi mówi że urządzenie
+			jest wyłączone, a tak naprawdę jest włączone, lub na odwrót), możesz użyć opcji <guimenu>Zaneguj wyjście</guimenu> aby to odwrócić.</para></tip>
+			<para>Teraz, jeśli GPIO jest ustawione jako wyjście, możesz używać tego wyjścia aby sterować urządzeniami takimi jak np. grzałka lub oświetlenie. Abyś jednak mógł 
+			sterować urządzeniami zasilanymi 230V, będziesz potrzebował karty przekaźników, lub innego, podobnego rozwiązania.</para>
+			<important><title>Ważne</title><para>W powyższym przykładzie użyto portu GPIO 4 (fizyczny pin numer 7). Ten port będzie używany w kolejnych przykładach pokazujących 
+			jak podpiąć urządzenia wyjściowe do Raspberry Pi.</para></important>	
+
+
+			<sect3 id="hardware-relay">
+				<title>Karta przekaźników (mechanicznych)</title>
+				<para>Dość popularne rozwiązanie, tanie, i dające spore możliwości. Typowe przekaźniki w takich kartach mają obciążalność do 10A przy zasilaniu 230V, co w przypadku
+				urządzeń stosowanych w awarystyce powinno być wystarczające.</para>
+				<para>Karty te zapewniają również izolację galwaniczną od napięcia 230V, co zabezpiecza RPI przed ewentualnymi przepięciami.</para>
+				<para>Do wad możemy zaliczyć mechaniczny stukot przy przełączaniu styków, oraz niską wytrzymałość mechaniczną styków.</para>
+				<figure>
+					<title>Karta z 8 przekaźnikami</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-8.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>	
+				<figure>
+					<title>Karta z 1 przekaźnikiem</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-1.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>	
+				<para>Niezależnie od liczby przekaźników, sterowanie kartą przekażników odbywa się podobnie. Do karty należy doprowadzić zasilanie +5V, masę GND, oraz sygnał 
+				sterujący. Dla 1 przekaźnika daje to 3 przewody, a dla 8 przekaźników przewodów będzie 10.</para>
+				<figure>
+					<title>Przykład użycia karty przekaźników</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-8-sample.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Na zdjęciu widać listwę z zabudowaną przetwornicą 12V, oraz kartą 8 przekaźników. 4 przekaźniki są użyte aby sterować gniazdami 230V, 4 kolejne sterują
+						gniazdami 12V. Sygnał z RPI jest doprowadzony do listwy przewodem z wtyczkami DB9.</para>
+					</caption>					
+				</figure>				
+				<warning><title>Ostrzeżenie</title><para>Poniższy przykład pokazuje jak sterować odbiornikiem zasilanym 230V. To jest napięcie niebezpieczne dla życia. Tego typu 
+				połączenia powinna wykonywać osoba posiadająca odpowiednią wiedzę i umiejętności.</para></warning>				
+				<figure>
+					<title>Podłączenie przekaźnika do RPI</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-1-wire.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>					
+			</sect3>
+			<sect3 id="hardware-ssr">
+				<title>Karta przekaźników SSR</title>
+				<para>SSR to skrót od Solid State Relay, co można przetłumaczyć jako przekaźnik połprzewodnikowy. Droższe rozwiązanie od poprzedniego, jednak pozbawione jego wad 
+				jakimi są mechaniczne styki przekaźników, przez co znacznie trwalsze, oraz pozbawione mechanicznego odgłosu klikania przy załączaniu. W typowych kartach przekaźniki 
+				SSR mają obciążalność 2A, co odpowiada mocy 460W (przy zasilaniu 230V).</para>
+				<warning><title>Ostrzeżenie</title><para>Moc 460W jest realnie osiągalna dla urządzeń stosowanych w akwarystyce, więc w przypadku SSR należy uważać co 
+				podłączamy.</para></warning>				
+				<figure>
+					<title>Karta z 4 przekaźnikami SSR</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-SSR.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>	
+				<para>Podłączenie karty przekaźników SSR wygląda identycznie jak karty przekaźników mechanicznych, dlatego nie będzie tu powielony przykład z poprzedniego 
+				rozdziału.</para>
+				<figure>
+					<title>Przykład użycia karty przekaźników SSR</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/RELAY-SSR-sample.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Na zdjęciu widać listwę z kartą 4 przekaźników SSR. Listwa została przerobiona tak, aby każdym z gniazdek można było osobno sterować. Dodatkowa obudowa
+						na kartę SSR została wydrukowana na drukarce 3D. Sygnał z RPI jest doprowadzony do listwy przewodem z wtyczkami DIN5.</para>
+					</caption>					
+				</figure>					
+			</sect3>
+			<sect3 id="hardware-triak">
+				<title>Triaki</title>
+				<para>Triaki to elementy półprzewodnikowe, które zazwyczaj stosuje się w obwodach prądu zmiennego. Aby załączyć triak, należy podać napięcie na bramkę. Wyłączenie 
+				następuje w momencie gdy prąd płynący przez triak spadnie do zera (stąd typowe zastosowanie przy prądzie zmiennym, triak wyłączy się w momencie gdy zdejmiemy
+				napięcie z bramki, i nastąpi przejście przez zero).</para>
+				<para>Triaki pomimo że są dość popularne, nie występują w postaci tzw. kitów. Oznacza to że płytkę sterującą z triakami musisz wykonać samemu na podstawie jednego ze 
+				schematów dostępych z AquaPi.</para>
+				<figure>
+					<title>Triak</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/TRIAK.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Triak BT137-600 na napięcie 600V i prąd 8A.</para>
+					</caption>						
+				</figure>
+				<figure>
+					<title>Podłączenie triaka do RPI</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/TRIAK-wire.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Typowe podłączenie triaka do RPI. Oprócz triaka na schemacie jest transoptor MOC3043M z detekcją przejścia przez zero, co łagodzi załączanie urządzenia
+						którym steruje triak.</para>
+					</caption>						
+				</figure>				
+			</sect3>		
+			<sect3 id="hardware-mosfet">
+				<title>Tranzystory</title>
+				<para>W odróżnieniu od triaka, tranzystor tak jak przekaźnik może być załączony i wyłączony w dowolnym momencie. Dodatkowo, tranzystory mogą być przełączane bardzo 
+				szybko, co umożliwia stosowanie sygnału PWM (modulację szerokości impulsów). PWM może być stosowany np. do płynnego ściemniania i rozjaśniania lamp LED.</para>
+				<figure>
+					<title>Tranzystor</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/MOSFET.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+					<caption>
+						<para>Kit z tranzystorem IRF520 o napięciu max 24V, i prądzie max 5A. IRF520 jest tranzystorem pozwalającym na wzmocnienie sygnału PWM z RPI.</para>
+					</caption>						
+				</figure>
+				<figure>
+					<title>Połączenie IRF520 do RPI</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/MOSFET-wire.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>	
+				<para>W powyższym przykładzie, tak jak i w poprzednich, kit z IRF520 został podłączony do portu GPIO 4, który nie obsługuje sprzętowego PWM. Sprzętowy PWM jest 
+				dostępny tylko na GPIO 12 oraz GPIO 18. W związku z tym, tranzystor podłączony do tego pinu będzie zachowywał się jako przekaźnik, nie pozwalając na sterowanie
+				PWM.</para>	
+			</sect3>			
+		</sect2>			
+	</sect1>
+	<sect1 id="hardware-probes"> 
+		<title>Sondy pomiarowe</title>
+		<sect2 id="ph">
+			<title>Pomiar pH</title>		
+			<sect3 id="miniph">
+				<title>Sparky's Widgets Miniph</title>
+				<para>Mostek pomiarowy oferujący 12 bitową dokładność przetwornika ADC, podłączany do RPI za pomocą magistrali I2C. Łatwy w użyciu, jednak obecnie trudny do zdobycia.
+				Mostek ten jest dostępny jako Open Source, a jego pliki znajdziesz w <ulink url="https://github.com/SparkysWidgets/MinipHHW">GitHub</ulink>.</para>
+				<figure>
+					<title>Miniph</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/MINIPH.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>		
+				<para>Podłączenie Miniph do RPI jest proste. Potrzebujemy 4 przewodów, podpinamy zasilanie (+5V), masę (GND), a następnie 2 przewody szyny I2C - SDA do pinu GPIO 2 
+				oraz SCL do pinu GPIO 3.</para>
+				<figure>
+					<title>Połączenie Miniph do RPI</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/MINIPH-wire.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>Miniph było produkowane z adresem domyślnym ustawionym na 0x4D. AquaPi szuka Miniph właśnie pod tym adresem. Jeśli wszystko podłączyłeś poprawnie, to mostek
+				powinien być wykryty automatycznie.</para>
+				<para>Aby dodać Miniph do AquaPi, wejdź w menu <guimenu>Wejścia i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe 
+				wejście lub wyjście</guimenu> wybierz mostek Miniph, nadaj mu opis, wybierz kolor do wykresu i ikonkę urządzenia.</para>
+				<!-- <figure>
+					<title>Dodawanie Miniph do AquaPi</title>				
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/GPIO-OUT-ui.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure> -->
+				<para>Po skonfigurowaniu mostka pomiarowego kliknij <guimenu>Zapisz</guimenu> aby miniph mogło być używane w systemie. Wejście powinno być teraz widoczne na 
+				dashboard, gdzie możesz odczytać z niego dane.</para>
+				<tip><title>Podpowiedź</title><para>Do czasu kalibracji sondy pH, wyniki z miniph będą pokazywane w mV, a nie jako pH.</para></tip>
+			</sect3>
+		</sect2>
+	</sect1>
+	<sect1 id="hardware-ioext"> 
+		<title>Extendery I/O</title>
+		<para>W przypadku rozbudowanych systemów, może się okazać że brakuje portów GPIO. Wtedy z pomocą przychodzą tzw. extendery I/O które pozwalają na zwiększenie linii 
+		GPIO.</para>
+		<sect2 id="pcf8574">
+			<title>PCF8574</title>		
+			<para>PCF8574 to 8 bitowy port równoległy sterowany magistralą I2C. Pozwala w prosty sposób zwiększyć ilość portów GPIO. Na szynę I2C można podłaczyć do 8 układów 
+			tego typu zyskując 64 dodatkowe porty.</para>
+			<figure>
+				<title>PCF8574 jako kit</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/PCF8574.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>	
+			<figure>
+				<title>Podłączenie PCF8574 do RPI</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/PCF8574-wire.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure> 
+			<para>Po podłączeniu expandera, AquaPi wykryje go automatycznie, a ty będziesz miał do dyspozycji 8 nowych portów które można ustawić jako wejście lub wyjście. Aby 
+			to zrobić, wejdź w menu <guimenu>Wejścia 
+			i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe wejście lub wyjście</guimenu> wybierz interesujący cię pin na ekspanderze, nadaj mu opis, wybierz kolor 
+			do wykresu, ikonkę urządzenia oraz tryb działania (wejście lub wyjście).</para>
+			<figure>
+				<title>Dodawanie portu z expandera do AquaPi</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/PCF8574-ui.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure> 
+			<para>Po skonfigurowaniu portu GPIO kliknij <guimenu>Zapisz</guimenu> aby wejście lub wyjście mogło być używane w systemie. Skonfigurowany port powinien być teraz 
+			widoczny na dashboard, gdzie możesz spróbować sterować nim ręcznie, lub oberwować jego stan.</para>
+		</sect2>
+	</sect1>
+</chapter>

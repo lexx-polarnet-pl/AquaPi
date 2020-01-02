@@ -1,4 +1,5 @@
 ﻿		<table><title>Tabela devices</title>
+			<warning><title>Ostrzeżenie</title><para>Ten rozdział jest nieaktualny i dotyczy wersji 1.0. W obecnej wersji zostało to zmienione.</para></warning>		
 			<tgroup cols='7' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Pole'/>
 				<colspec colname='Typ'/>

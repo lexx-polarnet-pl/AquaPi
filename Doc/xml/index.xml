@@ -4,7 +4,8 @@
 <!ENTITY rozdzial1 SYSTEM "intro.xml">
 <!ENTITY rozdzial2 SYSTEM "install.xml">
 <!ENTITY rozdzial3 SYSTEM "configure.xml">
-<!ENTITY rozdzial4 SYSTEM "devel.xml">
+<!ENTITY rozdzial4 SYSTEM "hardware.xml">
+<!ENTITY rozdzial5 SYSTEM "devel.xml">
 <!ENTITY db-struct SYSTEM "devel-dbstruct.xml">
 ]>
 
@@ -12,14 +13,15 @@
   <bookinfo>
     <title>Komputer akwariowy AquaPi</title>
     <copyright>
-        <year>2012-2018</year>
+        <year>2012-2020</year>
         <holder>AquaPi Developers</holder>
     </copyright>
   </bookinfo>
-<toc></toc>
+
 
 &rozdzial1;
 &rozdzial2;
 &rozdzial3;
 &rozdzial4;
+&rozdzial5;
 </book>

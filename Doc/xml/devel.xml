@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <chapter id="devel">
     <title>Dla developerów</title>
+	<warning><title>Ostrzeżenie</title><para>Ten rozdział jest nieaktualny i dotyczy wersji 1.0. W obecnej wersji zostało to zmienione.</para></warning>
      <sect1 id="database">
         <title>Baza danych</title>
 	<para>

@@ -1,4 +1,4 @@
-body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; }
+﻿body,html {background-color: #EEEEEE; font-family: 'Capriola', sans-serif; font-size: 16px; }
 .tabelka {background-color: #DDDDDD; border-style: dashed; padding:5px; border-width: 1px;}
 img {border:0}
 h1,h2,h3 {margin-top:2px; margin-bottom:2px;}
@@ -6,6 +6,11 @@ h1,h2,h3 {margin-top:2px; margin-bottom:2px;}
 .tip {background-color: #BBBBFF; border-color: #9999DD; border-width: 10px; border-left-style: solid; border-right-style: solid; margin: 5px;}
 .warning {background-color: #FFBBBB; border-color: #DD9999; border-width: 10px; border-left-style: solid; border-right-style: solid; margin: 5px;}
 .important {background-color: #BBFFBB; border-color: #99DD99; border-width: 10px; border-left-style: solid; border-right-style: solid; margin: 5px;}
+.figure  {text-align: center; background-color: #DDDDDD; padding: 5px; margin: 5px;}
+.guimenu {background-color: #CCCCCC; padding: 2px;}
+.guimenu::after {
+  content: " 🖰";
+}
 .programlisting {
         font-family: monospace;
         font-size: 1em;
