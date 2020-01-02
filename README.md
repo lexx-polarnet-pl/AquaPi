@@ -53,4 +53,5 @@ Project is: in progress.
 This project was inspired by [Aquamat](https://github.com/musashimm/aquamat). 
 
 ## Contact
-Created by [lexx](mailto:lexx@polarnet.pl) (http://lexx.polarnet.pl/) - feel free to contact me!
+Created by [lexx](mailto:lexx@polarnet.pl) (https://lexx.polarnet.pl/) - feel free to contact me!
+AquaPi is also having its own home page - see https://aquapi.polarnet.pl/
