@@ -294,7 +294,7 @@ void TCPCommand1wList() {
 }
 
 void TCPCommandDeviceList() {
-	char address[200];
+	char address[256];
 	char description[400];
 	DIR * d;
 	char * ds18b20_dir_name = "/sys/bus/w1/devices/";
