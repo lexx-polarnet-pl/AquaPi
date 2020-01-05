@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2019 AquaPi Developers
+ * Copyright (C) 2012-2020 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -20,11 +20,6 @@
  *
  */
  
-// robimy dobie debug
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
-//error_reporting(E_ALL);
-
 // wersja AquaPi
 $aquapi_ver = "1.9-devel";
 
@@ -37,18 +32,10 @@ if (!isset($CONFIG['webui']['purge_logs']))
 if ($CONFIG['webui']['purge_logs'] < 3)
     $CONFIG['webui']['purge_logs'] = 3;
 
-// ustawienie odpowiedniej strefy czasowej
-//date_default_timezone_set("Europe/Warsaw");
-//date_default_timezone_set('UTC');
-
 define('MAIN_DIR', $CONFIG['webui']['directory'].'/');
 define('LIB_DIR', MAIN_DIR.'lib/');
 define('IMG_DIR', MAIN_DIR.'img/');
-define('MODULES_DIR', MAIN_DIR.'modules/');
-define('PLUGINS_DIR', MAIN_DIR.'plugins/');
-define('ONEWIRE_DIR','/sys/bus/w1/devices');
 define('SMARTY_COMPILE_DIR',MAIN_DIR.'smarty/templates_c/');
-
 
 if(!is_dir(SMARTY_COMPILE_DIR))
         die('Missing directory <B>'.SMARTY_COMPILE_DIR.'</B>. Can anybody make them?');
@@ -138,7 +125,6 @@ foreach ($my_menu as &$pos)
 // błędy które nie zostały przeczytane
 $lastwarnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_date > ? order by log_date desc;', array($CONFIG['log_read_time']));
 
-//new dbug($CONFIG);
 $smarty->assign('lastwarnlogs', 	$lastwarnlogs);
 $smarty->assign('my_menu',  $my_menu);
 $smarty->assign('cur_name', $cur_name);

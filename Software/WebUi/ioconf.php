@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2017 AquaPi Developers
+ * Copyright (C) 2012-2020 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -43,15 +43,12 @@ if(array_key_exists('action', $_GET))
 				     VALUES (?, ?, ?, ?, ?, ?, ?)',
 				     array(0, $input_address, $_POST['InputFriendlyName'], $_POST["InputModeSelector"], $_POST['InputIconSelector'], substr($_POST['htmlcolor'],1), $conf));
 		ReloadDaemonConfig();
-		//$SESSION->redirect("ioconf.php");
 	}	
 } else {
 	if($_POST) {
-		//new dBug($_POST,'',true);die;
 		foreach ($_POST['interfaces'] as $key => $interface) {
 			if (isset($interface['conf'])) { $conf=1; } else { $conf=0; }
 			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ?, interface_uom = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$interface['uom'],$key));
-				//var_dump($interface);
 		}
 		ReloadDaemonConfig();
 	}

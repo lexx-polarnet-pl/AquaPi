@@ -2,7 +2,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2014 AquaPi Developers
+ * Copyright (C) 2012-2020 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -50,18 +50,14 @@ if (@$_GET['action'] == 'delete')
 
 if (@$_GET['action'] == 'update')
 {
-	//new dBug($_POST,"",true);
 	if($_POST) {
-		//new dBug($_POST,'',true);die;
 		foreach ($_POST['timers'] as $key => $timer) {
-		//	if (isset($interface['conf'])) { $conf=1; } else { $conf=0; }
 			$timeif = TimeToUnixTime($timer['timeif']);
 			$days = ($timer['d1']?$timer['d1']:'0') . ($timer['d2']?$timer['d2']:'0') . 
 			 ($timer['d3']?$timer['d3']:'0') . ($timer['d4']?$timer['d4']:'0') .
 			 ($timer['d5']?$timer['d5']:'0') . ($timer['d6']?$timer['d6']:'0') . 
 			 ($timer['d7']?$timer['d7']:'0');
 			$db->Execute('UPDATE timers SET timer_timeif = ?, timer_action = ?, timer_days = ? WHERE timer_id=?', array($timeif,$timer['action'],$days,$key));
-			//var_dump($timer['timeif']);
 		}	
 	}
 	ReloadDaemonConfig();
@@ -75,9 +71,6 @@ $timers['time']     = $db->GetAll('SELECT *,
 				(SELECT interface_icon FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenicon
 				FROM timers t
 				WHERE timer_type=1 ORDER BY timer_interfacethenname, timer_timeif');
-
-//new dBug($interfaces,"",true);
-//new dBug($timers,"",true);
 
 $smarty->assign('timers', $timers);
 $smarty->assign('interfaces', $interfaces);
