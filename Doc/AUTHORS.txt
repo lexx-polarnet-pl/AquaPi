@@ -1,7 +1,0 @@
-AquaPi
-======
-
-Ten plik zawiera listę wszystkich developerów AquaPi:
-
-* Marcin 'Lexx' Król <lexx@polarnet.pl>
-* Jarosław 'Sir_Yaro' Czarniak <jaroslaw@czarniak.org>

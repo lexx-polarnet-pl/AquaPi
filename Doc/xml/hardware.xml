@@ -381,4 +381,46 @@
 			widoczny na dashboard, gdzie możesz spróbować sterować nim ręcznie, lub oberwować jego stan.</para>
 		</sect2>
 	</sect1>
+	<sect1 id="hardware-dedicated"> 
+		<title>Sprzęt dedykowany do AquaPi</title>
+		<para>W tym rozdziale opisany jest sprzęt który został zaprojektowany specjalnie pod AquaPi.</para>
+		<sect2 id="v1.0">
+			<title>Elektronika do wersji 1.0</title>		
+			<para>Dla wersji 1.0 AquaPi powstała dedykowana wersja elektroniki, która zapewniała podstawowe funkcjonalności i umożliwiła przetestowanie konceptu AquaPi w praktyce.
+			Elektronika ta, pomimo że dedykowana do wersji 1.0, może pracować z późniejszymi wersjami AquaPi.</para>
+			<figure>
+				<title>Płyta główna elektorniki do wersji 1.0</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/AQUAPI_1.0-board.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>	
+			Ta wersja została wyposażona w 4 przekaźniki podpięte pod porty GPIO 18, 23, 24 i 25 (fizyczne piny 12, 16, 18 i 22), oraz posiada wyprowadzony na listę goldpin interfejs
+			1-wire wraz z rezystorem podciągającym (do podłączenia czujników temperatury)
+			<figure>
+				<title>Zmontowana i podłączona do RPI elektronika do wersji 1.0</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/AQUAPI_1.0-assembled.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure> 
+			<para>Pomimo ograniczonych możliwości, elektronika w tej wersji jest prosta do wykonania w domowych warunkach (mała liczba elementów, płytka jednostronna, montaż 
+			przewlekany), oraz zapewnia podstawowe funkcjonalności umożliwiając pracę również z nowszą wersją oprogramowania.</para>
+			<figure>
+				<title>Kompletna listwa zasilająca</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/AQUAPI_1.0-complete.jpg" format="JPG"/>
+					</imageobject>
+					<caption>
+						<para>Na zdjęciu widać kompletną listwę zasilającą, wyposażoną w 4 gniazdka 230v sterowane przekaźnikami, oraz przewodem zasilającym. W obudowie znajduje się
+						RPI wraz z elektroniką do wersji 1.0. Z boku zamontowane zostały gniazda mini-jack, umożliwiające podpięcie czujników temperatory DS18B20.</para>
+					</caption>						
+				</mediaobject>
+			</figure> 
+		</sect2>
+	</sect1>
+	
 </chapter>
