@@ -50,68 +50,11 @@ function ReloadDaemonConfig()
 	IPC_Command("reload");
 }
 
-
-
-function Progress($current, $total, $header, $footer) 
-{
-	echo "<span style='position: absolute;z-index:$current;background:#FFF;'>&nbsp;".$current." | ". $total." | ". $header." | ". $footer."</span>";
-	myFlush();
-}
-
-function myFlush() 
-{
-	echo(str_repeat(' ', 256));
-	if (@ob_get_contents()) 
-	{
-		@ob_end_flush();
-	}
-	flush();
-}
-
 function GetInterfaces()
 {
 	global $db;
 	$interfaces	= $db->GetAll('SELECT * FROM interfaces WHERE interface_deleted=0 ORDER BY interface_id ASC');
 	return($interfaces);
-}
-
-function GetSignals()
-{
-	global $db;
-	$signals	= $db->GetAll('SELECT * FROM signals WHERE signal_deleted=0 ORDER BY signal_id ASC');
-	return($signals);
-}
-
-function GetNotes()
-{
-	global $db;
-	$notes	= $db->GetAll('SELECT * FROM notes n
-					WHERE note_deleted=0
-					ORDER BY note_id ASC');
-	
-	return($notes);
-}
-
-function AddNote($note)
-{
-	global $db;
-	$db->Execute('INSERT INTO notes
-				(note_title,
-				 note_content)
-			VALUES (?,?)',
-			array(
-				$note['title'],
-				$note['content'],
-			));
-}
-
-function DeleteNote($note)
-{
-	global $db;
-	$db->Execute('UPDATE notes SET note_deleted=1 WHERE note_id=?',
-			array(
-				$note['id'],
-			));
 }
 
 function GetInterfaceUnits()
@@ -138,144 +81,28 @@ function GetInterfacesIcons()
 	return($tmp);
 }
 
-function GetMasterInterfaceId()
-{
-	global $db;
-	return $db->GetOne('SELECT interface_id FROM interfaces i, devices d
-				WHERE i.interface_deviceid=d.device_id
-				AND interface_deleted=0 
-				AND device_id>0 AND device_deleted=0 AND device_disabled=0 
-				AND interface_conf=? AND device_name=?
-				ORDER BY interface_address ASC', array(1, '1wire'));
-	
-
-}
-
-function GetDevices()
-{
-	global $db;
-	return $db->GetAll('SELECT * FROM devices
-				WHERE device_id>0 AND device_deleted=0');
-}
-
 function GetUnits()
 {
 	global $db;
 	return $db->GetAll('SELECT * FROM units');
 }
 
-
-function GetDeviceId($name)
-{
-	global $db;
-	return $db->GetOne('SELECT device_id FROM devices
-				WHERE device_name=?', array($name));
-}
-
-function Read1Wire($address)
-{
-	if(!file_exists(ONEWIRE_DIR. $address. '/' . 'w1_slave'))
-	    return FALSE;
-	$lines  = file(ONEWIRE_DIR. $address. '/' . 'w1_slave');
-	if (preg_match('/YES/', $lines[0]))
-	{
-		$temp   = explode('=', $lines[1]);
-		$temp   = round($temp[1]/1000, 2);
-		return $temp;
-	}
-	else
-		return FALSE;	
-}
-
 function SaveLog($level, $message)
 {
 	global $db;
-	$db->Execute('INSERT INTO logs (log_date, log_level, log_value)
-                            VALUES (?NOW?, ?, ?)', array($level, $message));
-}
-
-
-//Finds the perpendicular distance from a point to a straight line.
-//The coordinates of the point are specified as $ptX and $ptY.
-//The line passes through points l1 and l2, specified respectively with their
-//coordinates $l1x and $l1y, and $l2x and $l2y
-function perpendicularDistance($ptX, $ptY, $l1x, $l1y, $l2x, $l2y)
-{
-    $result = 0;
-    if ($l2x == $l1x)
-    {
-        //vertical lines - treat this case specially to avoid divide by zero
-        $result = abs($ptX - $l2x);
-    }
-    else
-    {
-        $slope = (($l2y-$l1y) / ($l2x-$l1x));
-        $passThroughY = (0-$l1x)*$slope + $l1y;
-        $result = (abs(($slope * $ptX) - $ptY + $passThroughY)) / (sqrt($slope*$slope + 1));
-    }
-    return $result;
-}
-
-//Reduces the number of points on a polyline by removing those that are closer to the line
-//than the distance $epsilon.
-//The polyline is provided as an array of arrays, where each internal array is one point on the polyline,
-//specified by easting (x-coordinate) with key "E" and northing (y-coordinate) with key "N".
-//It is assumed that the coordinates and distance $epsilon are given in the same units.
-//The result is returned as an array in a similar format.
-//Each point returned in the result array will retain all its original data, including its E and N
-//values along with any others.
-function RamerDouglasPeucker($pointList, $epsilon)
-{
-    // Find the point with the maximum distance
-    $dmax = 0;
-    $index = 0;
-    $totalPoints = count($pointList);
-    for ($i = 1; $i < ($totalPoints - 1); $i++)
-    {
-        $d = perpendicularDistance($pointList[$i]["E"], $pointList[$i]["N"],
-                                   $pointList[0]["E"], $pointList[0]["N"],
-                                   $pointList[$totalPoints-1]["E"], $pointList[$totalPoints-1]["N"]);
-			   
-        if ($d > $dmax)
-        {
-            $index = $i;
-            $dmax = $d;
-        }
-    }
-
-    $resultList = array();
-	
-    // If max distance is greater than epsilon, recursively simplify
-    if ($dmax >= $epsilon)
-    {
-        // Recursive call
-        $recResults1 = RamerDouglasPeucker(array_slice($pointList, 0, $index + 1), $epsilon);
-        $recResults2 = RamerDouglasPeucker(array_slice($pointList, $index, $totalPoints - $index), $epsilon);
-
-        // Build the result list
-        $resultList = array_merge(array_slice($recResults1, 0, count($recResults1) - 1),
-                                  array_slice($recResults2, 0, count($recResults2)));
-    }
-    else
-    {
-        $resultList = array($pointList[0], $pointList[$totalPoints-1]);
-    }
-    // Return the result
-    return $resultList;
+	$db->Execute('INSERT INTO logs (log_date, log_level, log_value) VALUES (?NOW?, ?, ?)', array($level, $message));
 }
 
 function AddTimer($timer)
 {
 	global $db;
 	$db->Execute('INSERT INTO timers
-				(timer_type,
-				timer_timeif,
+				(timer_timeif,
 				timer_action,
 				timer_interfaceidthen,
 				timer_days )
-			VALUES (?,?,?,?,?)',
+			VALUES (?,?,?,?)',
 			array(
-				$timer['type'],
 				$timer['timeif'],
 				$timer['action'],
 				$timer['interfaceidthen'],

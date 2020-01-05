@@ -139,8 +139,6 @@ double GetDataFromInput(int sensor_id) {
 	} else {
 		// nie było błędu to zapisz
 		interfaces[sensor_id].was_error_last_time = 0;
-		// i jeszcze skoryguj wartość mierzoną
-		ret_val = ret_val + interfaces[sensor_id].correction;
 	}
 	
 	return ret_val;

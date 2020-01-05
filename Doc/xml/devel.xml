@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <chapter id="devel">
     <title>Dla developerów</title>
-	<warning><title>Ostrzeżenie</title><para>Ten rozdział jest nieaktualny i dotyczy wersji 1.0. W obecnej wersji zostało to zmienione.</para></warning>
      <sect1 id="database">
         <title>Baza danych</title>
 	<para>
@@ -29,7 +28,6 @@
         od daty 1/01/1970, czyli od momentu początku epoki unixa.
     </para></footnote> w polu o typie <code>INT</code>. 
     </para>
-	
 		<table><title>Spis tabel</title>
 			<tgroup cols='2' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Nazwa'/>
@@ -41,13 +39,12 @@
 					</row>
 				</thead>
 				<tbody>
-					<row><entry>devices</entry><entry>? - nie używana w demonie</entry></row>
 					<row><entry>interfaces</entry><entry>Zawiera dane interfejsów (wejść i wyjść)</entry></row>
-					<row><entry>logs </entry><entry>Zawiera logi systemowe</entry></row>
-					<row><entry>settings</entry><entry>Zawiera podstawowe ustawienia systemowe. Aktualnie nie używana w demonie</entry></row>
-					<row><entry>stats </entry><entry>Zawiera statystyki (dane odczytane z czujników)</entry></row>
-					<row><entry>stats_view</entry><entry>? - nie używana w demonie</entry></row>
-					<row><entry>timers </entry><entry>Zawiera spis timerów (zdarzeń)</entry></row>
+					<row><entry>logs</entry><entry>Zawiera logi systemowe</entry></row>
+					<row><entry>settings</entry><entry>Zawiera podstawowe ustawienia systemowe.</entry></row>
+					<row><entry>stats</entry><entry>Zawiera statystyki (dane odczytane z czujników)</entry></row>
+					<row><entry>timers</entry><entry>Zawiera spis timerów (zdarzeń)</entry></row>
+					<row><entry>units</entry><entry>Zawiera jednostki miar (używane tylko w UI)</entry></row>					
 				</tbody>
 			</tgroup>
 		</table>
@@ -62,9 +59,14 @@
 const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wsparcia
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
-const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
+const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
-const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile"
+const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
+
+//prefiksy portów wejściowych
+const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
+const char *INPUT_DUMMY_PREFIX = "dummy:";
+const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
@@ -77,44 +79,31 @@ const int DEV_INPUT = 1;
 const int DEV_OUTPUT = 2;
 const int DEV_OUTPUT_PWM = 3;
 
-// typ triggera
-const int TRIGGER_TIME = 1;
-const int TRIGGER_SENSOR = 2;
-
-// kierunek triggera
-const int DIRECTION_BIGGER = 1;
-const int DIRECTION_SMALLER = 2;
 </programlisting>
           <para>Definicje struktur:</para>	
 <programlisting>
 struct _interfaces {
 	int id;
-	char address[30];
+	char address[128];
 	char name[30];
 	int type;
 	int state;
 	int new_state;
 	int draw;
-	double correction;
 	double measured_value;
+	double raw_measured_value;
 	int override_value;
 	int override_expire;
+	int was_error_last_time;
+	double conf;
 } interfaces[100];
 
-int interfaces_count;
-
 struct _timers {
-	int type;
 	int timeif;
 	int action;
 	int interfaceidthen;
-	int direction;
-	int interfaceidif;
-	double value;
 	char days[7]; 
 } timers[100];
-
-int timers_count;	
 
 typedef struct
 {
@@ -124,32 +113,14 @@ typedef struct
 	char* db_database;
 	int dontfork;
 	int stat_freq;
-	int temp_freq;
+	int inputs_freq;
 	int devel_freq;
+	int reload_freq;
+	int bind_port;
+	char* bind_address;
 	double dummy_temp_sensor_val;
 } configuration;
+
 </programlisting>
     </sect1>
-    <sect1 id="device-names">
-        <title>Nazewnictwo urządzeń</title>
-		  
-        <para>Wyjścia:
-  			<itemizedlist>
-				<listitem><para>rpi:gpio:? - szyna GPIO. Zamiast ? należy podać numer pinu. 
-				<tip><title>Podpowiedź</title><para>Przykładowe ustawienie to rpi:gpio:4 - oznacza on pin nr. 4 na porcie GPIO według rozpiski WiringPi</para></tip></para></listitem>
-				<listitem><para>relbrd:ttyUSB?:? - karta RelayBoard. Zamiast pierwszego ? należy podać numer portu USB do którego
-				została podłączona karta. Zamiast drugiego ? należy podać numer przekaźnika na karcie.
-				<tip><title>Podpowiedź</title><para>Przykładowe ustawienie to relbrd:ttyUSB0:4 - oznacza on przekaźnik nr. 4 na karcie RelayBoard widoczej w systemie pod /dev/ttyUSB0</para></tip></para></listitem>
-                <listitem><para>dummy:? - urządzenie dummy, przydatne przy rozwoju oprogramowania. Aplikacja normalnie korzysta z tego urządzenia, ale zmiana jego stanu
-				nie ma na nic wpływu. Ze względu na indeks unique w bazie zamiast ? należy podstawić dowolną liczbę.</para></listitem>
-			</itemizedlist>		
-		</para>	
-        <para>Wejścia:
-  			<itemizedlist>
-				<listitem><para>rpi:1w:? - sensor temperatury DS18B20 podpięty do szyny 1-wire. Zamiast ? należy podać adres czujnika. </para></listitem>
-                <listitem><para>dummy:? - wejście dummy, przydatne przy rozwoju oprogramowania. Zwracana wartość będzie wartością ustawioną w pliku INI (ustawienie dummy_temp_sensor w sekcji [daemon]).</para></listitem>
-			</itemizedlist>		
-		</para>	
-    </sect1>
-
 </chapter>

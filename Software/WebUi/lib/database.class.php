@@ -99,6 +99,7 @@ class Database {
 //
 	function _driver_execute($query)
 	{
+		//echo $query."\n";
 		$this->_query = $query;
 
 		if($this->_result = mysqli_query($this->_dblink, $query))

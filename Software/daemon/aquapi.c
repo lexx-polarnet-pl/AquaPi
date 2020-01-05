@@ -115,7 +115,7 @@ void ReadConf() {
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = -1;
-	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_corr,interface_conf,interface_nightcorr FROM interfaces WHERE interface_deleted = 0");
+	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_conf FROM interfaces WHERE interface_deleted = 0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -123,16 +123,10 @@ void ReadConf() {
 		memcpy(interfaces[interfaces_count].address,row[1],sizeof(interfaces[interfaces_count].address));
 		memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
 		interfaces[interfaces_count].type = atof(row[3]);
-		interfaces[interfaces_count].correction = atof(row[4]);
-		if (row[5] != NULL) {
+		if (row[4] != NULL) {
 			interfaces[interfaces_count].conf = atof(row[5]);
 		} else {
 			interfaces[interfaces_count].conf = 0;
-		}
-		if (row[6] != NULL) {
-			interfaces[interfaces_count].nightcorr = atof(row[6]);
-		} else {
-			interfaces[interfaces_count].nightcorr = 0;
 		}
 	}	
 	mysql_free_result(result);
@@ -155,24 +149,16 @@ void ReadConf() {
 	// Wczytanie timerów
 	Log("Wczytanie timerów",E_DEV);
 	timers_count = 	-1;
-	DB_Query("SELECT timer_type,timer_timeif,timer_action,timer_interfaceidthen,timer_direction,timer_value,timer_interfaceidif,timer_days FROM timers ORDER BY timer_timeif ASC");
+	DB_Query("SELECT timer_timeif,timer_action,timer_interfaceidthen,timer_days FROM timers ORDER BY timer_timeif ASC");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		timers_count++;
-		timers[timers_count].type = atof(row[0]);
-		if (row[1] != NULL) {
+		if (row[0] != NULL) {
 			timers[timers_count].timeif = atof(row[1]);
 		}
-		timers[timers_count].action = atof(row[2]);
-		timers[timers_count].interfaceidthen = atof(row[3]);
-		timers[timers_count].direction = atof(row[4]);
-		if (row[5] != NULL) {
-			timers[timers_count].value = atof(row[5]);
-		}
-		if (row[6] != NULL) {
-			timers[timers_count].interfaceidif = atof(row[6]);
-		}		
-		memcpy(timers[timers_count].days,row[7],sizeof(timers[timers_count].days));
+		timers[timers_count].action = atof(row[1]);
+		timers[timers_count].interfaceidthen = atof(row[2]);
+		memcpy(timers[timers_count].days,row[3],sizeof(timers[timers_count].days));
 	}	
 	mysql_free_result(result);
 
@@ -183,8 +169,6 @@ void ReadConf() {
 	specials.night_stop = atof(buff);
 	DB_GetSetting("temp_night_corr",buff);
 	specials.temp_night_corr = atof(buff);
-	// wymuś stan nieustalony
-	//specials.is_night = -1;
 
 	ModLight_ReadSettings();
 	ModTemperature_ReadSettings();
@@ -261,8 +245,8 @@ int main() {
 	char *pidfile = NULL;
 	FILE *pidf;
 	int fval = 0;
-	int x,y,z,last_sec_run = 0;
-	double corr_val;
+	int x,y,last_sec_run = 0;
+	//double corr_val;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -341,11 +325,9 @@ int main() {
 			// Dobra, spróbujmy przelecieć timery i określić jaki powinien być stan wyjść
 			// przebieg 1 to dzień -1
 			for (x=0; x <= timers_count; x++) {
-				if (timers[x].type == TRIGGER_TIME) {
-					for (y=0; y <= interfaces_count; y++) {
-						if (timers[x].interfaceidthen == interfaces[y].id) {
-							interfaces[y].new_state = timers[x].action;
-						}
+				for (y=0; y <= interfaces_count; y++) {
+					if (timers[x].interfaceidthen == interfaces[y].id) {
+						interfaces[y].new_state = timers[x].action;
 					}
 				}
 			}
@@ -355,23 +337,18 @@ int main() {
 				if (strncmp(timers[x].days+timeinfo->tm_wday,"1",1)  == 0) { // kontrola dnia tygodnia
 					for (y=0; y <= interfaces_count; y++) {
 						// teraz trzeba wziąść pod uwagę jeszcze czas
-						if ((timers[x].type == TRIGGER_TIME) && (timers[x].timeif <= specials.seconds_since_midnight)) {
+						if (timers[x].timeif <= specials.seconds_since_midnight) {
 							if (timers[x].interfaceidthen == interfaces[y].id) {
 								interfaces[y].new_state = timers[x].action;
 							}
 						}
+						/* ten kawałek odpowiadał za obsługę zdarzeń na podstawie wskazań sensorów, jednak mieszanie tego ze "zwykłymi" timerami nie ma sensu
 						// w tym przebiegu weź też pod uwagę wskazania sensorów
 						if (timers[x].type == TRIGGER_SENSOR) {
 							if (timers[x].interfaceidthen == interfaces[y].id) {
 								// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
 								for (z=0; z <= interfaces_count; z++) {
 									if (timers[x].interfaceidif == interfaces[z].id) {
-										// sprawdź czy dla tego wyjścia ma być korekta nocna
-										if ((interfaces[z].nightcorr == 1) && (specials.is_night == 1)) {
-											corr_val = specials.temp_night_corr;
-										} else {
-											corr_val = 0;
-										}									
 										//ignoruj stany nieustalone
 										if (interfaces[z].measured_value > -100) { 
 											if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value - corr_val > timers[x].value)) {
@@ -384,7 +361,7 @@ int main() {
 									}
 								}
 							}
-						}
+						} */
 					}
 				}
 			}	
@@ -400,10 +377,10 @@ int main() {
 			// informacje devel
 			if (specials.seconds_since_midnight % config.devel_freq == 0) {
 				Log("======================== Zrzut interfaceów ========================",E_DEV);
-				Log("|Typ|Stan|NSta| Conf |KNoc|OVal|OExp|Wartos|WarSur|Bł|Nazwa",E_DEV);
+				Log("|Typ|Stan|NSta| Conf |OVal|OExp|Wartos|WarSur|Bł|Nazwa",E_DEV);
 				Log("-------------------------------------------------------------------",E_DEV);
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%4i|%+6.1f|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].nightcorr,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
+					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%+6.1f|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
 					Log(buff,E_DEV);
 				}	
 				Log("======================== Zrzut timerów ============================",E_DEV);				

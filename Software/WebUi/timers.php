@@ -26,7 +26,6 @@ $smarty->assign('title', 'Timery');
 
 if (@$_GET['action'] == 'add')
 {
-	$timer['type']	= 1;
 	$timer['timeif'] = TimeToUnixTime($_POST['timeif']);
 	$timer['action'] = $_POST['action'];
 	$timer['interfaceidthen'] = $_POST['interfaceidthen'];
@@ -65,12 +64,10 @@ if (@$_GET['action'] == 'update')
 }
 
 $interfaces         = GetInterfaces();
-$timers['time']     = $db->GetAll('SELECT *,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidif) as timer_interfaceifname,
-				(SELECT interface_name FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenname,
-				(SELECT interface_icon FROM interfaces WHERE interface_id=t.timer_interfaceidthen) as timer_interfacethenicon
-				FROM timers t
-				WHERE timer_type=1 ORDER BY timer_interfacethenname, timer_timeif');
+$timers			    = $db->GetAll('SELECT *,
+								(SELECT interface_name FROM interfaces WHERE interface_id=timer_interfaceidthen) as timer_interfacethenname,
+								(SELECT interface_icon FROM interfaces WHERE interface_id=timer_interfaceidthen) as timer_interfacethenicon								
+								FROM timers ORDER BY timer_interfaceidthen, timer_timeif');
 
 $smarty->assign('timers', $timers);
 $smarty->assign('interfaces', $interfaces);

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <chapter id="install">
     <title>Instalacja AquaPi</title>
-    <sect1 id="install-quick">
+    <!--<sect1 id="install-quick">
 		<title>Instalacja "szybka"</title>
 		<para>Możesz mnie poprosić o ostatni obraz AquaPi jaki posiadam. Ten obraz (o ile będzie stabilny) powinien zawierać już 
 		skonfigurowaną i działającą wersję AquaPi. Taki obraz wystarczy zgrać na kartę, uruchomić system, skonfigurować pod
 		swoje potrzeby (przez przeglądarkę) i cieszyć się działającym systemem.</para>
-	</sect1>
+	</sect1>-->
 	<sect1 id="install-standard"> 
 		<title>Instalacja standardowa</title>
+		<warning><title>Uwaga</title><para>Dane w tym rozdziale są mocno nieaktualne, chociaż mogą stanowić cenną wskazówkę.</para></warning>
 		<sect2 id="install-standard-1">
           <title>Ściągnij i zainstaluj najnowszą wersję rapsbiana.</title>
 		  <tip><title>Podpowiedź</title><para>Instrukcję instalacji Raspbiana znajdziesz na stronie poświęconej Raspbery Pi.</para></tip>

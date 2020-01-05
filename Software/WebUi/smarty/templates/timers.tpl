@@ -41,7 +41,7 @@ function confirmLink(theLink, message)
 											</tr>
 										</thead>
 										<tbody>
-										{foreach from=$timers.time item="entry"}
+										{foreach from=$timers item="entry"}
 											<tr>
 												<td><input class="form-control" step="1" type="time" name="timers[{$entry.timer_id}][timeif]" id="timers[{$entry.timer_id}][timeif]" value="{if $entry.timer_timeif eq 0}00:00:00{else}{$entry.timer_timeif|utcdate_format:"%H:%M:%S"}{/if}"/></td>
 												<td>
@@ -59,7 +59,7 @@ function confirmLink(theLink, message)
 												<td><input id="timers[{$entry.timer_id}][d7]" name="timers[{$entry.timer_id}][d7]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.6 eq 1} checked{/if}></td>
 												<td><input id="timers[{$entry.timer_id}][d1]" name="timers[{$entry.timer_id}][d1]" value="1" class="form-check-input" type="checkbox"{if $entry.timer_days.0 eq 1} checked{/if}></td>												
 												<td>
-													<a href="?action=delete&timerid={$entry.timer_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to urządzenie?');" class="btn btn-danger btn-sm">
+													<a href="?action=delete&timerid={$entry.timer_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć to zdarzenie?');" class="btn btn-danger btn-sm">
 														<i class="fa fa-times"></i> Usuń
 													</a>
 												</td>

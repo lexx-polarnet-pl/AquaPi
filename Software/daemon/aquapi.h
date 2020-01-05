@@ -52,14 +52,6 @@ const int DEV_INPUT = 1;
 const int DEV_OUTPUT = 2;
 const int DEV_OUTPUT_PWM = 3;
 
-// typ triggera
-const int TRIGGER_TIME = 1;
-const int TRIGGER_SENSOR = 2;
-
-// kierunek triggera
-const int DIRECTION_BIGGER = 1;
-const int DIRECTION_SMALLER = 2;
-
 void Log(char *msg, int lev);
 
 void ReadConf();
@@ -76,26 +68,20 @@ struct _interfaces {
 	int state;
 	int new_state;
 	int draw;
-	double correction;
 	double measured_value;
 	double raw_measured_value;
 	int override_value;
 	int override_expire;
 	int was_error_last_time;
 	double conf;
-	int nightcorr;
 } interfaces[100];
 
 int interfaces_count;
 
 struct _timers {
-	int type;
 	int timeif;
 	int action;
 	int interfaceidthen;
-	int direction;
-	int interfaceidif;
-	double value;
 	char days[7]; 
 } timers[100];
 
