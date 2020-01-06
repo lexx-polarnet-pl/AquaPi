@@ -1,525 +1,191 @@
--- phpMyAdmin SQL Dump
--- version 3.4.11.1deb1
--- http://www.phpmyadmin.net
+-- MySQL dump 10.17  Distrib 10.3.18-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: storage
--- Czas wygenerowania: 18 Mar 2014, 16:50
--- Wersja serwera: 5.1.49
--- Wersja PHP: 5.4.6-1ubuntu1.5
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
+-- Host: localhost    Database: aquapi
+-- ------------------------------------------------------
+-- Server version	10.3.18-MariaDB-0+deb10u1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Baza danych: `aquapi`
---
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `devices`
---
--- Tworzenie: 16 Lis 2013, 17:28
---
-
-DROP TABLE IF EXISTS `devices`;
-CREATE TABLE IF NOT EXISTS `devices` (
-  `device_id` int(5) NOT NULL AUTO_INCREMENT,
-  `device_name` char(40) COLLATE utf8_polish_ci NOT NULL,
-  `device_disabled` tinyint(4) NOT NULL DEFAULT '0',
-  `device_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`device_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=9 ;
-
---
--- Zrzut danych tabeli `devices`
---
-
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(0, '0', 0, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(1, '1wire', 0, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(4, 'gpio', 1, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(5, 'pwm', 1, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(6, 'relayboard', 0, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(7, 'dummy', 0, 0);
-INSERT INTO `devices` (`device_id`, `device_name`, `device_disabled`, `device_deleted`) VALUES(8, 'system', 0, 0);
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `gpios`
---
-
-DROP TABLE IF EXISTS `gpios`;
-CREATE TABLE IF NOT EXISTS `gpios` (
-  `gpio_id` int(11) NOT NULL AUTO_INCREMENT,
-  `gpio_revision` tinyint(4) NOT NULL,
-  `gpio_pin` tinyint(4) NOT NULL,
-  `gpio_number` tinyint(4) NOT NULL,
-  PRIMARY KEY (`gpio_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='lista pinów gpio' AUTO_INCREMENT=17 ;
-
---
--- Zrzut danych tabeli `gpios`
---
-
-INSERT INTO `gpios` (`gpio_id`, `gpio_revision`, `gpio_pin`, `gpio_number`) VALUES
-(1, 1, 7, 4),
-(2, 1, 11, 17),
-(3, 1, 13, 21),
-(4, 1, 15, 22),
-(5, 1, 12, 18),
-(6, 1, 16, 23),
-(7, 1, 18, 24),
-(8, 1, 22, 25),
-(9, 2, 7, 4),
-(10, 2, 11, 17),
-(11, 2, 13, 27),
-(12, 2, 15, 22),
-(13, 2, 12, 18),
-(14, 2, 16, 23),
-(15, 2, 18, 24),
-(16, 2, 22, 25);
-
--- --------------------------------------------------------
-
-
-
---
--- Struktura tabeli dla tabeli `interfaces`
---
--- Tworzenie: 18 Mar 2014, 10:08
+-- Table structure for table `interfaces`
 --
 
 DROP TABLE IF EXISTS `interfaces`;
-CREATE TABLE IF NOT EXISTS `interfaces` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `interfaces` (
   `interface_id` int(5) NOT NULL AUTO_INCREMENT,
-  `interface_deviceid` int(5) NOT NULL,
-  `interface_address` varchar(30) COLLATE utf8_polish_ci NOT NULL,
+  `interface_address` varchar(200) COLLATE utf8_polish_ci DEFAULT NULL,
   `interface_name` varchar(30) COLLATE utf8_polish_ci NOT NULL,
-  `interface_type` tinyint(4) NOT NULL DEFAULT '1' COMMENT '0-temp zadana,1-1wire temp,2-przekaznik',
-  `interface_corr` varchar(6) COLLATE utf8_polish_ci NOT NULL DEFAULT '0' COMMENT 'korekta wartosci sensora',
-  `interface_nightcorr` tinyint(4) NOT NULL COMMENT 'czy korygowac czujnik w nocy',
-  `interface_draw` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'czy pokazywac czujnik na wykresie',
+  `interface_type` tinyint(4) NOT NULL DEFAULT 1,
   `interface_icon` varchar(20) COLLATE utf8_polish_ci DEFAULT NULL,
   `interface_conf` float DEFAULT NULL,
-  `interface_disabled` tinyint(4) NOT NULL DEFAULT '0',
-  `interface_deleted` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'czy interfejs jest skasowany',
-  PRIMARY KEY (`interface_id`),
-  KEY `device_id` (`interface_deviceid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=30 ;
+  `interface_deleted` tinyint(4) NOT NULL DEFAULT 0,
+  `interface_htmlcolor` varchar(6) COLLATE utf8_polish_ci DEFAULT NULL,
+  `interface_uom` int(5) DEFAULT NULL,
+  PRIMARY KEY (`interface_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `interfaces`
+-- Dumping data for table `interfaces`
 --
 
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(0, 0, 'none', 'Temperatura zadana', -1, '0', 0, 1, NULL, NULL, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(11, 4, 'rpi:gpio:4', 'Oświetlenie', 2, '0', 0, 1, 'cooling.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(12, 4, 'rpi:gpio:1', 'Grzałka', 2, '0', 0, 1, 'alert.png', NULL, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(13, 4, 'rpi:gpio:5', 'Wentylator', 2, '0', 0, 1, 'day.png', NULL, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(14, 4, 'rpi:gpio:6', 'Oświetlenie 2', 2, '0', 0, 1, 'heater.png', NULL, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(6, 5, 'rpi:gpio:18', 'PWM1', 1, '0', 0, 0, 'device.png', NULL, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(15, 7, 'dummy:0', 'Fake1', 1, '0', 0, 1, NULL, 23.5, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(16, 6, 'relbrd:ttyUSB0:1', 'nr 1', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(17, 6, 'relbrd:ttyUSB0:2', 'nr 2', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(18, 6, 'relbrd:ttyUSB0:3', 'nr 3', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(19, 6, 'relbrd:ttyUSB0:4', 'nr 4', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(20, 6, 'relbrd:ttyUSB0:5', 'nr 5', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(21, 6, 'relbrd:ttyUSB0:6', 'nr 6', 2, '0', 0, 1, 'favicon.png', 0, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(22, 6, 'relbrd:ttyUSB0:7', 'Lampa prawa', 2, '0', 0, 1, 'lamp.png', 1, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(23, 6, 'relbrd:ttyUSB0:8', 'Lampa lewa', 2, '0', 0, 1, 'lamp.png', 1, 0, 0);
-INSERT INTO `interfaces` (`interface_id`, `interface_deviceid`, `interface_address`, `interface_name`, `interface_type`, `interface_corr`, `interface_nightcorr`, `interface_draw`, `interface_icon`, `interface_conf`, `interface_disabled`, `interface_deleted`) VALUES(29, 8, 'rpi:system:cputemp', 'cputemp', 3, '0', 0, 1, NULL, 0, 0, 0);
-
--- --------------------------------------------------------
+LOCK TABLES `interfaces` WRITE;
+/*!40000 ALTER TABLE `interfaces` DISABLE KEYS */;
+INSERT INTO `interfaces` VALUES (1,'dummy:temp','Wirtualny sensor temperatury',1,'temperatura.svg',0,0,"FF0000",1);
+INSERT INTO `interfaces` VALUES (2,'dummy:ph','Wirtualny sensor pH',1,'pH.svg',0,0,"0000FF",2);
+INSERT INTO `interfaces` VALUES (3,'dummy:out','Wirtualny port wyjścia',2,'230v.svg',0,0,"00FF00",null);
+INSERT INTO `interfaces` VALUES (4,'dummy:out','Wirtualny port wyjścia PWM',3,'led.svg',0,0,"FFFF00",null);
+/*!40000 ALTER TABLE `interfaces` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Struktura tabeli dla tabeli `logs`
---
--- Tworzenie: 20 Lis 2013, 15:52
+-- Table structure for table `logs`
 --
 
 DROP TABLE IF EXISTS `logs`;
-CREATE TABLE IF NOT EXISTS `logs` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logs` (
   `log_id` int(5) NOT NULL AUTO_INCREMENT,
   `log_date` int(5) NOT NULL,
   `log_level` int(5) NOT NULL,
   `log_value` char(200) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`log_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `logs`
---
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `settings`
---
--- Tworzenie: 22 Lis 2013, 21:22
+-- Table structure for table `settings`
 --
 
 DROP TABLE IF EXISTS `settings`;
-CREATE TABLE IF NOT EXISTS `settings` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `settings` (
   `setting_id` int(5) NOT NULL AUTO_INCREMENT,
   `setting_key` char(30) COLLATE utf8_polish_ci NOT NULL,
   `setting_value` char(60) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`setting_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `settings`
+-- Dumping data for table `settings`
 --
 
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(2, 'temp_night_corr', '-1.0');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(3, 'hysteresis', '0.3');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(4, 'night_start', '81000');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(5, 'night_stop', '21600');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(23, 'demon_last_activity', '1394977489');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(28, 'simplify_graphs', '0');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(29, 'max_daemon_inactivity', '180');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(30, 'db_version', '20140629');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(31, 'location', 'Gdańsk');
-INSERT INTO `settings` (`setting_id`, `setting_key`, `setting_value`) VALUES(32, 'calendar_days', '14');
--- --------------------------------------------------------
+LOCK TABLES `settings` WRITE;
+/*!40000 ALTER TABLE `settings` DISABLE KEYS */;
+INSERT INTO `settings` VALUES (null,'log_read_time','0');
+INSERT INTO `settings` VALUES (null,'db_version','2020010101');
+-- ustawienia modułu OŚWIETLENIE
+INSERT INTO `settings` VALUES (null,'light_pwm1','20');
+INSERT INTO `settings` VALUES (null,'light_pwm2','100');
+INSERT INTO `settings` VALUES (null,'light_t1','32400');
+INSERT INTO `settings` VALUES (null,'light_t2','75600');
+INSERT INTO `settings` VALUES (null,'light_tl','1800');
+INSERT INTO `settings` VALUES (null,'light_interface','4');
+-- ustawienia modułu TEMPERATURA
+INSERT INTO `settings` VALUES (null,'temp_tmax','25');
+INSERT INTO `settings` VALUES (null,'temp_tmin','22');
+INSERT INTO `settings` VALUES (null,'temp_tminal','20');
+INSERT INTO `settings` VALUES (null,'temp_tmaxal','27');
+INSERT INTO `settings` VALUES (null,'temp_hc','1');
+INSERT INTO `settings` VALUES (null,'temp_hg','1');
+INSERT INTO `settings` VALUES (null,'temp_ncor','-1');
+INSERT INTO `settings` VALUES (null,'temp_interface_heat','3');
+INSERT INTO `settings` VALUES (null,'temp_interface_cool','3');
+INSERT INTO `settings` VALUES (null,'temp_interface_sensor','1');
+-- ustawienia modułu CO2
+INSERT INTO `settings` VALUES (null,'co2_probe','2');
+INSERT INTO `settings` VALUES (null,'co2_mv1','1');
+INSERT INTO `settings` VALUES (null,'co2_ph1','1');
+INSERT INTO `settings` VALUES (null,'co2_mv2','2');
+INSERT INTO `settings` VALUES (null,'co2_ph2','2');
+INSERT INTO `settings` VALUES (null,'co2_co2valve','3');
+INSERT INTO `settings` VALUES (null,'co2_o2valve','3');
+INSERT INTO `settings` VALUES (null,'co2_co2limit','7');
+INSERT INTO `settings` VALUES (null,'co2_o2limit','6');
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
--- Struktura tabeli dla tabeli `stats`
---
--- Tworzenie: 14 Lis 2013, 20:53
+-- Table structure for table `stats`
 --
 
 DROP TABLE IF EXISTS `stats`;
-CREATE TABLE IF NOT EXISTS `stats` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stats` (
   `stat_id` int(11) NOT NULL AUTO_INCREMENT,
   `stat_date` int(11) DEFAULT NULL,
   `stat_interfaceid` int(5) NOT NULL,
   `stat_value` float NOT NULL,
   PRIMARY KEY (`stat_id`),
-  KEY `deviceid` (`stat_interfaceid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT= 1;
+  KEY `deviceid` (`stat_interfaceid`),
+  CONSTRAINT `stats_ibfk_1` FOREIGN KEY (`stat_interfaceid`) REFERENCES `interfaces` (`interface_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `stats`
---
-
--- --------------------------------------------------------
-
---
--- Zastąpiona struktura widoku `stats_view`
---
-DROP VIEW IF EXISTS `stats_view`;
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `timers`
---
--- Tworzenie: 23 Lis 2013, 20:35
+-- Table structure for table `timers`
 --
 
 DROP TABLE IF EXISTS `timers`;
-CREATE TABLE IF NOT EXISTS `timers` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `timers` (
   `timer_id` int(5) NOT NULL AUTO_INCREMENT,
-  `timer_type` tinyint(4) NOT NULL COMMENT '1-czas, 2-1wire',
   `timer_timeif` int(5) DEFAULT NULL,
-  `timer_interfaceidif` int(5) DEFAULT NULL,
-  `timer_direction` tinyint(4) NOT NULL COMMENT '1 >, 2 <',
-  `timer_value` float DEFAULT NULL COMMENT 'wartosc interfejsu na ktora reagujemy',
-  `timer_action` tinyint(4) NOT NULL COMMENT '0 - wyłacz, 1-włacz',
-  `timer_interfaceidthen` int(5) NOT NULL COMMENT 'ktory interfejs przelaczyc jest prawda',
-  `timer_days` varchar(7) COLLATE utf8_polish_ci NOT NULL COMMENT 'w jakie dni reagowac',
+  `timer_action` tinyint(4) NOT NULL,
+  `timer_interfaceidthen` int(5) NOT NULL,
+  `timer_days` varchar(7) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`timer_id`),
-  KEY `timer_interfaceid` (`timer_interfaceidif`),
   KEY `timer_interfaceid2` (`timer_interfaceidthen`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `timers`
---
-
-
--- --------------------------------------------------------
-
-
---
--- Struktura tabeli dla tabeli `unitassignments`
---
-
-DROP TABLE IF EXISTS `unitassignments`;
-CREATE TABLE IF NOT EXISTS `unitassignments` (
-  `unitassignment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `unitassignment_interfaceid` int(11) NOT NULL,
-  `unitassignment_unitid` int(11) NOT NULL,
-  PRIMARY KEY (`unitassignment_id`),
-  KEY `unitassignment_interfaceid` (`unitassignment_interfaceid`,`unitassignment_unitid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='tablica par interfejsów i jednostek' AUTO_INCREMENT=33 ;
-
---
--- Zrzut danych tabeli `unitassignments`
---
-
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `units`
+-- Table structure for table `units`
 --
 
 DROP TABLE IF EXISTS `units`;
-CREATE TABLE IF NOT EXISTS `units` (
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `units` (
   `unit_id` int(11) NOT NULL AUTO_INCREMENT,
   `unit_name` varchar(32) COLLATE utf8_polish_ci NOT NULL,
   PRIMARY KEY (`unit_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci COMMENT='tablica jednostek' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Zrzut danych tabeli `units`
+-- Dumping data for table `units`
 --
 
-INSERT INTO `units` (`unit_id`, `unit_name`) VALUES
-(1, '°C'),
-(2, 'pH'),
-(3, 'hPa'),
-(4, 'm/s'),
-(5, 'mm'),
-(6, 's'),
-(7, 'm'),
-(8, 'h'),
-(9, '%');
+LOCK TABLES `units` WRITE;
+/*!40000 ALTER TABLE `units` DISABLE KEYS */;
+INSERT INTO `units` VALUES (1,'°C'),(2,'pH'),(3,'hPa'),(4,'m/s'),(5,'mm'),(6,'s'),(7,'m'),(8,'h'),(9,'%');
+/*!40000 ALTER TABLE `units` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-
---
--- Table structure for table `notes`
---
-
-CREATE TABLE IF NOT EXISTS `notes` (
-  `note_id` int(11) NOT NULL AUTO_INCREMENT,
-  `note_title` varchar(128) COLLATE utf8_polish_ci DEFAULT NULL,
-  `note_content` text COLLATE utf8_polish_ci NOT NULL,
-  `note_deleted` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`note_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci AUTO_INCREMENT=1;
-
--- --------------------------------------------------------
-
-
---
--- Struktura tabeli dla tabeli `calendar_calendars`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_calendars` (
-  `cid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `hours_24` tinyint(1) NOT NULL DEFAULT '0',
-  `date_format` tinyint(1) NOT NULL DEFAULT '0',
-  `week_start` tinyint(1) NOT NULL DEFAULT '0',
-  `subject_max` smallint(5) unsigned NOT NULL DEFAULT '50',
-  `events_max` tinyint(4) unsigned NOT NULL DEFAULT '8',
-  `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'PHP-Calendar',
-  `anon_permission` tinyint(1) NOT NULL DEFAULT '1',
-  `timezone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `theme` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
-
---
--- Zrzut danych tabeli `calendar_calendars`
---
-
-INSERT INTO `calendar_calendars` (`cid`, `hours_24`, `date_format`, `week_start`, `subject_max`, `events_max`, `title`, `anon_permission`, `timezone`, `language`, `theme`) VALUES
-(1, 1, 1, 1, 50, 8, 'Kalendarz', 3, 'Europe/Warsaw', 'pl_PL', 'hot-sneaks');
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_categories`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_categories` (
-  `catid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cid` int(11) unsigned NOT NULL,
-  `gid` int(11) unsigned DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `text_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bg_color` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`catid`),
-  KEY `cid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_events`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_events` (
-  `eid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `cid` int(11) unsigned NOT NULL,
-  `owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci NOT NULL,
-  `readonly` tinyint(1) NOT NULL DEFAULT '0',
-  `catid` int(11) unsigned DEFAULT NULL,
-  `ctime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `mtime` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`eid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_groups`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_groups` (
-  `gid` int(11) NOT NULL AUTO_INCREMENT,
-  `cid` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`gid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_logins`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_logins` (
-  `uid` int(11) unsigned NOT NULL,
-  `series` char(43) COLLATE utf8_unicode_ci NOT NULL,
-  `token` char(43) COLLATE utf8_unicode_ci NOT NULL,
-  `atime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`uid`,`series`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_occurrences`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_occurrences` (
-  `oid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `eid` int(11) unsigned NOT NULL,
-  `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL,
-  `start_ts` timestamp NULL DEFAULT NULL,
-  `end_ts` timestamp NULL DEFAULT NULL,
-  `time_type` tinyint(4) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`oid`),
-  KEY `eid` (`eid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_permissions`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_permissions` (
-  `cid` int(11) unsigned NOT NULL,
-  `uid` int(11) unsigned NOT NULL,
-  `read` tinyint(1) NOT NULL,
-  `write` tinyint(1) NOT NULL,
-  `readonly` tinyint(1) NOT NULL,
-  `modify` tinyint(1) NOT NULL,
-  `admin` tinyint(1) NOT NULL,
-  UNIQUE KEY `cid` (`cid`,`uid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_users`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_users` (
-  `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `admin` tinyint(4) NOT NULL DEFAULT '0',
-  `password_editable` tinyint(1) NOT NULL DEFAULT '1',
-  `timezone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `language` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `gid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`uid`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
-
---
--- Zrzut danych tabeli `calendar_users`
---
-
-INSERT INTO `calendar_users` (`uid`, `username`, `password`, `admin`, `password_editable`, `timezone`, `language`, `gid`) VALUES
-(1, 'aquapi', '3d65f08b5a0c07eee69230c186261428', 1, 1, NULL, NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_user_groups`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_user_groups` (
-  `gid` int(11) DEFAULT NULL,
-  `uid` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `calendar_version`
---
-
-CREATE TABLE IF NOT EXISTS `calendar_version` (
-  `version` smallint(5) unsigned NOT NULL DEFAULT '1'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- Zrzut danych tabeli `calendar_version`
---
-
-INSERT INTO `calendar_version` (`version`) VALUES
-(1);
-
-
-
-
---
--- Struktura widoku `stats_view`
---
-
-CREATE VIEW `stats_view` AS 
-  select `stats`.`stat_id` AS `stat_id`,`stats`.`stat_date` AS `stat_date`,`stats`.`stat_interfaceid` AS `stat_interfaceid`,`stats`.`stat_value` AS `stat_value`,from_unixtime(`stats`.`stat_date`) AS `stat_data` 
-  from `stats`;
-
---
--- Ograniczenia dla zrzutów tabel
---
-
---
--- Ograniczenia dla tabeli `interfaces`
---
-ALTER TABLE `interfaces`
-  ADD CONSTRAINT `interfaces_ibfk_1` FOREIGN KEY (`interface_deviceid`) REFERENCES `devices` (`device_id`);
-
---
--- Ograniczenia dla tabeli `stats`
---
-ALTER TABLE `stats`
-  ADD CONSTRAINT `stats_ibfk_1` FOREIGN KEY (`stat_interfaceid`) REFERENCES `interfaces` (`interface_id`);
-
---
--- Ograniczenia dla tabeli `timers`
---
-ALTER TABLE `timers`
-  ADD CONSTRAINT `timers_ibfk_1` FOREIGN KEY (`timer_interfaceidif`) REFERENCES `interfaces` (`interface_id`),
-  ADD CONSTRAINT `timers_ibfk_2` FOREIGN KEY (`timer_interfaceidthen`) REFERENCES `interfaces` (`interface_id`);
-
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-01-06 12:48:56
