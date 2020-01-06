@@ -94,12 +94,11 @@ void ModCo2_Process() {
 
 void ModCo2_Debug() { // informacje devel
 	char buff[200];
-	Log("============ Zrzut danych modułu CO2 ============",E_DEV);
+	Log("════════════════════════ Zrzut danych CO2 ═════════════════════════",E_DEV);		
 	sprintf(buff,"pH CO2 limit: %.2f",co2.co2limit);
 	Log(buff,E_DEV);	
 	sprintf(buff,"pH O2 limit: %.2f",co2.o2limit);
 	Log(buff,E_DEV);	
 	sprintf(buff,"pH = %.2f * mV + %.2f",co2.a,co2.b);
 	Log(buff,E_DEV);		
-	Log("=================================================",E_DEV);
 }

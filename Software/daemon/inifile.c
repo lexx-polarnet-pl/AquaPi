@@ -45,8 +45,6 @@ static int handler(void* user, const char* section, const char* name, const char
         pconfig->devel_freq = atoi(value);
     } else if (MATCH("daemon", "reload_freq")) {
         pconfig->reload_freq = atoi(value);		
-    } else if (MATCH("daemon", "dummy_temp_sensor")) {
-        pconfig->dummy_temp_sensor_val = atof(value);
     } else if (MATCH("daemon", "bind_address")) {
         pconfig->bind_address = strdup(value);		
     } else if (MATCH("daemon", "bind_port")) {

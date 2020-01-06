@@ -100,7 +100,7 @@ void ModTemperature_Process() {
 
 void ModTemperature_Debug() { // informacje devel
 	char buff[200];
-	Log("============ Zrzut danych modułu TEMPERATURE ============",E_DEV);
+	Log("═════════════════ Zrzut danych modułu TEMPERATURE ═════════════════",E_DEV);	
 	sprintf(buff,"Tact %.1f°C, Tminal: %.1f°C, Tmin: %.1f°C, Hg: %.1f°C, Hc: %.1f°C, Tmax: %.1f°C, Tmaxal: %.1f°C, Tncor: %.1f°C", \
 		temperature.actual,temperature.tminal,temperature.tmin,temperature.hg,temperature.hc,temperature.tmax,temperature.tmaxal,temperature.ncor);
 	Log(buff,E_DEV);	

@@ -79,6 +79,7 @@ struct _interfaces {
 int interfaces_count;
 
 struct _timers {
+	int id;
 	int timeif;
 	int action;
 	int interfaceidthen;
@@ -100,17 +101,13 @@ typedef struct
 	int reload_freq;
 	int bind_port;
 	char* bind_address;
-	double dummy_temp_sensor_val;
 } configuration;
 
 configuration config;
 
 struct _specials {
-	int night_start;
-	int night_stop;
 	int is_night;
 	int night_ns;
-	double temp_night_corr;	
 	int seconds_since_midnight;
 } specials;
 

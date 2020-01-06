@@ -1,7 +1,7 @@
 /*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
- * Copyright (C) 2012-2019 AquaPi Developers
+ * Copyright (C) 2012-2020 AquaPi Developers
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 as
@@ -108,7 +108,6 @@ void ReadConf() {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	int x;
-	char buff[200];
 
 	Log("Odczyt konfiguracji",E_DEV);
 	
@@ -124,7 +123,7 @@ void ReadConf() {
 		memcpy(interfaces[interfaces_count].name,row[2],sizeof(interfaces[interfaces_count].name));
 		interfaces[interfaces_count].type = atof(row[3]);
 		if (row[4] != NULL) {
-			interfaces[interfaces_count].conf = atof(row[5]);
+			interfaces[interfaces_count].conf = atof(row[4]);
 		} else {
 			interfaces[interfaces_count].conf = 0;
 		}
@@ -149,27 +148,21 @@ void ReadConf() {
 	// Wczytanie timerów
 	Log("Wczytanie timerów",E_DEV);
 	timers_count = 	-1;
-	DB_Query("SELECT timer_timeif,timer_action,timer_interfaceidthen,timer_days FROM timers ORDER BY timer_timeif ASC");
+	DB_Query("SELECT timer_id,timer_timeif,timer_action,timer_interfaceidthen,timer_days FROM timers ORDER BY timer_timeif ASC");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		timers_count++;
-		if (row[0] != NULL) {
+		timers[timers_count].id = atof(row[0]);
+		if (row[1] != NULL) {
 			timers[timers_count].timeif = atof(row[1]);
 		}
-		timers[timers_count].action = atof(row[1]);
-		timers[timers_count].interfaceidthen = atof(row[2]);
-		memcpy(timers[timers_count].days,row[3],sizeof(timers[timers_count].days));
+		timers[timers_count].action = atof(row[2]);
+		timers[timers_count].interfaceidthen = atof(row[3]);
+		memcpy(timers[timers_count].days,row[4],sizeof(timers[timers_count].days));
 	}	
 	mysql_free_result(result);
 
-	// pozostałe, "specjalne" parametry
-	DB_GetSetting("night_start",buff);
-	specials.night_start = atof(buff);
-	DB_GetSetting("night_stop",buff);
-	specials.night_stop = atof(buff);
-	DB_GetSetting("temp_night_corr",buff);
-	specials.temp_night_corr = atof(buff);
-
+	// wczytanie konfiguracji pozostałych modułów
 	ModLight_ReadSettings();
 	ModTemperature_ReadSettings();
 	ModCo2_ReadSettings();
@@ -250,11 +243,10 @@ int main() {
 
 	// defaults
 	config.dontfork 	= 0;
-	config.dummy_temp_sensor_val = -100;
 	config.inputs_freq 	= 1;		// co ile sekund kontrolować wejścia
 	config.devel_freq 	= 30;		// co ile sekund wypluwać informacje devel
 	config.stat_freq 	= 600;		// co ile sekund zapisywac co się dzieje w bazie
-	config.reload_freq  	= -1;		// co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
+	config.reload_freq	= -1;		// co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
 	config.bind_address	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
 	config.bind_port	= 6580;		// domyślny port na którym demon ma nasłuchiwać
 
@@ -376,18 +368,48 @@ int main() {
 			
 			// informacje devel
 			if (specials.seconds_since_midnight % config.devel_freq == 0) {
-				Log("======================== Zrzut interfaceów ========================",E_DEV);
-				Log("|Typ|Stan|NSta| Conf |OVal|OExp|Wartos|WarSur|Bł|Nazwa",E_DEV);
-				Log("-------------------------------------------------------------------",E_DEV);
+				Log("════════════════════════ Zrzut interfaceów ════════════════════════",E_DEV);
+				Log("┌───┬───────┬───────┬────┬────────────────────────────── Wejścia ──",E_DEV);
+				Log("│ID │Wartość│Surowa │Błąd│Nazwa",E_DEV);
+				Log("├───┼───────┼───────┼────┼─────────────────────────────────────────",E_DEV);				
 				for(x = 0; x <= interfaces_count; x++) {
-					sprintf(buff,"|%3i|%4i|%4i|%+6.1f|%4i|%4i|%+6.1f|%+6.1f|%2i|%s",interfaces[x].type,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
-					Log(buff,E_DEV);
+					if (interfaces[x].type == DEV_INPUT) {
+						sprintf(buff,"│%3i│%+7.1f│%+7.1f│%4i│%s",interfaces[x].id,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
+						Log(buff,E_DEV);
+					}
 				}	
-				Log("======================== Zrzut timerów ============================",E_DEV);				
-				sprintf(buff,"Liczba timerów: %i",timers_count+1);
-				Log(buff,E_DEV);	
-				Log("======================== Koniec zrzutu ============================",E_DEV);
-				//ModLight_Debug();
+				Log("└───┴───────┴───────┴────┴─────────────────────────────────────────",E_DEV);	
+				Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────────── Wyjścia ──",E_DEV);
+				Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
+				Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
+				for(x = 0; x <= interfaces_count; x++) {
+					if (interfaces[x].type == DEV_OUTPUT) {
+						sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
+						Log(buff,E_DEV);
+					}
+				}					
+				Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);		
+				Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────── Wyjścia PWM ──",E_DEV);
+				Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
+				Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
+				for(x = 0; x <= interfaces_count; x++) {
+					if (interfaces[x].type == DEV_OUTPUT_PWM) {
+						sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
+						Log(buff,E_DEV);
+					}
+				}					
+				Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);					
+				Log("══════════════════════════ Zrzut timerów ══════════════════════════",E_DEV);	
+				Log("┌───────┬───────┬───────┬───────┬───────┬──────────────── Timery ──",E_DEV);
+				Log("│ID     │TimeIf │Action │Interf │Days   │",E_DEV);
+				Log("├───────┼───────┼───────┼───────┼───────┤",E_DEV);				
+				for(x = 0; x <= timers_count; x++) {
+					sprintf(buff,"│%7i│%7i│%7i│%7i│%s│",timers[x].id,timers[x].timeif,timers[x].action,timers[x].interfaceidthen,timers[x].days);
+					Log(buff,E_DEV);
+				}					
+				Log("└───────┴───────┴───────┴───────┴───────┘",E_DEV);					
+
+				ModLight_Debug();
 				ModTemperature_Debug();
 				ModCo2_Debug();
 			}

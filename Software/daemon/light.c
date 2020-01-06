@@ -84,7 +84,7 @@ void ModLight_Process() {
 void ModLight_Debug() { // informacje devel
 	char buff[200];
 	//struct tm* tm_info;
-	Log("============ Zrzut danych modułu LIGHT ============",E_DEV);
+	Log("════════════════════ Zrzut danych modułu LIGHT ════════════════════",E_DEV);
 	sprintf(buff,"T1: %i",light.t1);
 	Log(buff,E_DEV);	
 	sprintf(buff,"T2: %i",light.t2);
@@ -108,12 +108,12 @@ void ModLight_Debug() { // informacje devel
 	tm_info = gmtime((const time_t *)&light.t2);
 	strftime(buff, 26, "T2:  %H:%M:%S", tm_info);
 	Log(buff,E_DEV);*/
-	/*
+	
 	if ((specials.seconds_since_midnight >= light.t1) && (specials.seconds_since_midnight < light.t2)) {
 		//specials.night_ns = 1;
 		Log("Dzień",E_DEV);
 	} else {
 		Log("Noc",E_DEV);	
 		//specials.night_ns = 0;
-	}	*/
+	}	
 }
