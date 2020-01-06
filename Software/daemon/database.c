@@ -19,7 +19,6 @@
  *
  */
  
-#include <my_global.h>
 #include <mysql.h>
 
 MYSQL *conn;

@@ -27,6 +27,7 @@
 #include <time.h>
 #include <syslog.h>
 #include <mysql.h>
+#include <signal.h>
 #include "aquapi.h"
 #include "tcpip.c"
 #include "database.c"
