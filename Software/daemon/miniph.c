@@ -1,4 +1,4 @@
-/*
+﻿/*
  * AquaPi - sterownik akwariowy oparty o Raspberry Pi
  *
  * Copyright (C) 2012-2014 AquaPi Developers
@@ -23,47 +23,41 @@
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 
-float pH;
-const float vRef = 4.096; 	//Our vRef into the ADC wont be exact
-							//Since you can run VCC lower than Vref its
-							//best to measure and adjust here
-const float opampGain = 5.25; //what is our Op-Amps gain (stage 1)
-
-//Our parameter
-struct parameters_T
-{
-  int pH7Cal, pH4Cal;
-  float pHStep;
-}
-params;
-
-void reset_Params(void)
-{
-  //Restore to default set of parameters!
-  params.pH7Cal = 2048; //assume ideal probe and amp conditions 1/2 of 4096
-  params.pH4Cal = 1286; //using ideal probe slope we end up this many 12bit units away on the 4 scale
-  params.pHStep = 59.16;//ideal probe slope
-}
-
-void calcpHSlope ()
-{
-	//RefVoltage * our deltaRawpH / 12bit steps *mV in V / OP-Amp gain /pH step difference 7-4
-	params.pHStep = ((((vRef*(float)(params.pH7Cal - params.pH4Cal))/4096)*1000)/opampGain)/3;
-}
-
-void calcpH(int raw)
-{
-	float miliVolts = (((float)raw/4096)*vRef)*1000;
-	float temp = ((((vRef*(float)params.pH7Cal)/4096)*1000)- miliVolts)/opampGain;
-	pH = 7-(temp/params.pHStep);
-}
-
+// bufor próbek
+int buff[10];
+	
 double read_i2c_miniph(void) {
-	int val_can;
-	reset_Params();
-	calcpHSlope ();
+	int val_can,avr_val,temp,i,j;
+	int buff2[10];
+	// zczytaj dane z MiniPh
     val_can = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
 	val_can = val_can>>8|((val_can<<8)&0xffff);
-	calcpH(val_can);
-	return pH;
+	// przesuń bufor pomiarów i dopisz nową wartość na końcu (albo tam gdzie są zera)
+	for (i=0;i<9;i++) {
+		buff[i] = buff[i+1];
+		if (buff[i] == 0) {
+			buff[i] = val_can;
+			Log("Dopełniam bufor",E_DEV);
+		}
+	}
+	buff[9] = val_can;
+	// przepisz bufor do drugiego bufora
+	for (i=0;i<10;i++) {
+		buff2[i] = buff[i];
+	}
+	// posortuj próbki w drugim buforze
+	for(i=0;i<9;i++) {
+		for(j=i+1;j<10;j++) {
+			if(buff2[i]>buff2[j]) {
+				temp=buff2[i];
+				buff2[i]=buff2[j];
+				buff2[j]=temp;
+			}
+		}
+	}
+	// wyciągnij średnią z 6 próbek, pomiając dwie skrajne z każdej strony
+	avr_val=0;
+	for(i=2;i<8;i++) avr_val+=buff2[i];
+	// zwróć średnią z 6 próbek zebranych w ciągu 10 sekund
+	return avr_val;
 }
