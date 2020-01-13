@@ -37,7 +37,7 @@ class Database {
 	function Database($dbhost, $dbuser, $dbpasswd, $dbname) {
 		$this->_dblink = mysqli_connect($dbhost, $dbuser, $dbpasswd, $dbname);
 		if (!$this->_dblink) {
-			die('Brak polaczenia z baza: ' . mysqli_error());
+			die('Brak polaczenia z baza: ' . mysqli_connect_error());
 		}		
 		$this->Execute("SET NAMES utf8;");
 	}
