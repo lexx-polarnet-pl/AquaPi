@@ -25,6 +25,7 @@
 #include <wiringPi.h>
 #include <unistd.h>
 #include <time.h>
+#include <sys/time.h>
 #include <syslog.h>
 #include <mysql.h>
 #include <signal.h>
@@ -36,6 +37,7 @@
 #include "light.c"
 #include "temperature.c"
 #include "co2.c"
+#include "timers.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -146,24 +148,8 @@ void ReadConf() {
 		}		
 	}
 
-	// Wczytanie timerów
-	Log("Wczytanie timerów",E_DEV);
-	timers_count = 	-1;
-	DB_Query("SELECT timer_id,timer_timeif,timer_action,timer_interfaceidthen,timer_days FROM timers ORDER BY timer_timeif ASC");
-	result = mysql_store_result(conn);
-	while ((row = mysql_fetch_row(result))) {
-		timers_count++;
-		timers[timers_count].id = atof(row[0]);
-		if (row[1] != NULL) {
-			timers[timers_count].timeif = atof(row[1]);
-		}
-		timers[timers_count].action = atof(row[2]);
-		timers[timers_count].interfaceidthen = atof(row[3]);
-		memcpy(timers[timers_count].days,row[4],sizeof(timers[timers_count].days));
-	}	
-	mysql_free_result(result);
-
 	// wczytanie konfiguracji pozostałych modułów
+	ModTimers_ReadSettings();
 	ModLight_ReadSettings();
 	ModTemperature_ReadSettings();
 	ModCo2_ReadSettings();
@@ -232,15 +218,109 @@ void ProcessPortStates() {
 	}	
 }
 
-int main() {
+void Externals_Debug() {
 	char buff[200];
+	int x;
+	Log("════════════════════════ Zrzut interfaceów ════════════════════════",E_DEV);
+	Log("┌───┬───────┬───────┬────┬────────────────────────────── Wejścia ──",E_DEV);
+	Log("│ID │Wartość│Surowa │Błąd│Nazwa",E_DEV);
+	Log("├───┼───────┼───────┼────┼─────────────────────────────────────────",E_DEV);				
+	for(x = 0; x <= interfaces_count; x++) {
+		if (interfaces[x].type == DEV_INPUT) {
+			sprintf(buff,"│%3i│%+7.1f│%+7.1f│%4i│%s",interfaces[x].id,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
+			Log(buff,E_DEV);
+		}
+	}	
+	Log("└───┴───────┴───────┴────┴─────────────────────────────────────────",E_DEV);	
+	Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────────── Wyjścia ──",E_DEV);
+	Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
+	Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
+	for(x = 0; x <= interfaces_count; x++) {
+		if (interfaces[x].type == DEV_OUTPUT) {
+			sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
+			Log(buff,E_DEV);
+		}
+	}					
+	Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);		
+	Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────── Wyjścia PWM ──",E_DEV);
+	Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
+	Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
+	for(x = 0; x <= interfaces_count; x++) {
+		if (interfaces[x].type == DEV_OUTPUT_PWM) {
+			sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
+			Log(buff,E_DEV);
+		}
+	}					
+	Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);	
+}
+
+void catch_alarm(int sig) {
+	int x;
 	time_t rawtime;
 	struct tm * timeinfo;
+	
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );	
+	// użyjemy tej procedury żeby łapać wywołanie systemowe, i ustawimy timer żeby wykonywała się co sekundę żeby móc procesować rzeczy związane z obsługą AquaPi
+	
+	// ustalenie timerów i ustalenie czy jest dzien czy noc
+	time ( &rawtime );
+	timeinfo = localtime ( &rawtime );
+	specials.seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
+
+	// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę, lub czy nie otrzymałeś komendy z zewnątrz na którą trzeba zareagować
+	if (specials.seconds_since_midnight != specials.last_sec_run) {
+		// nie sprawdzałeś, to sprawdzaj
+		specials.last_sec_run = specials.seconds_since_midnight;
+
+		// obsługa wejść
+		if (specials.seconds_since_midnight % config.inputs_freq == 0) {
+			for(x = 0; x <= interfaces_count; x++) {
+				if (interfaces[x].type == DEV_INPUT) {
+					interfaces[x].raw_measured_value = GetDataFromInput(x);
+					interfaces[x].measured_value = interfaces[x].raw_measured_value;
+				}
+			}
+		}
+		
+		// Załatw ustawienia oświetlenia, temperatury i co2
+		ModTimers_Process();
+		ModLight_Process();
+		ModTemperature_Process();
+		ModCo2_Process();
+		
+		// wszystko załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
+		ProcessPortStates();
+		
+		// informacje devel
+		if (specials.seconds_since_midnight % config.devel_freq == 0) {
+			Externals_Debug();
+			ModTimers_Debug();
+			ModLight_Debug();
+			ModTemperature_Debug();
+			ModCo2_Debug();
+		}
+
+		if (specials.seconds_since_midnight % config.stat_freq == 0) {
+			StoreTempStat();
+		}
+
+		if ((specials.seconds_since_midnight % config.reload_freq == 0) && (config.reload_freq != -1)) {
+			Log("Automatyczne odświerzenie konfiguracji",E_DEV);
+			ReadConf();
+		}
+	}
+	
+	signal(sig, catch_alarm);
+}
+
+int main() {
+	char buff[200];
+	struct itimerval intold;
+	struct itimerval intnew;
 	char *pidfile = NULL;
 	FILE *pidf;
 	int fval = 0;
-	int x,y,last_sec_run = 0;
-	//double corr_val;
 
 	// defaults
 	config.dontfork 	= 0;
@@ -293,141 +373,27 @@ int main() {
 	// termination signals handling
 	signal(SIGINT, termination_handler);
 	signal(SIGTERM, termination_handler);
+	// timer handler
+	signal(SIGALRM, catch_alarm);
 	
-	for (;;) {	
-		// ustalenie timerów i ustalenie czy jest dzien czy noc
-		time ( &rawtime );
-		timeinfo = localtime ( &rawtime );
-		specials.seconds_since_midnight = timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec;
+	// alarm ustawiamy co 1 sekundę a potem przechwytujemy funkcją catch_alarm 
+	intnew.it_interval.tv_sec = 1;
+	intnew.it_interval.tv_usec = 0;
+	intnew.it_value.tv_sec = 1;
+	intnew.it_value.tv_usec = 0;
 
-		// sprawdź czy w tej sekundzie już sprawdzałeś timery i resztę, lub czy nie otrzymałeś komendy z zewnątrz na którą trzeba zareagować
-		if (specials.seconds_since_midnight != last_sec_run) {
-			// nie sprawdzałeś, to sprawdzaj
-			last_sec_run = specials.seconds_since_midnight;
+	intold.it_interval.tv_sec = 0;
+	intold.it_interval.tv_usec = 0;
+	intold.it_value.tv_sec = 0;
+	intold.it_value.tv_usec = 0;
 
-			// obsługa wejść
-			if (specials.seconds_since_midnight % config.inputs_freq == 0) {
-				for(x = 0; x <= interfaces_count; x++) {
-					if (interfaces[x].type == DEV_INPUT) {
-						interfaces[x].raw_measured_value = GetDataFromInput(x);
-						interfaces[x].measured_value = interfaces[x].raw_measured_value;
-					}
-				}
-			}
-			
-			// Dobra, spróbujmy przelecieć timery i określić jaki powinien być stan wyjść
-			// przebieg 1 to dzień -1
-			for (x=0; x <= timers_count; x++) {
-				for (y=0; y <= interfaces_count; y++) {
-					if (timers[x].interfaceidthen == interfaces[y].id) {
-						interfaces[y].new_state = timers[x].action;
-					}
-				}
-			}
-				
-			// przebieg 2 to przebieg dla dnia bierzącego
-			for (x=0; x <= timers_count; x++) {
-				if (strncmp(timers[x].days+timeinfo->tm_wday,"1",1)  == 0) { // kontrola dnia tygodnia
-					for (y=0; y <= interfaces_count; y++) {
-						// teraz trzeba wziąść pod uwagę jeszcze czas
-						if (timers[x].timeif <= specials.seconds_since_midnight) {
-							if (timers[x].interfaceidthen == interfaces[y].id) {
-								interfaces[y].new_state = timers[x].action;
-							}
-						}
-						/* ten kawałek odpowiadał za obsługę zdarzeń na podstawie wskazań sensorów, jednak mieszanie tego ze "zwykłymi" timerami nie ma sensu
-						// w tym przebiegu weź też pod uwagę wskazania sensorów
-						if (timers[x].type == TRIGGER_SENSOR) {
-							if (timers[x].interfaceidthen == interfaces[y].id) {
-								// teraz znajdź mi jeszcze urządzenie z wartością odniesienia....
-								for (z=0; z <= interfaces_count; z++) {
-									if (timers[x].interfaceidif == interfaces[z].id) {
-										//ignoruj stany nieustalone
-										if (interfaces[z].measured_value > -100) { 
-											if ((timers[x].direction == DIRECTION_BIGGER) && (interfaces[z].measured_value - corr_val > timers[x].value)) {
-												interfaces[y].new_state = timers[x].action;
-											}
-											if ((timers[x].direction == DIRECTION_SMALLER) && (interfaces[z].measured_value - corr_val < timers[x].value)) {
-												interfaces[y].new_state = timers[x].action;
-											}
-										}
-									}
-								}
-							}
-						} */
-					}
-				}
-			}	
-			
-			// Załatw ustawienia oświetlenia, temperatury i co2
-			ModLight_Process();
-			ModTemperature_Process();
-			ModCo2_Process();
-			
-			// wszystko załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
-			ProcessPortStates();
-			
-			// informacje devel
-			if (specials.seconds_since_midnight % config.devel_freq == 0) {
-				Log("════════════════════════ Zrzut interfaceów ════════════════════════",E_DEV);
-				Log("┌───┬───────┬───────┬────┬────────────────────────────── Wejścia ──",E_DEV);
-				Log("│ID │Wartość│Surowa │Błąd│Nazwa",E_DEV);
-				Log("├───┼───────┼───────┼────┼─────────────────────────────────────────",E_DEV);				
-				for(x = 0; x <= interfaces_count; x++) {
-					if (interfaces[x].type == DEV_INPUT) {
-						sprintf(buff,"│%3i│%+7.1f│%+7.1f│%4i│%s",interfaces[x].id,interfaces[x].measured_value,interfaces[x].raw_measured_value,interfaces[x].was_error_last_time,interfaces[x].name);
-						Log(buff,E_DEV);
-					}
-				}	
-				Log("└───┴───────┴───────┴────┴─────────────────────────────────────────",E_DEV);	
-				Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────────── Wyjścia ──",E_DEV);
-				Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
-				Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
-				for(x = 0; x <= interfaces_count; x++) {
-					if (interfaces[x].type == DEV_OUTPUT) {
-						sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
-						Log(buff,E_DEV);
-					}
-				}					
-				Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);		
-				Log("┌───┬──────┬──────┬──────┬─────┬─────┬────┬───────── Wyjścia PWM ──",E_DEV);
-				Log("│ID │Stan  │NowySt│ Conf │Overr│OvExp│Błąd│Nazwa",E_DEV);
-				Log("├───┼──────┼──────┼──────┼─────┼─────┼────┼────────────────────────",E_DEV);				
-				for(x = 0; x <= interfaces_count; x++) {
-					if (interfaces[x].type == DEV_OUTPUT_PWM) {
-						sprintf(buff,"│%3i│%6i│%6i│%+6.1f│%5i│%5i│%4i│%s",interfaces[x].id,interfaces[x].state,interfaces[x].new_state,interfaces[x].conf,interfaces[x].override_value,interfaces[x].override_expire,interfaces[x].was_error_last_time,interfaces[x].name);
-						Log(buff,E_DEV);
-					}
-				}					
-				Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);					
-				Log("══════════════════════════ Zrzut timerów ══════════════════════════",E_DEV);	
-				Log("┌───────┬───────┬───────┬───────┬───────┬──────────────── Timery ──",E_DEV);
-				Log("│ID     │TimeIf │Action │Interf │Days   │",E_DEV);
-				Log("├───────┼───────┼───────┼───────┼───────┤",E_DEV);				
-				for(x = 0; x <= timers_count; x++) {
-					sprintf(buff,"│%7i│%7i│%7i│%7i│%s│",timers[x].id,timers[x].timeif,timers[x].action,timers[x].interfaceidthen,timers[x].days);
-					Log(buff,E_DEV);
-				}					
-				Log("└───────┴───────┴───────┴───────┴───────┘",E_DEV);					
-
-				ModLight_Debug();
-				ModTemperature_Debug();
-				ModCo2_Debug();
-			}
-
-			if (specials.seconds_since_midnight % config.stat_freq == 0) {
-				StoreTempStat();
-			}
-
-			if ((specials.seconds_since_midnight % config.reload_freq == 0) && (config.reload_freq != -1)) {
-				Log("Automatyczne odświerzenie konfiguracji",E_DEV);
-				ReadConf();
-			}
-
-			
-		}
-		usleep(100000);
-	} 
+	if (setitimer (ITIMER_REAL, &intnew, &intold) < 0)
+		Log("Inicjalizacja przerwania zegarowego nieudana",E_CRIT);
+	else
+		Log("Przerwanie zegarowe zainicjowane",E_DEV);
+ 
+	for (;;) sleep(1);
+	
 	return 0;
 }
 

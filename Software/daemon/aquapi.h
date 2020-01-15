@@ -109,6 +109,7 @@ struct _specials {
 	int is_night;
 	int night_ns;
 	int seconds_since_midnight;
+	int last_sec_run;
 } specials;
 
 struct I2CDEV {
