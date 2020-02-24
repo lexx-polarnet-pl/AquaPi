@@ -27,6 +27,7 @@ struct _co2 {
 	double mv1;
 	double ph2;
 	double mv2;
+	double hysteresis;
 	double a;
 	double b;
 	double co2limit;
@@ -55,6 +56,8 @@ void ModCo2_ReadSettings() {
 	DB_GetSetting("co2_o2limit",buff);
 	co2.o2limit = atof(buff);	
 	
+	co2.hysteresis = 0.5; // tymczasowo ustaw na 0.5 pH, przekaźnik nie powinien "klekotać"
+	
 	// wylicz współczynniki funkcji liniowej - a i b
 	if (co2.ph1 == co2.ph2 || co2.mv1 == co2.mv2) {
 		// jeśli ph1 = ph2 albo mv1 = mv2 to współczynników nie da się wyliczyć, więc przyjmujemy brak korekcji
@@ -77,19 +80,31 @@ void ModCo2_Process() {
 		}
 	}
 
-	// jeśli ph powyżej limitu załączania co2, to je odpalamy (pod warunkiem że jest noc)	
-	if (pH > co2.co2limit && specials.is_night == 0) {
+	// jeśli ph powyżej limitu załączania co2, to je odpalamy 
+	if (pH > (co2.co2limit + co2.hysteresis/2)) {
 		SetInterfaceNewVal(co2.co2valve_id,1);		
-	} else {
+	} 
+
+	// jeśli ph poniżej limitu załączania co2, to wyłączamy
+	if (pH < (co2.co2limit - co2.hysteresis/2)) {
+		SetInterfaceNewVal(co2.co2valve_id,0);		
+	} 	
+
+	// jak jest noc, to CO2 ma być wyłączone
+	if (specials.is_night == 0) {
 		SetInterfaceNewVal(co2.co2valve_id,0);				
 	}
 
-	// jeśli ph poniżej limitu załączania o2, to odpalamy napowietrzacz (bez znaczenia czy jest dzień czy noc)
-	if (pH < co2.o2limit) {
-		SetInterfaceNewVal(co2.o2valve_id,1);		
-	} else {
-		SetInterfaceNewVal(co2.o2valve_id,0);				
+	// jeśli ph poniżej limitu załączania o2, to odpalamy napowietrzacz 
+	if (pH < (co2.o2limit - co2.hysteresis/2)) {
+		SetInterfaceNewVal(co2.o2valve_id,1);	
 	}
+
+	// jeśli ph wzrośnie to napowietrzacz wyłączamy
+	if (pH > (co2.o2limit + co2.hysteresis/2)) {
+		SetInterfaceNewVal(co2.o2valve_id,0);	
+	}
+	
 }
 
 void ModCo2_Debug() { // informacje devel
