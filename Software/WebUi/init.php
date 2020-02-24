@@ -94,6 +94,7 @@ $my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon"
 $my_menu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-bell", 					"url" => "alerts.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
+$my_menu[]	= array ("selected" => false,	"name" => "Parametry wody", 	"icon" => "fa-flask",					"url" => "water.php",	"acl" => "rw"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 					"url" => "about.php",	"acl" => "r"    , "reload" => 0);
 if (($CONFIG['webui']['security'] == "all") || ($CONFIG['webui']['security'] == "setup")) {
 	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",		"icon" => "fa-sign-out", 					"url" => "logout.php",	"acl" => "r"    , "reload" => 0);
