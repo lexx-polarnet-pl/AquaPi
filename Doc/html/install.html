@@ -50,11 +50,16 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 <code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo cp aquapi.ini /etc/</code></strong> 
 <code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo nano /etc/aquapi.ini</code></strong>
 </pre></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-11"></a>2.1.10. Skopiuj pliki z WebUI</h3></div></div></div><p>Teraz skopiuj pliki zawierające WebUI do katalogu /var/www/</p><pre class="screen">
-<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo cp -r WebUI/* /var/www/</code></strong> 
-<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo chmod 775 -R /var/www/</code></strong> 
-<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo mkdir /var/www/smarty/templates_c/</code></strong>
-<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo chmod 777 /var/www/smarty/templates_c/</code></strong>
-</pre></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-13"></a>2.1.11. Dokonaj końcowej konfiguracji</h3></div></div></div><p>Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom demona:
+<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo cp -r WebUI/* /var/www/html/</code></strong> 
+<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo chmod 775 -R /var/www/html/</code></strong> 
+<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo mkdir /var/www/html/smarty/templates_c/</code></strong>
+<code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo chmod 777 /var/www/html/smarty/templates_c/</code></strong>
+</pre><p>Tutaj jeszcze jakieś voodoo trzeba zrobić żeby to działało lol https://pimylifeup.com/raspberry-pi-lighttpd/ może to:
+		generalnie to co powyżej ale bez kroku 7 i 10
+		apt install php-cgi php-mysql php-xml
+		sudo lighttpd-enable-mod fastcgi
+		sudo lighttpd-enable-mod fastcgi-php		
+		</p></div><div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a id="install-standard-13"></a>2.1.11. Dokonaj końcowej konfiguracji</h3></div></div></div><p>Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom demona:
 </p><pre class="screen">
 <code class="prompt">pi@raspberrypi:/usr/local/src/AquaPi/Software $ </code><strong class="userinput"><code>sudo /etc/init.d/aquapi.rc start</code></strong>
 </pre><p>		

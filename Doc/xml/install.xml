@@ -138,11 +138,17 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 		<title>Skopiuj pliki z WebUI</title>
 		  <para>Teraz skopiuj pliki zawierające WebUI do katalogu /var/www/</para>
 <screen>
-<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo cp -r WebUI/* /var/www/</userinput> 
-<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 775 -R /var/www/</userinput> 
-<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo mkdir /var/www/smarty/templates_c/</userinput>
-<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 777 /var/www/smarty/templates_c/</userinput>
-</screen>			  
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo cp -r WebUI/* /var/www/html/</userinput> 
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 775 -R /var/www/html/</userinput> 
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo mkdir /var/www/html/smarty/templates_c/</userinput>
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 777 /var/www/html/smarty/templates_c/</userinput>
+</screen>		
+		<para>Tutaj jeszcze jakieś voodoo trzeba zrobić żeby to działało lol https://pimylifeup.com/raspberry-pi-lighttpd/ może to:
+		generalnie to co powyżej ale bez kroku 7 i 10
+		apt install php-cgi php-mysql php-xml
+		sudo lighttpd-enable-mod fastcgi
+		sudo lighttpd-enable-mod fastcgi-php		
+		</para>
 		</sect2>
 		<sect2 id="install-standard-13">
 		<title>Dokonaj końcowej konfiguracji</title>
@@ -154,12 +160,3 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 		</sect2>		
      </sect1>
 </chapter>
-
-
-
-		
-		<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-<screen>
-<prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install php-cgi php-mysql  </userinput> 
-</screen>	
-		 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->

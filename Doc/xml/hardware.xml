@@ -327,14 +327,14 @@
 				powinien być wykryty automatycznie.</para>
 				<para>Aby dodać Miniph do AquaPi, wejdź w menu <guimenu>Wejścia i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe 
 				wejście lub wyjście</guimenu> wybierz mostek Miniph, nadaj mu opis, wybierz kolor do wykresu i ikonkę urządzenia.</para>
-				<!-- <figure>
+				<figure>
 					<title>Dodawanie Miniph do AquaPi</title>				
 					<mediaobject>
 						<imageobject>
-							<imagedata fileref="hardware/GPIO-OUT-ui.jpg" format="JPG"/>
+							<imagedata fileref="hardware/MINIPH-ui.jpg" format="JPG"/>
 						</imageobject>
 					</mediaobject>
-				</figure> -->
+				</figure>
 				<para>Po skonfigurowaniu mostka pomiarowego kliknij <guimenu>Zapisz</guimenu> aby miniph mogło być używane w systemie. Wejście powinno być teraz widoczne na 
 				dashboard, gdzie możesz odczytać z niego dane.</para>
 				<tip><title>Podpowiedź</title><para>Do czasu kalibracji sondy pH, wyniki z miniph będą pokazywane w mV, a nie jako pH.</para></tip>
