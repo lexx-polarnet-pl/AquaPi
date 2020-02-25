@@ -254,7 +254,8 @@ void Externals_Debug() {
 	Log("└───┴──────┴──────┴──────┴─────┴─────┴────┴────────────────────────",E_DEV);	
 }
 
-void catch_alarm(int sig) {
+//void catch_alarm(int sig) {
+void process() {
 	int x;
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -311,13 +312,13 @@ void catch_alarm(int sig) {
 		}
 	}
 	
-	signal(sig, catch_alarm);
+	//signal(sig, catch_alarm);
 }
 
 int main() {
 	char buff[200];
-	struct itimerval intold;
-	struct itimerval intnew;
+	//struct itimerval intold;
+	//struct itimerval intnew;
 	char *pidfile = NULL;
 	FILE *pidf;
 	int fval = 0;
@@ -373,7 +374,7 @@ int main() {
 	// termination signals handling
 	signal(SIGINT, termination_handler);
 	signal(SIGTERM, termination_handler);
-	// timer handler
+	/* // timer handler
 	signal(SIGALRM, catch_alarm);
 	
 	// alarm ustawiamy co 1 sekundę a potem przechwytujemy funkcją catch_alarm 
@@ -392,7 +393,12 @@ int main() {
 	else
 		Log("Przerwanie zegarowe zainicjowane",E_DEV);
  
-	for (;;) sleep(1);
+	for (;;) sleep(1); */
+	
+	for (;;) {
+		process();
+		usleep(100000);
+	}
 	
 	return 0;
 }
