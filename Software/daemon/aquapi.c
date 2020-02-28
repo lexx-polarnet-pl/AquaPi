@@ -302,7 +302,9 @@ void process() {
 			ModCo2_Debug();
 		}
 
-		if (specials.seconds_since_midnight % config.stat_freq == 0) {
+		//if (specials.seconds_since_midnight % config.stat_freq == 0) {
+		if ((specials.seconds_since_midnight > specials.last_sec_store_stat + config.stat_freq) || (specials.seconds_since_midnight < specials.last_sec_store_stat)) {
+			specials.last_sec_store_stat = specials.seconds_since_midnight;
 			StoreTempStat();
 		}
 

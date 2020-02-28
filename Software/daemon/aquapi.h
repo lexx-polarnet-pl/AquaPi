@@ -110,6 +110,7 @@ struct _specials {
 	int night_ns;
 	int seconds_since_midnight;
 	int last_sec_run;
+	int last_sec_store_stat;
 } specials;
 
 struct I2CDEV {
