@@ -30,7 +30,7 @@ double read_i2c_miniph(void) {
 	int val_can,avr_val,temp,i,j;
 	int buff2[100];
 	// zczytaj dane z MiniPh
-    val_can = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
+	val_can = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
 	val_can = val_can>>8|((val_can<<8)&0xffff);
 	// przesuń bufor pomiarów i dopisz nową wartość na końcu (albo tam gdzie są zera)
 	for (i=0;i<99;i++) {
@@ -45,7 +45,7 @@ double read_i2c_miniph(void) {
 		buff2[i] = buff[i];
 	}
 	// posortuj próbki w drugim buforze
-	for(i=0;i<99;i++) {
+	for(i=0;i<100;i++) {
 		for(j=i+1;j<100;j++) {
 			if(buff2[i]>buff2[j]) {
 				temp=buff2[i];
@@ -58,5 +58,5 @@ double read_i2c_miniph(void) {
 	avr_val=0;
 	for(i=10;i<90;i++) avr_val+=buff2[i];
 	// zwróć średnią z 80 próbek zebranych w ciągu 100 sekund
-	return avr_val;
+	return avr_val/80;
 }
