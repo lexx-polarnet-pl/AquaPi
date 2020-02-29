@@ -126,7 +126,7 @@ void TCPCommandInterface(char *buf) {
 	// szukamy co trzeba zmienić
 	myint = 0;
 	for(x = 0; x <= interfaces_count; x++) {
-		if ((interfaces[x].type == DEV_OUTPUT) && (interfaces[x].id == interface)){
+		if (((interfaces[x].type == DEV_OUTPUT) || (interfaces[x].type == DEV_OUTPUT_PWM)) && (interfaces[x].id == interface)){
 			myint = x;
 		}		
 	}
@@ -135,6 +135,8 @@ void TCPCommandInterface(char *buf) {
 		nstate = 1;
 	} else if (strncmp("off",pcom,3)==0) {
 		nstate = 0;
+	} else if (strncmp("pwm-",pcom,4)==0) {
+		nstate = atoi(pcom+4);
 	} else if (strncmp("auto",pcom,4)==0) {
 		nstate = -1;
 	} else {
@@ -219,7 +221,7 @@ void TCPCommandSysinfo() {
 }
 
 void TCPCommandStatus() {
-	Log("Otrzymałem polecenie status",E_DEV);
+	//Log("Otrzymałem polecenie status",E_DEV);
 	char buff[400];
 	int x;
 	xmlNodePtr node,node2;

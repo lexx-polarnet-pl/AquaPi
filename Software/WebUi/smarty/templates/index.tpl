@@ -45,11 +45,14 @@
 								<div class="dropdown-menu" aria-labelledby="dropdownMenuButton{$device.id}">
 									<div class="dropdown-menu-content">
 										{if $device.type == 2}
-										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=on">Załącz</a>
-										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=off">Wyłącz</a>
-										<a class="dropdown-item" href="interface_cmds.php?interface_id={$device.id}&action=auto">Przejdź w tryb automatyczny</a>
+										<a class="dropdown-item" href="#" onclick="AjaxCommand('interface_cmds.php?interface_id={$device.id}&action=on');">Załącz</a>
+										<a class="dropdown-item" href="#" onclick="AjaxCommand('interface_cmds.php?interface_id={$device.id}&action=off');">Wyłącz</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#" onclick="AjaxCommand('interface_cmds.php?interface_id={$device.id}&action=auto');">Przejdź w tryb automatyczny</a>
 										{else}
-										<a class="dropdown-item" href="#">Dla wyjść PWM na razie pusto...</a>
+										<input class="dropdown-item" type="range" min="0" max="100" value="{$device.state}" onchange="AjaxCommand('interface_cmds.php?interface_id={$device.id}&action=pwm-' + this.value);">
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#" onclick="AjaxCommand('interface_cmds.php?interface_id={$device.id}&action=auto');">Przejdź w tryb automatyczny</a>
 										{/if}
 									</div>
 								</div>
@@ -97,7 +100,11 @@ function AjaxProcess(xml) {
 	dev_state = x[i].getElementsByTagName("state")[0].childNodes[0].nodeValue;
 	dev_override_value = parseInt(x[i].getElementsByTagName("override_value")[0].childNodes[0].nodeValue);
 	if (dev_type == 1) { // sensory
-		document.getElementById(dev_id).innerHTML = dev_measured_value.toFixed(1);
+		if (dev_measured_value <= -100) {
+			document.getElementById(dev_id).innerHTML = "Błąd odczytu";
+		} else {
+			document.getElementById(dev_id).innerHTML = dev_measured_value.toFixed(1);
+		}
 	};
 	if (dev_type == 2) { // wejścia
 		if (dev_state == -1) { 
@@ -129,6 +136,13 @@ function AjaxProcess(xml) {
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)
 }
+
+function AjaxCommand(Command) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.open("GET", Command, true);
+  xhttp.send();
+}
+
 </script>	
 
 {include "footer.tpl"}

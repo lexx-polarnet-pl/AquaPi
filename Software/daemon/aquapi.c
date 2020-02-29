@@ -177,10 +177,14 @@ void ProcessPortStates() {
 				} else {
 					ChangePortState(interfaces[x].address,1-interfaces[x].state);
 				}
-				if (interfaces[x].state == 1) {
-					sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
-				} else {
-					sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
+				if (interfaces[x].type == DEV_OUTPUT) {
+					if (interfaces[x].state == 1) {
+						sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
+					} else {
+						sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
+					}
+				} else if (interfaces[x].type == DEV_OUTPUT_PWM) {
+					sprintf(buff,"Ustawiam PWM dla %s na %i%%",interfaces[x].name,interfaces[x].state);
 				}
 				Log(buff,E_INFO);	
 				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
