@@ -122,7 +122,11 @@
 										<div class="col-4"><input type="number" id="O2PH" name="O2PH" class="form-control" value="{$CONFIG.co2_o2limit}" step=0.1 required></div>
 										<div class="col-2"><label for="O2PH" class=" form-control-label">pH</label></div>
 									</div>	
-									
+									<div class="row form-group">
+										<div class="col-6"><label for="hysteresis" class=" form-control-label">Histereza:</label></div>
+										<div class="col-4"><input type="number" id="hysteresis" name="hysteresis" class="form-control" value="{$CONFIG.co2_hysteresis}" step=0.1 required></div>
+										<div class="col-2"><label for="hysteresis" class=" form-control-label">pH</label></div>
+									</div>										
 								</div>								
 								<div class="card-footer">
 									<button type="submit" class="btn btn-primary btn-sm">

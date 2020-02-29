@@ -38,6 +38,7 @@ if($_POST) {
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['CO2PH'],'co2_co2limit'));
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['O2EN'],'co2_o2valve'));
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['O2PH'],'co2_o2limit'));
+		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['hysteresis'],'co2_hysteresis'));		
 	
 		ReloadDaemonConfig();
 		$SESSION->redirect("co2.php"); //przekierowanie w celu odswierzenia zmiennej $CONFIG inicjalizowanej przed wykonaniem update

@@ -55,8 +55,8 @@ void ModCo2_ReadSettings() {
 	co2.co2limit = atof(buff);	
 	DB_GetSetting("co2_o2limit",buff);
 	co2.o2limit = atof(buff);	
-	
-	co2.hysteresis = 0.5; // tymczasowo ustaw na 0.5 pH, przekaźnik nie powinien "klekotać"
+	DB_GetSetting("co2_hysteresis",buff);
+	co2.hysteresis = atof(buff);
 	
 	// wylicz współczynniki funkcji liniowej - a i b
 	if (co2.ph1 == co2.ph2 || co2.mv1 == co2.mv2) {
@@ -115,5 +115,7 @@ void ModCo2_Debug() { // informacje devel
 	sprintf(buff,"pH O2 limit: %.2f",co2.o2limit);
 	Log(buff,E_DEV);	
 	sprintf(buff,"pH = %.2f * mV + %.2f",co2.a,co2.b);
-	Log(buff,E_DEV);		
+	Log(buff,E_DEV);
+	sprintf(buff,"Histereza: %.2f",co2.hysteresis);
+	Log(buff,E_DEV);			
 }
