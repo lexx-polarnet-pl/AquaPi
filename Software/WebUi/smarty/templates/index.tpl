@@ -132,17 +132,26 @@ function AjaxProcess(xml) {
   };
 }
 
-// odświerzaj dane na stronie co 1 sekune
-window.onload = function() {            
-    setInterval("AjaxRefresh()",1000)
-}
-
 function AjaxCommand(Command) {
   var xhttp = new XMLHttpRequest();
   xhttp.open("GET", Command, true);
   xhttp.send();
 }
 
+var count = 0;
+	
+function refreshers() {
+	count++;
+	AjaxRefresh();
+	if (count >=10) {
+		InfoAjaxRefresh();
+		count = 0;
+	}
+}
+
+window.onload = function() {            
+    setInterval("refreshers()",1000)
+}
 </script>	
 
 {include "footer.tpl"}
