@@ -56,7 +56,7 @@
 <script>
 var ctx = document.getElementById("Chart1").getContext('2d');
 var scatterChart = new Chart(ctx, {
-    type: 'scatter',
+    type: 'line',
     data: {
 		datasets: [
 		
@@ -66,10 +66,10 @@ var scatterChart = new Chart(ctx, {
 		borderColor: "#{$entry.interface_htmlcolor}",
 		backgroundColor: "#{$entry.interface_htmlcolor}",
 		fill: false,
-		steppedLine: true,
+		steppedLine: false,
 		data: [
 		{foreach from=$entry.interface_stat item="stat"}
-		{ x: moment("{$stat.stat_date|date_format:"%Y-%m-%d %H:%M:%S"}") , y: {$stat.stat_value} },
+		{ x: new Date({$stat.stat_date|date_format:"%Y,%m,%d,%H,%M,%S"}), y: {$stat.stat_value} },
 		{/foreach}
 		]},
 {/if}{/foreach}		
@@ -81,6 +81,14 @@ options: {
     title: {
         display:false,
         text: 'Wejścia'
+    },
+    tooltips: {
+        mode: 'index',
+        intersect: false,
+    },
+    hover: {
+        mode: 'nearest',
+        intersect: false,
     },
 	scales: {
             xAxes: [{
@@ -96,7 +104,7 @@ options: {
 <script>
 var ctx = document.getElementById("Chart2").getContext('2d');
 var scatterChart = new Chart(ctx, {
-    type: 'scatter',
+    type: 'line',
     data: {
 		datasets: [
 		
@@ -109,7 +117,7 @@ var scatterChart = new Chart(ctx, {
 		steppedLine: true,
 		data: [
 		{foreach from=$entry.interface_stat item="stat"}
-		{ x: moment("{$stat.stat_date|date_format:"%Y-%m-%d %H:%M:%S"}") , y: {if $entry.interface_type == 3}{$stat.stat_value/100}{else}{$stat.stat_value}{/if} },
+		{ x: new Date({$stat.stat_date|date_format:"%Y,%m,%d,%H,%M,%S"}), y: {if $entry.interface_type == 3}{$stat.stat_value/100}{else}{$stat.stat_value}{/if} },
 		{/foreach}
 		]},
 {/if}{/foreach}		
@@ -122,6 +130,14 @@ options: {
         display:false,
         text: 'Wyjścia'
     },
+    tooltips: {
+        mode: 'index',
+        intersect: false,
+    },
+    hover: {
+        mode: 'nearest',
+        intersect: false,
+    },	
 	scales: {
             xAxes: [{
 				type: 'time',
