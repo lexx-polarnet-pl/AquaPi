@@ -104,7 +104,12 @@ void ModCo2_Process() {
 	if (pH > (co2.o2limit + co2.hysteresis/2)) {
 		SetInterfaceNewVal(co2.o2valve_id,0);	
 	}
-	
+
+	// zabezpieczenie na wypadek awarii sondy pH
+	if (pH <= 0) {
+		SetInterfaceNewVal(co2.co2valve_id,0);
+		SetInterfaceNewVal(co2.o2valve_id,0);
+	}
 }
 
 void ModCo2_Debug() { // informacje devel

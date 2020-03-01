@@ -86,15 +86,23 @@ void ModTemperature_Process() {
 	if (temperature.actual < temperature.tmax - temperature.hc) {
 		SetInterfaceNewVal(temperature.interface_cool,0);
 	}
-	//Wyczyść flagę alarmu jak jest ok
-	if (temperature.actual > temperature.tminal && temperature.actual < temperature.tmaxal) {
-		temperature.is_in_alarm_mode = 0;
-	} else if (temperature.actual <= temperature.tminal && temperature.is_in_alarm_mode == 0) {
-		temperature.is_in_alarm_mode = 1;
-		Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości minimalnej",E_WARN);	
-	} else if (temperature.actual >= temperature.tmaxal && temperature.is_in_alarm_mode == 0) {
-		temperature.is_in_alarm_mode = 1;
-		Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości maksymalnej",E_WARN);			
+
+	// zabezpieczenie na wypadek awarii sensorów
+	if (temperature.actual <= -100) {
+		//w przypadku awarii wyłącz grzanie i chłodzenie
+		SetInterfaceNewVal(temperature.interface_heat,0);
+		SetInterfaceNewVal(temperature.interface_cool,0);
+	} else {
+		//Wyczyść flagę alarmu jak jest ok
+		if (temperature.actual > temperature.tminal && temperature.actual < temperature.tmaxal) {
+			temperature.is_in_alarm_mode = 0;
+		} else if (temperature.actual <= temperature.tminal && temperature.is_in_alarm_mode == 0) {
+			temperature.is_in_alarm_mode = 1;
+			Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości minimalnej",E_WARN);	
+		} else if (temperature.actual >= temperature.tmaxal && temperature.is_in_alarm_mode == 0) {
+			temperature.is_in_alarm_mode = 1;
+			Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości maksymalnej",E_WARN);
+		}
 	}
 }
 
