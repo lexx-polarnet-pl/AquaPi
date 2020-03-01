@@ -172,19 +172,24 @@ void ProcessPortStates() {
 			if (interfaces[x].state != interfaces[x].override_value) {
 				// konieczna jest zmiana stanu wyjścia
 				interfaces[x].state = interfaces[x].override_value;					
-				if (interfaces[x].conf == 0) {
-					ChangePortState(interfaces[x].address,interfaces[x].state);
-				} else {
-					ChangePortState(interfaces[x].address,1-interfaces[x].state);
-				}
 				if (interfaces[x].type == DEV_OUTPUT) {
+					if (interfaces[x].conf == 0) {
+						ChangePortState(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortState(interfaces[x].address,1-interfaces[x].state);
+					}
 					if (interfaces[x].state == 1) {
 						sprintf(buff,"Załączam ręcznie %s",interfaces[x].name);
 					} else {
 						sprintf(buff,"Wyłączam ręcznie %s",interfaces[x].name);
 					}
 				} else if (interfaces[x].type == DEV_OUTPUT_PWM) {
-					sprintf(buff,"Ustawiam PWM dla %s na %i%%",interfaces[x].name,interfaces[x].state);
+					if (interfaces[x].conf == 0) {
+						ChangePortStatePWM(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortStatePWM(interfaces[x].address,100-interfaces[x].state);
+					}
+					sprintf(buff,"Ustawiam ręcznie PWM na %i%% dla wyjścia %s",interfaces[x].state,interfaces[x].name);
 				}
 				Log(buff,E_INFO);	
 				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
