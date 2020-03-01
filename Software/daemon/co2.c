@@ -91,7 +91,7 @@ void ModCo2_Process() {
 	} 	
 
 	// jak jest noc, to CO2 ma być wyłączone
-	if (specials.is_night == 0) {
+	if (specials.is_night == 1) {
 		SetInterfaceNewVal(co2.co2valve_id,0);				
 	}
 
