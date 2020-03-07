@@ -178,7 +178,7 @@ void TCPCommandSysinfo() {
 	sysinfo(&sys);
 	time(&rawtime);
 
-	Log("Otrzymałem polecenie sysinfo",E_DEV);
+	//Log("Otrzymałem polecenie sysinfo",E_DEV);
 	char buff[400];
 
 	XMLCreateReply("sysinfo");
@@ -250,6 +250,10 @@ void TCPCommandStatus() {
 		xmlNewChild(node2, NULL, BAD_CAST "raw_measured_value", BAD_CAST buff);		
 		sprintf(buff, "%i", interfaces[x].override_value);
 		xmlNewChild(node2, NULL, BAD_CAST "override_value", BAD_CAST buff);		
+		sprintf(buff, "%i", interfaces[x].draw);
+		xmlNewChild(node2, NULL, BAD_CAST "draw", BAD_CAST buff);		
+		sprintf(buff, "%i", interfaces[x].dashboard);
+		xmlNewChild(node2, NULL, BAD_CAST "dashboard", BAD_CAST buff);		
 	}
 	
 	XMLSendReply();	

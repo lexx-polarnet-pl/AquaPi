@@ -19,26 +19,11 @@
  * USA.
  *
  */
+ 
+$db->Execute("UPDATE settings SET setting_value = '2020030401' WHERE setting_key = 'db_version'");
 
-include("init.php");
-
-$smarty->assign('title', 'Dashboard');
-
-$sysinfo	= xml2array(IPC_CommandWithReply("sysinfo"));
-$uptime 	= exec("cat /proc/uptime | awk '{ print $1 }'");
-$enabled 	= date("d.m.Y H:i",time() - $sysinfo['aquapi']['sysinfo']['uptime']);
-$status 	= @xml2array(IPC_CommandWithReply("status"));
-$icons		= GetInterfacesIcons();
-$interfaceunits	= GetInterfaceUnits();
-
-$smarty->assign('sysinfo', 		$sysinfo);
-$smarty->assign('enabled', 		$enabled);
-$smarty->assign('time', 		date("H:i"));
-$smarty->assign('interfaceunits', 	$interfaceunits);
-
-$smarty->assign('status', 		$status);
-$smarty->assign('icons', 		$icons);
-$smarty->display('index.tpl');
+$db->Execute("ALTER TABLE interfaces ADD COLUMN interface_dashboard INT(5) NOT NULL DEFAULT 1");
+$db->Execute("ALTER TABLE interfaces ADD COLUMN interface_draw INT(5) NOT NULL DEFAULT 1");
+$db->Execute("ALTER TABLE interfaces ADD COLUMN interface_service_val INT(5) NOT NULL DEFAULT -1");
 
 ?>
-

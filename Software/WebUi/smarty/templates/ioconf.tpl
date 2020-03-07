@@ -33,30 +33,19 @@ function confirmLink(theLink, message)
 											{foreach name=devs from=$devices item="device"}
                                             <div class="tab-pane fade{if $smarty.foreach.devs.first} show active{/if}" id="nav-{$device.interface_id}" role="tabpanel" aria-labelledby="nav-{$device.interface_id}">
 												<div class="row form-group">
+													<div class="col-12">Urządzenie o adresie <b>{$device.interface_address}</b> pracuje jako <b>{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</b></div>
+												</div>
+												<div class="row form-group">
 													<div class="col-2"><label for="InputFriendlyName" class=" form-control-label">Przyjazna nazwa</label></div>
-													<div class="col-4"><input name="interfaces[{$device.interface_id}][name]" value="{$device.interface_name}" class="form-control"></input></div>
-													<div class="col-2"><label for="InputAddressSelector" class=" form-control-label">Adres sprzętowy</label></div>
-													<div class="col-4">{$device.interface_address}</div>
-												</div>
-												<div class="row form-group">
-													<div class="col-2"><label for="InputIconSelector" class=" form-control-label">Ikona</label></div>
-													<div class="col-1"><img src="img/devices/{$device.interface_icon}" id="icon-prev-{$device.interface_id}"></div>
-													<div class="col-3">
-														<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
-															{foreach $icons item=icon}
-															<option data-imagesrc="img/devices/{$icon}"{if $icon==$device.interface_icon} selected{/if}>{$icon}</option>
-															{/foreach}
-														</select>	
-													</div>	
-													<div class="col-2"><label for="InputModeSelector" class=" form-control-label">Ustaw jako</label></div>
-													<div class="col-2">{if $device.interface_type==1}Wejście{elseif $device.interface_type==2}Wyjście binarne{elseif $device.interface_type==3}Wyjście PWM{/if}</div>
-												</div>
-												<div class="row form-group">
-													<div class="col-2"><label for="htmlcolor" class=" form-control-label">Kolor</label></div>
-													<div class="col-2"><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]" class="form-control"></div>		
-													<div class="col-2"><label for="InputConf" class=" form-control-label">Zaneguj wyjście</label></div>
-													<div class="col-2"><input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}></div>
-													<div class="col-2"><label for="uom" class=" form-control-label">Jednostka</label></div>
+													<div class="col-5"><input name="interfaces[{$device.interface_id}][name]" value="{$device.interface_name}" class="form-control"></input></div>
+													{if $device.interface_type==2 || $device.interface_type==3}
+													<div class="col-3"><label for="InputConf" class=" form-control-label">Zaneguj wyjście</label></div>
+													<div class="col-2">
+														<label class="switch switch-3d switch-secondary mr-3"><input type="checkbox" class="switch-input" {if $device.interface_conf eq 1}checked="true"{/if} name="interfaces[{$device.interface_id}][conf]"> <span class="switch-label"></span> <span class="switch-handle"></span></label>
+													</div>
+													{/if}
+													{if $device.interface_type==1}
+													<div class="col-3"><label for="uom" class=" form-control-label">Jednostka</label></div>
 													<div class="col-2">
 														<!-- <input type="checkbox" name="interfaces[{$device.interface_id}][conf]" class="form-check-input" {if $device.interface_conf eq 1} checked{/if}> -->
 														
@@ -67,6 +56,56 @@ function confirmLink(theLink, message)
 														</select>															
 														
 													</div>
+													{/if}
+												</div>
+												<div class="row form-group">
+													<div class="col-2"><label for="InputLocation" class=" form-control-label">Lokalizacja</label></div>
+													<div class="col-5"><input name="interfaces[{$device.interface_id}][location]" value="{$device.interface_location}" class="form-control"></input></div>
+												
+													<div class="col-3"><label for="htmlcolor" class=" form-control-label">Kolor</label></div>
+													<div class="col-1"><input type="color" value="#{$device.interface_htmlcolor}" name="interfaces[{$device.interface_id}][htmlcolor]" class="form-control"></div>	
+												</div>													
+												<div class="row form-group">
+													<div class="col-2"><label for="InputIconSelector" class=" form-control-label">Ikona</label></div>
+													<div class="col-5 input-group">
+														<img src="img/devices/{$device.interface_icon}" id="icon-prev-{$device.interface_id}" class="mr-1"> 
+														<select name="interfaces[{$device.interface_id}][img]" id="IconSelectorId{$device.interface_id}" class="form-control" onchange="document.getElementById('icon-prev-{$device.interface_id}').setAttribute('src','img/devices/' + document.getElementById('IconSelectorId{$device.interface_id}').value);">
+															{foreach $icons item=icon}
+															<option data-imagesrc="img/devices/{$icon}"{if $icon==$device.interface_icon} selected{/if}>{$icon}</option>
+															{/foreach}
+														</select>	
+													</div>													
+													<div class="col-3"><label for="InputConf" class=" form-control-label">Pokazuj na wykresach</label></div>
+													<div class="col-2">
+														<label class="switch switch-3d switch-primary mr-3"><input type="checkbox" class="switch-input" {if $device.interface_draw eq 1}checked="true"{/if} name="interfaces[{$device.interface_id}][draw]"> <span class="switch-label"></span> <span class="switch-handle"></span></label>
+													</div>	
+												</div>													
+												<div class="row form-group">	
+													{if $device.interface_type==2}
+													<div class="col-4"><label for="InputFriendlyName" class=" form-control-label">W trybie serwisowym urządzenie ma zostać</label></div>
+													<div class="col-3">
+														<select name="interfaces[{$device.interface_id}][service_val]" class="form-control">
+															<option value="-1"{if $device.interface_service_val == -1} selected{/if}>Bez znaczenia</option>														
+															<option value="0"{if $device.interface_service_val == 0} selected{/if}>Wyłączone</option>
+															<option value="1"{if $device.interface_service_val == 1} selected{/if}>Załączone</option>
+														</select>
+													</div>
+													{elseif $device.interface_type==3}
+													<div class="col-4"><label for="InputFriendlyName" class=" form-control-label">W trybie serwisowym ustaw PWM na</label></div>
+													<div class="col-2">
+														<input type="number" name="interfaces[{$device.interface_id}][service_val]" class="form-control" value="{$device.interface_service_val}" step=1 min=-1 max=100>
+													</div>		
+													<div class="col-1">
+														%
+													</div>
+													{else}
+													<div class="col-7">
+													</div>
+													{/if}
+													<div class="col-3"><label for="InputConf" class=" form-control-label">Pokazuj na dasboard</label></div>
+													<div class="col-2">
+														<label class="switch switch-3d switch-primary mr-3"><input type="checkbox" class="switch-input" {if $device.interface_dashboard eq 1}checked="true"{/if} name="interfaces[{$device.interface_id}][dashboard]"> <span class="switch-label"></span> <span class="switch-handle"></span></label>
+													</div>													
 												</div>
 												<div class="row form-group">
 													<div class="col-12">
@@ -185,18 +224,18 @@ function load()
 										<div class="col-2"><label for="FullyEditable" class=" form-control-label" id="FullyEditablePrompt">Dodatkowy adres</label></div>
 										<div class="col-4"><input type="text" id="FullyEditable" name="FullyEditable" class="form-control"></div>										
 										<div class="col-2"><label for="InputIconSelector" class=" form-control-label">Ikona</label></div>
-										<div class="col-1"><img src="img/alert.png" id="icon-prev"></div>
-										<div class="col-3">
-										<select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()" class="form-control">
-											{foreach $icons item=icon}
-											<option class="imagebacked">{$icon}</option>
-											{/foreach}
-										</select>
+										<div class="col-4 input-group">
+											<img src="img/alert.png" id="icon-prev" class="mr-1">
+											<select name="InputIconSelector" id="InputIconSelector" onchange="ChangeIcon()" class="form-control">
+												{foreach $icons item=icon}
+												<option class="imagebacked">{$icon}</option>
+												{/foreach}
+											</select>
 										</div>	
 									</div>
 									<div class="row form-group">
 										<div class="col-2"><label for="InputModeSelector" class=" form-control-label">Ustaw jako</label></div>
-										<div class="col-2">
+										<div class="col-3">
 											<select name="InputModeSelector" id="InputModeSelector" onchange="ChangeInput()" class="form-control">
 												<option value="1" id="IOIn">Wejście</option>
 												<option value="2" id="IOOut">Wyjście binarne</option>
@@ -204,12 +243,10 @@ function load()
 											</select>
 										</div>
 										<div class="col-2"><label for="htmlcolor" class=" form-control-label">Kolor</label></div>
-										<div class="col-4"><input type="color" id="htmlcolor" name="htmlcolor" class="form-control"></div>						
-									</div>
-									<div class="row form-group">
+										<div class="col-2"><input type="color" id="htmlcolor" name="htmlcolor" class="form-control"></div>						
 										<div class="col-2"><label for="InputConf" class=" form-control-label">Zaneguj wyjście</label></div>
-										<div class="col-2">
-											<input type="checkbox" name="InputConf" class="form-check-input">
+										<div class="col-1">
+											<label class="switch switch-3d switch-secondary mr-3"><input type="checkbox" class="switch-input" name="InputConf"> <span class="switch-label"></span> <span class="switch-handle"></span></label>
 										</div>
 									</div>									
 								</div>

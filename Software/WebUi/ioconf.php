@@ -48,7 +48,10 @@ if(array_key_exists('action', $_GET))
 	if($_POST) {
 		foreach ($_POST['interfaces'] as $key => $interface) {
 			if (isset($interface['conf'])) { $conf=1; } else { $conf=0; }
-			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ?, interface_uom = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$interface['uom'],$key));
+			if (isset($interface['draw'])) { $draw=1; } else { $draw=0; }
+			if (isset($interface['dashboard'])) { $dashboard=1; } else { $dashboard=0; }
+			if (!isset($interface['service_val'])) { $interface['service_val'] = -1; }
+			$db->Execute('UPDATE interfaces SET interface_name = ?, interface_icon = ?, interface_htmlcolor = ?, interface_conf = ?, interface_draw = ?, interface_dashboard = ?, interface_uom = ?, interface_service_val = ?, interface_location = ? WHERE interface_id=?', array($interface['name'],$interface['img'],substr($interface['htmlcolor'],1),$conf,$draw,$dashboard,$interface['uom'],$interface['service_val'],$interface['location'],$key));
 		}
 		ReloadDaemonConfig();
 	}

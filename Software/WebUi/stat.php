@@ -37,7 +37,14 @@ switch (@$_GET['limit']) {
 		$limit = time() - (24 * 60 * 60);
 }
 
-$interfaces = GetInterfaces();
+function GetInterfacesForStats()
+{
+	global $db;
+	$interfaces	= $db->GetAll('SELECT * FROM interfaces WHERE interface_deleted=0 AND interface_draw = 1 ORDER BY interface_id ASC');
+	return($interfaces);
+}
+
+$interfaces = GetInterfacesForStats();
 foreach($interfaces as $interface => $interface_data) {
 	$interfaces[$interface]['interface_stat'] = $db->GetAll('select stat_date,stat_value from stats where stat_interfaceid = ? and stat_date > ?',array($interface_data['interface_id'],$limit));
 }

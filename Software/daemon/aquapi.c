@@ -117,7 +117,7 @@ void ReadConf() {
 	// Wczytanie interface'ów
 	Log("Wczytanie interface'ów",E_DEV);
 	interfaces_count = -1;
-	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_conf FROM interfaces WHERE interface_deleted = 0");
+	DB_Query("SELECT interface_id,interface_address,interface_name,interface_type,interface_conf,interface_draw,interface_service_val,interface_dashboard FROM interfaces WHERE interface_deleted = 0");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		interfaces_count++;
@@ -130,6 +130,9 @@ void ReadConf() {
 		} else {
 			interfaces[interfaces_count].conf = 0;
 		}
+		interfaces[interfaces_count].draw = atof(row[5]);
+		interfaces[interfaces_count].service_val = atof(row[6]);
+		interfaces[interfaces_count].dashboard = atof(row[7]);
 	}	
 	mysql_free_result(result);
 	

@@ -73,6 +73,8 @@ struct _interfaces {
 	int override_value;
 	int override_expire;
 	int was_error_last_time;
+	int service_val;
+	int dashboard;
 	double conf;
 } interfaces[100];
 

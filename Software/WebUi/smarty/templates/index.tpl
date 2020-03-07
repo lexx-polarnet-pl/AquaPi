@@ -1,7 +1,7 @@
 {include "header.tpl"}
 
 <!-- czy daemon działa -->
-{if $daemon_data->daemon->pid == null}
+{if $status.aquapi.daemon.pid == null}
             <div class="col-sm-12">
                 <div class="alert  alert-danger alert-dismissible fade show" role="alert">
                     <span class="badge badge-pill badge-danger">Uwaga</span> Brak komunikacji z daemonem. Część informacji nie jest dostępna.
@@ -14,7 +14,7 @@
 			<div class="card-columns px-md-3">			
 <!-- sensory -->
 {foreach from=$status.aquapi.devices.device item="device"}
-{if $device.type == 1}	
+{if $device.type == 1 && $device.dashboard == 1}	
 				<div class="card">
 					<div class="card-body">
 						<div class="stat-widget-one">
@@ -34,7 +34,7 @@
 {/foreach}
 <!-- wyjścia -->
 {foreach from=$status.aquapi.devices.device item="device"}
-{if $device.type == 2 || $device.type == 3}	
+{if ( $device.type == 2 || $device.type == 3 ) && $device.dashboard == 1}	
 				<div class="card">
 					<div class="card-body">
 						<div class="stat-widget-one">
@@ -112,7 +112,7 @@ function AjaxProcess(xml) {
 		} else if (dev_state == 1) {
 			document.getElementById(dev_id).innerHTML = "<span class='badge badge-success'>Włączony</span>";
 		} else {
-			document.getElementById(dev_id).innerHTML =  "<span class='badge badge-danger'>Wyłączony</span>";
+			document.getElementById(dev_id).innerHTML = "<span class='badge badge-danger'>Wyłączony</span>";
 		}
 	};
 	if (dev_type == 3) { // pwm
