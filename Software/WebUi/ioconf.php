@@ -77,7 +77,7 @@ foreach ($device_list->devicelist->device as $value) {
 	}
 }
 
-$interfaces = GetInterfaces();
+$interfaces = GetInterfacesAddressSorted();
 $uom = GetUnits();
 
 $smarty->assign('icons', 		$icons);

@@ -57,6 +57,13 @@ function GetInterfaces()
 	return($interfaces);
 }
 
+function GetInterfacesAddressSorted()
+{
+	global $db;
+	$interfaces	= $db->GetAll('SELECT * FROM interfaces WHERE interface_deleted=0 ORDER BY interface_address ASC');
+	return($interfaces);
+}
+
 function GetInterfaceUnits()
 {
 	global $db;
