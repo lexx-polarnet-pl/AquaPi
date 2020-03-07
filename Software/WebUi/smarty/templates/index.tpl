@@ -99,35 +99,38 @@ function AjaxProcess(xml) {
 	dev_measured_value = parseFloat(x[i].getElementsByTagName("measured_value")[0].childNodes[0].nodeValue);
 	dev_state = x[i].getElementsByTagName("state")[0].childNodes[0].nodeValue;
 	dev_override_value = parseInt(x[i].getElementsByTagName("override_value")[0].childNodes[0].nodeValue);
-	if (dev_type == 1) { // sensory
-		if (dev_measured_value <= -100) {
-			document.getElementById(dev_id).innerHTML = "Błąd odczytu";
-		} else {
-			document.getElementById(dev_id).innerHTML = dev_measured_value.toFixed(1);
-		}
-	};
-	if (dev_type == 2) { // wejścia
-		if (dev_state == -1) { 
-			document.getElementById(dev_id).innerHTML = "<span class='badge badge-warning'>Nieokreślony</span>";
-		} else if (dev_state == 1) {
-			document.getElementById(dev_id).innerHTML = "<span class='badge badge-success'>Włączony</span>";
-		} else {
-			document.getElementById(dev_id).innerHTML = "<span class='badge badge-danger'>Wyłączony</span>";
-		}
-	};
-	if (dev_type == 3) { // pwm
-		if (dev_state == -1) { // stan nieokreślony
-			document.getElementById(dev_id).innerHTML = "<span class='badge badge-warning'>Nieokreślony</span>";
-		} else {
-			document.getElementById(dev_id).innerHTML = "<span class='badge badge-info'>PWM:" + dev_state +"%</span>";
-		}
-	};
-	if (dev_type == 2 || dev_type == 3 ) { // tryb działania dla wyjść
-		if (dev_override_value == -1) {
-			document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-secondary'>Tryb automatyczny</span>";
-		} else {
-			document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-primary'>Tryb ręczny</span>";
-		}
+	dev_dashboard = parseInt(x[i].getElementsByTagName("dashboard")[0].childNodes[0].nodeValue);
+	if (dev_dashboard == 1) { // pokazuj na dashboard
+		if (dev_type == 1) { // sensory
+			if (dev_measured_value <= -100) {
+				document.getElementById(dev_id).innerHTML = "Błąd odczytu";
+			} else {
+				document.getElementById(dev_id).innerHTML = dev_measured_value.toFixed(1);
+			}
+		};
+		if (dev_type == 2) { // wejścia
+			if (dev_state == -1) { 
+				document.getElementById(dev_id).innerHTML = "<span class='badge badge-warning'>Nieokreślony</span>";
+			} else if (dev_state == 1) {
+				document.getElementById(dev_id).innerHTML = "<span class='badge badge-success'>Włączony</span>";
+			} else {
+				document.getElementById(dev_id).innerHTML = "<span class='badge badge-danger'>Wyłączony</span>";
+			}
+		};
+		if (dev_type == 3) { // pwm
+			if (dev_state == -1) { // stan nieokreślony
+				document.getElementById(dev_id).innerHTML = "<span class='badge badge-warning'>Nieokreślony</span>";
+			} else {
+				document.getElementById(dev_id).innerHTML = "<span class='badge badge-info'>PWM:" + dev_state +"%</span>";
+			}
+		};
+		if (dev_type == 2 || dev_type == 3 ) { // tryb działania dla wyjść
+			if (dev_override_value == -1) {
+				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-secondary'>Tryb automatyczny</span>";
+			} else {
+				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-primary'>Tryb ręczny</span>";
+			}
+		};
 	};
   };
 }

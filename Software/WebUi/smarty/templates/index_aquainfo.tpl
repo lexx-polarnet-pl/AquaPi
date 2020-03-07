@@ -30,10 +30,10 @@
 	    <td>Wersja AquaPi/DB:</td><td>{$aquapi_ver}/{$CONFIG.db_version}</td>
 	</tr>
 	<tr>
-	    <td>PID demona:</td><td>{if $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->pid}{/if}</td>
+	    <td>PID demona:</td><td>{if $status.aquapi.daemon.pid == null}Nie uruchomiony{else}{$status.aquapi.daemon.pid}{/if}</td>
 	</tr>
 	<tr>
-	    <td>Kompilacja demona:</td><td>{if  $daemon_data->daemon->pid == null}Nie uruchomiony{else}{$daemon_data->daemon->compilation_date|date_format:"%Y/%m/%d&nbsp;%H:%M"}{/if}</td>
+	    <td>Kompilacja demona:</td><td>{if  $status.aquapi.daemon.pid == null}Nie uruchomiony{else}{$status.aquapi.daemon.compilation_date|date_format:"%Y/%m/%d&nbsp;%H:%M"}{/if}</td>
 	</tr>
     </table>
 
