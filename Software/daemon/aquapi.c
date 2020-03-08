@@ -111,6 +111,7 @@ void ReadConf() {
 	MYSQL_RES *result;
 	MYSQL_ROW row;
 	int x;
+	char buff[200];
 
 	Log("Odczyt konfiguracji",E_DEV);
 	
@@ -157,6 +158,9 @@ void ReadConf() {
 	ModTemperature_ReadSettings();
 	ModCo2_ReadSettings();
 	
+	DB_GetSetting("service_mode_input",buff);
+	specials.service_mode_input = atof(buff);	
+	
 	Log("Konfiguracja odczytana",E_DEV);
 
 	SetupPorts();
@@ -198,6 +202,34 @@ void ProcessPortStates() {
 				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
 				DB_Query(buff);				
 			}
+		} else if (specials.is_service_mode == 1 && interfaces[x].service_val != -1) {
+			// ustawienie wartości wyjść na tryb serwisowy
+			if (interfaces[x].state != interfaces[x].service_val) {
+				// konieczna jest zmiana stanu wyjścia
+				interfaces[x].state = interfaces[x].service_val;					
+				if (interfaces[x].type == DEV_OUTPUT) {
+					if (interfaces[x].conf == 0) {
+						ChangePortState(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortState(interfaces[x].address,1-interfaces[x].state);
+					}
+					if (interfaces[x].state == 1) {
+						sprintf(buff,"Załączam %s w trybie serwisowym",interfaces[x].name);
+					} else {
+						sprintf(buff,"Wyłączam %s w trybie serwisowym",interfaces[x].name);
+					}
+				} else if (interfaces[x].type == DEV_OUTPUT_PWM) {
+					if (interfaces[x].conf == 0) {
+						ChangePortStatePWM(interfaces[x].address,interfaces[x].state);
+					} else {
+						ChangePortStatePWM(interfaces[x].address,100-interfaces[x].state);
+					}
+					sprintf(buff,"Ustawiam PWM na %i%% dla wyjścia %s w trybie serwisowym",interfaces[x].state,interfaces[x].name);
+				}
+				Log(buff,E_INFO);	
+				sprintf(buff,"INSERT INTO stats (stat_date, stat_interfaceid, stat_value) VALUES (%ld, %d, %i)",rawtime, interfaces[x].id, interfaces[x].state);
+				DB_Query(buff);				
+			}			
 		} else {
 			if ((interfaces[x].state != interfaces[x].new_state) && (interfaces[x].new_state != -1)) {
 				// konieczna jest zmiana stanu wyjścia
@@ -302,6 +334,16 @@ void process() {
 		ModTemperature_Process();
 		ModCo2_Process();
 		
+		// Tryb serwisowy
+		if (specials.is_service_mode == 0 && GetValFromInterface(specials.service_mode_input) > 0.5) {
+			specials.is_service_mode = 1;
+			Log("Wchodzę w tryb serwisowy",E_INFO);
+		}
+		if (specials.is_service_mode == 1 && GetValFromInterface(specials.service_mode_input) < 0.5) {
+			specials.is_service_mode = 0;
+			Log("Wychodzę z trybu serwisowego",E_INFO);
+		}		
+		
 		// wszystko załatwione, to teraz faktycznie zmień stan portów (jeśli potrzeba)
 		ProcessPortStates();
 		
@@ -345,6 +387,8 @@ int main() {
 	config.reload_freq	= -1;		// co ile robić przeładowanie konfiguracji (-1 oznacza że tylko po otrzymaniu komendy przez TCP)
 	config.bind_address	= "127.0.0.1";	// domyślny adres IP na którym demon ma nasłuchiwać połączeń
 	config.bind_port	= 6580;		// domyślny port na którym demon ma nasłuchiwać
+	
+	specials.is_service_mode = 0;
 
 	if (ini_parse("/etc/aquapi.ini", handler, &config) < 0) {
 		printf("Can't load '/etc/aquapi.ini'\n");

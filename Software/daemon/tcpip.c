@@ -77,6 +77,10 @@ void XMLCreateDaemonEntry() {
 	xmlNewChild(node, NULL, BAD_CAST "pid", BAD_CAST buff);
 	sprintf(buff, "%s %s", build_date,build_time);	
 	xmlNewChild(node, NULL, BAD_CAST "compilation_date", BAD_CAST buff);
+	sprintf(buff, "%i", specials.is_night);
+	xmlNewChild(node, NULL, BAD_CAST "is_night", BAD_CAST buff);	
+	sprintf(buff, "%i", specials.is_service_mode);
+	xmlNewChild(node, NULL, BAD_CAST "is_service_mode", BAD_CAST buff);	
 }
 
 
@@ -254,6 +258,8 @@ void TCPCommandStatus() {
 		xmlNewChild(node2, NULL, BAD_CAST "draw", BAD_CAST buff);		
 		sprintf(buff, "%i", interfaces[x].dashboard);
 		xmlNewChild(node2, NULL, BAD_CAST "dashboard", BAD_CAST buff);		
+		sprintf(buff, "%i", interfaces[x].service_val);
+		xmlNewChild(node2, NULL, BAD_CAST "service_value", BAD_CAST buff);			
 	}
 	
 	XMLSendReply();	

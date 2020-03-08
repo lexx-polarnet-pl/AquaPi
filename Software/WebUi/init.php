@@ -91,6 +91,7 @@ $my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "f
 $my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 				"url" => "temp.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" => "fa-flask", 					"url" => "co2.php",		"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw"   , "reload" => 0);
+$my_menu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 					"url" => "service.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-bell", 					"url" => "alerts.php",	"acl" => "rw"   , "reload" => 0);
 $my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
 $my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r"    , "reload" => 1);

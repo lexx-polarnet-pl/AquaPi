@@ -64,7 +64,7 @@
 								{else}
 								<div class="stat-digit"><span id="{$device.id}">{if $device.state == -1}<span class="badge badge-warning">Nieokreślony</span>{else}<span class="badge badge-info">PWM:{$device.state}%</span>{/if}</span></div>
 								{/if}
-								<div class="stat-text"><span id="mode_{$device.id}">{if $device.override_value == -1}<span class="badge badge-secondary">Tryb automatyczny</span>{else}<span class="badge badge-primary">Tryb ręczny</span>{/if}</span></div>
+								<div class="stat-text"><span id="mode_{$device.id}">{if $device.override_value != -1}<span class="badge badge-primary">Tryb ręczny</span>{elseif $device.service_value != -1 && $status.aquapi.daemon.is_service_mode == 1}<span class="badge badge-warning">Tryb serwisowy</span>{else}<span class="badge badge-secondary">Tryb automatyczny</span>{/if}</span></div>
 							</div>
 						</div>
 					</div>
@@ -93,6 +93,8 @@ function AjaxProcess(xml) {
   var i;
   var xmlDoc = xml.responseXML;
   var x = xmlDoc.getElementsByTagName("device");
+  var service_mode = parseInt(xmlDoc.getElementsByTagName("is_service_mode")[0].childNodes[0].nodeValue);
+
   for (i = 0; i <x.length; i++) {
 	dev_id = x[i].getElementsByTagName("id")[0].childNodes[0].nodeValue;
 	dev_type = parseInt(x[i].getElementsByTagName("type")[0].childNodes[0].nodeValue);
@@ -100,6 +102,8 @@ function AjaxProcess(xml) {
 	dev_state = x[i].getElementsByTagName("state")[0].childNodes[0].nodeValue;
 	dev_override_value = parseInt(x[i].getElementsByTagName("override_value")[0].childNodes[0].nodeValue);
 	dev_dashboard = parseInt(x[i].getElementsByTagName("dashboard")[0].childNodes[0].nodeValue);
+	dev_service_value = parseInt(x[i].getElementsByTagName("service_value")[0].childNodes[0].nodeValue);
+	
 	if (dev_dashboard == 1) { // pokazuj na dashboard
 		if (dev_type == 1) { // sensory
 			if (dev_measured_value <= -100) {
@@ -125,10 +129,13 @@ function AjaxProcess(xml) {
 			}
 		};
 		if (dev_type == 2 || dev_type == 3 ) { // tryb działania dla wyjść
-			if (dev_override_value == -1) {
-				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-secondary'>Tryb automatyczny</span>";
+			if (dev_override_value != -1) {
+				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-primary'>Tryb ręczny</span>";	
+			} else if (service_mode == 1 && dev_service_value != -1) {
+				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-warning'>Tryb serwisowy</span>";					
 			} else {
-				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-primary'>Tryb ręczny</span>";
+				document.getElementById("mode_" + dev_id).innerHTML = "<span class='badge badge-secondary'>Tryb automatyczny</span>";
+
 			}
 		};
 	};

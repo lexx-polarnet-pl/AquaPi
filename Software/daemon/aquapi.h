@@ -109,6 +109,8 @@ configuration config;
 
 struct _specials {
 	int is_night;
+	int is_service_mode;
+	int service_mode_input;
 	int night_ns;
 	int seconds_since_midnight;
 	int last_sec_run;
