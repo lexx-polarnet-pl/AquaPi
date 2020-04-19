@@ -2,6 +2,7 @@
 /Software/WebUi/img/unused/*
 /Software/ncclient/*
 /Software/daemon/test*
+/Software/daemon/wiringPi
 /Software/aquapi-backup.sql
 /Hardware/*/*.b*
 /Hardware/*/*.s*
