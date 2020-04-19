@@ -29,6 +29,7 @@
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <pcf8574.h>
+#include <ads1115.h>
 #include <rb.h>
 #include "inputs.c"
 #include "outputs.c"
@@ -95,6 +96,20 @@ void ScanI2CBus() {
 			pcf8574Setup (PCF8574_BASE_PIN+i*8,PCF8574_BASE_ADDR+i) ;
 		}
 	}
+
+	// teraz poszukajmy przetworników ADC na ADS1115
+	for (i = 0; i < 4; i++) {	// zakładamy 4 przetworniki max
+		hardware.i2c_ADS1115[i].fd = wiringPiI2CSetup (ADS1115_BASE_ADDR+i);
+		// nie ma innego (?) sposobu na potwierdzenie czy urządzenie istnieje niż próba zapisu
+		//hardware.i2c_ADS1115[i].state = wiringPiI2CWrite (hardware.i2c_PCF8574[i].fd, wiringPiI2CRead(hardware.i2c_PCF8574[i].fd)); 
+		//if (hardware.i2c_PCF8574[i].state != -1) {
+			sprintf(buff,"Wykryty osprzęt: Przetwornik analogowo-cyfrowy ADS1115 o adresie %#x",ADS1115_BASE_ADDR+i);
+			Log(buff,E_DEV);
+			// dodatkowe porty trzeba zarejestrować
+			ads1115Setup (ADS1115_BASE_PIN+i*8,ADS1115_BASE_ADDR+i) ;
+		//}
+	}
+	
 	//sprawdzamy czy jest obecne MinipH
 	hardware.i2c_MinipH.fd = wiringPiI2CSetup(MINIPH_ADDR);
 	hardware.i2c_MinipH.state = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );

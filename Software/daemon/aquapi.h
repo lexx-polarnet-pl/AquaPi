@@ -125,6 +125,7 @@ struct I2CDEV {
 struct _hardware {
 	int RaspiBoardVer;
 	struct I2CDEV i2c_PCF8574[4];
+	struct I2CDEV i2c_ADS1115[4];
 	struct I2CDEV i2c_MinipH;
 } hardware;
 
@@ -132,4 +133,6 @@ struct _hardware {
 // stałe związane z i2c
 const int PCF8574_BASE_ADDR = 0x20;	// od tego adresu i2c zaczynamy szukać PCF8574
 const int PCF8574_BASE_PIN = 64;	// od tego numeru zaczynamy rejestrować piny w WiringPi
+const int ADS1115_BASE_ADDR = 0x48; // od tego adresu i2c zaczynamy szukać ADS1115
+const int ADS1115_BASE_PIN = 128;	// od tego numeru zaczynamy rejestrować piny w WiringPi 
 const int MINIPH_ADDR = 0x4D;

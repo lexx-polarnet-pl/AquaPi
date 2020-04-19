@@ -123,4 +123,67 @@ typedef struct
 
 </programlisting>
     </sect1>
+    <sect1 id="daemon">
+        <title>Urządzenia I2C</title>
+        <para>Daemon skanuje szynę I2C, i w momencie wykrycia pod danym adresem podpiętego urządzenia, zakłada że takie urządzenie jest do niego podpięte, i umożliwi nim sterowanie.
+			Nie ma możliwości weryfikacji czy podpięte jest dobre urządzenie, rozpoznawanie typu nastepuje tylko po adresie.</para>	
+		<table><title>Spis tabel</title>
+			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
+				<colspec colname='Adres'/>
+				<colspec colname='Urządzenie'/>
+				<colspec colname='Opis'/>
+				<thead>
+					<row>
+						<entry>Adres</entry>
+						<entry>Urządzenie</entry>
+						<entry>Opis</entry>
+					</row>
+				</thead>
+				<tbody>
+					<row>
+						<entry>0x20</entry>
+						<entry>PCF8574</entry>
+						<entry>Ekspander wyprowadzeń I2C, z 8 portami we/wy</entry>
+					</row>
+					<row>
+						<entry>0x21</entry>
+						<entry>PCF8574</entry>
+						<entry>Ekspander wyprowadzeń I2C, z 8 portami we/wy</entry>
+					</row>
+					<row>
+						<entry>0x22</entry>
+						<entry>PCF8574</entry>
+						<entry>Ekspander wyprowadzeń I2C, z 8 portami we/wy</entry>
+					</row>
+					<row>
+						<entry>0x23</entry>
+						<entry>PCF8574</entry>
+						<entry>Ekspander wyprowadzeń I2C, z 8 portami we/wy</entry>
+					</row>
+					<row>
+						<entry>0x48</entry>
+						<entry>ADS1115</entry>
+						<entry>Przetwornik ADC 16-bitowy 4-kanałowy I2C z programowym wzmocnieniem</entry>
+					</row>					<row>
+						<entry>0x49</entry>
+						<entry>ADS1115</entry>
+						<entry>Przetwornik ADC 16-bitowy 4-kanałowy I2C z programowym wzmocnieniem</entry>
+					</row>					<row>
+						<entry>0x4A</entry>
+						<entry>ADS1115</entry>
+						<entry>Przetwornik ADC 16-bitowy 4-kanałowy I2C z programowym wzmocnieniem</entry>
+					</row>					<row>
+						<entry>0x4B</entry>
+						<entry>ADS1115</entry>
+						<entry>Przetwornik ADC 16-bitowy 4-kanałowy I2C z programowym wzmocnieniem</entry>
+					</row>
+					<row>
+						<entry>0x4D</entry>
+						<entry>MiniPH</entry>
+						<entry>Mostek pomiarowy pH od Sparky's Widgets</entry>
+					</row>						
+				</tbody>
+			</tgroup>
+		</table>			
+	</sect1>
 </chapter>
