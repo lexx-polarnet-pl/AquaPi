@@ -345,11 +345,27 @@ void TCPCommandDeviceList() {
 		// i2c (ADS1115)
 		for (i = 0; i < 4; i++) {
 			if (hardware.i2c_ADS1115[i].state != -1) {
-				for(x = 0; x <= 7; x++) {
+				// piny standardowe
+				for(x = 0; x <= 3; x++) {
 					sprintf(address,"%s%i",PORT_RPI_I2C_ADS1115_PREFIX,ADS1115_BASE_PIN+i*8+x);
-					sprintf(description,"ADS1115 adres %#x, pin numer %i",ADS1115_BASE_ADDR+i,x);
+					sprintf(description,"ADS1115 adres %#x, pin A%i",ADS1115_BASE_ADDR+i,x);
 					XMLCreateDeviceEntry(node,"ADS1115",address,"yes","no","no",description, NULL, NULL);
 				}
+				sprintf(address,"%s%i",PORT_RPI_I2C_ADS1115_PREFIX,ADS1115_BASE_PIN+i*8+4);
+				sprintf(description,"ADS1115 adres %#x, pin A0-A1",ADS1115_BASE_ADDR+i);
+				XMLCreateDeviceEntry(node,"ADS1115",address,"yes","no","no",description, NULL, NULL);				
+				
+				sprintf(address,"%s%i",PORT_RPI_I2C_ADS1115_PREFIX,ADS1115_BASE_PIN+i*8+5);
+				sprintf(description,"ADS1115 adres %#x, pin A2-A3",ADS1115_BASE_ADDR+i);
+				XMLCreateDeviceEntry(node,"ADS1115",address,"yes","no","no",description, NULL, NULL);	
+				
+				sprintf(address,"%s%i",PORT_RPI_I2C_ADS1115_PREFIX,ADS1115_BASE_PIN+i*8+6);
+				sprintf(description,"ADS1115 adres %#x, pin A0-A3",ADS1115_BASE_ADDR+i);
+				XMLCreateDeviceEntry(node,"ADS1115",address,"yes","no","no",description, NULL, NULL);		
+				
+				sprintf(address,"%s%i",PORT_RPI_I2C_ADS1115_PREFIX,ADS1115_BASE_PIN+i*8+7);
+				sprintf(description,"ADS1115 adres %#x, pin A1-A3",ADS1115_BASE_ADDR+i);
+				XMLCreateDeviceEntry(node,"ADS1115",address,"yes","no","no",description, NULL, NULL);					
 			}
 		}		
 		// i2c (MinipH)
