@@ -21,7 +21,7 @@
  *
  */
 
-define('DBVERSION', '2020030801'); 	// here should be always the newest version of database!
+define('DBVERSION', '2020042001'); 	// here should be always the newest version of database!
 									// it placed here to avoid read disk every time when we call this file.
 
 /*
