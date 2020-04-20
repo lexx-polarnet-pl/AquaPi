@@ -29,7 +29,7 @@ const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wspa
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
 const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
-const char *PORT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115";
+const char *PORT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 
@@ -38,7 +38,7 @@ const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
-const char *INPUT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115";
+const char *INPUT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 
 //sensory systemowe
 //const char *INPUT_SYSTEM_CPUTEMP = "rpi:system:cputemp";
