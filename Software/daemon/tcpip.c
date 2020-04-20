@@ -332,7 +332,7 @@ void TCPCommandDeviceList() {
 				XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","no",description, NULL, NULL);
 			}
 		}	
-		// sprawdź też i2c
+		// sprawdź też i2c (PCF8574)
 		for (i = 0; i < 4; i++) {
 			if (hardware.i2c_PCF8574[i].state != -1) {
 				for(x = 0; x <= 7; x++) {
@@ -342,6 +342,17 @@ void TCPCommandDeviceList() {
 				}
 			}
 		}
+		// i2c (ADS1115)
+		for (i = 0; i < 4; i++) {
+			if (hardware.i2c_ADS1115[i].state != -1) {
+				for(x = 0; x <= 7; x++) {
+					sprintf(address,"%s%i",PORT_RPI_GPIO_PREFIX,ADS1115_BASE_PIN+i*8+x);
+					sprintf(description,"ADS1115 adres %#x, pin numer %i",ADS1115_BASE_ADDR+i,x);
+					XMLCreateDeviceEntry(node,"gpio",address,"yes","no","no",description, NULL, NULL);
+				}
+			}
+		}		
+		// i2c (MinipH)
 		if (hardware.i2c_MinipH.state != -1) {
 			XMLCreateDeviceEntry(node,"MinipH",INPUT_RPI_I2C_MINIPH_PREFIX,"yes","no","no","MinipH - mostek pomiarowy pH", NULL, NULL);
 		}		

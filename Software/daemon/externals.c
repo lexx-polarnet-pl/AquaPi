@@ -100,14 +100,14 @@ void ScanI2CBus() {
 	// teraz poszukajmy przetworników ADC na ADS1115
 	for (i = 0; i < 4; i++) {	// zakładamy 4 przetworniki max
 		hardware.i2c_ADS1115[i].fd = wiringPiI2CSetup (ADS1115_BASE_ADDR+i);
-		// nie ma innego (?) sposobu na potwierdzenie czy urządzenie istnieje niż próba zapisu
-		//hardware.i2c_ADS1115[i].state = wiringPiI2CWrite (hardware.i2c_PCF8574[i].fd, wiringPiI2CRead(hardware.i2c_PCF8574[i].fd)); 
-		//if (hardware.i2c_PCF8574[i].state != -1) {
+		// nie ma innego (?) sposobu na potwierdzenie czy urządzenie istnieje niż próba odczytu
+		hardware.i2c_ADS1115[i].state = wiringPiI2CRead(hardware.i2c_ADS1115[i].fd);
+		if (hardware.i2c_ADS1115[i].state != -1) {
 			sprintf(buff,"Wykryty osprzęt: Przetwornik analogowo-cyfrowy ADS1115 o adresie %#x",ADS1115_BASE_ADDR+i);
 			Log(buff,E_DEV);
 			// dodatkowe porty trzeba zarejestrować
 			ads1115Setup (ADS1115_BASE_PIN+i*8,ADS1115_BASE_ADDR+i) ;
-		//}
+		}
 	}
 	
 	//sprawdzamy czy jest obecne MinipH
