@@ -1,17 +1,55 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <chapter id="install">
     <title>Instalacja AquaPi</title>
-    <!--<sect1 id="install-quick">
+    <sect1 id="install-quick">
 		<title>Instalacja "szybka"</title>
-		<para>Możesz mnie poprosić o ostatni obraz AquaPi jaki posiadam. Ten obraz (o ile będzie stabilny) powinien zawierać już 
-		skonfigurowaną i działającą wersję AquaPi. Taki obraz wystarczy zgrać na kartę, uruchomić system, skonfigurować pod
-		swoje potrzeby (przez przeglądarkę) i cieszyć się działającym systemem.</para>
-	</sect1>-->
+		<para>Na stronie projektu znajdziesz gotowy do wgrania na kartę obraz systemu wraz z zainstalowanym AquaPi. Obraz ten zawiera czystą instalację, taką samą
+		jak opisaną w sekcji "instalacja standardowa", za wyjatkiem jednego dodatku - w obrazie tym włączona jest obsługa SSH, zatem do malinki można logować się zdalnie.</para>
+		<para>Obraz można nagrać na kartę na kilka sposobów, poniższy sposób pokazuje jak nagrać obaz za pomocą programu Win32 Disk Imager.</para>
+			<figure>
+				<title>Win32 Disk Imager</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="install/WIN32_DISK_IMAGER.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>		
+		<para>Aby nagrać obraz na kartę, należy:</para>
+<orderedlist numeration="arabic">
+<listitem>
+<para>Ściągnąć obraz karty ze strony</para>
+</listitem>
+<listitem>
+<para>Rozpakować obraz</para>
+</listitem>
+<listitem>
+<para>Uruchomić Win32 Disk Imager</para>
+</listitem>
+<listitem>
+<para>Wybrać <guimenu>Plik Obrazu</guimenu></para>
+</listitem>
+<listitem>
+<para>Wybrać <guimenu>Urządzenie</guimenu></para>
+</listitem>
+<listitem>
+<para>Klikąć <guimenu>Zapisz</guimenu> i zaakceptować dalsze ostrzeżenia</para>
+</listitem>
+<listitem>
+<para>Po zapisaniu obrazu, przełożyć kartę do Raspberry Pi</para>
+</listitem>
+<listitem>
+<para>Uruchomić Raspberry, i poczekać aż zakończy się uruchamiać</para>
+</listitem>
+<listitem>
+<para>Uruchomić przeglądarkę WWW i jako adres strony podać adres IP Raspberry Pi</para>
+</listitem>
+</orderedlist>		
+	</sect1>
 	<sect1 id="install-standard"> 
 		<title>Instalacja standardowa</title>
 		<sect2 id="install-standard-1">
 			<title>Ściągnij i zainstaluj najnowszą wersję rapsbiana.</title>
-			<para>Na potrzebę tego poradnika założono że użytkownik zainstaluje Raspbian Buster Lite. Kroki instalacji zostały przetestowane na wersji Raspbiana z dnia 2019-09-26.</para>
+			<para>Na potrzebę tego poradnika założono że użytkownik zainstaluje Raspbian Buster Lite. Kroki instalacji zostały przetestowane na wersji Raspbiana z dnia 2020-02-13.</para>
 			<tip><title>Podpowiedź</title><para>Instrukcję instalacji Raspbiana znajdziesz na stronie poświęconej Raspbery Pi.</para></tip>
 		</sect2>
 		<sect2 id="install-standard-2">
@@ -64,6 +102,7 @@
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install libmariadb-dev-compat</userinput> 
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install libxml2-dev</userinput> 
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install lighttpd</userinput> 
+<prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install php-cgi php-mysql php-xml</userinput>
 </screen>	
 		</sect2>
 <sect2 id="install-standard-6">
@@ -110,7 +149,6 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 <prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software/daemon $ </prompt><userinput>sudo cp aquapi /usr/local/aquapi/</userinput>
 </screen>	
 
-		  
 		</sect2>
 		<sect2 id="install-standard-10">
           <title>Dodaj skrypty do RC</title>
@@ -123,7 +161,7 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 </screen>
 		</sect2>
 		
-				<sect2 id="install-standard-12">
+		<sect2 id="install-standard-11">
           <title>Stwórz plik aquapi.ini</title>
             <para>Najprościej skopiować przykładowy plik zawarty w pakiecie do katalogu /etc i dokonać edycji:
 <screen>
@@ -132,31 +170,47 @@ Welcome to the MariaDB monitor.  Commands end with ; or \g.
 </screen></para>	  
 		</sect2>
 		
-
-
-<sect2 id="install-standard-11">
-		<title>Skopiuj pliki z WebUI</title>
-		  <para>Teraz skopiuj pliki zawierające WebUI do katalogu /var/www/</para>
+		<sect2 id="install-standard-12">
+			<title>Skopiuj pliki z WebUI</title>
+			<para>Teraz skopiuj pliki zawierające WebUI do katalogu /var/www/</para>
 <screen>
-<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo cp -r WebUI/* /var/www/html/</userinput> 
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo cp -r WebUi/* /var/www/html/</userinput> 
 <prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 775 -R /var/www/html/</userinput> 
 <prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo mkdir /var/www/html/smarty/templates_c/</userinput>
 <prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo chmod 777 /var/www/html/smarty/templates_c/</userinput>
-</screen>		
-		<para>Tutaj jeszcze jakieś voodoo trzeba zrobić żeby to działało lol https://pimylifeup.com/raspberry-pi-lighttpd/ może to:
-		generalnie to co powyżej ale bez kroku 7 i 10
-		apt install php-cgi php-mysql php-xml
-		sudo lighttpd-enable-mod fastcgi
-		sudo lighttpd-enable-mod fastcgi-php		
-		</para>
+</screen>	
 		</sect2>
 		<sect2 id="install-standard-13">
+			<title>Konfiguracja Lighttpd</title>
+			<para>Teraz należy włączyć obsługę php w lightttpd</para>
+<screen>
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo lighttpd-enable-mod fastcgi</userinput>
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo lighttpd-enable-mod fastcgi-php</userinput>	
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo service lighttpd force-reload</userinput>
+</screen>	
+		</sect2>
+		<sect2 id="install-standard-14">
 		<title>Dokonaj końcowej konfiguracji</title>
-          <para>Przeprowadź konfigurację wchodząc przeglądarką na Twoje Pi. Po tym uruchom demona:
+          <para>Uruchom WebUI, przechodząc przeglądarką na Twoje Pi. To dokończy konfigurację, i będziesz mógł uruchomić daemona. Najpierw sprawdź pod jakim adresem
+		  w sieci jest widoczna twoja malinka:</para>
+<screen>
+<prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>hostname -I</userinput>
+192.168.100.120
+</screen>		
+			<para>Teraz wejdź przeglądarką na adres który wcześniej Ci się wyświetlił:</para>
+			<figure>
+				<title>Pierwsze uruchomienie WebUi</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="install/WEBUI-1ST_RUN.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>
+			<para>Na koniec uruchom daemona:</para>
 <screen>
 <prompt>pi@raspberrypi:/usr/local/src/AquaPi/Software $ </prompt><userinput>sudo /etc/init.d/aquapi.rc start</userinput>
 </screen>		
-		  Gratulacje! Twoje AquaPi powinno już działać :)</para>
+		  <para>Gratulacje! Twoje AquaPi powinno już działać :)</para>
 		</sect2>		
      </sect1>
 </chapter>
