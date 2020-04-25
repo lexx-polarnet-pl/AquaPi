@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:          aquapi
-# Required-Start:    $all
+# Required-Start:    $all mysql
 # Required-Stop:     $all
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
