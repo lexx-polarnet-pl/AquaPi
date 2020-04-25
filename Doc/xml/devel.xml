@@ -60,6 +60,7 @@ const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wspa
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
 const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
+const char *PORT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 
@@ -67,6 +68,7 @@ const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
+const char *INPUT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
@@ -95,10 +97,13 @@ struct _interfaces {
 	int override_value;
 	int override_expire;
 	int was_error_last_time;
+	int service_val;
+	int dashboard;
 	double conf;
 } interfaces[100];
 
 struct _timers {
+	int id;
 	int timeif;
 	int action;
 	int interfaceidthen;
@@ -118,7 +123,6 @@ typedef struct
 	int reload_freq;
 	int bind_port;
 	char* bind_address;
-	double dummy_temp_sensor_val;
 } configuration;
 
 </programlisting>
@@ -127,7 +131,7 @@ typedef struct
         <title>Urządzenia I2C</title>
         <para>Daemon skanuje szynę I2C, i w momencie wykrycia pod danym adresem podpiętego urządzenia, zakłada że takie urządzenie jest do niego podpięte, i umożliwi nim sterowanie.
 			Nie ma możliwości weryfikacji czy podpięte jest dobre urządzenie, rozpoznawanie typu nastepuje tylko po adresie.</para>	
-		<table><title>Spis tabel</title>
+		<table><title>Spis obsługiwanych podzespołów na I2C wraz z rezerwacją adresów</title>
 			<tgroup cols='3' align='left' colsep='1' rowsep='1'>
 				<colspec colname='Adres'/>
 				<colspec colname='Urządzenie'/>

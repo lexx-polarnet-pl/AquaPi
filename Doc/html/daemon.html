@@ -5,6 +5,7 @@ const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wspa
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
 const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
+const char *PORT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 
@@ -12,6 +13,7 @@ const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
 const char *INPUT_RPI_1W_PREFIX = "rpi:1w:";
 const char *INPUT_DUMMY_PREFIX = "dummy:";
 const char *INPUT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph";
+const char *INPUT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 
 const int E_DEV  = -1;
 const int E_INFO = 0;
@@ -38,10 +40,13 @@ struct _interfaces {
 	int override_value;
 	int override_expire;
 	int was_error_last_time;
+	int service_val;
+	int dashboard;
 	double conf;
 } interfaces[100];
 
 struct _timers {
+	int id;
 	int timeif;
 	int action;
 	int interfaceidthen;
@@ -61,7 +66,6 @@ typedef struct
 	int reload_freq;
 	int bind_port;
 	char* bind_address;
-	double dummy_temp_sensor_val;
 } configuration;
 
 </pre></div><div class="navfooter"><hr /><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="devel.html">Poprzedni</a> </td><td width="20%" align="center"><a accesskey="u" href="devel.html">Początek rozdziału</a></td><td width="40%" align="right"> <a accesskey="n" href="i2c_dev.html">Następny</a></td></tr><tr><td width="40%" align="left" valign="top">Rozdział 5. Dla developerów </td><td width="20%" align="center"><a accesskey="h" href="index.html">Spis treści</a></td><td width="40%" align="right" valign="top"> 5.3. Urządzenia I2C</td></tr></table></div></body></html>

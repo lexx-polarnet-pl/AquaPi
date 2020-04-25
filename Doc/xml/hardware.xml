@@ -166,6 +166,9 @@
 				urządzeń stosowanych w awarystyce powinno być wystarczające.</para>
 				<para>Karty te zapewniają również izolację galwaniczną od napięcia 230V, co zabezpiecza RPI przed ewentualnymi przepięciami.</para>
 				<para>Do wad możemy zaliczyć mechaniczny stukot przy przełączaniu styków, oraz niską wytrzymałość mechaniczną styków.</para>
+				<warning><title>Ostrzeżenie</title><para>Dodatkową wadą przekaźników mechanicznych jest kiepskie zachowanie przy sterowaniu obciążeniami indukcyjnymi (np. silnikami,
+				pompami, zaworami CO<subscript>2</subscript>). Przy sterowaniu tego typu obciążeniem, skutkiem ubocznym może być zawieszenie się sterownika, lub, ustawienie stanów nieustalonych
+				na pozostałych wyjściach. Przy podłączaniu tego typu urządzeń zdecydowanie lepszym rozwiązaniem są przekaźniki SSR.</para></warning>		
 				<figure>
 					<title>Karta z 8 przekaźnikami</title>
 					<mediaobject>
