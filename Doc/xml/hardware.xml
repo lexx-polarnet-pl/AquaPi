@@ -339,6 +339,45 @@
 				dashboard, gdzie możesz odczytać z niego dane.</para>
 				<tip><title>Podpowiedź</title><para>Do czasu kalibracji sondy pH, wyniki z miniph będą pokazywane w mV, a nie jako pH.</para></tip>
 			</sect3>
+			<sect3 id="ph-others">
+				<title>Inne mostki pH</title>
+				<para>AquaPi obsługuje przetwornik analogowo-cyfrowy ADS1115, który umożliwia pomiary analogowych wartości z 16 bitową dokładnością. Układ ADS1115 posiada 4 kanały 
+				pomiarowe, a AquaPi umożliwia podpięcie w sumie 4 przetworników, co w sumie daje 16 kanałów pomiarowych. Przetwornik do Raspberry Pi podpinamy za pomocą I2C.</para>
+				<figure>
+					<title>ADS1115 w postaci kitu</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/ADS1115.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>		
+				<para>Po podłączeniu tego przetwornika, staje się możliwe podpięcie do niego mostków pomiarowych pH, które w zależności od zmierzonego pH, na wyjściu podają napięcie z 
+				zakresu (0;+5V). </para>
+				<figure>
+					<title>Przykładowy mostek pH</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/PH_BRIDGE_SAMPLE.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>Po połączeniu przetwornika ADS1115 zyskujemy dostęp do sporej liczby mostków pomiarowych pH, z których potem możemy korzystać.</para>
+				<para>Aby dodać kanał wejściowy przetwornika ADS1115 do AquaPi, wejdź w menu <guimenu>Wejścia i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe 
+				wejście lub wyjście</guimenu> wybierz odpowiedni kanał przetwornika ADS1115, nadaj mu opis, wybierz kolor do wykresu i ikonkę urządzenia.</para>
+				<figure>
+					<title>Dodawanie wybranego kanału ADS1115 do AquaPi</title>				
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/ADS1115-ui.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>
+				<para>Po skonfigurowaniu kanału pomiarowego kliknij <guimenu>Zapisz</guimenu> aby przetwornik mógł być używany w systemie. Wejście powinno być teraz widoczne na 
+				dashboard, gdzie możesz odczytać z niego dane.</para>
+				<tip><title>Podpowiedź</title><para>Do czasu kalibracji sondy pH, wyniki z ADS1115 będą pokazywane w postaci watości odczytanych bezpośrednio z przetwornika, 
+				a nie jako pH.</para></tip>
+			</sect3>
+			
 		</sect2>
 	</sect1>
 	<sect1 id="hardware-ioext"> 
