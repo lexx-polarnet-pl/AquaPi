@@ -12,7 +12,7 @@ Katalogi:
 * Hardware - miejsce na schematy sprzętu
 * Doc      - miejsce na dokumentację
 
-Schematy jak i płytki projektowane są w Eagle (w darmowej wersji)
+Schematy jak i płytki projektowane są w KiCad
 
 Pozdrawiam,
 Marcin 'Lexx' Król

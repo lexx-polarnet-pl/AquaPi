@@ -18,7 +18,7 @@ It's combination of hardware layer and software as well.
 Structure of directories is following:
 
 * Software - source codes of daemon and php web ui.
-* Hardware - all hardware designs (created using free version of Eagle).
+* Hardware - all hardware designs (created using KiCad).
 * Doc      - place for documentation.
 
 You can like it or not, but software is written (and documentation as well) in Polish language.
