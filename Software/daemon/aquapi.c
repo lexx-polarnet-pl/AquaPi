@@ -323,7 +323,12 @@ void process() {
 			for(x = 0; x <= interfaces_count; x++) {
 				if (interfaces[x].type == DEV_INPUT) {
 					interfaces[x].raw_measured_value = GetDataFromInput(x);
-					interfaces[x].measured_value = interfaces[x].raw_measured_value;
+					// Tymczasowe ominięcie ciekawego problemu - przy sprzyjających (lub niesprzyjających) okolicznościach, UI potrafi odpytać daemona o wartości do wyświetlenia
+					// po odczytniu wyniku z sensorów, ale przed ich korektą, więc na UI potrafią pojawić się dane surowe pomiaru pH, zamiast właściwego wyniku pH.
+					// W przyszłości korektę trzeba będzie robić jednocześnie z odczytem danych.
+                    if (interfaces[x].id != co2.phprobe_id) { 
+						interfaces[x].measured_value = interfaces[x].raw_measured_value;
+					}
 				}
 			}
 		}
