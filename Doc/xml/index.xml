@@ -7,6 +7,7 @@
 <!ENTITY rozdzial4 SYSTEM "hardware.xml">
 <!ENTITY rozdzial5 SYSTEM "devel.xml">
 <!ENTITY db-struct SYSTEM "devel-dbstruct.xml">
+<!ENTITY hw-2.0 SYSTEM "hardware-2.0.xml">
 ]>
 
 <book lang="pl">
