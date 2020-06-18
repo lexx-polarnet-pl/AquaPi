@@ -85,22 +85,28 @@ require(LIB_DIR.'ipc.php');
 
 // definicja menu
 $my_menu	= array();
-$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 			"icon" => "fa-dashboard", 				"url" => "index.php",	"acl" => "rw"   , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Timery", 			"icon" => "fa-clock-o", 				"url" => "timers.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 					"url" => "light.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 				"url" => "temp.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" => "fa-flask", 					"url" => "co2.php",		"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 					"url" => "service.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-bell", 					"url" => "alerts.php",	"acl" => "rw"   , "reload" => 0);
-$my_menu[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "Parametry wody", 	"icon" => "fa-flask",					"url" => "water.php",	"acl" => "rw"    , "reload" => 1);
-$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 					"url" => "about.php",	"acl" => "r"    , "reload" => 0);
-if (($CONFIG['webui']['security'] == "all") || ($CONFIG['webui']['security'] == "setup")) {
-	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",		"icon" => "fa-sign-out", 					"url" => "logout.php",	"acl" => "r"    , "reload" => 0);
-}
+$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 			"icon" => "fa-dashboard", 				"url" => "index.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Timery", 			"icon" => "fa-clock-o", 				"url" => "timers.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 					"url" => "light.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 				"url" => "temp.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" => "fa-flask", 					"url" => "co2.php",		"acl" => "rw");
 
+$my_submenu = array();
+$my_submenu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 					"url" => "service.php",	"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-bell", 					"url" => "alerts.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Zaawansowane",		"icon" => "fa-rocket", 					"submenu" => $my_submenu);
+
+$my_submenu2 = array();
+$my_submenu2[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r");
+$my_submenu2[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r");
+$my_submenu2[]	= array ("selected" => false,	"name" => "Parametry wody", 	"icon" => "fa-flask",					"url" => "water.php",	"acl" => "rw");
+$my_menu[]	= array ("selected" => false,	"name" => "Statystyki",		"icon" => "fa-book", 					"submenu" => $my_submenu2);
+
+$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 					"url" => "about.php",	"acl" => "r");
+if (($CONFIG['webui']['security'] == "all") || ($CONFIG['webui']['security'] == "setup")) {
+	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",		"icon" => "fa-sign-out", 					"url" => "logout.php",	"acl" => "r");
+}
 
 $self = explode('/', $_SERVER["PHP_SELF"]);
 $self = end($self);
@@ -111,7 +117,25 @@ $cur_name	= '';
 
 foreach ($my_menu as &$pos) 
 {
-    if ($pos['url'] == $self) 
+    if ($pos['submenu']) 
+	{
+			foreach ($pos['submenu'] as &$subpos) 
+			{
+					if ($subpos['url'] == $self) 
+					{
+							$cur_name = $subpos['name'];
+							$subpos['selected'] = true;
+							$pos['selected'] = true;
+							if ((($CONFIG['webui']['security'] == "all") || (($CONFIG['webui']['security'] == "setup") && ($pos['acl']== "rw"))) && ($logged_in == false)) 
+							{
+									// nie jesteś zalogowany
+									$SESSION -> save('old_url',$self);
+									$SESSION -> redirect('login.php');
+							}	
+					}
+			}
+	} 
+	else if ($pos['url'] == $self) 
     {
             $cur_name = $pos['name'];
             $pos['selected'] = true;
@@ -123,7 +147,7 @@ foreach ($my_menu as &$pos)
             }
 	}
 }
-
+//new dBug ( $my_menu );
 // błędy które nie zostały przeczytane
 $lastwarnlogs 	= $db->GetAll('select * from logs where log_level > 0 AND log_date > ? order by log_date desc;', array($CONFIG['log_read_time']));
 
