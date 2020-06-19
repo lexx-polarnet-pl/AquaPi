@@ -21,12 +21,40 @@
  */
  
 include("init.php");
-//aktualizacja konfiguracji
-if($_POST) {
-	new dBug($_POST,'',true);die;
-	//ReloadDaemonConfig();
-	//$SESSION->redirect("alerts.php"); //przekierowanie w celu odswierzenia zmiennej $CONFIG inicjalizowanej przed wykonaniem update
+
+if (@$_GET['action'] == 'add')
+{
+	$db->Execute('INSERT INTO alarms
+				(alarm_interface_id,
+				alarm_action_level,
+				alarm_direction,
+				alarm_text)
+			VALUES (?,?,?,?)',
+			array(
+				$_POST['alarm_interface_id'],
+				$_POST['alarm_action_level'],
+				$_POST['alarm_direction'],
+				$_POST['alarm_text']
+			));
+	ReloadDaemonConfig();
+	$SESSION->redirect('alerts.php');
 }
+if (@$_GET['action'] == 'delete')
+{
+	$alarmid = $_GET['alarmid'];
+	$db->Execute("DELETE FROM alarms WHERE alarm_id = ?", array($alarmid));
+	ReloadDaemonConfig();
+	$SESSION->redirect('alerts.php');
+}
+
+$interfaces         = GetInterfaces();
+$alarms			    = $db->GetAll('SELECT *,	
+								(SELECT interface_name FROM interfaces WHERE interface_id=alarm_interface_id) as alarm_interfacethenname,
+								(SELECT interface_icon FROM interfaces WHERE interface_id=alarm_interface_id) as alarm_interfacethenicon	 
+								FROM alarms ORDER BY alarm_interface_id');
+
+$smarty->assign('alarms', $alarms);
+$smarty->assign('interfaces', $interfaces);
 
 $smarty->assign('title', 'Konfiguracja alertów');
 $smarty->display('alerts.tpl');

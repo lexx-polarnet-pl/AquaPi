@@ -38,6 +38,7 @@
 #include "temperature.c"
 #include "co2.c"
 #include "timers.c"
+#include "alarms.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -157,6 +158,7 @@ void ReadConf() {
 	ModLight_ReadSettings();
 	ModTemperature_ReadSettings();
 	ModCo2_ReadSettings();
+	ModAlarms_ReadSettings();
 	
 	DB_GetSetting("service_mode_input",buff);
 	specials.service_mode_input = atof(buff);	
@@ -338,6 +340,7 @@ void process() {
 		ModLight_Process();
 		ModTemperature_Process();
 		ModCo2_Process();
+		ModAlarms_Process();
 		
 		// Tryb serwisowy
 		if (specials.is_service_mode == 0 && GetValFromInterface(specials.service_mode_input) > 0.5) {
@@ -359,6 +362,7 @@ void process() {
 			ModLight_Debug();
 			ModTemperature_Debug();
 			ModCo2_Debug();
+			ModAlarms_Debug();
 		}
 
 		//if (specials.seconds_since_midnight % config.stat_freq == 0) {

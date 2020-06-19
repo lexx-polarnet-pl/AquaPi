@@ -36,16 +36,6 @@
 										<div class="col-2"><label for="NCOR" class=" form-control-label">&deg;C</label></div>
 									</div>
 									<div class="row form-group">
-										<div class="col-6"><label for="TMAXAL" class=" form-control-label">Tmaxal</label></div>
-										<div class="col-4"><input type="number" id="TMAXAL" name="TMAXAL" class="form-control" value="{$CONFIG.temp_tmaxal}" required min=15 max=35 step=0.5></div>
-										<div class="col-2"><label for="TMAXAL" class=" form-control-label">&deg;C</label></div>
-									</div>
-									<div class="row form-group">
-										<div class="col-6"><label for="TMINAL" class=" form-control-label">Tminal</label></div>
-										<div class="col-4"><input type="number" id="TMINAL" name="TMINAL" class="form-control" value="{$CONFIG.temp_tminal}" required min=15 max=35 step=0.5></div>
-										<div class="col-2"><label for="TMINAL" class=" form-control-label">&deg;C</label></div>
-									</div>	
-									<div class="row form-group">
 										<div class="col-6"><label for="interface_heat" class=" form-control-label">Grzałka</label></div>
 										<div class="col-6 input-group">
 											{foreach from=$interfaces item="interface"}{if $CONFIG.temp_interface_heat==$interface.interface_id}<img id="img-interface_heat" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
@@ -114,8 +104,6 @@
 								<tr><td>Tmin</td><td>-</td><td>Temperatura minimalna. Zejście poniżej tej temperatury powoduje załączenie ogrzewania.</td></tr>
 								<tr><td>Hg</td><td>-</td><td>Histereza grzania. Grzanie będzie tak długo aktywne, aż aktualna temperatura wzrośnie powyżej poziomu Tmin + Hg.</td></tr>
 								<tr><td>Ncor</td><td>-</td><td>Korekta nocna. Ustawienie niezerowej wartości spowoduje że zostanie ona dodana do parametrów Tmax, Hc, Tmin, Hg. Przykładowo ustawienie -2&deg;C spowoduje że system będzie starał się utrzymywać temperaturę w nocy o 2&deg;C niższą niż w dzień.</td></tr>
-								<tr><td>Tmaxal</td><td>-</td><td>Wartość temperatury powyżej której system zacznie generować alarm.</td></tr>
-								<tr><td>Tminal</td><td>-</td><td>Wartość temperatury poniżej której system zacznie generować alarm.</td></tr>
 								</table>
 							</div>
                         </section>

@@ -28,8 +28,6 @@ if($_POST) {
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(str_replace(array("C","°"),"",$_POST['TMIN']),'temp_tmin'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(str_replace(array("C","°"),"",$_POST['HG']),'temp_hg'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(str_replace(array("C","°"),"",$_POST['NCOR']),'temp_ncor'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(str_replace(array("C","°"),"",$_POST['TMAXAL']),'temp_tmaxal'));
-	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array(str_replace(array("C","°"),"",$_POST['TMINAL']),'temp_tminal'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['interface_heat'],'temp_interface_heat'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['interface_cool'],'temp_interface_cool'));
 	$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['interface_sensor'],'temp_interface_sensor'));

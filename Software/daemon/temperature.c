@@ -25,13 +25,10 @@ struct _temperature {
 	double  tmin;
 	double  hg;
 	double  ncor;
-	double  tmaxal;	
-	double  tminal;
 	double  actual;
 	int interface_heat;
 	int interface_cool;
 	int interface_sensor;	
-	int is_in_alarm_mode;
 } temperature;
 
 void ModTemperature_ReadSettings() {
@@ -46,12 +43,6 @@ void ModTemperature_ReadSettings() {
 	temperature.hg = atof(buff);	
 	DB_GetSetting("temp_ncor",buff);
 	temperature.ncor = atof(buff);	
-	DB_GetSetting("temp_tmaxal",buff);
-	temperature.tmaxal = atof(buff);	
-	DB_GetSetting("temp_tminal",buff);
-	temperature.tminal = atof(buff);	
-	DB_GetSetting("temp_tmax",buff);
-	temperature.tmax = atof(buff);
 
 	DB_GetSetting("temp_interface_heat",buff);
 	temperature.interface_heat = atof(buff);	
@@ -61,8 +52,6 @@ void ModTemperature_ReadSettings() {
 	temperature.interface_sensor = atof(buff);	
 	// wymuś stan nieustalony
 	temperature.actual = -100;
-	// nie ma alarmu
-	temperature.is_in_alarm_mode = 0;
 }
 
 void ModTemperature_Process() {
@@ -92,24 +81,13 @@ void ModTemperature_Process() {
 		//w przypadku awarii wyłącz grzanie i chłodzenie
 		SetInterfaceNewVal(temperature.interface_heat,0);
 		SetInterfaceNewVal(temperature.interface_cool,0);
-	} else {
-		//Wyczyść flagę alarmu jak jest ok
-		if (temperature.actual > temperature.tminal && temperature.actual < temperature.tmaxal) {
-			temperature.is_in_alarm_mode = 0;
-		} else if (temperature.actual <= temperature.tminal && temperature.is_in_alarm_mode == 0) {
-			temperature.is_in_alarm_mode = 1;
-			Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości minimalnej",E_WARN);	
-		} else if (temperature.actual >= temperature.tmaxal && temperature.is_in_alarm_mode == 0) {
-			temperature.is_in_alarm_mode = 1;
-			Log("Temperatura mierzona przekroczyła próg alarmowy dla wartości maksymalnej",E_WARN);
-		}
-	}
+	} 
 }
 
 void ModTemperature_Debug() { // informacje devel
 	char buff[200];
 	Log("═════════════════ Zrzut danych modułu TEMPERATURE ═════════════════",E_DEV);	
-	sprintf(buff,"Tact %.1f°C, Tminal: %.1f°C, Tmin: %.1f°C, Hg: %.1f°C, Hc: %.1f°C, Tmax: %.1f°C, Tmaxal: %.1f°C, Tncor: %.1f°C", \
-		temperature.actual,temperature.tminal,temperature.tmin,temperature.hg,temperature.hc,temperature.tmax,temperature.tmaxal,temperature.ncor);
+	sprintf(buff,"Tact %.1f°C, Tmin: %.1f°C, Hg: %.1f°C, Hc: %.1f°C, Tmax: %.1f°C, Tncor: %.1f°C", \
+		temperature.actual,temperature.tmin,temperature.hg,temperature.hc,temperature.tmax,temperature.ncor);
 	Log(buff,E_DEV);	
 }

@@ -44,7 +44,6 @@ class Database {
 
 	function Execute($query, $inputarray = NULL)
 	{
-
 		if(! $this->_driver_execute($this->_query_parser($query, $inputarray)))
 			$this->errors[] = array(
 					'query' => $this->_query,
