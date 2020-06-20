@@ -26,10 +26,10 @@ $temp_interface_sensor = $db->GetOne("SELECT setting_value FROM settings WHERE s
 $temp_tminal = $db->GetOne("SELECT setting_value FROM settings WHERE setting_key = 'temp_tminal'"); 
 $temp_tmaxal = $db->GetOne("SELECT setting_value FROM settings WHERE setting_key = 'temp_tmaxal'"); 
 
-$db->Execute("INSERT INTO alarms (alarm_interface_id, alarm_action_level, alarm_direction, alarm_text)
-			VALUES (?,?,'1','Temperatura mierzona przekroczyła próg alarmowy dla wartości minimalnej')", array($temp_interface_sensor, $temp_tminal));
+$db->Execute("INSERT INTO alarms (alarm_interface_id, alarm_action_level, alarm_direction, alarm_text, alarm_level)
+			VALUES (?,?,'1','Temperatura mierzona przekroczyła próg alarmowy dla wartości minimalnej','1')", array($temp_interface_sensor, $temp_tminal));
 
-$db->Execute("INSERT INTO alarms (alarm_interface_id, alarm_action_level, alarm_direction, alarm_text)
-			VALUES (?,?,'0','Temperatura mierzona przekroczyła próg alarmowy dla wartości maksymalnej')", array($temp_interface_sensor, $temp_tmaxal));		
+$db->Execute("INSERT INTO alarms (alarm_interface_id, alarm_action_level, alarm_direction, alarm_text, alarm_level)
+			VALUES (?,?,'0','Temperatura mierzona przekroczyła próg alarmowy dla wartości maksymalnej','1')", array($temp_interface_sensor, $temp_tmaxal));		
 
 ?>
