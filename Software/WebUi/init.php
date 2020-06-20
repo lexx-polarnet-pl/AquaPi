@@ -84,28 +84,29 @@ require(LIB_DIR.'functions.php');
 require(LIB_DIR.'ipc.php');
 
 // definicja menu
-$my_menu	= array();
-$my_menu[]	= array ("selected" => false,	"name" => "Dashboard", 			"icon" => "fa-dashboard", 				"url" => "index.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Timery", 			"icon" => "fa-clock-o", 				"url" => "timers.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 					"url" => "light.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 				"url" => "temp.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" => "fa-flask", 					"url" => "co2.php",		"acl" => "rw");
+$my_menu		= array();
+$my_menu[]		= array ("selected" => false,	"name" => "Dashboard", 			"icon" => "fa-dashboard", 		"url" => "index.php",			"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "Timery", 			"icon" => "fa-clock-o", 		"url" => "timers.php",			"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "Oświetlenie",		"icon" => "fa-sun-o", 			"url" => "light.php",			"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "Temperatura",		"icon" => "fa-umbrella", 		"url" => "temp.php",			"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" => "fa-flask", 			"url" => "co2.php",				"acl" => "rw");
 
 $my_submenu = array();
-$my_submenu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 					"url" => "service.php",	"acl" => "rw");
-$my_submenu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 					"url" => "ioconf.php",	"acl" => "rw");
-$my_submenu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-bell", 					"url" => "alerts.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Zaawansowane",		"icon" => "fa-rocket", 					"submenu" => $my_submenu);
+$my_submenu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 			"url" => "service.php",			"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 			"url" => "ioconf.php",			"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-warning", 		"url" => "alerts.php",			"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Powiadomienia",		"icon" => "fa-bell", 			"url" => "notifications.php",	"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "Zaawansowane",		"icon" => "fa-rocket", 				"submenu" => $my_submenu);
 
-$my_submenu2 = array();
-$my_submenu2[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 			"url" => "stat.php",	"acl" => "r");
-$my_submenu2[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-exclamation-triangle",	"url" => "logs.php",	"acl" => "r");
-$my_submenu2[]	= array ("selected" => false,	"name" => "Parametry wody", 	"icon" => "fa-flask",					"url" => "water.php",	"acl" => "rw");
-$my_menu[]	= array ("selected" => false,	"name" => "Statystyki",		"icon" => "fa-book", 					"submenu" => $my_submenu2);
+$my_submenu2 	= array();
+$my_submenu2[]	= array ("selected" => false,	"name" => "Wykresy", 			"icon" => "fa-bar-chart-o", 	"url" => "stat.php",			"acl" => "r");
+$my_submenu2[]	= array ("selected" => false,	"name" => "Zdarzenia", 			"icon" => "fa-folder",			"url" => "logs.php",			"acl" => "r");
+$my_submenu2[]	= array ("selected" => false,	"name" => "Parametry wody", 	"icon" => "fa-flask",			"url" => "water.php",			"acl" => "rw");
+$my_menu[]		= array ("selected" => false,	"name" => "Statystyki",			"icon" => "fa-book", 					"submenu" => $my_submenu2);
 
-$my_menu[]	= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 					"url" => "about.php",	"acl" => "r");
+$my_menu[]		= array ("selected" => false,	"name" => "O sterowniku",		"icon" => "fa-heart", 			"url" => "about.php",			"acl" => "r");
 if (($CONFIG['webui']['security'] == "all") || ($CONFIG['webui']['security'] == "setup")) {
-	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",		"icon" => "fa-sign-out", 					"url" => "logout.php",	"acl" => "r");
+	$my_menu[]	= array ("selected" => false,	"name" => "Wyloguj",			"icon" => "fa-sign-out", 		"url" => "logout.php",			"acl" => "r");
 }
 
 $self = explode('/', $_SERVER["PHP_SELF"]);

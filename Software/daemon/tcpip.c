@@ -30,7 +30,7 @@
 #include <sys/sysinfo.h>
 #include <libxml/parser.h>
 #include "common.c"
-#include <rb.h>
+#include "email.h"
 #define BUF_SIZE 255
 #define QUERY_SIZE 1
 
@@ -108,7 +108,7 @@ void TCPCommandReload() {
 
 void TCPCommandUnknown() {
 	char buff[120];
-	Log("Otrzymałem nieznane polecenie przez TCP",E_INFO);
+	Log("Otrzymałem nieznane polecenie przez TCP",E_WARN);
 	sprintf(buff,"Command unknown.\n");
 	fputs(buff,net);
 	fflush(net);
@@ -163,6 +163,14 @@ void TCPCommandInterface(char *buf) {
 		fputs("Executed.\n",net);
 	}
 	fflush(net);	
+}
+
+void TCPCommandTestEmail() {
+	Log("Otrzymałem polecenie wysyłki testowego emaila",E_DEV);
+	email_error("Spokojnie, to tylko komunikat testowy z AquaPi :-)",E_CRIT);
+	XMLCreateReply("emailtest");
+	xmlNewChild(xml_root_node, NULL, BAD_CAST "emailtest", BAD_CAST "Podjąłem próbę wysłania testowego emaila.");
+	XMLSendReply();	
 }
 
 void TCPCommandAbout() {
@@ -495,6 +503,9 @@ void* TCPConnections (void* unused) {
 			} else if (strncmp("aquapi:devicelist",buf,17)==0) {
 				TCPCommandDeviceList();
 				shutdown(sh2,SHUT_RDWR);
+			} else if (strncmp("aquapi:testemail",buf,16)==0) {
+				TCPCommandTestEmail();
+				shutdown(sh2,SHUT_RDWR);				
 			} else {
 				TCPCommandUnknown();
 				shutdown(sh2,SHUT_RDWR);

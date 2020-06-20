@@ -36,7 +36,9 @@ function confirmLink(theLink, message)
 										<tr>
 											<td><img src="img/devices/{$entry.alarm_interfacethenicon}"> {$entry.alarm_interfacethenname}</td>
 											<td>{if $entry.alarm_direction eq 1}&lt;{else}&gt;{/if} {$entry.alarm_action_level}</td>
-											<td>{$entry.alarm_text}</td>
+											<td>{if $entry.alarm_level == 1}<span class="badge badge-pill badge-warning">Ostrzeżenie</span>
+												{elseif $entry.alarm_level == 2}<span class="badge badge-pill badge-danger">Błąd krytyczny</span>{/if}
+												{$entry.alarm_text}</td>
 											<td>
 												<a href="?action=delete&alarmid={$entry.alarm_id}" onClick="return confirmLink(this,'Czy jesteś pewien, że chcesz usunąć ten alarm?');" class="btn btn-danger btn-sm">
 													<i class="fa fa-times"></i> Usuń
@@ -87,7 +89,13 @@ function confirmLink(theLink, message)
 									</div>
 									<div class="row form-group">
 										<div class="col-2">Zgłoś alert</div>
-										<div class="col-10"><input type="text" id="alarm_text" name="alarm_text" class="form-control" required></div>
+										<div class="col-2">											
+											<select name="alarm_level" id="alarm_level" class="form-control">
+												<option value="1">Ostrzeżenie</option>
+												<option value="2">Błąd krytyczny</option>
+											</select>	
+										</div>
+										<div class="col-8"><input type="text" id="alarm_text" name="alarm_text" class="form-control" required></div>
 									</div>
 								</div>
 								<div class="card-footer">

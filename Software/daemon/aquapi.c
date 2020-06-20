@@ -39,6 +39,7 @@
 #include "co2.c"
 #include "timers.c"
 #include "alarms.c"
+#include "email.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -87,6 +88,10 @@ void Log(char *msg, int lev) {
 	if ((lev == E_SQL) || (lev == E_CRIT) || (lev == E_WARN)) {
 		syslog(LOG_ERR, msg);
 	}
+	// na sam koniec, wyślij logi krytyczne na maila
+	if (lev == E_CRIT) {
+		email_error(msg,lev);
+	}	
 }
 
 void StoreTempStat() {
@@ -159,6 +164,7 @@ void ReadConf() {
 	ModTemperature_ReadSettings();
 	ModCo2_ReadSettings();
 	ModAlarms_ReadSettings();
+	email_ReadSettings();
 	
 	DB_GetSetting("service_mode_input",buff);
 	specials.service_mode_input = atof(buff);	

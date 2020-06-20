@@ -30,6 +30,7 @@ struct _alarms {
 	char text[200]; 
 	int is_alarm;
 	int was_alarm;
+	int alarm_level;
 } alarms[100];
 
 int alarms_count;	
@@ -41,7 +42,7 @@ void ModAlarms_ReadSettings() {
 	// Wczytanie alarmów
 	Log("Wczytanie alertów",E_DEV);
 	alarms_count = 	-1;
-	DB_Query("SELECT alarm_id,alarm_interface_id,alarm_action_level,alarm_direction,alarm_text FROM alarms");
+	DB_Query("SELECT alarm_id,alarm_interface_id,alarm_action_level,alarm_direction,alarm_text,alarm_level FROM alarms");
 	result = mysql_store_result(conn);
 	while ((row = mysql_fetch_row(result))) {
 		alarms_count++;
@@ -50,6 +51,7 @@ void ModAlarms_ReadSettings() {
 		alarms[alarms_count].action_level = atof(row[2]);
 		alarms[alarms_count].direction = atof(row[3]);
 		memcpy(alarms[alarms_count].text,row[4],sizeof(alarms[alarms_count].text));
+		alarms[alarms_count].alarm_level = atof(row[5]);
 		alarms[alarms_count].is_alarm = 0;
 		alarms[alarms_count].was_alarm = 0;
 	}	
@@ -87,7 +89,7 @@ void ModAlarms_Process() {
 	
 	for (x=0; x <= alarms_count; x++) {
 		if (alarms[x].is_alarm == 1 && alarms[x].was_alarm == 0) { // jeśli to "świerzy" alarm, to go wrzuć do logów
-			Log(alarms[x].text,E_WARN);
+			Log(alarms[x].text,alarms[x].alarm_level);
 		}
 		alarms[x].was_alarm = alarms[x].is_alarm;
 	}
@@ -96,16 +98,20 @@ void ModAlarms_Process() {
 void ModAlarms_Debug() {	
 	char buff[200];
 	int x;
-	char state[30];
+	const char *STATUS_OK = "\x1b[32m  OK   \x1b[0m";
+	const char *STATUS_ALARM = "\x1b[31m ALARM \x1b[0m";
 	
 	Log("══════════════════════════ Zrzut alarmów ══════════════════════════",E_DEV);	
 	Log("┌───────┬───────┬──────────────────────────────────────── Alarmy ──",E_DEV);
 	Log("│Id     │Stan   │Tekst",E_DEV);
 	Log("├───────┼───────┼──────────────────────────────────────────────────",E_DEV);				
 	for(x = 0; x <= alarms_count; x++) {
-		if (alarms[x].is_alarm == 0) { strncpy(state,"\x1b[32m  OK   \x1b[0m",30); }
-		if (alarms[x].is_alarm == 1) { strncpy(state,"\x1b[31m ALARM \x1b[0m",30); }
-		sprintf(buff,"│%7i│%s│%.90s",alarms[x].id,state,alarms[x].text);
+		if (alarms[x].is_alarm == 0) { 
+			sprintf(buff,"│%7i│%s│%.90s",alarms[x].id,STATUS_OK,alarms[x].text); 
+		}
+		if (alarms[x].is_alarm == 1) { 
+			sprintf(buff,"│%7i│%s│%.90s",alarms[x].id,STATUS_ALARM,alarms[x].text); 
+		}
 		Log(buff,E_DEV);
 	}					
 	Log("└───────┴───────┴──────────────────────────────────────────────────",E_DEV);			

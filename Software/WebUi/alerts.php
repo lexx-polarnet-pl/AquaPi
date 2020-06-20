@@ -28,13 +28,15 @@ if (@$_GET['action'] == 'add')
 				(alarm_interface_id,
 				alarm_action_level,
 				alarm_direction,
-				alarm_text)
-			VALUES (?,?,?,?)',
+				alarm_text,
+				alarm_level)
+			VALUES (?,?,?,?,?)',
 			array(
 				$_POST['alarm_interface_id'],
 				$_POST['alarm_action_level'],
 				$_POST['alarm_direction'],
-				$_POST['alarm_text']
+				$_POST['alarm_text'],
+				$_POST['alarm_level']
 			));
 	ReloadDaemonConfig();
 	$SESSION->redirect('alerts.php');
