@@ -44,7 +44,9 @@
 					<row><entry>settings</entry><entry>Zawiera podstawowe ustawienia systemowe.</entry></row>
 					<row><entry>stats</entry><entry>Zawiera statystyki (dane odczytane z czujników)</entry></row>
 					<row><entry>timers</entry><entry>Zawiera spis timerów (zdarzeń)</entry></row>
-					<row><entry>units</entry><entry>Zawiera jednostki miar (używane tylko w UI)</entry></row>					
+					<row><entry>units</entry><entry>Zawiera jednostki miar (używane tylko w UI)</entry></row>	
+					<row><entry>alarms</entry><entry>Zawiera spis alarmów</entry></row>	
+					<row><entry>water</entry><entry>Zawiera pomiary wody robione poza AaquaPi (np. testami kropelkowymi - używane tylko w UI)</entry></row>	
 				</tbody>
 			</tgroup>
 		</table>
