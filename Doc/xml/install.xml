@@ -103,6 +103,7 @@
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install libxml2-dev</userinput> 
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install lighttpd</userinput> 
 <prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install php-cgi php-mysql php-xml</userinput>
+<prompt>pi@raspberrypi:~# </prompt><userinput>sudo apt install mailutils</userinput> 
 </screen>	
 		</sect2>
 <sect2 id="install-standard-6">
