@@ -21,6 +21,7 @@
 
 const int DIR_GREATER = 0;
 const int DIR_SMALLER = 1;
+const int NOTIFICATION_INTERVAL = 600; // minimalna przerwa między notyfikacjami to 10 min, chodzi o to, żeby nie zaśmiecać logów
 
 struct _alarms {
 	int id;
@@ -31,6 +32,7 @@ struct _alarms {
 	int is_alarm;
 	int was_alarm;
 	int alarm_level;
+	int last_notification;
 } alarms[100];
 
 int alarms_count;	
@@ -54,6 +56,7 @@ void ModAlarms_ReadSettings() {
 		alarms[alarms_count].alarm_level = atof(row[5]);
 		alarms[alarms_count].is_alarm = 0;
 		alarms[alarms_count].was_alarm = 0;
+		alarms[alarms_count].last_notification = 0;
 	}	
 	mysql_free_result(result);
 }
@@ -89,7 +92,12 @@ void ModAlarms_Process() {
 	
 	for (x=0; x <= alarms_count; x++) {
 		if (alarms[x].is_alarm == 1 && alarms[x].was_alarm == 0) { // jeśli to "świerzy" alarm, to go wrzuć do logów
-			Log(alarms[x].text,alarms[x].alarm_level);
+			// ale nie wrzucaj za dużo i za często do logów
+			if ((specials.seconds_since_midnight > alarms[x].last_notification + NOTIFICATION_INTERVAL) || (specials.seconds_since_midnight < alarms[x].last_notification)) {
+				alarms[x].last_notification = specials.seconds_since_midnight;
+				Log(alarms[x].text,alarms[x].alarm_level);
+			}		
+			
 		}
 		alarms[x].was_alarm = alarms[x].is_alarm;
 	}
