@@ -23,7 +23,17 @@
 								</div>
 									
 								<div class="card-body card-block">
-
+									<div class="row form-group">
+										<div class="col-6"><label for="PHPROBE" class="form-control-label">Wejście sondy</label></div>
+										<div class="col-6 input-group">
+											{foreach from=$interfaces item="interface"}{if $CONFIG.co2_probe==$interface.interface_id}<img id="IMG-PHPROBE" class="mr-1" src="img/devices/{$interface.interface_icon}">{/if}{/foreach}
+											<select name="PHPROBE" id="PHPROBE" class="form-control" required onchange="imgchange('IMG-PHPROBE','PHPROBE')"> 
+												{foreach from=$interfaces item="interface"}{if $interface.interface_type==1}
+												<option value="{$interface.interface_id}" title="img/devices/{$interface.interface_icon}"{if $CONFIG.co2_probe==$interface.interface_id} selected{/if}>{$interface.interface_name}</option>
+												{/if}{/foreach}
+											</select>
+										</div>	
+									</div>	
 									<div class="row form-group">
 										<div class="col-6"><label for="CO2EN" class=" form-control-label">Elektrozawór butli</label></div>
 										<div class="col-6 input-group">

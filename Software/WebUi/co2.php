@@ -23,17 +23,8 @@
 include("init.php");
 //aktualizacja konfiguracji
 if($_POST) {
-	if($_GET['op'] == 'probe') {
-		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['PHPROBE'],'co2_probe'));
-		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['MV1'],'co2_mv1'));
-		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['PH1'],'co2_ph1'));
-		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['MV2'],'co2_mv2'));
-		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['PH2'],'co2_ph2'));
-	
-		ReloadDaemonConfig();
-		$SESSION->redirect("co2.php"); //przekierowanie w celu odswierzenia zmiennej $CONFIG inicjalizowanej przed wykonaniem update
-	}
 	if($_GET['op'] == 'sets') {
+		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['PHPROBE'],'co2_probe'));	
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['CO2EN'],'co2_co2valve'));
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['CO2PH'],'co2_co2limit'));
 		$db->Execute('UPDATE settings SET setting_value=?  where setting_key= ?', array($_POST['O2EN'],'co2_o2valve'));
