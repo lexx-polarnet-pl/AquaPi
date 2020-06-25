@@ -40,6 +40,7 @@
 #include "timers.c"
 #include "alarms.c"
 #include "email.c"
+#include "calibration.c"
 
 void termination_handler(int signum)	{
 	if( signum ) {
@@ -165,6 +166,7 @@ void ReadConf() {
 	ModCo2_ReadSettings();
 	ModAlarms_ReadSettings();
 	email_ReadSettings();
+	Calibration_ReadSettings();
 	
 	DB_GetSetting("service_mode_input",buff);
 	specials.service_mode_input = atof(buff);	
@@ -331,15 +333,11 @@ void process() {
 			for(x = 0; x <= interfaces_count; x++) {
 				if (interfaces[x].type == DEV_INPUT) {
 					interfaces[x].raw_measured_value = GetDataFromInput(x);
-					// Tymczasowe ominięcie ciekawego problemu - przy sprzyjających (lub niesprzyjających) okolicznościach, UI potrafi odpytać daemona o wartości do wyświetlenia
-					// po odczytniu wyniku z sensorów, ale przed ich korektą, więc na UI potrafią pojawić się dane surowe pomiaru pH, zamiast właściwego wyniku pH.
-					// W przyszłości korektę trzeba będzie robić jednocześnie z odczytem danych.
-                    if (interfaces[x].id != co2.phprobe_id) { 
-						interfaces[x].measured_value = interfaces[x].raw_measured_value;
-					}
 				}
 			}
 		}
+		// nałóż na odczytane dane kalibrację czujników
+		Calibration_Process();
 		
 		// Załatw ustawienia oświetlenia, temperatury i co2
 		ModTimers_Process();
@@ -369,6 +367,7 @@ void process() {
 			ModTemperature_Debug();
 			ModCo2_Debug();
 			ModAlarms_Debug();
+			Calibration_Debug();
 		}
 
 		//if (specials.seconds_since_midnight % config.stat_freq == 0) {

@@ -94,6 +94,7 @@ $my_menu[]		= array ("selected" => false,	"name" => "CO<sub>2</sub>",		"icon" =>
 $my_submenu = array();
 $my_submenu[]	= array ("selected" => false,	"name" => "Tryb serwisowy",		"icon" => "fa-wrench", 			"url" => "service.php",			"acl" => "rw");
 $my_submenu[]	= array ("selected" => false,	"name" => "Wejścia i Wyjścia",	"icon" => "fa-gears", 			"url" => "ioconf.php",			"acl" => "rw");
+$my_submenu[]	= array ("selected" => false,	"name" => "Kalibracja",			"icon" => "fa-dot-circle-o",	"url" => "calibration.php",		"acl" => "rw");
 $my_submenu[]	= array ("selected" => false,	"name" => "Alerty",				"icon" => "fa-warning", 		"url" => "alerts.php",			"acl" => "rw");
 $my_submenu[]	= array ("selected" => false,	"name" => "Powiadomienia",		"icon" => "fa-bell", 			"url" => "notifications.php",	"acl" => "rw");
 $my_menu[]		= array ("selected" => false,	"name" => "Zaawansowane",		"icon" => "fa-rocket", 				"submenu" => $my_submenu);
