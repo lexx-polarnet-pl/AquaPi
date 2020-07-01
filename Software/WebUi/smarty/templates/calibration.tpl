@@ -1,4 +1,5 @@
 ﻿{include "header.tpl"}
+
 <script>
 function confirmLink(theLink, message)
 {
@@ -10,6 +11,7 @@ function confirmLink(theLink, message)
 	return is_confirmed;
 }
 </script>
+
 <!-- czy daemon działa -->
 {if $daemon_data->daemon->pid == null}
             <div class="col-sm-12">
@@ -46,7 +48,7 @@ function confirmLink(theLink, message)
 									<div class="col-5"><input type="text" id="DATA_CAL_{$interface.interface_id}" name="DATA_CAL_{$interface.interface_id}" class="form-control" value="Brak danych" readonly></div>
 								</div>
 {/if}{/foreach}
-							</div>								
+							</div>
 						</section>
                     </div>
 {if $edit}
@@ -68,12 +70,12 @@ function confirmLink(theLink, message)
 										<div class="col-6"><input type="text" id="DATA_RAW" name="DATA_RAW" class="form-control" value="Brak danych" readonly></div>
 									</div>	
 									<div class="row form-group">
-										<div class="col-12">
-											<canvas id="myCanvas" style="width:100%; height:100px;">
+										<div class="col-12" id="CanvCont">
+											<canvas id="myCanvas" width="100" height="100">
 												Your browser does not support the canvas element.
 											</canvas>
 										</div>
-									</div>	
+									</div>
 									<div class="row form-group">
 										<div class="col-6"><label for="DATA_CAL" class=" form-control-label">Odczyt przeliczony</label></div>
 										<div class="col-6"><input type="text" id="DATA_CAL" name="DATA_CAL" class="form-control" value="Brak danych" readonly></div>
@@ -185,7 +187,7 @@ function AjaxProcess(xml) {
 			// przesuń bufor danych i określ min/max
 			min = dev_raw_measured_value;
 			max = dev_raw_measured_value;
-			for (j = 100; j > 0; j--) {
+			for (j = 200; j > 0; j--) {
 				ValuesList[j] = ValuesList[j-1];
 				if (ValuesList[j]<min) {
 					min = ValuesList[j];
@@ -200,18 +202,20 @@ function AjaxProcess(xml) {
 		}
 		// narysuj wykres
 		var canvas = document.getElementById("myCanvas");
+		canvas.width = document.getElementById("CanvCont").clientWidth-35;
 		var ctx = canvas.getContext("2d");
-		var bar_width = canvas.width/100;
+		var bar_width = canvas.width/200;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		//ctx.fillStyle = "#FF0000";
 		ctx.beginPath();
-		ctx.moveTo(canvas.width, canvas.height-(ValuesList[j]-min)*(canvas.height/(max-min))); 
-		for (j = 1; j < 100; j++) {
-			ctx.lineTo(canvas.width-j*bar_width, canvas.height-(ValuesList[j]-min)*(canvas.height/(max-min))); 
+		ctx.moveTo(canvas.width, (canvas.height-2)-(ValuesList[j]-min)*((canvas.height-4)/(max-min))); 
+		for (j = 1; j < 200; j++) {
+			ctx.lineTo(canvas.width-j*bar_width, (canvas.height-2)-(ValuesList[j]-min)*((canvas.height-4)/(max-min))); 
 		}	
 		ctx.stroke();
 		ctx.fillText(max, 0, 20);
 		ctx.fillText(min, 0, canvas.height-10);
+		
 	}
 {/if}
   };
@@ -221,6 +225,9 @@ function AjaxProcess(xml) {
 window.onload = function() {            
     setInterval("AjaxRefresh()",1000)
 }
+
+
+
 </script>	
 
 {include "footer.tpl"}
