@@ -21,9 +21,6 @@
  */
 
 
-$host	= $CONFIG['daemon']['bind_address'];
-$port	= $CONFIG['daemon']['bind_port'];
-
 
 function IPC_Command($command) {
 	IPC_CommandWithReply($command);
@@ -31,7 +28,9 @@ function IPC_Command($command) {
 
 function IPC_CommandWithReply($command) {
 	$ret = "";
-	global $host,$port;
+	$host	= $GLOBALS['CONFIG']['daemon']['bind_address'];
+	$port	= $GLOBALS['CONFIG']['daemon']['bind_port'];
+
 	$fp = @fsockopen($host, $port, $errno, $errstr, 2);
 	if (!$fp) {
 		//echo "$errstr ($errno)<br />\n";
