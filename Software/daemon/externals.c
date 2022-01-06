@@ -33,6 +33,7 @@
 #include <rb.h>
 #include "inputs.c"
 #include "outputs.c"
+#include "pca9685.c"
 
 void SetPortAsOutput (char *port) {
 	char buff[200];
@@ -47,6 +48,8 @@ void SetPortAsOutput (char *port) {
 		// Relay Board - tu nie ma co robić
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
 		// Pliku tekstowego nie trzeba konfigurować jako wyjścia
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		// pca9685 może pracować tylko jako wyjście, i pracuje w trybie PWM
 	} else {
 		sprintf(buff,"SPAO: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -65,6 +68,8 @@ void SetPortAsPwmOutput (char *port) {
 		pinMode (atoi(port), PWM_OUTPUT);
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
 		// Pliku tekstowego nie trzeba konfigurować jako wyjścia
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		// pca9685 może pracować tylko jako wyjście, i pracuje w trybie PWM
 	} else {
 		sprintf(buff,"SPAPO: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
@@ -115,6 +120,16 @@ void ScanI2CBus() {
 	hardware.i2c_MinipH.state = wiringPiI2CReadReg16(hardware.i2c_MinipH.fd, 0 );
 	if (hardware.i2c_MinipH.state != -1) {
 		Log("Wykryty osprzęt: Mostek pomiarowy MinipH",E_DEV);
+	}
+
+	//sprawdzamy czy jest obecne PCA9685
+	hardware.i2c_PCA9685.fd = wiringPiI2CSetup(PCA9685_BASE_ADDR);
+	hardware.i2c_PCA9685.state = wiringPiI2CRead(hardware.i2c_PCA9685.fd);
+	if (hardware.i2c_PCA9685.state != -1) {
+		sprintf(buff,"Wykryty osprzęt: Expander PWM PCA9685 o adresie %#x",PCA9685_BASE_ADDR);
+		Log(buff,E_DEV);
+		// dodatkowe porty trzeba zarejestrować
+		pca9685Setup(PCA9685_BASE_PIN, PCA9685_BASE_ADDR, PCA9685_FREQ);
 	}
 }
 int SetupPorts() {

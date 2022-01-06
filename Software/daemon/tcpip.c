@@ -334,7 +334,7 @@ void TCPCommandDeviceList() {
 		for(x = 0; x <= 6; x++) {
 			sprintf(address, "%s%i", PORT_RPI_GPIO_PREFIX,x);
 			sprintf(description, "Pin GPIO numer %i", x);
-			if (x == 1) { // tylko ten port obsługuje PWM (podobno)
+			if (x == 1) { // tylko ten port obsługuje PWM
 				XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","yes",description, NULL, NULL);
 			} else {
 				XMLCreateDeviceEntry(node,"gpio",address,"yes","yes","no",description, NULL, NULL);
@@ -379,7 +379,15 @@ void TCPCommandDeviceList() {
 		// i2c (MinipH)
 		if (hardware.i2c_MinipH.state != -1) {
 			XMLCreateDeviceEntry(node,"MinipH",INPUT_RPI_I2C_MINIPH_PREFIX,"yes","no","no","MinipH - mostek pomiarowy pH", NULL, NULL);
-		}		
+		}
+		// i2c (PCA9685)
+		if (hardware.i2c_PCA9685.state != -1) {
+			for(x = 0; x <= 15; x++) {
+				sprintf(address,"%s%i",PORT_RPI_I2C_PCA9685_PREFIX,PCA9685_BASE_PIN+x);
+				sprintf(description,"PCA9685 adres %#x, pin numer %i",PCA9685_BASE_ADDR,x);
+				XMLCreateDeviceEntry(node,"PCA9685",address,"no","yes","yes",description, NULL, NULL);
+			}
+		}
 	}
 	
 	// opowiedz co tam widać z ds18b20

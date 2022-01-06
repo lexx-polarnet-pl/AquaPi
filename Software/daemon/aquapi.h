@@ -29,6 +29,7 @@ const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wspa
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
 const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
+const char *PORT_RPI_I2C_PCA9685_PREFIX = "rpi:i2c:pca9685:";
 const char *PORT_RPI_I2C_ADS1115_PREFIX = "rpi:i2c:ads1115:";
 const char *PORT_DUMMY_PREFIX = "dummy:";
 const char *PORT_TEXT_FILE_PREFIX = "rpi:system:txtfile:";
@@ -130,12 +131,16 @@ struct _hardware {
 	struct I2CDEV i2c_PCF8574[4];
 	struct I2CDEV i2c_ADS1115[4];
 	struct I2CDEV i2c_MinipH;
+	struct I2CDEV i2c_PCA9685;
 } hardware;
 
 
 // stałe związane z i2c
 const int PCF8574_BASE_ADDR = 0x20;	// od tego adresu i2c zaczynamy szukać PCF8574
 const int PCF8574_BASE_PIN = 64;	// od tego numeru zaczynamy rejestrować piny w WiringPi
-const int ADS1115_BASE_ADDR = 0x48; // od tego adresu i2c zaczynamy szukać ADS1115
+const int ADS1115_BASE_ADDR = 0x48;	// od tego adresu i2c zaczynamy szukać ADS1115
 const int ADS1115_BASE_PIN = 128;	// od tego numeru zaczynamy rejestrować piny w WiringPi 
-const int MINIPH_ADDR = 0x4D;
+const int MINIPH_ADDR = 0x4D;		// na tym adresie szukamy MiniPh
+const int PCA9685_BASE_ADDR = 0x40;	// na tym adresie szukamy PCA9685
+const int PCA9685_BASE_PIN = 192;	// od tego numeru zaczynamy rejestrować piny w WiringPi 
+const int PCA9685_FREQ = 1000;		// częstotliwość PWM PCA

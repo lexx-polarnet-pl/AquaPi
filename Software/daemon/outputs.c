@@ -143,6 +143,30 @@ int ChangePortStatePWMGpio(char *port,int state) {
 	return 0;
 }
 
+int ChangePortStatePwmPCA9685(char *port,int state) {
+	char buff[200];
+	// numer GPIO jest za ostatnim :
+	port=strrchr(port,':')+1;
+	pwmWrite(atoi(port),state*4096/100);
+	sprintf(buff,"Port PCA9685 %i Stan PWM: %i%%",atoi(port),state);
+	Log(buff,E_DEV);
+	return 0;
+}
+
+int ChangePortStatePCA9685(char *port,int state) {
+	char buff[200];
+	// numer GPIO jest za ostatnim :
+	port=strrchr(port,':')+1;
+	if (state == 0) {
+		pwmWrite(atoi(port),0);
+	} else {
+		pwmWrite(atoi(port),4096);
+	}
+	sprintf(buff,"Port PCA9685 %i Stan: %i",atoi(port),state);
+	Log(buff,E_DEV);
+	return 0;
+}
+
 int ChangePortStateDummy(char *port,int state) {
 	char buff[200];
 	sprintf(buff,"Port %s Stan: %i",port,state);
@@ -181,6 +205,8 @@ void ChangePortState (char *port,int state) {
 		ChangePortStateDummy(port,state);
 	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
 		ChangePortStateGpio(port,state);
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		ChangePortStatePCA9685(port,state);
 	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
 		ChangePortStateRelBrd (port,state);
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
@@ -197,6 +223,8 @@ void ChangePortStatePWM (char *port,int state) {
 		ChangePortStateDummy(port,state);	
 	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
 		ChangePortStatePWMGpio(port,state);
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		ChangePortStatePwmPCA9685(port,state);
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
 		ChangePortStatePWMTxtFile(port,state);
 	} else {

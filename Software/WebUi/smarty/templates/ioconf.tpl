@@ -213,7 +213,7 @@ function load()
 										<div class="col-4">
 											<select name="InputAddressSelector" id="InputAddressSelector" onchange="ChangeInput()" class="form-control">
 											{foreach from=$device_list->devicelist->device item="device"}
-												{if ($device->input == 'yes') && !($device->configured == 'yes')}
+												{if !($device->configured == 'yes')}
 													<option value="{$device->address}">{$device->description}</option>
 												{/if}
 											{/foreach}
