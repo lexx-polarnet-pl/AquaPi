@@ -30,7 +30,6 @@
 #include <wiringPiI2C.h>
 #include <pcf8574.h>
 #include <ads1115.h>
-#include <rb.h>
 #include "inputs.c"
 #include "outputs.c"
 #include "pca9685.c"
@@ -44,8 +43,6 @@ void SetPortAsOutput (char *port) {
 		// numer GPIO jest za ostatnim :
 		port=strrchr(port,':')+1;
 		pinMode (atoi(port), OUTPUT);
-	} else if (strncmp(port,PORT_RELBRD_PREFIX,strlen(PORT_RELBRD_PREFIX))==0) {
-		// Relay Board - tu nie ma co robić
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX,strlen(PORT_TEXT_FILE_PREFIX))==0) {
 		// Pliku tekstowego nie trzeba konfigurować jako wyjścia
 	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {

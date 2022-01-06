@@ -25,7 +25,6 @@ const char *build_date = __DATE__;  // data kompilacji
 const char *build_time = __TIME__;  // czas kompilacji
 
 //prefiksy portów wej/wyj
-const char *PORT_RELBRD_PREFIX = "relbrd:"; // to jest do usunięcia - brak wsparcia
 const char *PORT_RPI_GPIO_PREFIX = "rpi:gpio:";
 const char *PORT_RPI_1W_PREFIX = "rpi:1w:";
 const char *PORT_RPI_I2C_MINIPH_PREFIX = "rpi:i2c:miniph:";
