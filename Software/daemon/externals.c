@@ -142,19 +142,12 @@ int SetupPorts() {
 		}
 		if (interfaces[x].type == DEV_OUTPUT_PWM) {
 			SetPortAsPwmOutput(interfaces[x].address);
-			//if (interfaces[x].conf == 0) {
-			//	interfaces[x].state = ReadPortState(interfaces[x].address);
-			//} else {
-			//	interfaces[x].state = 1 - ReadPortState(interfaces[x].address);
-			//}			
+			interfaces[x].state = ReadPortPWMState(interfaces[x].address);
 		}
 		if (interfaces[x].type == DEV_INPUT) {
 			SetPortAsInput(interfaces[x].address);
 		}
 	}	
-	//for(j = 0; j <= outputs_count; j++) {
-		//SetPortAsOutput(outputs[j].output_port);
-	//}
 	return 0;
 }
 

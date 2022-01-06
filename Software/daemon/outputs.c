@@ -78,6 +78,16 @@ int ChangePortStatePCA9685(char *port,int state) {
 	return 0;
 }
 
+int ReadPortStatePWMPCA9685(char *port) {
+	port=strrchr(port,':')+1;
+	return analogRead(atoi(port));
+}
+
+int ReadPortStatePCA9685(char *port) {
+	port=strrchr(port,':')+1;
+	return digitalRead(atoi(port));
+}
+
 int ChangePortStateDummy(char *port,int state) {
 	char buff[200];
 	sprintf(buff,"Port %s Stan: %i",port,state);
@@ -141,6 +151,7 @@ void ChangePortStatePWM (char *port,int state) {
 		Log(buff,E_WARN);
 	}
 }
+
 int ReadPortState (char *port) {
 	char buff[200];
 	int RetVal = -1;
@@ -149,10 +160,30 @@ int ReadPortState (char *port) {
 		RetVal = 0;
 	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
 		RetVal = ReadPortStateGpio(port);
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		RetVal = ReadPortStatePCA9685(port);
 	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
 		RetVal = 0;
 	} else {
 		sprintf(buff,"RPS: Nie obsługiwany port: %s",port);
+		Log(buff,E_WARN);
+	}
+	return RetVal;
+}
+
+int ReadPortPWMState (char *port) {
+	char buff[200];
+	int RetVal = -1;
+	if (strncmp(port,PORT_DUMMY_PREFIX,strlen(PORT_DUMMY_PREFIX))==0) {
+		RetVal = 0;
+	} else if ((strncmp(port,PORT_RPI_GPIO_PREFIX,strlen(PORT_RPI_GPIO_PREFIX))==0) && hardware.RaspiBoardVer > 0) {
+		// nothing to do here
+	} else if (strncmp(port,PORT_RPI_I2C_PCA9685_PREFIX,strlen(PORT_RPI_I2C_PCA9685_PREFIX))==0) {
+		RetVal = ReadPortStatePWMPCA9685(port);
+	} else if (strncmp(port,PORT_TEXT_FILE_PREFIX ,strlen(PORT_TEXT_FILE_PREFIX ))==0) {
+		// nothing to do here
+	} else {
+		sprintf(buff,"RPPS: Nie obsługiwany port: %s",port);
 		Log(buff,E_WARN);
 	}
 	return RetVal;
