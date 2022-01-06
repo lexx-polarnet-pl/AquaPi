@@ -52,7 +52,7 @@
 				IRF520 wymaga radiatora. Płyta ta została zaprojektowana aby pasować do obudowy Kradex Z6. Używając tej płyty, można zgodnie z jej nazwą, sterować
 				urządzeniami podając sygnał PWM, np. symulująć wschód i zachód słońca przy oświetleniu LED.</para>		
 				<figure>
-					<title>Płyta główna płytki PWM</title>
+					<title>Zmontowana płytka PWM w obudowie Kradex Z6</title>
 					<mediaobject>
 						<imageobject>
 							<imagedata fileref="hardware/AQUAPI_2.0_pwmboard.jpg" format="JPG"/>
