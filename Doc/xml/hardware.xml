@@ -422,6 +422,33 @@
 			<para>Po skonfigurowaniu portu GPIO kliknij <guimenu>Zapisz</guimenu> aby wejście lub wyjście mogło być używane w systemie. Skonfigurowany port powinien być teraz 
 			widoczny na dashboard, gdzie możesz spróbować sterować nim ręcznie, lub oberwować jego stan.</para>
 		</sect2>
+		<sect2 id="pca9685">
+			<title>PCA9685</title>		
+			<para>PCA9685 to 12 bitowy, 16 kanałowy sterownik PWM sterowany magistralą I2C. Pozwala w prosty sposób zwiększyć ilość wyjść PWM. AquaPi obsługuje jeden układ tego typu,
+			oferując dodatkowe 16 kanałów PWM. AquaPi oczekuje, że PCA9685 będzie dostępny pod adresem 0x40.</para>
+			<figure>
+				<title>PCA9685 jako kit</title>
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/PCA9685.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure>	
+			<para>Po podłączeniu expandera, AquaPi wykryje go automatycznie, a ty będziesz miał do dyspozycji 16 nowych portów które można ustawić jako wyjście binarne, lub PWM. Aby 
+			to zrobić, wejdź w menu <guimenu>Wejścia 
+			i wyjścia</guimenu>, a następnie w oknie <guimenu> Dodaj nowe wejście lub wyjście</guimenu> wybierz interesujący cię pin na ekspanderze, nadaj mu opis, wybierz kolor 
+			do wykresu, ikonkę urządzenia oraz tryb działania (wyjście binarne lub wyjście PWM).</para>
+			<figure>
+				<title>Dodawanie portu z expandera do AquaPi</title>				
+				<mediaobject>
+					<imageobject>
+						<imagedata fileref="hardware/PCA9685-ui.jpg" format="JPG"/>
+					</imageobject>
+				</mediaobject>
+			</figure> 
+			<para>Po skonfigurowaniu portu kliknij <guimenu>Zapisz</guimenu> aby wyjście mogło być używane w systemie. Skonfigurowany port powinien być teraz 
+			widoczny na dashboard, gdzie możesz spróbować sterować nim ręcznie.</para>
+		</sect2>
 	</sect1>
 	<sect1 id="hardware-dedicated"> 
 		<title>Sprzęt dedykowany do AquaPi</title>

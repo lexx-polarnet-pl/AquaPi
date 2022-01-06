@@ -8,7 +8,6 @@
 			drukowanych, są one nadal zaprojektowane tak, aby korzystać z montażu przewlekanego, wiec do montażu wystarczą podstawowe umiejętności z zakresu lutowania.
 			Tam gdzie jest wymóg stosowania elementów SMD, wybierane są moduły w postaci dostępnych kitów, które można zamontować na płytkach. Wszystkie płytki są projektowane
 			w programie <ulink url="https://kicad-pcb.org/">KiCad</ulink>.</para>
-			<warning><title>Ostrzeżenie</title><para>Opisane poniżej elementy to prototypy. Jest szansa że nie będą działać poprawnie.</para></warning>
 			<sect3 id="main-board">
 				<title>Płyta główna</title>		
 				<para>Płyta główna zawiera wyprowadzone na zewnątrz 3 złącza 1-wire, 1 złącze krańcówki trybu serwisowego, 3 złącza RJ12 z liniami I/O (4 linie na złącze), 
@@ -21,23 +20,31 @@
 						</imageobject>
 					</mediaobject>
 				</figure>	
-			</sect3>
-			<para>BOM (spis elementów) płyty głównej:
-				<itemizedlist>
-					<listitem><para>4 x Rezystor 4,7k&ohm;</para></listitem>
-					<listitem><para>3 x Gniazdo RJ12 6P6C kątowe</para></listitem>	
-					<listitem><para>3 x Gniazdo Jack 3,5mm (PJ-327)</para></listitem>	
-					<listitem><para>1 x Gniazdo DC 1.7/4.0mm (GDC1.7/4.0K2)</para></listitem>
-					<listitem><para>1 x PCF8574</para></listitem>
-					<listitem><para>1 x ADS1115 w postaci kitu</para></listitem>
-					<listitem><para>1 x Gniazdo żeńskie 2x20 raster 2,54mm</para></listitem>						
-					<listitem><para>1 x listwa kołkowa 1x4 raster 2,54mm (prosta)</para></listitem>
-					<listitem><para>1 x listwa kołkowa 1x4 raster 2,54mm (kątowa)</para></listitem>
-					<listitem><para>3 x listwa kołkowa 1x3 raster 2,54mm (prosta)</para></listitem>
-					<listitem><para>1 x listwa kołkowa 1x3 raster 2,54mm (kątowa)</para></listitem>
-					<listitem><para>1 x Gniazdo żeńskie 1x10 raster 2,54mm</para></listitem>						
-				</itemizedlist>
-			</para>
+				<para>BOM (spis elementów) płyty głównej:
+					<itemizedlist>
+						<listitem><para>4 x Rezystor 4,7k&ohm;</para></listitem>
+						<listitem><para>3 x Gniazdo RJ12 6P6C kątowe</para></listitem>	
+						<listitem><para>3 x Gniazdo Jack 3,5mm (PJ-327)</para></listitem>	
+						<listitem><para>1 x Gniazdo DC 1.7/4.0mm (GDC1.7/4.0K2)</para></listitem>
+						<listitem><para>1 x PCF8574</para></listitem>
+						<listitem><para>1 x ADS1115 w postaci kitu</para></listitem>
+						<listitem><para>1 x Gniazdo żeńskie 2x20 raster 2,54mm</para></listitem>						
+						<listitem><para>1 x listwa kołkowa 1x4 raster 2,54mm (prosta)</para></listitem>
+						<listitem><para>1 x listwa kołkowa 1x4 raster 2,54mm (kątowa)</para></listitem>
+						<listitem><para>3 x listwa kołkowa 1x3 raster 2,54mm (prosta)</para></listitem>
+						<listitem><para>1 x listwa kołkowa 1x3 raster 2,54mm (kątowa)</para></listitem>
+						<listitem><para>1 x Gniazdo żeńskie 1x10 raster 2,54mm</para></listitem>						
+					</itemizedlist>
+				</para>
+				<figure>
+					<title>Zmontowana i podłączona do RPI elektronika do wersji 2.0</title>
+					<mediaobject>
+						<imageobject>
+							<imagedata fileref="hardware/AQUAPI_2.0-assembled.jpg" format="JPG"/>
+						</imageobject>
+					</mediaobject>
+				</figure>					
+			</sect3>			
 			<sect3 id="pwm-board">
 				<title>Płyta PWM</title>		
 				<para>Płyta PWM została zaprojektowana pod 4 tranzystory MOSFET IRF520, umożliwając niezależne sterowanie 4 odbiornikami zasilanymi napięciem max 24V 
@@ -52,18 +59,18 @@
 						</imageobject>
 					</mediaobject>
 				</figure>	
-			</sect3>
-			<para>BOM (spis elementów) płyty PWM:
-				<itemizedlist>
-					<listitem><para>4 x Rezystor 4,7k&ohm;</para></listitem>
-					<listitem><para>1 x Gniazdo RJ12 6P6C kątowe</para></listitem>	
-					<listitem><para>5 x Gniazdo DC 2.1/5.5mm</para></listitem>
-					<listitem><para>4 x IRF520</para></listitem>
-					<listitem><para>4 x radiator TO220 (dla prądów > 1A)</para></listitem>
-					<listitem><para>2 x stopka pod bezpiecznik rurkowy 20mm</para></listitem>
-					<listitem><para>1 x bezpiecznik rurkowy 20mm 1A</para></listitem>
-				</itemizedlist>
-			</para>	
+				<para>BOM (spis elementów) płyty PWM:
+					<itemizedlist>
+						<listitem><para>4 x Rezystor 100k&ohm;</para></listitem>
+						<listitem><para>1 x Gniazdo RJ12 6P6C kątowe</para></listitem>	
+						<listitem><para>5 x Gniazdo DC 2.1/5.5mm</para></listitem>
+						<listitem><para>4 x IRF520</para></listitem>
+						<listitem><para>4 x radiator TO220 (dla prądów > 1A)</para></listitem>
+						<listitem><para>2 x stopka pod bezpiecznik rurkowy 20mm</para></listitem>
+						<listitem><para>1 x bezpiecznik rurkowy 20mm 1A</para></listitem>
+					</itemizedlist>
+				</para>	
+			</sect3>			
 			<sect3 id="connectors">
 				<title>Typy złącz</title>
 				<para>Ta sekcja opisuje jakie złącza są wykorzystywane w projekcie, oraz jakie na nich występują sygnały</para>
